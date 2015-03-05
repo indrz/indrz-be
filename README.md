@@ -2,7 +2,7 @@
 indoor maps, orientation, wayfinding and indoor routing for buildings large or small, app or webpage
 
 ### What is indrz?
-indrz will allow you as a developer to integrate indoor maps and routing services into your application.  If you work at a university or other organization and need an online wayfinder indrz(www.indrz.com) will offer our services to build-host it for you.  Our business model is like Mapbox, free open source software and payed services.
+indrz is open source software to provide indoor maps and routes for buildings.  indrz will allow you as a developer to integrate indoor maps and routing services into your application.  If you work at a university or other organization and need an online wayfinder indrz(www.indrz.com) will offer our services to build-host it for you.  Our business model is like Mapbox, free open source software and payed services.
 
 ### What you GET
 The code is for building the routing services, client side javascript to view routes, show maps, change floors, ...  All the functionality is baked in for your own indoor routing app or webpage.  
@@ -10,7 +10,18 @@ The code is for building the routing services, client side javascript to view ro
 ### What this is NOT
 You do not get the data prepared for the system, data import, data conversion, platform installation, design and more.  These are all services we provide at (www.indrz.com) so to keep this all open source please contact us to keep things moving forward.
 
-If you want we can make the maps, import data, convert file formats such as DWG,JPG, PDF into maps or does it upload into a PostGIS database.  This is hard work and I am still looking for a quick magicical way to automagically import your indoor maps (simple images is easy and everyone can do that).  Finally we also build the indoor routing network.
+### What you need to DO and KNOW (the magic)
+We can do this for you but if you know how you will need to know how to make the maps, import data, convert file formats such as DWG,JPG, PDF into maps or does it upload into a PostGIS database.  This is hard work and I am still looking for a quick magicical way to automagically import your indoor maps (simple images is easy and everyone can do that).  Finally you also need to build the indoor routing network.
+
+###  How to DO
+* import CAD, JPG, PDF,PNG... into PostGIS
+* create maps (geoserver with sld) coming from your import Data
+* create routes (QGIS or other Desktop GIS)
+* create Client (indrz)
+* create Services (indrz)
+* customize Client, corporate identity
+* deploy
+
 
 ### Where can you use it?
 * universities
