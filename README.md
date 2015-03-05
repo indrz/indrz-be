@@ -50,6 +50,9 @@ We can do this for you but if you know how you will need to know how to make the
 * multilanguage to support any language
 * mobile web page
 
+## Translations
+Translations are hosted by Transifex  https://www.transifex.com/organization/indrz/dashboard
+Currently supported languages English and German
 
 ### Questions you might want to answer
 * How long are people waiting in line at your airport?
