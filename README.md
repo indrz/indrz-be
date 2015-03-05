@@ -48,7 +48,7 @@ We can do this for you but if you know how you will need to know how to make the
 * share map, share route, share search results
 * Points of interests: cafe, vending machines, bookstore you name it
 * multilanguage to support any language
-* mobile web page based on jquery mobile
+* mobile web page
 
 
 ### Questions you might want to answer
@@ -59,7 +59,7 @@ We can do this for you but if you know how you will need to know how to make the
 
 
 ### Current branches in use
-* indrz campus university (http://gis.wu.ac.at)
+* indrz Wirtschafts Universität Wien  indrz-campus (http://gis.wu.ac.at)
 * indrz library [Vienna University of Economics and Business Administration Library](http://gis.wu.ac.at/?key=ST%20261.w34%20G744)
 * indrz business park [Lakeside Science & Technology Park](http://ws1.gomogi.com/lakeside/Firmensuche.html)
 
