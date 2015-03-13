@@ -54,23 +54,16 @@ We can do this for you but if you know how you will need to know how to make the
 Translations are hosted by Transifex  https://www.transifex.com/organization/indrz/dashboard
 Currently supported languages English and German
 
-### Questions you might want to answer
-* How long are people waiting in line at your airport?
-* How many people are located in a room / area?
-* Where do the most people visit within a building?
-* Security planning for events and people locations
-
-
 ### Current branches in use
 * indrz Wirtschafts Universität Wien  indrz-campus (http://gis.wu.ac.at)
 * indrz library [Vienna University of Economics and Business Administration Library](http://gis.wu.ac.at/?key=ST%20261.w34%20G744)
 * indrz business park [Lakeside Science & Technology Park](http://ws1.gomogi.com/lakeside/Firmensuche.html)
 
-[Indrz Campus GIS](http://gomogi.com/products/campus-gis) is a indoor map platform.[GIT Project Page](http://gomogi.github.io/indrz/).  It allows you to find your way around in an indoor environment such as large building complexes. The man behind it is [Michael Diener](http://twitter.com/spatialmounty) &mdash; [get in touch](#contact--community) if you'd like to discuss the project in more detail.
+[Indrz Campus](http://www.indrz.com) is a indoor map platform.[GIT Project Page](https://github.com/indrz/indrz).  It allows you to find your way around in an indoor environment such as large building complexes. The man behind it is [Michael Diener](http://twitter.com/spatialmounty) &mdash; [get in touch](#contact--community) if you'd like to discuss the project in more detail.
 
 
 ## Contact & community
-Communication is simple via email ([office@gomogi.com](mailto:office@gomogi.com)). All other discussion should happen in the [indrz Google Group](https://groups.google.com/forum/#!forum/indrz),  or [relevant GitHub issues page](https://github.com/gomogi/indrz/issues).
+Communication is simple via email ([office@gomogi.com](mailto:office@gomogi.com)). All other discussion should happen in the [indrz Google Group](https://groups.google.com/forum/#!forum/indrz-dev),  or [relevant GitHub issues page](https://github.com/indrz/indrz/issues).
 
 ## Getting involved
 indrz would love your help. We need people to submit bugs, suggest features, share how they're using the project, and contribute code.
@@ -93,5 +86,5 @@ indrz would love your help. We need people to submit bugs, suggest features, sha
 * [Gulpjs js](http://gulpjs.com) - js building 
 
 ## Licence
-indrz is under Apache license.  The name "indrz" is not allowed to be used by third parties and is a trademark.  Other than that you can do what you want accordingly  (http://www.apache.org/licenses/LICENSE-2.0)
+indrz is under MIT license.  The name "indrz" is not allowed to be used by third parties and is a trademark.  Other than that you can do what you want accordingly  (http://opensource.org/licenses/MIT)
 
