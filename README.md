@@ -13,7 +13,7 @@ You do not get the data prepared for the system, data import, data conversion, p
 ### What you need to DO and KNOW (the magic)
 We can do this for you but if you know how you will need to know how to make the maps, import data, convert file formats such as DWG,JPG, PDF into maps or does it upload into a PostGIS database.  This is hard work and I am still looking for a quick magicical way to automagically import your indoor maps (simple images is easy and everyone can do that).  Finally you also need to build the indoor routing network.
 
-###  How to DO
+###  What you need to DO
 * import CAD, JPG, PDF,PNG... into PostGIS
 * create maps (geoserver with sld) coming from your import Data
 * create routes (QGIS or other Desktop GIS)
