@@ -1,9 +1,9 @@
 
 .. _index:
 
-====================
+===================
 indrz documentation
-====================
+===================
 
 Introduction
 ============
@@ -25,7 +25,7 @@ Are you new to Django or to programming? This is the place to start!
 
 
 Core functionalities
-==========================
+====================
 
 Learn about the core functionalities of indrz:
 
@@ -33,7 +33,7 @@ Learn about the core functionalities of indrz:
 
 
 The indrz open-source project
-==============================
+=============================
 
 Learn about the development process for the indrz project itself and about how
 you can contribute:
