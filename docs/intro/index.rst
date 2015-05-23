@@ -16,3 +16,9 @@ orient themselves.  Indrz is not designed as a virtual reality app
 guiding you every step of the way but more like a quick reference.
 You still will need to look around, but getting lost and walking
 into pillars while staring at your phone should no longer happen.
+
+Research Areas
+==============
+
+Auto generating indoor route descriptions based on points of
+interest and landmarks is an area in need of more research.
