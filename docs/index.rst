@@ -12,8 +12,7 @@ Introduction
 
 First steps
 ===========
-
-Are you new to Django or to programming? This is the place to start!
+This is the place to start!
 
 * **From the start:**
   :doc:`Overview <intro/overview>` |
@@ -47,4 +46,3 @@ you can contribute:
 
 * **Documentation:**
   :doc:`About this documentation <internals/contributing/writing-documentation>`
-
