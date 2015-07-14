@@ -25,3 +25,6 @@ Software and Technology
 6. GDAL
 7. Geoserver
 8. Openlayers 3.x
+9. jquery Mobile
+10. jquery
+
