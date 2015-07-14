@@ -5,11 +5,11 @@
 indrz installation
 ==================
 
-# PostgreSQL 9.1 or higher
-# Postgis 2.1
-# pgRouting 2.0
-# python 2.7
-# Django 1.8
-# GDAL
-# Geoserver
-# Openlayers 3.x
+1. PostgreSQL 9.1 or higher
+2. Postgis 2.1
+3. pgRouting 2.0
+4. python 2.7
+5. Django 1.8
+6. GDAL
+7. Geoserver
+8. Openlayers 3.x
