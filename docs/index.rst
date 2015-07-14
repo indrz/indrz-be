@@ -14,13 +14,13 @@ First steps
 ===========
 This is the place to start!
 
-* **From the start:**
-  :doc:`Overview <intro/overview>` |
-  :doc:`Installation <intro/install>`
+* **Your first visit:**
+  :doc:`Overview <intro/index>` |
+  :doc:`Installation Production Deploy<intro/install_production>`
+  :doc:`Installation Developers <intro/install_developer>`
 
 * **Tutorial:**
-  :doc:`Part 1: Data <intro/tutorial01>` |
-
+coming soon...
 
 
 Core functionalities
