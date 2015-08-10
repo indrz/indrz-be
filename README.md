@@ -55,9 +55,10 @@ Translations are hosted by Transifex  https://www.transifex.com/organization/ind
 Currently supported languages English and German
 
 ### Current branches in use
-* indrz Wirtschafts Universität Wien  indrz-campus (http://gis.wu.ac.at)
+* indrz Wirtschafts Universität Wien  indrz-campus (http://campus.wu.ac.at)
 * indrz library [Vienna University of Economics and Business Administration Library](http://gis.wu.ac.at/?key=ST%20261.w34%20G744)
 * indrz business park [Lakeside Science & Technology Park](http://ws1.gomogi.com/lakeside/Firmensuche.html)
+* indrz Alpen Adria University Klagenfurt indzr-campus (http://campus-gis.aau.at)
 
 [Indrz Campus](http://www.indrz.com) is a indoor map platform.[GIT Project Page](https://github.com/indrz/indrz).  It allows you to find your way around in an indoor environment such as large building complexes. The man behind it is [Michael Diener](http://twitter.com/spatialmounty) &mdash; [get in touch](#contact--community) if you'd like to discuss the project in more detail.
 
