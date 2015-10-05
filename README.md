@@ -1,5 +1,5 @@
 # indrz
-indoor maps, orientation, wayfinding and indoor routing for buildings large or small, app or webpage.
+digital wayfinding indoors, maps, orientation and indoor routing for buildings large or small, app or webpage.
 
 ### What is indrz?
 indrz is open source software to provide indoor maps and routes for buildings.  indrz will allow you to integrate indoor maps and routing services into your homepage or application.  If you work at a university or other organization and need an online wayfinder indrz(www.indrz.com) will offer our services to build or host it for you.  Our business model is like Mapbox, free open source software and payed services.
