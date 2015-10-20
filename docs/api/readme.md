@@ -10,7 +10,8 @@ An example call would look like this:
 
     http://www.indrz.com/api/v1/directions/building=45&start=234&end=456
     
-#### Response is JSON
+#### Response is GeoJSON
+Your response is a GeoJSON LineString showing a 2D line for the entire route.
 
 some response
 
