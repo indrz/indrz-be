@@ -1,6 +1,3 @@
-
-.. _index:
-
 ===================
 indrz documentation
 ===================
@@ -8,7 +5,7 @@ indrz documentation
 Introduction
 ============
 
-Need to add a good intro
+Welcome to the open source indrz indoor wayfinding web applciation.  Indrz is a project in providing indoor maps, indoor routing and room information for buildings.
 
 First steps
 ===========
@@ -19,16 +16,15 @@ This is the place to start!
   :doc:`Installation Production Deploy<intro/install_production>`
   :doc:`Installation Developers <intro/install_developer>`
 
-* **Tutorial:**
+* **Tutorials:**
 coming soon...
 
 
-Core functionalities
+indrz API Documentation
 ====================
+note work in progress...
 
-Learn about the core functionalities of indrz:
-
-* :doc:`Indoor Routing <topics/conditional-view-processing>`
+Learn about the [indrz API !](https://github.com/indrz/indrz/tree/master/docs/api)
 
 
 The indrz open-source project
