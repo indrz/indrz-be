@@ -19,7 +19,7 @@ some response
 
 Lets say you want to display a GeoJSON polygon layer on your map of all the rooms, aka spaces from single floor from a single building.
 
-    /api/v1/space/building/building={building-id}&floor={floor-id}
+    /api/v1/space/building={building-id}&floor={floor-id}
 
 Example call:
 
