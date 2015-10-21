@@ -1,5 +1,15 @@
 #indrz API Documentation
 
+Welcome to the indrz api documentation.  If you want to use the indrz cloud hosting or host it your self these instructions and words are for you, so please read along.
+
+## Authentication
+
+To access your content on the indrz.com cloud platform you need a valid TOKEN.  This ensures the saftey of your data, so you control who has access to your data.  The Authorization token must be passed along with each request.  If you are hosting your own instance of indrz we highly recommend you do the same and get a SSL Certificate to ensure the saftey of your own API.
+
+    curl -X GET https://api.indzr.com/v1/example/ -H 'Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6tt9k'
+    
+    
+
 ## Indoor Direction API
 
 The directions api is designed to allow you to show a route from any indoor room location to any other room location within a building complex.
