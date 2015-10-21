@@ -25,7 +25,7 @@ Example call:
 
     http://api.indrz.com/v1/space/building=45&floor=123
 
-#### Response is JSON
+##### Response is JSON
 
 some response
 
@@ -41,19 +41,36 @@ An example call:
 
     http://api.indrz.com/v1/space/space=435
 
-#### Response is JSON
+##### Response is JSON
 
 some response
 
+### Get room centroid
+
+Return the center point of a specified room within a building
+
+    /api/v1/space/centroid=435
+
+This will return a GeoJSON POINT geometry of the rooms geometric center.
+
+An example call:
+
+    http://api.indrz.com/v1/space/centroid=435
+
+##### Response is GeoJSON
 
 
-
-```python
-def foo():
-    if not bar:
-        return True
+```json
+{
+    "type": "Point",
+    "coordinates": [
+        -105.01621,
+        39.57422
+    ]
+}
 
 ```
+
 
 
 
