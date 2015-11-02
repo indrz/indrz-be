@@ -106,5 +106,5 @@ indrz would love your help. There are more than enoough things to get done so we
 * Not YET implemented [Gulpjs js](http://gulpjs.com) - js building 
 
 ## Licence
-indrz is under GNU General Public License v3.0.  The name "indrz" is not allowed to be used by third parties and is a trademark.  Other than that you can do what you want accordingly  (http://opensource.org/licenses/MIT)
+indrz is under GNU General Public License v3.0.  The name "indrz" is not allowed to be used by third parties and is a trademark.  Other than that you can do what you want accordingly 
 
