@@ -19,7 +19,7 @@ The directions api is designed to allow you to show a route from any indoor room
     
 An example call would look like this:
 
-    http://www.indrz.com/api/v1/directions/building=45&start=234&end=456
+    https://www.indrz.com/api/v1/directions/building=45&start=234&end=456
     
 #### Response is GeoJSON
 Your response is a GeoJSON LineString showing a 2D line for the entire route.
@@ -34,7 +34,7 @@ Lets say you want to display a GeoJSON polygon layer on your map of all the room
 
 Example call:
 
-    http://www.indrz.com/api/v1/space/building=45&floor=123
+    https://www.indrz.com/api/v1/space/building=45&floor=123
 
 ##### Response is JSON
 
@@ -50,7 +50,7 @@ This will zoom you to the exact room location on the map.
 
 An example call:
 
-    http://www.indrz.com/api/v1/space/space=435
+    https://www.indrz.com/api/v1/space/space=435
 
 ##### Response is JSON
 
@@ -66,7 +66,7 @@ This will return a GeoJSON POINT geometry of the rooms geometric center.
 
 An example call:
 
-    http://www.indrz.com/api/v1/space/centroid=435
+    https://www.indrz.com/api/v1/space/centroid=435
 
 ##### Response is GeoJSON
 
