@@ -38,6 +38,13 @@ Instructions
 1. Install Python 2.7.x
 1. Install Django 1.8
 1. Install all other python repos with pip
+1. Check out the GIT repo and start
+
+
+Get the indrz GIT repostiory Started
+====================================
+
+[GIT how to fork indrz] (https://help.github.com/articles/fork-a-repo/)
 
 
 
