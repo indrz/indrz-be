@@ -1,0 +1,60 @@
+@import url(http://fonts.googleapis.com/css?family=Quattrocento+Sans:400,400italic,700);
+html, body, #map {
+height: 100%;
+width: 100%;
+overflow: hidden;
+}
+.olImageLoadError { display: none; }
+
+body {
+  padding-top: 60px;
+}
+.map {
+  height: 400px;
+  width: 100%;
+
+}
+
+.ol-attribution {
+  max-width: calc(100% - 3em);
+}
+.ol-control button, .ol-attribution, .ol-scale-line-inner {
+  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+}
+
+#tags {
+  display: none;
+}
+
+body, h1, h2, h3, h4, p, li, td, th {
+  font-family: Quattrocento Sans;
+}
+.navbar-inverse .navbar-inner {
+  background: #1F6B75;
+}
+.navbar-inverse .brand {
+  color: white;
+  padding: 5px;
+}
+
+.bs-example{
+	font-family: sans-serif;
+	position: relative;
+	margin: 100px;
+}
+
+.tt-suggestion {
+	font-size: 24px;
+	line-height: 24px;
+	padding: 3px 20px;
+    background-color: #FFFFFF;
+}
+.tt-suggestion.tt-is-under-cursor {
+	background-color: #0097CF;
+	color: #FFFFFF;
+}
+.tt-suggestion p {
+	margin: 0;
+}
+
+
