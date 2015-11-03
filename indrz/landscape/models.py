@@ -9,8 +9,8 @@ class BaseLookupDomain(gis_models.Model):
     class Meta:
         abstract = True
 
-    def __unicode__(self):
-        return unicode(self.name) or u''
+    def __str__(self):
+        return str(self.name) or u''
 
 class LtSurfaceType(BaseLookupDomain):
     """
@@ -103,9 +103,8 @@ class LandscapeArea(gis_models.Model):
     objects = gis_models.GeoManager()
 
 
-    def __unicode__(self):
-        return unicode(self.name) or u''
-
+    def __str__(self):
+        return str(self.name) or u''
 
 
 class PavementMarkLines(gis_models.Model):
@@ -120,6 +119,5 @@ class PavementMarkLines(gis_models.Model):
     geom_mline = gis_models.MultiLineStringFieldField(srid=3857)
     objects = gis_models.GeoManager()
 
-
-    def __unicode__(self):
-        return unicode(self.fk_mark_type) or u''
+    def __str__(self):
+        return str(self.fk_mark_type) or u''

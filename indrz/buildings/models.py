@@ -9,8 +9,8 @@ class BaseLookupDomain(gis_models.Model):
     class Meta:
         abstract = True
 
-    def __unicode__(self):
-        return unicode(self.name) or u''
+    def __str__(self):
+        return str(self.name) or u''
 
 
 class LtAccessType(BaseLookupDomain):
@@ -131,8 +131,8 @@ class BuildingAddressBase(gis_models.Model):
         abstract = True
         ordering = ['city']
 
-    def __unicode__(self):
-        return unicode(self.city) or u''
+    def __str__(self):
+        return str(self.city) or u''
 
 
 class OrganizationInfoBase(BuildingAddressBase):
@@ -158,8 +158,8 @@ class OrganizationInfoBase(BuildingAddressBase):
         abstract = True
         ordering = ['name']
 
-    def __unicode__(self):
-        return unicode(self.name) or u''
+    def __str__(self):
+        return str(self.name) or u''
 
 
 class Organization(OrganizationInfoBase):
@@ -194,8 +194,8 @@ class Campus(gis_models.Model):
     geom_mpoly = gis_models.MultiPolygonField(srid=3857)
     objects = gis_models.GeoManager()
 
-    def __unicode__(self):
-        return unicode(self.campus_name) or u''
+    def __str__(self):
+        return str(self.campus_name) or u''
 
 class Building(OrganizationInfoBase):
     """
@@ -243,8 +243,8 @@ class BuildingFloor(gis_models.Model):
     class Meta:
         ordering = ['floor_num']
 
-    def __unicode__(self):
-        return unicode(self.short_name) or u''
+    def __str__(self):
+        return str(self.short_name) or u''
 
 
 class FloorSpaceBase(gis_models.Model):
@@ -266,8 +266,8 @@ class FloorSpaceBase(gis_models.Model):
     class Meta:
         abstract = True
 
-    def __unicode__(self):
-        return unicode(self.short_name) or u''
+    def __str__(self):
+        return str(self.short_name) or u''
 
 class FloorSpacePlanLine(gis_models.Model):
     """
@@ -292,8 +292,8 @@ class FloorSpacePlanLine(gis_models.Model):
     class Meta:
         abstract = True
 
-    def __unicode__(self):
-        return unicode(self.short_name) or u''
+    def __str__(self):
+        return str(self.short_name) or u''
 
 
 
@@ -334,8 +334,8 @@ class BuildingFloorSpace(FloorSpaceBase):
 #     class Meta:
 #         ordering = ['short_name']
 #
-#     def __unicode__(self):
-#         return unicode(self.short_name) or u''
+#     def __str__(self):
+#         return str(self.short_name) or u''
 #
 #
 # class ConferenceStand(gis_models.Models):
@@ -353,8 +353,8 @@ class BuildingFloorSpace(FloorSpaceBase):
 #     class Meta:
 #         ordering = ['short_name']
 #
-#     def __unicode__(self):
-#         return unicode(self.short_name) or u''
+#     def __str__(self):
+#         return str(self.short_name) or u''
 #
 # class ConferenceExhibitorAddress(BuildingAddressBase):
 #
