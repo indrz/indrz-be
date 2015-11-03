@@ -68,4 +68,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# secret pwd and user names
+/indrz/indrz/secret_settings.py
+
 
