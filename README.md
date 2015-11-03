@@ -2,7 +2,12 @@
 digital wayfinding indoors, maps, orientation and indoor routing for buildings large or small, app or webpage.
 
 ### What is indrz?
-indrz is open source software to provide indoor maps and routes for buildings.  indrz will allow you to integrate indoor maps and routing services into your homepage or application.  If you work at a university or other organization and need an online wayfinder indrz(www.indrz.com) will offer our services to build or host it for you.  Our business model is like Mapbox, free open source software and payed services such as data conversion, preparation or import.  The www.indrz.com cloud based platform can host the solution for you.
+indrz is open source software to provide indoor maps and routes for buildings.  indrz will allow you to integrate indoor maps and routing services into your homepage or application.  If you work at a university or other organization and need an online wayfinder [www.indrz.com] (www.indrz.com) will offer our services to build or host it for you.  Our business model is like Mapbox, free open source software and payed services such as data conversion, preparation or import.  The [www.indrz.com] (www.indrz.com) cloud based platform can host the solution for you.
+
+Indrz was developed out of the need to quickly communicate
+how to get from point A to point B in a complex set of buildings.
+Being late for your first class is never a good thing, so
+to help the students out indrz was born.
 
 
 ## Documentation
@@ -10,6 +15,12 @@ indrz is open source software to provide indoor maps and routes for buildings.  
 Read the Documenation
 
 [indrz Docs] (https://github.com/indrz/indrz/tree/master/docs)
+
+[indrz Installation] (https://github.com/indrz/indrz/tree/master/docs/installation)
+
+[indrz API] (https://github.com/indrz/indrz/tree/master/docs/api)
+
+[indrz GeoData] (https://github.com/indrz/indrz/tree/master/docs/geodata)
 
 
 ## Supported and built by:
@@ -70,7 +81,7 @@ We can do this for you but if you know how you will need to know how to make the
 * mobile web page
 
 ## Translations
-Translations are hosted by Transifex  https://www.transifex.com/organization/indrz/dashboard
+Translations are hosted by [Transifex here]  (https://www.transifex.com/organization/indrz/dashboard)
 Currently supported languages include English and German
 
 ### Current branches in use
@@ -107,4 +118,32 @@ indrz would love your help. There are more than enoough things to get done so we
 
 ## Licence
 indrz is under GNU General Public License v3.0.  The name "indrz" is not allowed to be used by third parties and is a trademark.  Other than that you can do what you want accordingly 
+
+
+Design Decisions
+================
+
+Indrz is built for pure simplicity and quick information exchange.
+A user visiting a site should quickly see their destination and
+orient themselves.  Indrz is not designed as a virtual reality app
+guiding you every step of the way but more like a quick reference.
+You still will need to look around, but getting lost and walking
+into pillars while staring at your phone should no longer happen.
+
+Research Areas
+==============
+
+We are looking to expand our horizons
+
+ * Auto generating indoor route descriptions based on points of interest and landmarks is an area in need of more research.
+ * Semi-Automatic data conversion from DWG, DXF, PDF, JPG to PostGIS vector polygons, lines, and points.
+ * Generation of polygon centerlines, skeletons
+ * Complex topology rule checking
+
+Goals - Vision
+==============
+
+We want to make sure every one can find there way with ease and make them aware of how wayfinding works teaching you at the same time how to find your way in any and every indoor environment.
+
+ 
 
