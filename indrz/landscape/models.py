@@ -98,6 +98,8 @@ class LandscapeArea(gis_models.Model):
         db_column='description', help_text=_(u"Brief description"), null=True, blank=True)
     surface_type = gis_models.CharField(verbose_name=_(u"Surface type"), max_length=256, null=True, blank=True)
 
+
+    fk_surface_type = gis_models.ForeignKey(LtSurfaceType, null=True, blank=True)
     
     geom_mpoly = gis_models.MultiPolygonField(srid=3857)
     objects = gis_models.GeoManager()
