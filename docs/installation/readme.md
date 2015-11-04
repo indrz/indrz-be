@@ -41,6 +41,22 @@ Instructions
 1. Check out the GIT repo and start
 
 
+Windows users
+=============
+
+Create a python virtual environment
+Download pyscopg2 windows binary http://www.stickpeople.com/projects/python/win-psycopg/index.2.5.4.html
+
+Create python virtual env
+
+enter virtual env
+
+```bash
+C:\> C:\virtualenv\Scripts\activate.bat 
+(virtualenv) C:\> easy_install psycopg2-2.5.4.win32-py2.7-pg9.3.5-release.exe
+```
+
+
 Get the indrz GIT repostiory Started
 ====================================
 
