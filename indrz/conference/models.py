@@ -37,8 +37,8 @@ class Stands(gis_models.Model):
     class Meta:
         ordering = ['fk_building_floor']
 
-    def __unicode__(self):
-        return unicode(self.short_name) or u''
+    def __str__(self):
+        return str(self.short_name) or u''
 
 
 

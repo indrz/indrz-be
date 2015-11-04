@@ -11,8 +11,8 @@ class LtNetworkTypeDomain(gis_models.Model):
     type_name = gis_models.CharField(verbose_name=_(u"Network line type name"), max_length=256, null=True, blank=True)
 
 
-    def __unicode__(self):
-        return unicode(self.name) or u''
+    def __str__(self):
+        return str(self.name) or u''
 
 class Networklines(gis_models.Model):
     """
@@ -37,8 +37,8 @@ class Networklines(gis_models.Model):
     class Meta:
         ordering = ['fk_building_floor']
 
-    def __unicode__(self):
-        return unicode(self.short_name) or u''
+    def __str__(self):
+        return str(self.short_name) or u''
 
 
 
