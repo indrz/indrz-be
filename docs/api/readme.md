@@ -9,7 +9,24 @@ To access your content on the indrz.com cloud platform you need a valid TOKEN.  
     curl -X GET https://www.indrz.com/api/v1/example/ -H 'Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6tt9k'
     
  
-Authentication is built using the Django Rest Framework http://www.django-rest-framework.org/  for more information please visit there wonderful documentation.   
+Authentication is built using the Django Rest Framework http://www.django-rest-framework.org/  for more information please visit there wonderful documentation.  
+
+## add an indrz indoor map
+
+Here we explain how to include an indrz map in your homepage.
+
+Simply create an iframe with the following link
+
+```html
+<iframe src="http://www.indrz.com/map/{MapName}"></iframe>
+```
+
+replace {MapName}  with the name of the map you want to add
+
+To get a list of all available map names use our API call  
+
+    /api/v1/list-map-names
+
 
 ## Indoor Direction API
 
