@@ -66,15 +66,15 @@ DROP TABLE IF EXISTS geodata.networklines_3857;
 SELECT * INTO geodata.networklines_3857 FROM
 (
   (SELECT id, geom, length, network_type, length*ug01.cost as total_cost,
-   1 as layer FROM geodata.networklines_ug01 ug01) UNION
+   -1 as floor FROM geodata.networklines_ug01 ug01) UNION
   (SELECT id, geom, length, network_type, length*e0.cost as total_cost,
-   1 as layer FROM geodata.networklines_e00 e0) UNION
+   0 as floor FROM geodata.networklines_e00 e0) UNION
 (SELECT id, geom, length, network_type, length*e1.cost as total_cost,
-   1 as layer FROM geodata.networklines_e01 e1) UNION
+   1 as floor FROM geodata.networklines_e01 e1) UNION
 (SELECT id, geom, length, network_type, length*e2.cost as total_cost,
-   2 as layer FROM geodata.networklines_e02 e2) UNION
+   2 as floor FROM geodata.networklines_e02 e2) UNION
   (SELECT id, geom, length, network_type, length*e3.cost as total_cost,
-   2 as layer FROM geodata.networklines_e03 e3)
+   3 as floor FROM geodata.networklines_e03 e3)
 
 )
 as foo ORDER BY id;
@@ -88,7 +88,7 @@ CREATE INDEX id_idx
 CREATE INDEX network_layer_idx
   ON geodata.networklines_3857
   USING hash
-  (layer);
+  (floor);
 
 -- create populate geometry view with info
 SELECT Populate_Geometry_Columns('geodata.networklines_3857'::regclass);
