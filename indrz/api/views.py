@@ -116,7 +116,7 @@ def get_room_centroid_node(room_number):
     '''
 
     room_center_q = """SELECT  floor,
-            ST_asGeoJSON(st_centroid(wkb_geometry))
+            ST_asGeoJSON(st_centroid(geom))
             AS geom FROM geodata.search_rooms_v
             WHERE room_num = %s;"""
 
@@ -153,26 +153,26 @@ def run_route(start_node_id, end_node_id, route_type):
     '''
 
     cur = connection.cursor()
-    base_route_q = """SELECT ogc_fid AS id, source, target,
-                     total_cost AS cost,
-                     layer, type_id
+    base_route_q = """SELECT id, source, target,
+                     total_cost:: DOUBLE PRECISION AS cost,
+                     floor, network_type
                      FROM geodata.networklines_3857"""
 
     # set default query
     barrierfree_q = "WHERE 1=1"
     if route_type == "1":
         # exclude all networklines of type stairs
-        barrierfree_q = "WHERE type_id not in (3,4)"
+        barrierfree_q = "WHERE network_type not in (1,3)"
 
     routing_query = '''
         SELECT seq, id1 AS node, id2 AS edge,
-          ST_Length(wkb_geometry) AS cost, layer,
-          type_id, ST_AsGeoJSON(wkb_geometry) AS geoj
+          ST_Length(geom) AS cost, floor,
+          network_type, ST_AsGeoJSON(geom) AS geoj
           FROM pgr_dijkstra('
             {normal} {type}', %s, %s, FALSE, FALSE
           ) AS dij_route
           JOIN  geodata.networklines_3857 AS input_network
-          ON dij_route.id2 = input_network.ogc_fid ;
+          ON dij_route.id2 = input_network.id ;
       '''.format(normal=base_route_q, type=barrierfree_q)
 
     # run our shortest path query
@@ -201,7 +201,7 @@ def run_route(start_node_id, end_node_id, route_type):
         geojs_feat = Feature(geometry=geojs_geom,
                              properties={'floor': layer_level,
                                          'length': seg_cost,
-                                         'type_id': seg_type})
+                                         'network_type': seg_type})
         route_result.append(geojs_feat)
 
     # using the geojson module to create our GeoJSON Feature Collection

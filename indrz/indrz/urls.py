@@ -21,5 +21,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/v1/', include('api.urls')),
     url(r'^maps/', include('maps.urls')),
-    url(r'^', map_view.index, name='index'),
+    #url(r'^', map_view.index, name='index'),
 ]
