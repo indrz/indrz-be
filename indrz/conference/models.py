@@ -4,18 +4,21 @@ from django.utils.translation import ugettext_lazy as _
 from buildings.models import OrganizationInfoBase
 
 
-class Conference(gis_models):
+class Conference(gis_models.Model):
     """
     Conference information
     """
 
-    name = gis_models.CharField(verbose_name=_(u"Conference name"), max_length=150, null=True, blank=True)
-    year = gis_models.IntegerField(verbose_name=_(u"Year of conference"), null=True, blank=True)
-    long_name = gis_models.CharField(verbose_name='long name', null=True, max_length=255, blank=True)
+    name = gis_models.CharField(verbose_name=_("Conference name"), max_length=150, null=True, blank=True)
+    year = gis_models.IntegerField(verbose_name=_("Year of conference"), null=True, blank=True)
+    long_name = gis_models.CharField(verbose_name='long name', max_length=255, null=True, blank=True)
     fk_building = gis_models.ForeignKey(Building, null=True, blank=True)
 
     class Meta:
         ordering = ['name']
+
+    def __str__(self):
+        return str(self.name) or ''
 
 
 class Exhibitor(OrganizationInfoBase):
