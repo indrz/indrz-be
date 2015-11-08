@@ -9,8 +9,8 @@ class Conference(gis_models.Model):
     Conference information
     """
 
-    name = gis_models.CharField(verbose_name=_("Conference name"), max_length=150, null=True, blank=True)
-    year = gis_models.IntegerField(verbose_name=_("Year of conference"), null=True, blank=True)
+    name = gis_models.CharField(verbose_name=_("name of conference"), max_length=150, null=True, blank=True)
+    year = gis_models.IntegerField(verbose_name=_("year of conference"), null=True, blank=True)
     long_name = gis_models.CharField(verbose_name='long name', max_length=255, null=True, blank=True)
     fk_building = gis_models.ForeignKey(Building, null=True, blank=True)
 
@@ -38,6 +38,7 @@ class Stands(gis_models.Model):
     long_name = gis_models.CharField(verbose_name=_("long stand name"), max_length=150, null=True, blank=True)
     label = gis_models.CharField(verbose_name=_("label of stand"), max_length=150, null=True, blank=True)
     foyer_location = gis_models.CharField(verbose_name=_("foyer name location value"), max_length=150, null=True, blank=True)
+    hall_name = gis_models.CharField(verbose_name=_("name of hall"), max_length=150, null=True, blank=True)
     stand_id_external = gis_models.CharField(verbose_name=_("stand id from external system"), max_length=150, null=True, blank=True)
     stand_num_external = gis_models.CharField(verbose_name=_("stand number from external"), max_length=150, null=True, blank=True)
     stand_type = gis_models.CharField(verbose_name=_("type of stand"), max_length=150, null=True, blank=True)
