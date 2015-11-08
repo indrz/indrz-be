@@ -15,11 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from maps import views as map_view
+# from maps import views as map_view
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/v1/', include('api.urls')),
-    url(r'^maps/', include('maps.urls')),
+    url(r'^map/', include('maps.urls')),
     #url(r'^', map_view.index, name='index'),
 ]
