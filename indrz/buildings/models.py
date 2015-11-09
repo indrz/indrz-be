@@ -3,14 +3,14 @@ from django.utils.translation import get_language, ugettext_lazy as _
 
 
 class BaseLookupDomain(gis_models.Model):
-    code = gis_models.CharField(verbose_name=_(u"Access type code value"), max_length=150, null=True, blank=True)
-    name = gis_models.CharField(verbose_name=_(u"Access code name value"), max_length=256, null=True, blank=True)
+    code = gis_models.CharField(verbose_name=_("code value"), max_length=150, null=True, blank=True)
+    name = gis_models.CharField(verbose_name=_("name value"), max_length=256, null=True, blank=True)
 
     class Meta:
         abstract = True
 
     def __str__(self):
-        return str(self.name) or u''
+        return str(self.name) or ''
 
 
 class LtAccessType(BaseLookupDomain):
@@ -104,27 +104,24 @@ class LtSpaceType(BaseLookupDomain):
     pass
 
 
-
-
-
 class BuildingAddressBase(gis_models.Model):
     """
     physical base address information of a building
     """
-    street = gis_models.CharField(verbose_name=_(u"Street"), max_length=256,
+    street = gis_models.CharField(verbose_name=_("Street"), max_length=256,
                               blank=True, null=True, db_column='street')
-    house_number = gis_models.CharField(verbose_name=_(u"Building or house number"), max_length=10,
+    house_number = gis_models.CharField(verbose_name=_("Building or house number"), max_length=10,
                               blank=True, null=True, db_column='house_num')
-    postal_code = gis_models.CharField(verbose_name=_(u"Postal code"), max_length=8,
+    postal_code = gis_models.CharField(verbose_name=_("Postal code"), max_length=8,
                                    blank=True, null=True, db_column='postal_code')
-    municipality = gis_models.CharField(verbose_name=_(u"Municipality"),
+    municipality = gis_models.CharField(verbose_name=_("Municipality"),
                                     blank=True, null=True,
                                     max_length=256, db_column='municipality')
-    city = gis_models.CharField(verbose_name=_(u"City"),
+    city = gis_models.CharField(verbose_name=_("City"),
                                     blank=True, null=True,
                                     max_length=256, db_column='city')
 
-    country = gis_models.CharField(verbose_name=_(u"Country"),
+    country = gis_models.CharField(verbose_name=_("Country"),
                                     blank=True, null=True,
                                     max_length=256, db_column='country')
     class Meta:
@@ -132,24 +129,24 @@ class BuildingAddressBase(gis_models.Model):
         ordering = ['city']
 
     def __str__(self):
-        return str(self.city) or u''
+        return str(self.city) or ''
 
 
 class OrganizationInfoBase(BuildingAddressBase):
-    name = gis_models.CharField(verbose_name=_(u"Name"), max_length=256, db_column='name', null=True, blank=True)
-    description = gis_models.TextField(verbose_name=_(u"Description"), db_column='description',
-                                   help_text=_(u"Brief description"), null=True, blank=True)
-    phone = gis_models.CharField(verbose_name=_(u"Phone"), max_length=32,
+    name = gis_models.CharField(verbose_name=_("Name"), max_length=256, db_column='name', null=True, blank=True)
+    description = gis_models.TextField(verbose_name=_("Description"), db_column='description',
+                                   help_text=_("Brief description"), null=True, blank=True)
+    phone = gis_models.CharField(verbose_name=_("Phone"), max_length=32,
                              blank=True, null=True, db_column='telephone')
-    email = gis_models.EmailField(verbose_name=_(u"Email"), max_length=256, db_column='email',
+    email = gis_models.EmailField(verbose_name=_("Email"), max_length=256, db_column='email',
                               blank=True, null=True)
-    website = gis_models.URLField(verbose_name=_(u"Website"), max_length=256, db_column='website',
+    website = gis_models.URLField(verbose_name=_("Website"), max_length=256, db_column='website',
                               blank=True, null=True)
     # photo = gis_models.FileField(verbose_name=_(u"Photo"), upload_to=settings.UPLOAD_DIR,
     #                          db_column='photo', max_length=512, blank=True, null=True)
 
 
-    geom = gis_models.PointField(verbose_name=_(u"Building centroid for small scale maps"), db_column='geom',
+    geom = gis_models.PointField(verbose_name=_("Building centroid for small scale maps"), db_column='geom',
                              blank=True, null=True, srid=3857, spatial_index=False)
 
     objects = gis_models.GeoManager()
@@ -159,7 +156,7 @@ class OrganizationInfoBase(BuildingAddressBase):
         ordering = ['name']
 
     def __str__(self):
-        return str(self.name) or u''
+        return str(self.name) or ''
 
 
 class Organization(OrganizationInfoBase):
@@ -167,9 +164,9 @@ class Organization(OrganizationInfoBase):
     Represents a customer or Uni that has one or more building locations
 
     """
-    owner = gis_models.CharField(verbose_name=_(u"Owner name"), max_length=128, null=True, blank=True)
-    legal_form = gis_models.CharField(verbose_name=_(u"Legal entity form..gmbh, verein"), max_length=128, null=True, blank=True)
-    num_buildings = gis_models.IntegerField(verbose_name=_(u"Number of buildings"), null=True, blank=True)
+    owner = gis_models.CharField(verbose_name=_("Owner name"), max_length=128, null=True, blank=True)
+    legal_form = gis_models.CharField(verbose_name=_("Legal entity form..gmbh, verein"), max_length=128, null=True, blank=True)
+    num_buildings = gis_models.IntegerField(verbose_name=_("Number of buildings"), null=True, blank=True)
 
 
     # GeoDjango-specific: a geometry field (MultiPolygonField), and
@@ -183,8 +180,8 @@ class Campus(gis_models.Model):
     Model of a single golf course owned by 1 or more owners
     """
 
-    campus_name = gis_models.CharField(verbose_name=_(u"Campus name"), max_length=128, null=True, blank=True)
-    description = gis_models.CharField(verbose_name=_(u"Building description"), max_length=256, null=True, blank=True)
+    campus_name = gis_models.CharField(verbose_name=_("Campus name"), max_length=128, null=True, blank=True)
+    description = gis_models.CharField(verbose_name=_("Building description"), max_length=256, null=True, blank=True)
 
     fk_organization = gis_models.ForeignKey(Organization)
 
@@ -195,21 +192,22 @@ class Campus(gis_models.Model):
     objects = gis_models.GeoManager()
 
     def __str__(self):
-        return str(self.campus_name) or u''
+        return str(self.campus_name) or ''
+
 
 class Building(OrganizationInfoBase):
     """
     Model of a single golf course owned by 1 or more owners
     """
 
-    building_name = gis_models.CharField(verbose_name=_(u"Building name"), max_length=128, null=True, blank=True)
-    building_height = gis_models.DecimalField(verbose_name=_(u"Building height in meters"), max_digits=10, decimal_places=2, null=True, blank=True)
-    fancy_name = gis_models.CharField(verbose_name=_(u"Fancy building name"), max_length=256, null=True, blank=True)
-    num_floors = gis_models.IntegerField(verbose_name=_(u"Number of floors"), null=True, blank=True)
-    facility_number = gis_models.IntegerField(verbose_name=_(u"Unique facility number"), null=True, blank=True)
-    operation_hrs = gis_models.CharField(verbose_name=_(u"Operational hours"), max_length=60, null=True, blank=True)
-    native_epsg = gis_models.IntegerField(verbose_name=_(u"EPSG code original data"), null=True, blank=True)
-    detail_description = gis_models.CharField(verbose_name=_(u"Building description"), max_length=256, null=True, blank=True)
+    building_name = gis_models.CharField(verbose_name=_("Building name"), max_length=128, null=True, blank=True)
+    building_height = gis_models.DecimalField(verbose_name=_("Building height in meters"), max_digits=10, decimal_places=2, null=True, blank=True)
+    fancy_name = gis_models.CharField(verbose_name=_("Fancy building name"), max_length=256, null=True, blank=True)
+    num_floors = gis_models.IntegerField(verbose_name=_("Number of floors"), null=True, blank=True)
+    facility_number = gis_models.IntegerField(verbose_name=_("Unique facility number"), null=True, blank=True)
+    operation_hrs = gis_models.CharField(verbose_name=_("Operational hours"), max_length=60, null=True, blank=True)
+    native_epsg = gis_models.IntegerField(verbose_name=_("EPSG code original data"), null=True, blank=True)
+    detail_description = gis_models.CharField(verbose_name=_("Building description"), max_length=256, null=True, blank=True)
 
     fk_organization = gis_models.ForeignKey(Organization)
     fk_campus = gis_models.ForeignKey(Campus, null=True, blank=True)
@@ -224,15 +222,15 @@ class BuildingFloor(gis_models.Model):
     """
     Represents the floors contained in a building as a floor foot print
     """
-    short_name = gis_models.CharField(verbose_name=_(u"short name eg first floor"), max_length=150, null=True, blank=True)
-    long_name = gis_models.CharField(verbose_name=_(u"long name"), max_length=150, null=True, blank=True)
-    special_name = gis_models.CharField(verbose_name=_(u"special name"), max_length=150, null=True, blank=True)
+    short_name = gis_models.CharField(verbose_name=_("short name eg first floor"), max_length=150, null=True, blank=True)
+    long_name = gis_models.CharField(verbose_name=_("long name"), max_length=150, null=True, blank=True)
+    special_name = gis_models.CharField(verbose_name=_("special name"), max_length=150, null=True, blank=True)
 
-    vertical_order = gis_models.IntegerField(verbose_name=_(u"Floor order value"), null=True, blank=True)
-    base_elevation = gis_models.IntegerField(verbose_name=_(u"Elevation value of floor in meters"), null=True, blank=True)
+    vertical_order = gis_models.IntegerField(verbose_name=_("Floor order value"), null=True, blank=True)
+    base_elevation = gis_models.IntegerField(verbose_name=_("Elevation value of floor in meters"), null=True, blank=True)
 
-    floor_num = gis_models.IntegerField(verbose_name=_(u"floor number"),null=True, blank=True)
-    floor_height = gis_models.DecimalField(verbose_name=_(u"height of floor"), max_digits=5, decimal_places=2, null=True, blank=True)
+    floor_num = gis_models.IntegerField(verbose_name=_("floor number"),null=True, blank=True)
+    floor_height = gis_models.DecimalField(verbose_name=_("height of floor"), max_digits=5, decimal_places=2, null=True, blank=True)
 
 
     fk_building = gis_models.ForeignKey(Building)
@@ -244,7 +242,7 @@ class BuildingFloor(gis_models.Model):
         ordering = ['floor_num']
 
     def __str__(self):
-        return str(self.short_name) or u''
+        return str(self.short_name) or ''
 
 
 class FloorSpaceBase(gis_models.Model):
@@ -252,9 +250,10 @@ class FloorSpaceBase(gis_models.Model):
     floor areas as polygons base
     """
 
-    long_name = gis_models.CharField(verbose_name=_(u"long name"), max_length=150, null=True, blank=True)
-    area = gis_models.DecimalField(verbose_name=_(u"gis calculated area"), max_digits=10, decimal_places=2, null=True, blank=True)
-    perimeter = gis_models.DecimalField(verbose_name=_(u"gis calculated perimeter"), max_digits=10, decimal_places=2, null=True, blank=True)
+    short_name = gis_models.CharField(verbose_name=_("short name"), max_length=150, null=True, blank=True)
+    long_name = gis_models.CharField(verbose_name=_("long name"), max_length=150, null=True, blank=True)
+    area = gis_models.DecimalField(verbose_name=_("gis calculated area"), max_digits=10, decimal_places=2, null=True, blank=True)
+    perimeter = gis_models.DecimalField(verbose_name=_("gis calculated perimeter"), max_digits=10, decimal_places=2, null=True, blank=True)
 
     multi_poly = gis_models.MultiPolygonField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
     objects = gis_models.GeoManager()
@@ -267,7 +266,8 @@ class FloorSpaceBase(gis_models.Model):
         abstract = True
 
     def __str__(self):
-        return str(self.short_name) or u''
+        return str(self.short_name) or ''
+
 
 class FloorSpacePlanLine(gis_models.Model):
     """
@@ -278,10 +278,10 @@ class FloorSpacePlanLine(gis_models.Model):
     # line_type = gis_models.CharField(verbose_name=_(u"Cartography line type"), max_length=150, null=True,
     #                               blank=True, choices=PLAN_LINE_TYPE)
 
-    short_name = gis_models.CharField(verbose_name=_(u"short name"), max_length=150, null=True, blank=True)
-    long_name = gis_models.CharField(verbose_name=_(u"long name"), max_length=150, null=True, blank=True)
+    short_name = gis_models.CharField(verbose_name=_("short name"), max_length=150, null=True, blank=True)
+    long_name = gis_models.CharField(verbose_name=_("long name"), max_length=150, null=True, blank=True)
     # floor_number = gis_models.IntegerField(verbose_name=_(u"floor number"),null=True, blank=True)
-    length = gis_models.DecimalField(verbose_name=_(u"gis calculated length"), max_digits=10, decimal_places=2, null=True, blank=True)
+    length = gis_models.DecimalField(verbose_name=_("gis calculated length"), max_digits=10, decimal_places=2, null=True, blank=True)
 
     multi_linestring = gis_models.MultiLineStringField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
     objects = gis_models.GeoManager()
@@ -293,8 +293,7 @@ class FloorSpacePlanLine(gis_models.Model):
         abstract = True
 
     def __str__(self):
-        return str(self.short_name) or u''
-
+        return str(self.short_name) or ''
 
 
 class InteriorFloorSection(FloorSpaceBase):
@@ -302,12 +301,9 @@ class InteriorFloorSection(FloorSpaceBase):
     Represents a logical or physical division of a single floor.
     One or more floor sections define a wing, zone, etc.
     """
-    organization = gis_models.CharField(verbose_name=_(u"Organization name e.g Engineering"), max_length=256, null=True, blank=True)
-    department = gis_models.CharField(verbose_name=_(u"Department name e.g Engineering"), max_length=256, null=True, blank=True)
-    division = gis_models.CharField(verbose_name=_(u"Division"), max_length=256, null=True, blank=True)
-
-
-
+    organization = gis_models.CharField(verbose_name=_("Organization name e.g Engineering"), max_length=256, null=True, blank=True)
+    department = gis_models.CharField(verbose_name=_("Department name e.g Engineering"), max_length=256, null=True, blank=True)
+    division = gis_models.CharField(verbose_name=_("Division"), max_length=256, null=True, blank=True)
 
 
 class BuildingFloorSpace(FloorSpaceBase):
@@ -315,50 +311,10 @@ class BuildingFloorSpace(FloorSpaceBase):
      an interior space such as hallways, rooms, and stairwells.
     """
 
-
-    room_external_id = gis_models.CharField(verbose_name=_(u"Room id imported from external system"), max_length=150, null=True, blank=True)
-    room_number = gis_models.CharField(verbose_name=_(u"Room number"), max_length=150, null=True, blank=True)
-    room_number_sign = gis_models.CharField(verbose_name=_(u"Room number on door sign"), max_length=150, null=True, blank=True)
-    room_description = gis_models.CharField(verbose_name=_(u"Room description"), max_length=150, null=True, blank=True)
-    capacity = gis_models.IntegerField(verbose_name=_(u"Total number of occupants allowed in this space"), null=True, blank=True)
+    room_external_id = gis_models.CharField(verbose_name=_("Room id imported from external system"), max_length=150, null=True, blank=True)
+    room_number = gis_models.CharField(verbose_name=_("Room number"), max_length=150, null=True, blank=True)
+    room_number_sign = gis_models.CharField(verbose_name=_("Room number on door sign"), max_length=150, null=True, blank=True)
+    room_description = gis_models.CharField(verbose_name=_("Room description"), max_length=150, null=True, blank=True)
+    capacity = gis_models.IntegerField(verbose_name=_("Total number of occupants allowed in this space"), null=True, blank=True)
 
     space_type = gis_models.ForeignKey(LtSpaceType, null=True, blank=True)
-
-
-
-# class Conference(gis_models.Models):
-#
-#     short_name = gis_models.CharField(verbose_name=_(u"short name eg first floor"), max_length=150, null=True, blank=True)
-#     long_name = gis_models.CharField(verbose_name=_(u"long name"), max_length=150, null=True, blank=True)
-#
-#     class Meta:
-#         ordering = ['short_name']
-#
-#     def __str__(self):
-#         return str(self.short_name) or u''
-#
-#
-# class ConferenceStand(gis_models.Models):
-#
-#     short_name = gis_models.CharField(verbose_name=_(u"short name eg first floor"), max_length=150, null=True, blank=True)
-#     long_name = gis_models.CharField(verbose_name=_(u"long name"), max_length=150, null=True, blank=True)
-#     stand_number = gis_models.CharField(verbose_name=_(u"stand number"), max_length=150, null=True, blank=True)
-#     zone_name = gis_models.CharField(verbose_name=_(u"Zone name"), max_length=150, null=True, blank=True)
-#
-#
-#     area = gis_models.DecimalField(verbose_name=_(u"gis calculated area"), max_digits=10, decimal_places=2, null=True, blank=True)
-#     perimeter = gis_models.DecimalField(verbose_name=_(u"gis calculated perimeter"), max_digits=10, decimal_places=2, null=True, blank=True)
-#
-#
-#     class Meta:
-#         ordering = ['short_name']
-#
-#     def __str__(self):
-#         return str(self.short_name) or u''
-#
-# class ConferenceExhibitorAddress(BuildingAddressBase):
-#
-#     email = gis_models.EmailField(verbose_name=_(u"Email contact "), null=True, blank=True)
-#     homepage = gis_models.URLField(verbose_name=_(u"Website"), null=True, blank=True)
-#
-#     pass
