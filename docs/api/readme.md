@@ -11,6 +11,10 @@ To access your content on the indrz.com cloud platform you need a valid TOKEN.  
  
 Authentication is built using the Django Rest Framework http://www.django-rest-framework.org/  for more information please visit there wonderful documentation.  
 
+## Documentation conventions
+ - Parameters are shown in curly braces, for example **{someValue}**
+ - Separate each parameter the   **&**   symbol
+
 ## Embedding an indrz indoor map using an iframe
 
 Here we explain how to include an indrz map in your homepage.
