@@ -38,7 +38,7 @@ The directions api is designed to allow you to show a route from any indoor room
     
     
 URL Parameter | value | required | description
---- | --- | ---
+--- | --- | --- | ---
 `buildingid` | integer | yes | Defines the campus for which you want the buildings
 `startid` | integer | yes | Start room id for creating a route
 `endid` | integer | yes | Destination room id as end location of route
@@ -49,10 +49,41 @@ An example call would look like this:
 
     https://www.indrz.com/api/v1/directions/buildingid=1&startid=234&endid=456
     
-#### Response is GeoJSON
+#### Response is GeoJSON LineString Feature Collection
 Your response is a GeoJSON LineString showing a 2D line for the entire route.
 
-some response
+```json
+
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        -101.744384765625,
+                        39.32155002466662
+                    ],
+                    [
+                        -101.5521240234375,
+                        39.330048552942415
+                    ],
+                    [
+                        -101.40380859375,
+                        39.330048552942415
+                    ]
+                ]
+            },
+            "properties": {
+                "floor": -1,
+                "type": 0
+            }
+        }
+    ]
+}
+
+```
 
     
 ### Route from coordinate to coordinate in building
