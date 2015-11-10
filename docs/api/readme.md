@@ -11,14 +11,16 @@ To access your content on the indrz.com cloud platform you need a valid TOKEN.  
  
 Authentication is built using the Django Rest Framework http://www.django-rest-framework.org/  for more information please visit there wonderful documentation.  
 
-## add an indrz indoor map
+## Embedding an indrz indoor map using an iframe
 
 Here we explain how to include an indrz map in your homepage.
 
 Simply create an iframe with the following link
 
 ```html
-<iframe src="http://www.indrz.com/map/{MapName}"></iframe>
+<iframe src="http://www.indrz.com/map/embed/{MapName}">
+  width="100%" height="420" frameborder="0" marginheight="0" marginwidth="0"
+  scrolling="no"></iframe>
 ```
 
 replace {MapName}  with the name of the map you want to add
