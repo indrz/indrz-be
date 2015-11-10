@@ -14,6 +14,44 @@ Authentication is built using the Django Rest Framework http://www.django-rest-f
 ## Documentation conventions
  - Parameters are shown in curly braces, for example **{someValue}**
  - Separate each parameter the   **&**   symbol
+ 
+## API Versioning
+Version number is passed inside the URL to help maintain backward compatibility, `v1` defines the version, in this case `1`.
+
+```
+http://www.indrz.com/api/v1/
+```
+
+## Zoom to a building
+Start the map zoomed to the extent of a single building.  The {zoom} parameter is optional.
+
+    http://www.indrz.com/map/building/{building-id}&zoom=18
+    
+URL Parameter | value | required | description
+--- | --- | --- | ---
+`buildingid` | integer | yes | Defines the building to zoom to
+`zoom` | integer | no | Set custom zoom level to show building
+    
+A demonstration call could look like this:
+
+    http://www.indrz.com/map/building/1&zoom=18
+
+## Zoom to a campus area
+A campus area is defined as a POLYGON representing the area in which one or more buildings are grouped with the same name.  Calling zoom to campus will
+take the user directly to the extent of the campus polygon.
+
+    http://www.indrz.com/map/campus/{campus-id}&zoom={zooom-value}
+
+URL Parameter | value | required | description
+--- | --- | --- | ---
+`campusid` | integer | yes | Defines the campus area to zoom to
+`zoom` | integer | no | Set custom zoom level to show building accepts values from 0-22
+
+A sample call:
+
+    http://www.indrz.com/map/campus/1
+    
+
 
 ## Embedding an indrz indoor map using an iframe
 
