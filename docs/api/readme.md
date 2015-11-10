@@ -34,11 +34,20 @@ To get a list of all available map names use our API call
 
 The directions api is designed to allow you to show a route from any indoor room location to any other room location within a building complex.
 
-    /api/v1/directions/building={building-id}&start={room-id}&destination={room-id}
+    /api/v1/directions/buildingid={building-id}&startid={room-id}&endid={room-id}&type={route-type-value}
     
+    
+URL Parameter | value | required | description
+--- | --- | ---
+`buildingid` | integer | yes | Defines the campus for which you want the buildings
+`startid` | integer | yes | Start room id for creating a route
+`endid` | integer | yes | Destination room id as end location of route
+`type` | integer | no | Sets the routing type, 0 = normal, 1 = barrierierfree(no stairs) default is 0
+
+
 An example call would look like this:
 
-    https://www.indrz.com/api/v1/directions/building=45&start=234&end=456
+    https://www.indrz.com/api/v1/directions/buildingid=1&startid=234&endid=456
     
 #### Response is GeoJSON
 Your response is a GeoJSON LineString showing a 2D line for the entire route.
