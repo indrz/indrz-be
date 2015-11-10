@@ -32,7 +32,7 @@ URL Parameter | value | required | description
 `buildingid` | integer | yes | Defines the building to zoom to
 `zoom` | integer | no | Set custom zoom level to show building
     
-A demonstration call could look like this:
+Example call:
 
     http://www.indrz.com/map/building/1&zoom=18
 
@@ -47,11 +47,23 @@ URL Parameter | value | required | description
 `campusid` | integer | yes | Defines the campus area to zoom to
 `zoom` | integer | no | Set custom zoom level to show building accepts values from 0-22
 
-A sample call:
+Example call:
 
     http://www.indrz.com/map/campus/1
     
+## Zoom to a specific room location
+Zoom the map to a specific indoor space polygon such as a room or office location
 
+    http://www.indrz.com/map/space/{space-id}&zoom={zooom-value}
+  
+URL Parameter | value | required | description
+--- | --- | --- | ---
+`spaceid` | integer | yes | Defines the space area to zoom to such as a single office space
+`zoom` | integer | no | Set custom zoom level accepts values from 0-22
+
+Example call:
+
+    http://www.indrz.com/map/space/1&zoom=20
 
 ## Embedding an indrz indoor map using an iframe
 
@@ -67,9 +79,9 @@ Simply create an iframe with the following link
 
 replace {MapName}  with the name of the map you want to add
 
-To get a list of all available map names use our API call  
+## Get a list of available maps and coresponding names  
 
-    /api/v1/list-map-names
+    /api/v1/map/list
 
 
 ## Indoor Direction API
