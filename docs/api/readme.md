@@ -11,6 +11,17 @@ To access your content on the indrz.com cloud platform you need a valid TOKEN.  
  
 Authentication is built using the Django Rest Framework http://www.django-rest-framework.org/  for more information please visit there wonderful documentation.  
 
+
+    
+### Route from coordinate to coordinate in building
+
+You can create a route for any start end coordinate pair with floor and route_type option
+
+An example runing on your local developer machine with the Django dev server
+
+    http://localhost:8000/api/v1/directions/-168527.958404064,5983885.94934575,-1&-168578.959377896,5983891.19705399,3&0/?format=json
+    
+
 ## add an indrz indoor map
 
 Here we explain how to include an indrz map in your homepage.
