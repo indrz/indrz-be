@@ -45,6 +45,16 @@ Your response is a GeoJSON LineString showing a 2D line for the entire route.
 
 some response
 
+    
+### Route from coordinate to coordinate in building
+
+You can create a route for any start end coordinate pair with floor and route_type option
+
+An example runing on your local developer machine with the Django dev server
+
+    http://localhost:8000/api/v1/directions/-168527.958404064,5983885.94934575,-1&-168578.959377896,5983891.19705399,3&0/?format=json
+    
+
 ## Indoor Space API 
 
 Lets say you want to display a GeoJSON polygon layer on your map of all the rooms, aka spaces from single floor from a single building.
