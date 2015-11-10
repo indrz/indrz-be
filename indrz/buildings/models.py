@@ -1,6 +1,6 @@
 from django.contrib.gis.db import models as gis_models
-from django.utils.translation import get_language, ugettext_lazy as _
-
+from django.utils.translation import  ugettext_lazy as _
+from taggit.managers import TaggableManager
 
 class BaseLookupDomain(gis_models.Model):
     code = gis_models.CharField(verbose_name=_("code value"), max_length=150, null=True, blank=True)
@@ -8,6 +8,7 @@ class BaseLookupDomain(gis_models.Model):
 
     class Meta:
         abstract = True
+        ordering = ['code',]
 
     def __str__(self):
         return str(self.name) or ''
@@ -89,6 +90,8 @@ class LtSpaceType(BaseLookupDomain):
     #     ('ESCALATOR', _('Escalator')),
     #     ('FOYER', _('Foyer')),
     #     ('LOBBY', _('Lobby')),
+    #     ('INFORMATION', _('Information')),
+    #      ('CAFETERIA', _('Cafeteria')),
     #     ('LOUNGE', _('Lounge')),
     #     ('WC', _('Bathroom')),
     #     ('SHOWER', _('Shower')),
@@ -103,6 +106,18 @@ class LtSpaceType(BaseLookupDomain):
     #     )
     pass
 
+
+class LtPoiCategoryMain(BaseLookupDomain):
+    active = gis_models.NullBooleanField(verbose_name=_("Active meaning show it yes - no"), null=True, blank=True)
+    priority_level = gis_models.IntegerField(verbose_name=_("Priority of POI"),null=True, blank=True)
+    sort_order = gis_models.IntegerField(verbose_name=_("Sort order in legend"),null=True, blank=True)
+
+class LtPoiCategorySub(BaseLookupDomain):
+    active = gis_models.NullBooleanField(verbose_name=_("Active meaning show it yes - no"), null=True, blank=True)
+    priority_level = gis_models.IntegerField(verbose_name=_("Priority of POI"),null=True, blank=True)
+    sort_order = gis_models.IntegerField(verbose_name=_("Sort order in legend"),null=True, blank=True)
+
+    fk_poi_cat_main = gis_models.ForeignKey(LtPoiCategoryMain, null=True, blank=True)
 
 class BuildingAddressBase(gis_models.Model):
     """
@@ -318,3 +333,35 @@ class BuildingFloorSpace(FloorSpaceBase):
     capacity = gis_models.IntegerField(verbose_name=_("Total number of occupants allowed in this space"), null=True, blank=True)
 
     space_type = gis_models.ForeignKey(LtSpaceType, null=True, blank=True)
+
+    tags = TaggableManager()
+
+
+class Poi(gis_models.Model):
+    """
+     Points of Interest in and around buildings
+    """
+    short_name = gis_models.CharField(verbose_name=_("short name"), max_length=150, null=True, blank=True)
+    long_name = gis_models.CharField(verbose_name=_("long name"), max_length=150, null=True, blank=True)
+    description = gis_models.CharField(verbose_name=_("description"), max_length=255, null=True, blank=True)
+    force_mid_point = gis_models.NullBooleanField(verbose_name=_("Force route to this location"), null=True, blank=True)
+    enabled = gis_models.NullBooleanField(verbose_name=_("Activated and enabled"), null=True, blank=True)
+    tree_order = gis_models.IntegerField(verbose_name=_("Tree order in legend"), null=True, blank=True)
+    sort_order = gis_models.IntegerField(verbose_name=_("Sort oder of POI items"), null=True, blank=True)
+    icon_css_name = gis_models.CharField(verbose_name=_("Icon CSS name"), max_length=255, null=True, blank=True)
+
+    category_main = gis_models.ForeignKey(LtPoiCategoryMain, null=True, blank=True)
+    category_sub = gis_models.ForeignKey(LtPoiCategorySub, null=True, blank=True)
+
+    fk_access_type = gis_models.ForeignKey(LtAccessType, null=True, blank=True)
+    fk_building_floor = gis_models.ForeignKey(BuildingFloor, null=True, blank=True)
+    fk_building = gis_models.ForeignKey(Building, null=True, blank=True)
+
+    geom = gis_models.MultiPointField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
+    objects = gis_models.GeoManager()
+
+    tags = TaggableManager()
+
+
+    def __str__(self):
+        return str(self.short_name) or ''
