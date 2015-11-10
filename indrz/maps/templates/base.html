@@ -20,13 +20,25 @@
     <link rel="stylesheet" href="{% static "css/custom-layout.css" %}" type="text/css">
     <script src="{% static "js/ol340.js" %}"></script>
 
+
+    <style>
+
+                html           { width:100%; height:100%; margin:0; }
+                body           { width:100%; height:100%; margin:0; font-family:sans-serif; }
+                #map           { width:100%; height:100%; margin:0; }
+                #toolbox       { position:absolute; top:98px; right:18px; padding:3px; border-radius:4px; color:#fff; background: rgba(255, 255, 255, 0.4); z-index:100; }
+                #layerswitcher { margin:0; padding:10px; border-radius:4px; background:rgba(0, 60, 136, 0.5); list-style-type:none; }
+
+    </style>
+
+
     {% endblock head %}
 </head>
 <body>
-{% block body %}
 
-    {% block nav %}
         <nav class="navbar navbar-inverse navbar-fixed-top">
+
+        {% block nav %}
           <div class="container">
             <div class="navbar-header">
               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -39,14 +51,41 @@
             </div>
             <div id="navbar" class="collapse navbar-collapse">
               <ul class="nav navbar-nav">
-                <li><a href="#about" target="_blank">About</a></li>
-                <li><a href="https://github.com/mdiener21/" target="_blank">Contact</a></li>
-              </ul>
+
+                {% block background-switcher %}{% endblock background-switcher %}
+                {% block floorswitcher %}{% endblock floorswitcher %}
+
+                  <li><a href="https://github.com/indrz/indrz" target="_blank">GIT Source</a></li>
+
+                  </ul>
+
+
             </div><!--/.nav-collapse -->
           </div>
-        </nav>
-    {% endblock nav %}
 
+
+
+        {% endblock nav %}
+        </nav>
+            {% block indrz-switcher %}
+
+                <div id="toolbox">
+                    <ul id="layerswitcher">
+                        <li><label><input type="radio" name="layer" value="0"> MapQuest Satellite</label></li>
+                        <li><label><input type="radio" name="layer" value="1"> MapQuest Hybrid</label></li>
+                        <li><label><input type="radio" name="layer" value="2"> MapQuest OSM</label></li>
+                        <li><label><input type="radio" name="layer" value="3" checked> OSM</label></li>
+                        <li><label><input type="radio" name="layer" value="4" > Etage 0</label></li>
+                        <li><label><input type="radio" name="layer" value="5" > Etage 01 </label></li>
+                    </ul>
+                </div>
+            {% endblock indrz-switcher %}
+
+
+
+
+
+{% block body %}
 
 {% endblock body %}
 </body>
