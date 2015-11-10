@@ -7,13 +7,13 @@ class NetworklinesBase(gis_models.Model):
     """
     Routing network lines used in routing services
     """
-    INDOORWAY = 1
-    STAIRWAY = 2
-    ELEVATOR = 3
-    ESCALATOR = 4
-    OUTDOORWAY = 5
-    RAMP = 6
-    ZEBRA = 7
+    INDOORWAY = 0
+    STAIRWAY = 1
+    ELEVATOR = 2
+    ESCALATOR = 3
+    OUTDOORWAY = 4
+    RAMP = 5
+    ZEBRA = 6
     STAIRWAY_NO_CHANGE = 101
     RAMP_NO_CHANGE = 102
     ELEVATOR_NO_CHANGE = 103
@@ -40,8 +40,8 @@ class NetworklinesBase(gis_models.Model):
     ("VISITOR",_("Visitor")),
     ("STUDENT",_("Student")),
     ("FACULTY",_("Faculty")),
-    ("SECURE",("Secure")),
-    ("RESERVED",("Reserved")),
+    ("SECURE",_("Secure")),
+    ("RESERVED",_("Reserved")),
     ("MAINTENANCE",_("Maintenance")),
     ("HANDICAP",_("Handicap")),
     ("OTHER",_("Other")),
@@ -57,12 +57,11 @@ class NetworklinesBase(gis_models.Model):
     length = gis_models.DecimalField(verbose_name=_("gis length of linestring"), max_digits=10, decimal_places=2, null=True, blank=True)
     floor_num = gis_models.IntegerField(verbose_name=_("floor number"), null=True, blank=True)
 
-
     network_type = gis_models.IntegerField(verbose_name=_("Type of network path type"), choices=ROUTE_TYPE, null=True, blank=True)
     access_type = gis_models.CharField(verbose_name=_("Routing access type"),  max_length=150, choices=ACCESS_TYPE, null=True, blank=True)
 
     fk_building = gis_models.ForeignKey(Building, null=True, blank=True)
-    #
+
     geom = gis_models.MultiLineStringField(srid=3857, spatial_index=True, null=True, blank=True)
     objects = gis_models.GeoManager()
 
