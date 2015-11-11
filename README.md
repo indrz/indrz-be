@@ -96,8 +96,17 @@ Currently supported languages include English and German
 ## Contact & community
 Communication is simple via email ([office@gomogi.com](mailto:office@gomogi.com)). All other discussion should happen in the [indrz Google Group](https://groups.google.com/forum/#!forum/indrz-dev),  or [relevant GitHub issues page](https://github.com/indrz/indrz/issues).
 
-## Getting involved
-indrz would love your help. There are more than enoough things to get done so we would love your help.  We need people to help out submit bugs, suggest features, write documentation and contribute code.
+## Hey join us, get involved
+indrz would love your help. There are more than enough things to get done so we would love your help.  We need people to help out submit bugs, suggest features, write documentation and contribute code.
+
+Task | Skill 
+--- | --- 
+`write documentation` | writer
+`write translations` | multi-lingual
+`submit bug report` | write detailed
+`fix bugs` | git, coding
+`add features` | git, coding
+    
 
 
 ## Building blocks Libraries we use
