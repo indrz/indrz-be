@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 
 def route_map(request, map_name):
-    return render(request, 'route-map.html')
+    return render(request, str(map_name)+ '.html')
 
 
 def zoom_campus(request, campus_id, zoom_level=17):

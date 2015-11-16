@@ -64,24 +64,26 @@ var tms_e01 = new ol.layer.Tile({
 function switchLayer()
  {
   var checkedLayer = $('#layerswitcher input[name=layer]:checked').val();
-  for (i = 0, ii = layers.length; i < ii; ++i) layers[i].setVisible(i==checkedLayer);
+  for (i = 0, ii = backgroundLayers.length; i < ii; ++i) backgroundLayers[i].setVisible(i==checkedLayer);
  }
 
 $(function() { switchLayer() } );
 $("#layerswitcher input[name=layer]").change(function() { switchLayer() } );
 
-var layers = [];
-layers[0] = new ol.layer.Tile({ source: new ol.source.MapQuest({layer: 'osm'}) });
-layers[1] = new ol.layer.Group({ layers: [ new ol.layer.Tile({ source: new ol.source.MapQuest({layer: 'sat'}) }), new ol.layer.Tile({ source: new ol.source.MapQuest({layer: 'hyb'}) }) ] });
-layers[2] = new ol.layer.Tile({ source: new ol.source.MapQuest({layer: 'sat'}) });
-layers[3] = new ol.layer.Tile({ source: new ol.source.OSM() });
-layers[4] = tms_e01;
-layers[5] = tms_e00;
-layers[6] = vectorLayer;
+
+var backgroundLayers = [];
+backgroundLayers[0] = new ol.layer.Tile({ source: new ol.source.MapQuest({layer: 'osm'}) });
+backgroundLayers[1] = new ol.layer.Group({ layers: [ new ol.layer.Tile({ source: new ol.source.MapQuest({layer: 'sat'}) }), new ol.layer.Tile({ source: new ol.source.MapQuest({layer: 'hyb'}) }) ] });
+backgroundLayers[2] = new ol.layer.Tile({ source: new ol.source.OSM() });
+backgroundLayers[3] = vectorLayer;
+
+var floor_levels = [];
+floor_levels[0] = tms_e00;
+floor_levels[1] = tms_e01;
 
 
 var map = new ol.Map({
-    layers: layers,
+    layers: backgroundLayers,
     target: 'map',
     controls: ol.control.defaults({
         attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
