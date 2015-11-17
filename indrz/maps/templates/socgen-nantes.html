@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load staticfiles %}
 
 {% block title %}Societe Generale indrz map{% endblock %}
@@ -9,6 +10,7 @@
     <script src="{% static "js/bloodhound.min.js" %}"></script>
     <script src="{% static "js/typeahead.bundle.min.js" %}"></script>
 
+
 {% endblock head_extra %}
 
 
@@ -17,10 +19,10 @@
 
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-           aria-expanded="false">Background <span class="caret"></span></a>
+           aria-expanded="false">{% trans "Background " %}<span class="caret"></span></a>
         <ul id="background-switcher" class="dropdown-menu">
-            <li><a id="set_osm_background" type="radio" name="backSwitch" value="0" href="#">MapQuest OSM</a></li>
-            <li><a id="set_mapquest_background" type="radio" name="backSwitch" value="1" href="#" checked >OSM</a></li>
+            <li><a  onclick="switchBackgroundTo(0)" name="backSwitch" value="0" href="#">MapQuest OSM</a></li>
+            <li><a  onclick="switchBackgroundTo(1)" name="backSwitch" value="1" href="#" checked >OSM</a></li>
         </ul>
     </li>
 
@@ -29,13 +31,13 @@
     {% block floorswitcher %}
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-               aria-expanded="false">Floor <span class="caret"></span></a>
+               aria-expanded="false">{% trans "Floor" %} <span class="caret"></span></a>
                 <ul id="level-switcher" class="dropdown-menu">
-                    <li><a id="switch_to_floor_03" name="levelSwitch" href="#">Etage 3</a></li>
-                    <li><a id="switch_to_floor_02" name="levelSwitch" href="#">Etage 2</a></li>
-                    <li><a id="switch_to_floor_01" name="levelSwitch" href="#">Etage 1</a></li>
-                    <li><a id="switch_to_floor_00" name="levelSwitch" href="#">Etage 0</a></li>
-                    <li><a id="switch_to_floor_-1" name="levelSwitch" href="#">Etage -1</a></li>
+                    <li><a id="layer_3" onclick="switchLayerTo(3)" name="levelSwitch" href="#">{% trans "Etage 3" %}</a></li>
+                    <li><a id="layer_2" onclick="switchLayerTo(2)" name="levelSwitch" href="#">{% trans "Etage 2" %}</a></li>
+                    <li><a id="layer_1" onclick="switchLayerTo(1)" name="levelSwitch" href="#">{% trans "Etage 1" %}</a></li>
+                    <li><a id="layer_0" onclick="switchLayerTo(0)" name="levelSwitch" href="#">{% trans "Etage 0" %}</a></li>
+                    <li><a id="layer_-1" onclick="switchLayerTo(-1)" name="levelSwitch" href="#">{% trans "Etage -1" %}</a></li>
                 </ul>
 
         </li>
@@ -47,12 +49,12 @@
         <div id="directions" class="directions">
             <form id="submitForm">
                 <div id="rooms-prefetch" class="form-group">
-                    <label for="route-to">From:</label>
+                    <label for="route-to">{% trans "From:" %}</label>
                     <input type="text" class="typeahead form-control" id="route-to"
                            placeholder="Enter Room Number">
                 </div>
                 <div id="rooms-prefetch" class="form-group">
-                    <label for="route-from">End:</label>
+                    <label for="route-from">{% trans "To:" %}</label>
                     <input type="text" class="typeahead form-control" id="route-from"
                            placeholder="Enter Room Number">
                 </div>
@@ -60,16 +62,16 @@
                 <div class="radio">
                     <label>
                         <input type="radio" name="typeRoute" id="routeTypeStandard" value="0" checked>
-                        Standard Route
+                        {% trans "Standard Route" %}
                     </label>
                 </div>
                 <div class="radio">
                     <label>
                         <input type="radio" name="typeRoute" id="routeTypeBarrierFree" value="1">
-                        Barrier Free Route
+                        {% trans "Barrier Free Route" %}
                     </label>
                 </div>
-                <button id="enterRoute" type="submit" class="btn btn-default">Go !</button>
+                <button id="enterRoute" type="submit" class="btn btn-default">{% trans "Go !" %}</button>
                 <br>
             </form>
 
@@ -80,6 +82,7 @@
 {% block map_frame %}
             <div class="col-md-10">
                 <div id="map" class="map"></div>
+            <a href="http://www.indrz.com" target="_blank"><img src="{% static "img/indrz-powered-by-90px.png" %}" class="indrz-logo"/></a>
             </div>
 
 {% endblock map_frame %}
@@ -93,6 +96,8 @@
 
     <script>  {% include 'maps/routing.js' %} </script>
     <script>  {% include 'maps/search.js' %} </script>
+
+
 
 
 {% endblock body %}

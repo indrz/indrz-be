@@ -16,7 +16,7 @@ from django.db import connection
 def find_closest_network_node(x_coord, y_coord, floor):
     """
     Enter a given coordinate x,y and floor number and
-    find the nearest network node
+    find the nearest network node id
     to start or end the route on
     :param x_coord: float  in epsg 3857
     :param y_coord: float  in epsg 3857
@@ -33,13 +33,13 @@ def find_closest_network_node(x_coord, y_coord, floor):
         verts.id as id
         FROM geodata.networklines_3857_vertices_pgr AS verts
         INNER JOIN
-          (select ST_PointFromText('POINT(%s %s %s)', 3857)as geom) AS pt
+          (select ST_PointFromText('POINT({0} {1} {2})', 3857)as geom) AS pt
         ON ST_DWithin(verts.the_geom, pt.geom, 200.0)
         ORDER BY ST_3DDistance(verts.the_geom, pt.geom)
-        LIMIT 1;"""
+        LIMIT 1;""".format(x_coord, y_coord, floor)
 
     # pass 3 variables to our %s %s %s place holder in query
-    cur.execute(query, (x_coord, y_coord, floor,))
+    cur.execute(query)
 
     # get the result
     query_result = cur.fetchone()
@@ -57,11 +57,11 @@ def find_closest_network_node(x_coord, y_coord, floor):
 # use the rest_framework decorator to create our api
 #  view for get, post requests
 @api_view(['GET', 'POST'])
-def create_route(request, start_coord, start_floor, end_coord, end_floor, route_type):
+def create_route_from_coords(request, start_coord, start_floor, end_coord, end_floor, route_type):
     """
     Generate a GeoJSON indoor route passing in a start x,y,floor
     followed by &  then the end x,y,floor
-    Sample request: http:/localhost:8000/api/directions/1587848.414,5879564.080,2&1588005.547,5879736.039,2&0
+    Sample request: http:/localhost:8000/api/v1/directions/1587848.414,5879564.080,2&1588005.547,5879736.039,2&0
     :param request:
     :param start_coord: start location x,y
     :param start_floor: floor number  ex)  2
@@ -107,7 +107,7 @@ def create_route(request, start_coord, start_floor, end_coord, end_floor, route_
         return HttpResponseNotFound('<h1>Sorry not a GET or POST request</h1>')
 
 
-def get_room_centroid_node(room_number):
+def get_room_centroid_node(building_id, room_number):
     '''
     Find the room center point coordinates
     and find the closest route node point
@@ -115,13 +115,13 @@ def get_room_centroid_node(room_number):
     :return: Closest route node to submitted room number
     '''
 
-    room_center_q = """SELECT  floor,
+    room_center_q = """SELECT  layer,
             ST_asGeoJSON(st_centroid(geom))
-            AS geom FROM geodata.search_rooms_v
-            WHERE room_num = %s;"""
+            AS geom FROM geodata.search_index_v
+            WHERE building_id={0} and id ={1};""".format(building_id, room_number)
 
     cur = connection.cursor()
-    cur.execute(room_center_q, (room_number,))
+    cur.execute(room_center_q)
 
     res = cur.fetchall()
 
@@ -213,7 +213,7 @@ def run_route(start_node_id, end_node_id, route_type):
 # use the rest_framework decorator to create our api
 #  view for get, post requests
 @api_view(['GET', 'POST'])
-def route_room_to_room(request, start_room_num, end_room_num, route_type):
+def route_room_to_room(request, building_key, start_room_key, end_room_key, route_type):
     '''
     Generate a GeoJSON route from room number
     to room number
@@ -226,11 +226,14 @@ def route_room_to_room(request, start_room_num, end_room_num, route_type):
 
     if request.method == 'GET' or request.method == 'POST':
 
-        start_room = int(start_room_num)
-        end_room = int(end_room_num)
 
-        start_node_id = get_room_centroid_node(start_room)
-        end_node_id = get_room_centroid_node(end_room)
+
+        start_room = int(start_room_key.split("=")[1])
+        end_room = int(end_room_key.split("=")[1])
+        building_id = int(building_key.split("=")[1])
+
+        start_node_id = get_room_centroid_node(building_id, start_room)
+        end_node_id = get_room_centroid_node(building_id, end_room)
 
         res = run_route(start_node_id, end_node_id, route_type)
 
@@ -245,16 +248,16 @@ def route_room_to_room(request, start_room_num, end_room_num, route_type):
 
 
 @api_view(['GET', 'POST'])
-def room_list(request):
+def spaces_list(request):
     '''
-    http://localhost:8000/api/rooms
+    http://localhost:8000/api/v1/spaces/
     :param request: no parameters GET or POST
-    :return: JSON Array of room numbers
+    :return: JSON Array of available search terms
     '''
     cur = connection.cursor()
     if request.method == 'GET' or request.method == 'POST':
 
-        room_query = """SELECT room_num FROM geodata.search_rooms_v"""
+        room_query = """SELECT external_id FROM geodata.search_index_v"""
 
         cur.execute(room_query)
         room_nums = cur.fetchall()

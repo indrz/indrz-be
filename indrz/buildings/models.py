@@ -269,6 +269,7 @@ class FloorSpaceBase(gis_models.Model):
     long_name = gis_models.CharField(verbose_name=_("long name"), max_length=150, null=True, blank=True)
     area = gis_models.DecimalField(verbose_name=_("gis calculated area"), max_digits=10, decimal_places=2, null=True, blank=True)
     perimeter = gis_models.DecimalField(verbose_name=_("gis calculated perimeter"), max_digits=10, decimal_places=2, null=True, blank=True)
+    floor_num = gis_models.IntegerField(verbose_name=_("floor number"),null=True, blank=True)
 
     multi_poly = gis_models.MultiPolygonField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
     objects = gis_models.GeoManager()
@@ -284,7 +285,7 @@ class FloorSpaceBase(gis_models.Model):
         return str(self.short_name) or ''
 
 
-class FloorSpacePlanLine(gis_models.Model):
+class BuildingFloorPlanLine(gis_models.Model):
     """
     Represents the lines that compose a floor plan, such as walls, doors, and windows.
     """
@@ -297,15 +298,17 @@ class FloorSpacePlanLine(gis_models.Model):
     long_name = gis_models.CharField(verbose_name=_("long name"), max_length=150, null=True, blank=True)
     # floor_number = gis_models.IntegerField(verbose_name=_(u"floor number"),null=True, blank=True)
     length = gis_models.DecimalField(verbose_name=_("gis calculated length"), max_digits=10, decimal_places=2, null=True, blank=True)
+    floor_num = gis_models.IntegerField(verbose_name=_("floor number"),null=True, blank=True)
+
+    fk_line_type = gis_models.ForeignKey(LtPlanLineType, null=True, blank=True)
+    fk_building_floor = gis_models.ForeignKey(BuildingFloor, null=True, blank=True)
+    fk_building = gis_models.ForeignKey(Building)
 
     multi_linestring = gis_models.MultiLineStringField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
     objects = gis_models.GeoManager()
 
-    fk_line_type = gis_models.ForeignKey(LtPlanLineType, null=True, blank=True)
-    fk_building_floor = gis_models.ForeignKey(BuildingFloor)
-
-    class Meta:
-        abstract = True
+    class meta:
+        ordering = ['short_name']
 
     def __str__(self):
         return str(self.short_name) or ''
@@ -334,6 +337,8 @@ class BuildingFloorSpace(FloorSpaceBase):
 
     space_type = gis_models.ForeignKey(LtSpaceType, null=True, blank=True)
 
+    tag = gis_models.TextField(verbose_name=_("Tag values csv"), null=True, blank=True)
+
     tags = TaggableManager()
 
 
@@ -344,6 +349,8 @@ class Poi(gis_models.Model):
     short_name = gis_models.CharField(verbose_name=_("short name"), max_length=150, null=True, blank=True)
     long_name = gis_models.CharField(verbose_name=_("long name"), max_length=150, null=True, blank=True)
     description = gis_models.CharField(verbose_name=_("description"), max_length=255, null=True, blank=True)
+    floor_num = gis_models.IntegerField(verbose_name=_("floor number"),null=True, blank=True)
+
     force_mid_point = gis_models.NullBooleanField(verbose_name=_("Force route to this location"), null=True, blank=True)
     enabled = gis_models.NullBooleanField(verbose_name=_("Activated and enabled"), null=True, blank=True)
     tree_order = gis_models.IntegerField(verbose_name=_("Tree order in legend"), null=True, blank=True)

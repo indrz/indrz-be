@@ -1,7 +1,7 @@
 var roomNums = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.whitespace,
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    prefetch: 'http://localhost:8000/api/v1/spaces/?format=json'
+    prefetch: 'http://localhost:8000/api/v1/spaces/search/?format=json'
 });
 
 // passing in `null` for the `options` arguments will result in the default

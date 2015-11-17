@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,23 +16,14 @@
     <script src="{% static "js/jquery-1.11.2.min.js" %}"></script>
     <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
     <script src="{% static "js/bootstrap.min.js" %}"></script>
-    <link rel="stylesheet" href="{% static "css/ol.css" %}" type="text/css">
+    <link rel="stylesheet" href="{% static "css/ol3111.css" %}" type="text/css">
     <link rel="stylesheet" href="{% static "css/custom-layout.css" %}" type="text/css">
-    <script src="{% static "js/ol340.js" %}"></script>
-
-
-    <style>
-
-                html           { width:100%; height:100%; margin:0; }
-                body           { width:100%; height:100%; margin:0; font-family:sans-serif; }
-                #map           { width:100%; height:100%; margin:0; }
-                #toolbox       { position:absolute; top:98px; right:18px; padding:3px; border-radius:4px; color:#fff; background: rgba(255, 255, 255, 0.4); z-index:100; }
-                #layerswitcher { margin:0; padding:10px; border-radius:4px; background:rgba(0, 60, 136, 0.5); list-style-type:none; }
-
-    </style>
+    <link rel="stylesheet" href="{% static "css/indrz-layout.css" %}" type="text/css">
+    <script src="{% static "js/ol3.11.1.js" %}"></script>
 
 
       {% block head_extra %}{% endblock head_extra %}
+
 </head>
 <body>
 
@@ -54,9 +46,9 @@
               <ul class="nav navbar-nav">
 
                 {% block background-switcher %}{% endblock background-switcher %}
-                {% block floorswitcher %}foobarpoo{% endblock floorswitcher %}
+                {% block floorswitcher %}{% endblock floorswitcher %}
 
-                  <li><a href="https://github.com/indrz/indrz" target="_blank">GIT Source</a></li>
+                  <li><a href="https://github.com/indrz/indrz" target="_blank">{% trans "GIT Source" %}</a></li>
 
                   </ul>
 
@@ -65,19 +57,6 @@
           </div>
 
         </nav>
-
-            {% block indrz-switcher %}
-
-                <div id="toolbox">
-                    <ul id="layerswitcher">
-                        <li><label><input type="radio" name="layer" value="0"> MapQuest Satellite</label></li>
-                        <li><label><input type="radio" name="layer" value="1"> MapQuest Hybrid</label></li>
-                        <li><label><input type="radio" name="layer" value="2" checked> OSM</label></li>
-                        <li><label><input type="radio" name="layer" value="4" > Etage 0</label></li>
-                        <li><label><input type="radio" name="layer" value="5" > Etage 01 </label></li>
-                    </ul>
-                </div>
-            {% endblock indrz-switcher %}
 
 
         <div class="container-fluid">
@@ -93,6 +72,8 @@
 {% block map_frame %}{% endblock map_frame %}
 
 {% block route_options %}{% endblock route_options %}
+
+{% block footer %}{% endblock footer %}
 
 {% block body %}{% endblock body %}
 
