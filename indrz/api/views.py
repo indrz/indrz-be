@@ -3,7 +3,7 @@
 import json
 
 import traceback
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from geojson import loads, Feature, FeatureCollection
@@ -107,7 +107,7 @@ def create_route_from_coords(request, start_coord, start_floor, end_coord, end_f
         return HttpResponseNotFound('<h1>Sorry not a GET or POST request</h1>')
 
 
-def get_room_centroid_node(building_id, room_number):
+def get_room_centroid_node(building_id, room_id):
     '''
     Find the room center point coordinates
     and find the closest route node point
@@ -118,7 +118,7 @@ def get_room_centroid_node(building_id, room_number):
     room_center_q = """SELECT  layer,
             ST_asGeoJSON(st_centroid(geom))
             AS geom FROM geodata.search_index_v
-            WHERE building_id={0} and id ={1};""".format(building_id, room_number)
+            WHERE building_id={0} and id ={1};""".format(building_id, room_id)
 
     cur = connection.cursor()
     cur.execute(room_center_q)
@@ -213,7 +213,7 @@ def run_route(start_node_id, end_node_id, route_type):
 # use the rest_framework decorator to create our api
 #  view for get, post requests
 @api_view(['GET', 'POST'])
-def route_room_to_room(request, building_key, start_room_key, end_room_key, route_type):
+def create_route_from_id(request, building_id, start_room_id, end_room_id, route_type):
     '''
     Generate a GeoJSON route from room number
     to room number
@@ -227,10 +227,9 @@ def route_room_to_room(request, building_key, start_room_key, end_room_key, rout
     if request.method == 'GET' or request.method == 'POST':
 
 
-
-        start_room = int(start_room_key.split("=")[1])
-        end_room = int(end_room_key.split("=")[1])
-        building_id = int(building_key.split("=")[1])
+        start_room = int(start_room_id.split("=")[1])
+        end_room = int(end_room_id.split("=")[1])
+        building_id = int(building_id.split("=")[1])
 
         start_node_id = get_room_centroid_node(building_id, start_room)
         end_node_id = get_room_centroid_node(building_id, end_room)
@@ -247,9 +246,82 @@ def route_room_to_room(request, building_key, start_room_key, end_room_key, rout
         return HttpResponseNotFound('<h1>Sorry not a GET or POST request</h1>')
 
 
+# use the rest_framework decorator to create our api
+#  view for get, post requests
 @api_view(['GET', 'POST'])
-def spaces_list(request):
+def create_route_from_search(request, building_id, start_term, end_term, route_type=0):
     '''
+    Generate a GeoJSON route from room number
+    to room number
+    :param request: GET or POST request
+    :param start_room_num: an integer room number
+    :param end_room_num: an integer room number
+    :param route_type: an integer room type
+    :return: a GeoJSON linestring of the route
+    '''
+
+    if request.method == 'GET' or request.method == 'POST':
+
+
+        start_room = start_term.split("=")[1]
+        end_room = end_term.split("=")[1]
+        building_id = building_id.split("=")[1]
+
+        cur = connection.cursor()
+        logger.debug('*************************start term' + str(start_room))
+        logger.debug('*************************end term' + str(end_room))
+
+        start_query = """SELECT id, external_id, search_string FROM geodata.search_index_v
+                          WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper('{0}')
+                          ORDER BY length(search_string) LIMIT 1""".format(start_room)
+
+
+        logger.debug('**************print query' + str(start_query))
+        cur.execute(start_query)
+
+
+        get_start_id = cur.fetchall()
+
+        logger.debug('**************get start id' + str(get_start_id))
+        start_id_list = []
+        for x in get_start_id:
+            v = x[0]
+            start_id_list.append(v)
+
+        end_query = """SELECT id, external_id, search_string FROM geodata.search_index_v
+                          WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper('{0}')
+                          ORDER BY length(search_string) LIMIT 1""".format(end_room)
+
+        logger.debug('**************print END  query' + str(end_query))
+        cur.execute(end_query)
+
+        get_end_id = cur.fetchall()
+        end_id_list = []
+        for x in get_end_id:
+            v = x[0]
+            end_id_list.append(v)
+
+        logger.debug('*************************current start id' + str(start_id_list))
+        logger.debug('*************************current end id' + str(end_id_list))
+
+        start_node_id = get_room_centroid_node(building_id, start_id_list[0])
+        end_node_id = get_room_centroid_node(building_id, end_id_list[0])
+
+        res = run_route(start_node_id, end_node_id, route_type)
+
+        try:
+            return Response(res)
+        except:
+            logger.error("error exporting to json model: " + str(res))
+            logger.error(traceback.format_exc())
+            return Response({'error': 'either no JSON or no key params in your JSON'})
+    else:
+        return HttpResponseNotFound('<h1>Sorry not a GET or POST request</h1>')
+
+
+@api_view(['GET', 'POST'])
+def autocomplete_list(request):
+    '''-
     http://localhost:8000/api/v1/spaces/
     :param request: no parameters GET or POST
     :return: JSON Array of available search terms
@@ -257,9 +329,15 @@ def spaces_list(request):
     cur = connection.cursor()
     if request.method == 'GET' or request.method == 'POST':
 
-        room_query = """SELECT external_id FROM geodata.search_index_v"""
+        searchString = request.GET.get('q','')
 
-        cur.execute(room_query)
+        cur.execute("""SELECT search_string FROM geodata.search_index_v
+                          WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper(%(search_string)s)
+                          GROUP BY search_string
+                          ORDER BY length(search_string) LIMIT 100""",
+                       {"search_string": "%" + searchString + "%"})
+
+        # cur.execute(room_query)
         room_nums = cur.fetchall()
 
         room_num_list = []
@@ -268,7 +346,43 @@ def spaces_list(request):
             room_num_list.append(v)
 
         try:
-            return Response(room_num_list)
+            #return Response(room_num_list)
+            return HttpResponse(json.dumps(room_num_list), content_type='application/json')
+        except:
+            logger.error("error exporting to json model: " + str(room_num_list))
+            logger.error(traceback.format_exc())
+            return Response({'error': 'either no JSON or no key params in your JSON'})
+
+
+@api_view(['GET', 'POST'])
+def list_buildings(request):
+    '''-
+    http://localhost:8000/api/v1/spaces/
+    :param request: no parameters GET or POST
+    :return: JSON Array of available search terms
+    '''
+    cur = connection.cursor()
+    if request.method == 'GET' or request.method == 'POST':
+
+        searchString = request.GET.get('q','')
+
+        cur.execute("""SELECT id, building_name, num_floors FROM geodata.search_index_v
+                          WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper(%(search_string)s)
+                          GROUP BY search_string
+                          ORDER BY length(search_string) LIMIT 100""",
+                       {"search_string": "%" + searchString + "%"})
+
+        # cur.execute(room_query)
+        room_nums = cur.fetchall()
+
+        room_num_list = []
+        for x in room_nums:
+            v = x[0]
+            room_num_list.append(v)
+
+        try:
+            #return Response(room_num_list)
+            return HttpResponse(json.dumps(room_num_list), content_type='application/json')
         except:
             logger.error("error exporting to json model: " + str(room_num_list))
             logger.error(traceback.format_exc())
