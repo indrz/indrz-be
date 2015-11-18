@@ -12,29 +12,29 @@ var layerOffset = -1;
 
 // uncomment this code if you want to reactivate
 // the quick static demo switcher
-$(".radio").change(function () {
-    map.getLayers().pop();
-    var sel_Val2 = $("input:radio[name=typeRoute]:checked").val();
-    var routeUrl = '/api/v1/directions/-168527.958404064,5983885.94934575,-1&-168578.959377896,5983891.19705399,3&' + sel_Val2 + '/?format=json';
-
-    map.getLayers().push(new ol.layer.Vector({
-
-        //      source: new ol.source.GeoJSON({url: routeUrl}),
-        source: new ol.source.Vector({
-            url: routeUrl,
-            format: new ol.format.GeoJSON()
-        }),
-        style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: 'blue',
-                width: 4
-            })
-        }),
-        title: "Route",
-        name: "Route"
-    }));
-
-});
+//$(".radio").change(function () {
+//    map.getLayers().pop();
+//    var sel_Val2 = $("input:radio[name=typeRoute]:checked").val();
+//    var routeUrl = '/api/v1/directions/-168527.958404064,5983885.94934575,-1&-168578.959377896,5983891.19705399,3&' + sel_Val2 + '/?format=json';
+//
+//    map.getLayers().push(new ol.layer.Vector({
+//
+//        //      source: new ol.source.GeoJSON({url: routeUrl}),
+//        source: new ol.source.Vector({
+//            url: routeUrl,
+//            format: new ol.format.GeoJSON()
+//        }),
+//        style: new ol.style.Style({
+//            stroke: new ol.style.Stroke({
+//                color: 'blue',
+//                width: 4
+//            })
+//        }),
+//        title: "Route",
+//        name: "Route"
+//    }));
+//
+//});
 
 var vectorLayer = new ol.layer.Vector({
     //source: new ol.source.GeoJSON({url: geojs_url}),
@@ -61,6 +61,7 @@ var wmsUG01 = new ol.layer.Image({
     }),
     visible: false,
     name: "wmsUG01",
+    floor: "-1",
     type: "floor level"
 
 
@@ -75,6 +76,7 @@ var wmsE00 = new ol.layer.Image({
     }),
     visible: true,
     name: "wmsE00",
+    floor: "0",
     type: "floor level"
 
 });
@@ -88,6 +90,7 @@ var wmsE01 = new ol.layer.Image({
     }),
     visible: false,
     name: "wmsE01",
+    floor: "1",
     type: "floor level"
 
 });
@@ -101,6 +104,7 @@ var wmsE02 = new ol.layer.Image({
     }),
     visible: false,
     name: "wmsE02",
+    floor: "2",
     type: "floor level"
 
 });
@@ -114,6 +118,7 @@ var wmsE03 = new ol.layer.Image({
     }),
     visible: false,
     name: "wmsE03",
+    floor: "3",
     type: "floor level"
 
 });
@@ -122,7 +127,7 @@ var wmsE03 = new ol.layer.Image({
 var mapQuestOsm = new ol.layer.Tile({source: new ol.source.MapQuest({layer: 'osm'}), visible: false});
 var OsmBackLayer = new ol.layer.Tile({source: new ol.source.OSM(), visible: true});
 
-var allLayers = [
+var allLayers = [vectorLayer,
      new ol.layer.Group({
       layers: [
           wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03
@@ -222,19 +227,21 @@ map.addLayer(wmsUG01)
 map.addLayer(backgroundLayers[0]);
 map.addLayer(wmsUG01);
 map.addLayer(wmsE00);
-map.addLayer(vectorLayer);
 map.addLayer(wmsE01);
 map.addLayer(wmsE02);
 map.addLayer(wmsE03);
+map.addLayer(vectorLayer);
 
 //map.getLayerGroup().set('name', 'Root');
 
-function addRoute(fromNumber, toNumber, routeType) {
+function addRoute(buildingId, fromNumber, toNumber, routeType) {
     map.getLayers().pop();
     console.log("addRoute big" + String(fromNumber));
     var baseUrl = 'http://localhost:8000/api/v1/directions/';
-    var geoJsonUrl = baseUrl + fromNumber + '&' + toNumber + '&' + routeType + '/?format=json';
+    var geoJsonUrl = baseUrl + 'building=' +  buildingId + '&startid=' + fromNumber + '&endid=' + toNumber + '/?format=json';
+
     console.log("final url " + geoJsonUrl);
+
     map.getLayers().push(new ol.layer.Vector({
         //source: new ol.source.GeoJSON({url: geoJsonUrl}),  // ol <= 3.40
         url: geoJsonUrl,
