@@ -101,42 +101,45 @@ URL Parameter | value | required | description
 
 An example call would look like this:
 
-    https://www.indrz.com/api/v1/directions/buildingid=1&startid=234&endid=456
+    https://www.indrz.com/api/v1/directions/building=1&startid=234&endid=456
+
+or passing the room name
+
+    http://localhost:8000/api/v1/directions/building=1&startid=307: Orne&endid=311: Mayenne
     
 #### Response is GeoJSON LineString Feature Collection
 Your response is a GeoJSON LineString showing a 2D line for the entire route.
 
 ```json
-
+{
     "type": "FeatureCollection",
     "features": [
         {
-            "type": "Feature",
             "geometry": {
-                "type": "LineString",
                 "coordinates": [
                     [
-                        -101.744384765625,
-                        39.32155002466662
+                        -168564.938764811,
+                        5983882.0889364,
+                        3
                     ],
                     [
-                        -101.5521240234375,
-                        39.330048552942415
-                    ],
-                    [
-                        -101.40380859375,
-                        39.330048552942415
+                        -168568.729005951,
+                        5983878.03527752,
+                        3
                     ]
-                ]
+                ],
+                "type": "LineString"
             },
+            "type": "Feature",
             "properties": {
-                "floor": -1,
-                "type": 0
+                "length": 5.5496016329234,
+                "floor": 3,
+                "network_type": 0
             }
-        }
-    ]
-}
-
+        },
+        {
+            "geometry": {
+            ...
 ```
 
     
