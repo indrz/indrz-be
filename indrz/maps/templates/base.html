@@ -6,10 +6,10 @@
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Sample Map">
-    <meta name="author" content="Michael Diener">
-    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta name="description" content="indrz indoor map">
+    <meta name="author" content="GOMOGI platform indrz.com">
+
 
     <title>{% block title %}Default Title{% endblock %}</title>
 
@@ -22,50 +22,180 @@
     <script src="{% static "js/ol3.11.1.js" %}"></script>
 
 
-      {% block head_extra %}{% endblock head_extra %}
+    {% block head_extra %}{% endblock head_extra %}
 
 </head>
 <body>
 
-        <nav class="navbar navbar-inverse navbar-fixed-top">
 
-        {% block nav %}
-          <div class="container">
+{% block nav %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+
+
+    <div class="container">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="http://www.indrz.com" target="_blank">indrz</a>
+    </div>
+
+
+    <div id="navbar" class="collapse navbar-collapse">
+    <ul class="nav navbar-nav">
+
+
+        <li><a href="https://github.com/indrz/indrz" target="_blank">{% trans "GIT Source" %}</a></li>
+
+    </ul>
+
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+
+
+        <div class="container">
             <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="http://www.indrz.com" target="_blank">indrz</a>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://www.indrz.com" target="_blank">indrz</a>
             </div>
 
-          {% endblock nav %}
+
             <div id="navbar" class="collapse navbar-collapse">
-              <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav">
 
-                {% block background-switcher %}{% endblock background-switcher %}
-                {% block floorswitcher %}{% endblock floorswitcher %}
+                    <li class="dropdown">
 
-                  <li><a href="https://github.com/indrz/indrz" target="_blank">{% trans "GIT Source" %}</a></li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">{% trans "Background" %}<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" id="action-3">OSM</a></li>
+                            <li><a href="#" id="action-2">MapQuest OSM</a></li>
 
-                  </ul>
+
+                        </ul>
+
+                    </li>
+
+                    <li class="dropdown">
+
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">{% trans "Floor" %} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="activateLayer(4);" id="action-3">{% trans "Etage 3" %}</a></li>
+                            <li><a href="#" onclick="activateLayer(3);" id="action-2">{% trans "Etage 2" %}</a></li>
+                            <li><a href="#" onclick="activateLayer(2);" id="action-1">{% trans "Etage 1" %}</a></li>
+                            <li><a href="#" onclick="activateLayer(1);" id="action-0">{% trans "Etage 0" %}</a></li>
+                            <li><a href="#" onclick="activateLayer(0);" id="action--1">{% trans "Etage -1" %}</a></li>
+
+                        </ul>
+
+                    </li>
+                    <li><a href="https://github.com/indrz/indrz" target="_blank">{% trans "GIT Source" %}</a></li>
+                </ul>
 
 
             </div><!--/.nav-collapse -->
-          </div>
-
-        </nav>
-
-
-        <div class="container-fluid">
-            <div class="row">
-
-            </div>
-
         </div>
 
+    </nav>
+
+
+{% endblock nav %}
+
+
+</div><!--/.nav-collapse -->
+</div>
+
+</nav>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <div id="directions" class="directions">
+                <form id="submitForm">
+                    <div id="rooms-prefetch" class="form-group">
+                        <label for="route-to">{% trans "Route From:" %}</label>
+                        <input type="text" class="typeahead form-control" id="route-to" placeholder="Enter Room Number">
+                    </div>
+                    <div id="rooms-prefetch" class="form-group">
+                        <label for="route-from">{% trans "Route To:" %}</label>
+                        <input type="text" class="typeahead form-control" id="route-from"
+                               placeholder="Enter Room Number">
+                    </div>
+
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="typeRoute" id="routeTypeStandard" value="0" checked>
+                            {% trans "Standard Route" %}
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="typeRoute" id="routeTypeBarrierFree" value="1">
+                            {% trans "Barrier Free Route" %}
+                        </label>
+                    </div>
+                    <button id="enterRoute" type="submit" class="btn btn-default">{% trans "Go !" %}</button>
+                    <br>
+                </form>
+
+            </div>
+        </div>
+
+        <div class="col-md-10">
+            <div id="map" class="map"></div>
+            <a href="http://www.indrz.com" target="_blank"><img src="{% static "img/indrz-powered-by-90px.png" %}"
+                                                                class="indrz-logo"/></a>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+{% block js-typeahead %}
+    <script>
+        var roomNums = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: 'http://localhost:8000/api/v1/spaces/search/?format=json'
+        });
+
+        // passing in `null` for the `options` arguments will result in the default
+        // options being used
+        $('#rooms-prefetch .typeahead').typeahead(null, {
+            name: 'countries',
+            limit: 100,
+            source: roomNums
+        });
+
+
+        $("#submitForm").submit(function (event) {
+            {#  alert( "Handler for .submit() called."  );#}
+            var buildingid = builidngNantesId;
+            var startNum = $('#route-from').val();
+            var endNum = $('#route-to').val();
+            var rType = $("input:radio[name=typeRoute]:checked").val();
+            addRoute(buildingid, startNum, endNum, rType);
+            event.preventDefault();
+        });
+
+
+    </script>
+
+{% endblock js-typeahead %}
 
 
 {% block route_from_to %}{% endblock route_from_to %}
@@ -75,11 +205,7 @@
 {% block route_options %}{% endblock route_options %}
 
 
-
 {% block footer %}{% endblock footer %}
-
-
-
 
 
 </body>
