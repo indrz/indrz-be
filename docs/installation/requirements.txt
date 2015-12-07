@@ -1,0 +1,4 @@
+Django==1.8.7
+django-taggit==0.17.5
+djangorestframework==3.3.1
+psycopg2==2.6.1
