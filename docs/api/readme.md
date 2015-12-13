@@ -25,7 +25,7 @@ http://www.indrz.com/api/v1/
 ## Zoom to a building
 Start the map zoomed to the extent of a single building.  The {zoom} parameter is optional.
 
-    http://www.indrz.com/map/building/{building-id}&zoom=18
+    http://www.indrz.com/map/{map-name}/{building-id}&zoom=18
     
 URL Parameter | value | required | description
 --- | --- | --- | ---
@@ -34,36 +34,36 @@ URL Parameter | value | required | description
     
 Example call:
 
-    http://www.indrz.com/map/building/1&zoom=18
+    http://www.indrz.com/map/greatmapname/buildingid=1&zoom=18
 
 ## Zoom to a campus area
 A campus area is defined as a POLYGON representing the area in which one or more buildings are grouped with the same name.  Calling zoom to campus will
-take the user directly to the extent of the campus polygon.
+take the user directly to the extent of the campus polygon.  You need to pass {campus-id} as an integer and the optional {zoom-value}
 
-    http://www.indrz.com/map/campus/{campus-id}&zoom={zooom-value}
+    http://www.indrz.com/map/{map-name}/campusid={campus-id}&zoom={zoom-value}
 
 URL Parameter | value | required | description
 --- | --- | --- | ---
-`campusid` | integer | yes | Defines the campus area to zoom to
-`zoom` | integer | no | Set custom zoom level to show building accepts values from 0-22
+`campus-id` | integer | yes | Defines the campus area to zoom to
+`zoom-value` | integer | no | Set custom zoom level to show building accepts values from 0-22
 
 Example call:
 
-    http://www.indrz.com/map/campus/1
+    http://www.indrz.com/map/greatmapname/campusid=1
     
 ## Zoom to a specific room location
 Zoom the map to a specific indoor space polygon such as a room or office location
 
-    http://www.indrz.com/map/space/{space-id}&zoom={zooom-value}
+    http://www.indrz.com/map/{map-name}/spaceid={space-id}&zoom={zooom-value}
   
 URL Parameter | value | required | description
 --- | --- | --- | ---
-`spaceid` | integer | yes | Defines the space area to zoom to such as a single office space
-`zoom` | integer | no | Set custom zoom level accepts values from 0-22
+`space-id` | integer | yes | Defines the space area to zoom to such as a single office space
+`zoom-value` | integer | no | Set custom zoom level accepts values from 0-22
 
 Example call:
 
-    http://www.indrz.com/map/space/1&zoom=20
+    http://www.indrz.com/map/greatmapname/spaceid=1&zoom=20
 
 ## Embedding an indrz indoor map using an iframe
 
@@ -72,14 +72,14 @@ Here we explain how to include an indrz map in your homepage.
 Simply create an iframe with the following link
 
 ```html
-<iframe src="http://www.indrz.com/map/embed/{MapName}">
+<iframe src="http://www.indrz.com/map/{MapName}">
   width="100%" height="420" frameborder="0" marginheight="0" marginwidth="0"
   scrolling="no"></iframe>
 ```
 
-replace {MapName}  with the name of the map you want to add
+replace {MapName}  with the name of the map you want to add (greatmapname is used above as our example mapName)
 
-## Get a list of available maps and coresponding names  
+## Get a list of available maps and corresponding map names  
 
     /api/v1/map/list
 
@@ -88,24 +88,40 @@ replace {MapName}  with the name of the map you want to add
 
 The directions api is designed to allow you to show a route from any indoor room location to any other room location within a building complex.
 
+    route from room ids
     /api/v1/directions/buildingid={building-id}&startid={room-id}&endid={room-id}&type={route-type-value}
+    
+    route with search terms
+    /api/v1/directions/buildingid={building-id}&startid={search-term1}&endid={search-term2}&type={route-type-value}
+    
+    route with coordinates
+    /api/v1/directions/{start-coordinate},{start-floor}&{end-coordinate},{end-floor}&type={route-type-value}
+
     
     
 URL Parameter | value | required | description
 --- | --- | --- | ---
-`buildingid` | integer | yes | Defines the campus for which you want the buildings
+`building-id` | integer | yes | Defines the campus for which you want the buildings
 `startid` | integer | yes | Start room id for creating a route
 `endid` | integer | yes | Destination room id as end location of route
 `type` | integer | no | Sets the routing type, 0 = normal, 1 = barrierierfree(no stairs) default is 0
-
+`start-coordinate` | array  | no | 1234.14,452.123
+`end-coordinate` | array | no | 1234.14,452.123
+`start-floor` | integer  | no  | a floor number such as 1  for the first floor
+`search-term1` | text  | no  | a search text field for start point
+`search-term2` | text  | no  | a search text field for end point
 
 An example call would look like this:
 
-    https://www.indrz.com/api/v1/directions/building=1&startid=234&endid=456
+    https://www.indrz.com/api/v1/directions/buildingid=1&startid=234&endid=456
 
 or passing the room name
 
-    http://localhost:8000/api/v1/directions/building=1&startid=307: Orne&endid=311: Mayenne
+    http://localhost:8000/api/v1/directions/buildingid=1&startid=307: Orne&endid=311: Mayenne
+ 
+or passing a set of coordinates x-start,y-start,start-floor,x-end,y-end,end-floor
+
+    http://localhost:8000/api/v1/directions/658344.123,87123.234,1&7612342.34,84123,123421.123,3
     
 #### Response is GeoJSON LineString Feature Collection
 Your response is a GeoJSON LineString showing a 2D line for the entire route.
