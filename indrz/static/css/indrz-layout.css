@@ -72,4 +72,9 @@ body, h1, h2, h3, h4, p, li, td, th {
 	margin: 0;
 }
 
-
+.floor-changer-float{
+    position: absolute;
+    top: 5%;
+    right: 3%;
+    z-index: 1001;
+}
