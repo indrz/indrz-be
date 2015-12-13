@@ -1,0 +1,24 @@
+{% extends "base-map.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}Societe Generale indrz map{% endblock %}
+
+{% block nav %}{% endblock %}
+{% block head_extra %}
+
+    <script src="{% static "js/bloodhound.min.js" %}"></script>
+    <script src="{% static "js/typeahead.bundle.min.js" %}"></script>
+    <style> body {
+      padding-top: 0px;
+    }</style>
+
+
+{% endblock head_extra %}
+
+
+{% block map_frame %}
+    <script>  {% include 'maps/indrzMapConf.js' %} </script>
+    <script>  {% include 'maps/indrzLayers.js' %} </script>
+    <script>  {% include 'maps/routing.js' %} </script>
+{% endblock map_frame %}
