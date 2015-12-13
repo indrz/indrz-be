@@ -85,7 +85,7 @@ var routeLayer = null;
 
 function addRoute(buildingId, fromNumber, toNumber, routeType) {
     var baseUrl = 'http://localhost:8000/api/v1/directions/';
-    var geoJsonUrl = baseUrl + 'building=' +  buildingId + '&startid=' + fromNumber + '&endid=' + toNumber + '/?format=json';
+    var geoJsonUrl = baseUrl + 'buildingid=' +  buildingId + '&startid=' + fromNumber + '&endid=' + toNumber + '/?format=json';
 
     var startingLevel = fromNumber.charAt(0);
     //switch(startingLevel) {
