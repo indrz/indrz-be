@@ -21,13 +21,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 
-
 SECRET_KEY = secret_settings.secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = ['www.indrz.com', '.indrz.com', 'indrz.com', '*.indrz.com', ]
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
 
     #### third party apps
     'rest_framework',
@@ -142,6 +143,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_FOLDER = 'static'
+STATIC_ROOT = "/var/www/vhosts/www.indrz.com/static/"
 
 STATICFILES_DIRS = [
    os.path.join(BASE_DIR, STATIC_FOLDER),
@@ -171,13 +173,13 @@ LOGGING = {
         'file_verbose': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'logs/verbose.log',
+            'filename': os.path.join(BASE_DIR,  'logs/verbose.log'),
             'formatter': 'verbose'
         },
         'file_debug': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'logs/debug.log',
+            'filename': os.path.join(BASE_DIR,  'logs/debug.log'),
             'formatter': 'verbose'
         },
     },
@@ -192,6 +194,26 @@ LOGGING = {
             'propagate': True,
             'level': 'DEBUG',
         },
+        'admin': {
+            'handlers': ['file_debug'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+        'buildings': {
+            'handlers': ['file_debug'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+        'routing': {
+            'handlers': ['file_debug'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+        'maps': {
+            'handlers': ['file_debug'],
+            'propagate': True,
+            'level': 'DEBUG',
+        }
 
     }
 }
