@@ -29,6 +29,25 @@ function switchBackgroundTo(backNum) {
 }
 
 
+var vector = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: 'http://localhost:8000/api/v1/buildings/spaces/1/2.json',
+    format: new ol.format.GeoJSON()
+  }),
+        style:  new ol.style.Style({
+            stroke: new ol.style.Stroke({
+              color: 'red',
+              width: 2
+            })
+          }),
+        title: "spaces",
+        name: "spaces",
+        zIndex: 1,
+        visible: true
+
+});
+
+
 
 var map = new ol.Map({
       interactions: ol.interaction.defaults().extend([
@@ -47,7 +66,8 @@ var map = new ol.Map({
 
                         wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03
                 ]
-            })
+            }),
+        vector
     ],
     target: 'map',
     controls: ol.control.defaults({
@@ -60,7 +80,7 @@ var map = new ol.Map({
         zoom: 18
     })
 });
-
+map.getLayers().push(vector);
 var routeLayer = null;
 
 function addRoute(buildingId, fromNumber, toNumber, routeType) {
@@ -68,32 +88,31 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
     var geoJsonUrl = baseUrl + 'building=' +  buildingId + '&startid=' + fromNumber + '&endid=' + toNumber + '/?format=json';
 
     var startingLevel = fromNumber.charAt(0);
-    switch(startingLevel) {
-        case("9"):
-            activateLayer(0);
-            break;
-        case("0"):
-            activateLayer(0);
-            break;
-        case("1"):
-            activateLayer(1);
-            break;
-        case("2"):
-            activateLayer(2);
-            break;
-        case("3"):
-            activateLayer(3);
-            break;
-        default:
-            break;
-    }
+    //switch(startingLevel) {
+    //    case("9"):
+    //        activateLayer(0);
+    //        break;
+    //    case("0"):
+    //        activateLayer(0);
+    //        break;
+    //    case("1"):
+    //        activateLayer(1);
+    //        break;
+    //    case("2"):
+    //        activateLayer(2);
+    //        break;
+    //    case("3"):
+    //        activateLayer(3);
+    //        break;
+    //    default:
+    //        break;
+    //}
 
     if (routeLayer) {
       map.removeLayer(routeLayer);
         console.log("removing layer now");
         //map.getLayers().pop();
    }
-
 
     var source = new ol.source.Vector();
     $.ajax(geoJsonUrl).then(function(response) {
@@ -122,6 +141,7 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
     //map.addLayer(routeLayer);
 
     map.getLayers().push(routeLayer);
+
 
 }
 
