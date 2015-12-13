@@ -6,12 +6,73 @@ import traceback
 from django.http import HttpResponseNotFound, HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
+
 from geojson import loads, Feature, FeatureCollection
+from buildings.models import Building, BuildingFloorSpace
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from django.views.decorators.csrf import csrf_exempt
 import logging
+
+from buildings.serializers import BuildingSerializer, BuildingFloorSpaceSerializer
 
 logger = logging.getLogger(__name__)
 from django.db import connection
 
+
+@api_view(['GET', 'POST'])
+def building_list(request, format=None):
+    """
+    List all buildings, or create a new building.
+    """
+    if request.method == 'GET':
+        buildings = Building.objects.all()
+        serializer = BuildingSerializer(buildings, many=True)
+        return Response(serializer.data)
+
+    # elif request.method == 'POST':
+    #     serializer = BuildingSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@csrf_exempt
+def building_detail(request, pk, format=None):
+    """
+    Retrieve, update or delete a code snippet.
+    """
+    try:
+        building = Building.objects.get(pk=pk)
+    except Building.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = BuildingSerializer(building)
+        return Response(serializer.data)
+
+    # elif request.method == 'PUT':
+    #     serializer = BuildingSerializer(building, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #
+    # elif request.method == 'DELETE':
+    #     building.delete()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET', 'POST'])
+def building_spaces_list(request, building_id, floor_id, format=None):
+    """
+    List all spaces on a specified floor in given building.
+    """
+    if request.method == 'GET':
+        floor_spaces = BuildingFloorSpace.objects.filter(fk_building=building_id, fk_building_floor=floor_id)
+        serializer = BuildingFloorSpaceSerializer(floor_spaces, many=True)
+        return Response(serializer.data)
 
 def find_closest_network_node(x_coord, y_coord, floor):
     """
@@ -165,9 +226,13 @@ def run_route(start_node_id, end_node_id, route_type):
         barrierfree_q = "WHERE network_type not in (1,3)"
 
     routing_query = '''
-        SELECT seq, id1 AS node, id2 AS edge,
-          ST_Length(geom) AS cost, floor,
-          network_type, ST_AsGeoJSON(geom) AS geoj
+        SELECT seq,
+        id1 AS node,
+        id2 AS edge,
+          ST_Length(geom) AS cost,
+           floor,
+          network_type,
+          ST_AsGeoJSON(geom) AS geoj
           FROM pgr_dijkstra('
             {normal} {type}', %s, %s, FALSE, FALSE
           ) AS dij_route
@@ -215,8 +280,8 @@ def run_route(start_node_id, end_node_id, route_type):
 @api_view(['GET', 'POST'])
 def create_route_from_id(request, building_id, start_room_id, end_room_id, route_type):
     '''
-    Generate a GeoJSON route from room number
-    to room number
+    Generate a GeoJSON route from external room id
+    to external room id
     :param request: GET or POST request
     :param start_room_num: an integer room number
     :param end_room_num: an integer room number
@@ -272,7 +337,7 @@ def create_route_from_search(request, building_id, start_term, end_term, route_t
         logger.debug('*************************end term' + str(end_room))
 
         start_query = """SELECT id, external_id, search_string FROM geodata.search_index_v
-                          WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper('{0}')
+                          WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper('%{0}%')
                           ORDER BY length(search_string) LIMIT 1""".format(start_room)
 
 
@@ -280,32 +345,29 @@ def create_route_from_search(request, building_id, start_term, end_term, route_t
         cur.execute(start_query)
 
 
-        get_start_id = cur.fetchall()
+        get_start_id_list = cur.fetchone()
+        start_id_value = get_start_id_list[0]
 
-        logger.debug('**************get start id' + str(get_start_id))
-        start_id_list = []
-        for x in get_start_id:
-            v = x[0]
-            start_id_list.append(v)
+
+
+        logger.debug('**************get start id' + str(start_id_value))
+
 
         end_query = """SELECT id, external_id, search_string FROM geodata.search_index_v
-                          WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper('{0}')
+                          WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper('%{0}%')
                           ORDER BY length(search_string) LIMIT 1""".format(end_room)
 
         logger.debug('**************print END  query' + str(end_query))
         cur.execute(end_query)
 
-        get_end_id = cur.fetchall()
-        end_id_list = []
-        for x in get_end_id:
-            v = x[0]
-            end_id_list.append(v)
+        get_end_id_list = cur.fetchone()
+        end_id_value = get_end_id_list[0]
 
-        logger.debug('*************************current start id' + str(start_id_list))
-        logger.debug('*************************current end id' + str(end_id_list))
+        logger.debug('*************************current start id' + str(start_id_value))
+        logger.debug('*************************current end id' + str(end_id_value))
 
-        start_node_id = get_room_centroid_node(building_id, start_id_list[0])
-        end_node_id = get_room_centroid_node(building_id, end_id_list[0])
+        start_node_id = get_room_centroid_node(building_id, start_id_value)
+        end_node_id = get_room_centroid_node(building_id, end_id_value)
 
         res = run_route(start_node_id, end_node_id, route_type)
 
@@ -329,14 +391,17 @@ def autocomplete_list(request):
     cur = connection.cursor()
     if request.method == 'GET' or request.method == 'POST':
 
-        searchString = request.GET.get('q','')
+        # searchString = request.GET.get('q','')
+
+        # cur.execute("""SELECT search_string FROM geodata.search_index_v
+        #                   WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper(%(search_string)s)
+        #                   GROUP BY search_string
+        #                   ORDER BY length(search_string) LIMIT 100""",
+        #                {"search_string": "%" + searchString + "%"})
 
         cur.execute("""SELECT search_string FROM geodata.search_index_v
-                          WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper(%(search_string)s)
-                          GROUP BY search_string
-                          ORDER BY length(search_string) LIMIT 100""",
-                       {"search_string": "%" + searchString + "%"})
-
+                          """
+                      )
         # cur.execute(room_query)
         room_nums = cur.fetchall()
 

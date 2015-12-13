@@ -14,6 +14,9 @@ urlpatterns = patterns('api.views',
     url(r'^directions3/(?P<room_num>\d{5})/$', 'get_room_centroid_node', name='room-center'),
     # url(r'^spaces/search/(?P<search_term>[a-zA-Z0-9]{2,5})/$', 'autocomplete_list', name='spaces_list'),
     url(r'^spaces/search/$', 'autocomplete_list', name='spaces_list'),
+    url(r'^buildings/$', 'building_list', name='list_buildings'),
+    url(r'^buildings/(?P<pk>[0-9]+)/$', 'building_detail', name='building_details'),
+    url(r'^buildings/spaces/(?P<building_id>\d{1,5})/(?P<floor_id>\d{1,5})/$', 'building_spaces_list', name='building_spaces_list'),
     #url(r'^directions/(?P<building_name>building=d{1,5})&start={1,6}&destination={1,6}/$', 'route_room_to_room', name='route-space-to-space' )
 
 )
