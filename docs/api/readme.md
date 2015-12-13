@@ -25,16 +25,16 @@ http://www.indrz.com/api/v1/
 ## Zoom to a building
 Start the map zoomed to the extent of a single building.  The {zoom} parameter is optional.
 
-    http://www.indrz.com/map/{map-name}/{building-id}&zoom=18
+    http://www.indrz.com/map/{map-name}/buildingid={building-id}&zoom={zoom-level}
     
 URL Parameter | value | required | description
 --- | --- | --- | ---
-`buildingid` | integer | yes | Defines the building to zoom to
-`zoom` | integer | no | Set custom zoom level to show building
+`building-id` | integer | yes | Defines the building to zoom to
+`zoom-level` | integer | no | Set custom zoom level to show building from 1-22 default 19
     
 Example call:
 
-    http://www.indrz.com/map/greatmapname/buildingid=1&zoom=18
+    http://www.indrz.com/map/{map-name}/buildingid=1&zoom=18
 
 ## Zoom to a campus area
 A campus area is defined as a POLYGON representing the area in which one or more buildings are grouped with the same name.  Calling zoom to campus will
@@ -49,21 +49,22 @@ URL Parameter | value | required | description
 
 Example call:
 
-    http://www.indrz.com/map/greatmapname/campusid=1
+    http://www.indrz.com/map/{map-name}/campusid=1
     
 ## Zoom to a specific room location
 Zoom the map to a specific indoor space polygon such as a room or office location
 
-    http://www.indrz.com/map/{map-name}/spaceid={space-id}&zoom={zooom-value}
+    http://www.indrz.com/map/{map-name}/buildingid={building-id}&spaceid={space-id}&zoom={zooom-value}
   
 URL Parameter | value | required | description
 --- | --- | --- | ---
+`building-id` | integer | yes | Defines the building to zoom to
 `space-id` | integer | yes | Defines the space area to zoom to such as a single office space
 `zoom-value` | integer | no | Set custom zoom level accepts values from 0-22
 
 Example call:
 
-    http://www.indrz.com/map/greatmapname/spaceid=1&zoom=20
+    http://www.indrz.com/map/{map-name}/spaceid=1&zoom=20
 
 ## Embedding an indrz indoor map using an iframe
 
@@ -72,7 +73,7 @@ Here we explain how to include an indrz map in your homepage.
 Simply create an iframe with the following link
 
 ```html
-<iframe src="http://www.indrz.com/map/{MapName}">
+<iframe src="http://www.indrz.com/map/{map-name}">
   width="100%" height="420" frameborder="0" marginheight="0" marginwidth="0"
   scrolling="no"></iframe>
 ```
