@@ -72,3 +72,11 @@ $RECYCLE.BIN/
 /indrz/indrz/secret_settings.py
 
 
+/api/migrations/0*.*
+/buildings/migrations/0*.*
+/routing/migrations/0*.*
+/landscape/migrations/0*.*
+/maps/migrations/0*.*
+
+
+
