@@ -9,15 +9,9 @@ Welcome to the open source indrz indoor wayfinding web applciation.  Indrz is a 
 
 First steps
 ===========
-This is the place to start!
+This is the place to start! so get reading
 
-* **Your first visit:**
-  :doc:`Overview <intro/index>` |
-  :doc:`Installation Production Deploy<intro/install_production>`
-  :doc:`Installation Developers <intro/install_developer>`
-
-* **Tutorials:**
-coming soon...
+ 1.[indrz Installation !](installation/readme.md)
 
 
 indrz API Documentation
@@ -33,12 +27,9 @@ The indrz open-source project
 Learn about the development process for the indrz project itself and about how
 you can contribute:
 
-* **Community:**
-  :doc:`How to get involved <internals/contributing/index>` |
-  :doc:`The release process <internals/release-process>` |
-  :doc:`The indrz source code repository <internals/git>` |
-  :doc:`Mailing lists <internals/mailing-lists>`
+## Contact & community
+Communication is simple via email ([office@gomogi.com](mailto:office@gomogi.com)). All other discussion should happen in the [indrz Google Group](https://groups.google.com/forum/#!forum/indrz-dev),  or [relevant GitHub issues page](https://github.com/indrz/indrz/issues).
 
+## Hey join us, get involved
+indrz would love your help. There are more than enough things to get done so we would love your help.  We need people to help out submit bugs, suggest features, write documentation and contribute code.
 
-* **Documentation:**
-  :doc:`About this documentation <internals/contributing/writing-documentation>`
