@@ -1,9 +1,6 @@
 CREATE ROLE "indrz-pg" LOGIN ENCRYPTED PASSWORD 'md539091991722381dcef6112d1b681b5d5'
   NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
 
-ALTER ROLE "indrz-pg"
-  SET search_path = django, geodata, public;
-
 
 CREATE DATABASE indrz
   WITH OWNER = "indrz-pg"
@@ -24,3 +21,6 @@ CREATE EXTENSION postgis
 CREATE SCHEMA django AUTHORIZATION "indrz-pg";
 CREATE SCHEMA geodata AUTHORIZATION "indrz-pg";
 
+
+ALTER ROLE "indrz-pg"
+  SET search_path = django, geodata, public;
