@@ -1,6 +1,7 @@
 Installation
 ============
 
+Installation is not the easiest at the moment and is therefor aimed primarily at fellow developers with experience.
 
 Software and Technology
 =======================
@@ -25,7 +26,7 @@ Bootstrap       | MIT copyright 2015 Twitter
 Requirements
 ============
 
-  1. Postgresql 9.3.x
+  1. PostgreSQL 9.3.x
   1. PostGIS 2.1.x
   1. pgRouting 2.x
   1. Python 2.7.x
@@ -40,7 +41,7 @@ Instructions
 1. Install Python 2.7.x
 1. Install Django 1.8
 1. Install all other python repos with pip
-1. Check out the GIT repo and start
+1. Check out the GIT repo and start [GIT how to fork indrz] (https://help.github.com/articles/fork-a-repo/)
 
 
 Windows users
@@ -57,6 +58,12 @@ enter virtual env
 C:\> C:\virtualenv\Scripts\activate.bat 
 (virtualenv) C:\> easy_install psycopg2-2.5.4.win32-py2.7-pg9.3.5-release.exe
 ```
+
+
+Installation with Docker
+========================
+
+this will be awesome...coming soon
 
 
 Get the indrz GIT repostiory Started
