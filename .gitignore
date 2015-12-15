@@ -73,12 +73,12 @@ $RECYCLE.BIN/
 *.pyc
 
 
-/api/migrations/
-/buildings/migrations/
-/routing/migrations/
-/landscape/migrations/
-/maps/migrations/
-/conference/migrations/
+/indrz/api/migrations/
+/indrz/buildings/migrations/
+/indrz/routing/migrations/
+/indrz/landscape/migrations/
+/indrz/maps/migrations/
+/indrz/conference/migrations/
 
 
 
