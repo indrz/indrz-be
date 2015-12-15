@@ -65,6 +65,13 @@ body, h1, h2, h3, h4, p, li, td, th {
     z-index: 1001;
 }
 
+.indrz-search {
+  position: absolute; /* or absolute */
+  top: 2%;
+  left: 40px;
+  z-index: 1002;
+}
+
 
 /* STYLE CSS for the typeahead drop down */
 
