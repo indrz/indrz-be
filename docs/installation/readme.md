@@ -38,10 +38,12 @@ Instructions
 1. Install PostgreSQL 9.3, this I will leave up to you and some googleling
 1. Install PostGIS Extension for your PostgreSQL install
 1. Install PgRouting 2.x Extension for your PostgreSQL install
+1. Create a database [follow these SQL scripts in order] (../../scripts/sql)
 1. Install Python 2.7.x
 1. Install Django 1.8
 1. Install all other python repos with pip
-1. Check out the GIT repo and start [GIT how to fork indrz] (https://help.github.com/articles/fork-a-repo/)
+
+Help is here check out the GIT repo and start [GIT how to fork indrz] (https://help.github.com/articles/fork-a-repo/)
 
 
 Windows users
