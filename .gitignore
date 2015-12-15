@@ -70,6 +70,7 @@ $RECYCLE.BIN/
 
 # secret pwd and user names
 /indrz/indrz/secret_settings.py
+*.pyc
 
 
 /api/migrations/0*.*
