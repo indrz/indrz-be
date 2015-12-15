@@ -1,0 +1,25 @@
+{% load i18n %}
+<div class="indrz-search">
+    <div class="col-lg-3">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="{% trans "Search for ..." %}">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">{% trans "Go!" %}</button>
+
+          <a class="btn btn-primary" href="#"><i class="fa fa-cog fa-fw"></i></a>
+          <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+              <span class="fa fa-caret-down"></span></a>
+          <ul class="dropdown-menu">
+              <li><a href="#"><i class="fa fa-share fa-fw"></i> {% trans "Share" %}</a></li>
+              <li><a href="#"><i class="fa fa-map-marker fa-fw"></i> {% trans "GPS" %}</a></li>
+              <li><a href="#"><i class="fa fa-language fa-fw"></i> {% trans "Language" %}</a></li>
+              <li><a href="#"><i class="fa fa-map-signs fa-fw"></i> {% trans "Directions" %}</a></li>
+              <li><a href="#"><i class="fa fa-expand fa-fw"></i> {% trans "Go Full Screen" %}</a></li>
+              <li class="divider"></li>
+              <li><a href="#"><i class="fa fa-info fa-fw"></i> {% trans "Info" %}</a></li>
+          </ul>
+      </span>
+        </div><!-- /input-group -->
+
+    </div><!-- /.col-lg-3 -->
+</div><!-- /.row -->
