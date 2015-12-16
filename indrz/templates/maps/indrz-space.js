@@ -1,8 +1,13 @@
-  var space_source = new ol.source.Vector({
-    url: 'http://localhost:8000/api/v1/buildings/spaces/'+ space_id +'.json',
-    format: new ol.format.GeoJSON()
-  });
-  var style = new ol.style.Style({
+var spaceJSONURL = 'http://localhost:8000/api/v1/buildings/spaces/'+ space_id +'.json';
+
+var space_source = new ol.source.Vector();
+$.ajax(spaceJSONURL).then(function(response) {
+    var geojsonFormat = new ol.format.GeoJSON();
+    var features = geojsonFormat.readFeatures(response,
+        {featureProjection: 'EPSG:4326'});
+    space_source.addFeatures(features);
+});
+var style = new ol.style.Style({
     fill: new ol.style.Fill({
       color: 'rgba(255, 255, 255, 0.6)'
     }),
@@ -20,24 +25,13 @@
         width: 1
       })
     })
-  });
-  var vectorLayer = new ol.layer.Vector({
+});
+
+var spaceLayer = new ol.layer.Vector({
     source: space_source,
-    style: style
-  });
+    style:  style,
+    title: "Space",
+    name: "Space"
+});
 
-  var view = map.getView()
-
-  map.getLayers().push(vectorLayer);
-
-  var feature = space_source.getFeatures()[0];
-  var polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
-  var size = /** @type {ol.Size} */ (map.getSize());
-  view.fit(
-      polygon,
-      size,
-      {
-        padding: [170, 50, 30, 150],
-        constrainResolution: false
-      }
-  );
+map.getLayers().push(spaceLayer);
