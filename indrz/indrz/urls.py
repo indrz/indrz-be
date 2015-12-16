@@ -18,7 +18,7 @@ from django.contrib import admin
 # from maps import views as map_view
 
 urlpatterns = [
-    url(r'^', include('maps.urls')),  # homepage start page url
+    url(r'^$', 'maps.views.route_map'),  # homepage start page url
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/v1/', include('api.urls')),
     url(r'^map/', include('maps.urls')),
