@@ -17,6 +17,7 @@ urlpatterns = patterns('api.views',
     url(r'^buildings/$', 'building_list', name='list_buildings'),
     url(r'^buildings/(?P<pk>[0-9]+)/$', 'building_detail', name='building_details'),
     url(r'^buildings/spaces/(?P<building_id>\d{1,5})/(?P<floor_id>\d{1,5})/$', 'building_spaces_list', name='building_spaces_list'),
+    url(r'^buildings/spaces/(?P<space_id>\d{1,5})/$', 'get_floor_space_id', name='get_space_info'),
     #url(r'^directions/(?P<building_name>building=d{1,5})&start={1,6}&destination={1,6}/$', 'route_room_to_room', name='route-space-to-space' )
 
 )

@@ -64,7 +64,7 @@ def building_detail(request, pk, format=None):
     #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def building_spaces_list(request, building_id, floor_id, format=None):
     """
     List all spaces on a specified floor in given building.
@@ -73,6 +73,18 @@ def building_spaces_list(request, building_id, floor_id, format=None):
         floor_spaces = BuildingFloorSpace.objects.filter(fk_building=building_id, fk_building_floor=floor_id)
         serializer = BuildingFloorSpaceSerializer(floor_spaces, many=True)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_floor_space_id(request, space_id, format=None):
+    """
+    Return the GeoJSON of a single space ex. a single room
+    """
+    if request.method == 'GET':
+        floor_space_info = BuildingFloorSpace.objects.filter(id=space_id)
+        serializer = BuildingFloorSpaceSerializer(floor_space_info, many=True)
+        return Response(serializer.data)
+
 
 def find_closest_network_node(x_coord, y_coord, floor):
     """
