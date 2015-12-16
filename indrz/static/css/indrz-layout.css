@@ -73,6 +73,10 @@ body, h1, h2, h3, h4, p, li, td, th {
 }
 
 
+.popover-content {
+	min-width: 225px;
+}
+
 /* STYLE CSS for the typeahead drop down */
 
 .twitter-typeahead .tt-query,
