@@ -8,8 +8,6 @@ urlpatterns = patterns('maps.views',
     url(r'^$', 'map_socgen_nantes', name='socgen-nantes'),
     url(r'^(?P<map_name>.+)/$', 'route_map', name='map_name'),
     url(r'^socgen-nantes/$', 'map_socgen_nantes', name='socgen-nantes'),
-    url(r'^space/(?P<space_id>\d{1,5})(?P<zoom_level>&zoom=\d{1,2})?/$', 'zoom_space', name='zoom-space'),
-    url(r'^campus/(?P<campus_id>\d{1,5})(?P<zoom_level>&zoom=\d{1,2})?/$', 'zoom_campus', name='zoom-campus'),
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
