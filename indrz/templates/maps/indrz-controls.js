@@ -1,6 +1,6 @@
 var full_screen_control = new ol.control.FullScreen({
-    className: "btn-full-screen",
-    target: "body"
+    className: "btn-fullscreen",
+    target: document.getElementById("id-fullscreen")
 });
 
 
