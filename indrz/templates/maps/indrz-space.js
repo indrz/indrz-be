@@ -42,6 +42,10 @@ $.ajax(spaceJSONURL).then(function(response) {
     var features = geojsonFormat.readFeatures(response,
         {featureProjection: 'EPSG:4326'});
     space_source.addFeatures(features);
+
+    // space_source.getExtent();
+    map.getView().setCenter(ol.extent.getCenter(space_source.getExtent()));
+
 });
 
 var spaceLayer = new ol.layer.Vector({
