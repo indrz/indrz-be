@@ -10,7 +10,7 @@ def route_map(request, *args, **kwargs):
     if request.method == 'GET':
         map_name = kwargs.pop('map_name', None)
         building_id, = request.GET.get('buildingid', 1),
-        space_id, = request.GET.get('spaceid', 1),
+        space_id, = request.GET.get('spaceid', 0),
         zoom_level, = request.GET.get('zoom', 18),
 
         context.update({
