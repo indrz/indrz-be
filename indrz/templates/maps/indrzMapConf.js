@@ -4,4 +4,5 @@ var buildingNantesId = 1;
 var baseUrlWms = '';
 var zoom_level="{{ zoom_level }}";
 var building_id="{{ building_id }}";
+var floor_id=5;
 var space_id="{{ space_id }}";

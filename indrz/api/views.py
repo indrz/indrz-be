@@ -38,7 +38,8 @@ def building_list(request, format=None):
     #         return Response(serializer.data, status=status.HTTP_201_CREATED)
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@csrf_exempt
+
+@api_view(['GET'])
 def building_detail(request, pk, format=None):
     """
     Retrieve, update or delete a code snippet.

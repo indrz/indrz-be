@@ -2,6 +2,7 @@ from rest_framework import serializers
 from buildings.models import Building, BuildingFloorSpace, LtSpaceType
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
+
 class BuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Building
@@ -9,6 +10,8 @@ class BuildingSerializer(serializers.ModelSerializer):
 
 
 class BuildingFloorSpaceSerializer(GeoFeatureModelSerializer):
+    fk_building = BuildingSerializer(read_only=True)
+
     class Meta:
         model = BuildingFloorSpace
         geo_field = "multi_poly"
