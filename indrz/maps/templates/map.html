@@ -29,6 +29,8 @@
     <script>  {% include 'maps/indrzLayers.js' %} </script>
     <script>  {% include 'maps/routing.js' %} </script>
     <script>  {% include 'maps/indrz-popup.js' %} </script>
-    <script>  {% include 'maps/indrz-space.js' %} </script>
     <script>  {% include 'maps/indrz-controls.js' %} </script>
+{% endblock map_frame %}    {% if space_id > 0 and space_id != None %}
+        <script>  {% include 'maps/indrz-space.js' %} </script>
+    {% endif %}
 {% endblock map_frame %}
