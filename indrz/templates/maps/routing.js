@@ -31,7 +31,7 @@ function switchBackgroundTo(backNum) {
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    url: 'http://localhost:8000/api/v1/buildings/spaces/' + building_id +'/' + '1.json',
+    url: 'http://localhost:8000/api/v1/buildings/spaces/' + building_id +'/' + space_id +'.json',
     format: new ol.format.GeoJSON()
   }),
         style:  new ol.style.Style({
