@@ -57,16 +57,16 @@ var map = new ol.Map({
     layers: [
         new ol.layer.Group({
                 'title': 'Background',
-                layers: [mapQuestOsm, OsmBackLayer
+                layers: [mapQuestOsm, OsmBackLayer, SatelliteLayer
                 ]
-            }),
-            new ol.layer.Group({
-                title: 'Etage',
-                layers: [
+        }),
+        new ol.layer.Group({
+            title: 'Etage',
+            layers: [
 
-                        wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03
-                ]
-            }),
+                    wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03
+            ]
+        }),
         vector
     ],
     target: 'map',

@@ -12,7 +12,11 @@ $("#id-map-switcher").on("click", function(evt){
     map_type = !map_type;
     if(map_type) {
         $(this).text('Satellite');
+        SatelliteLayer.setVisible(false);
+        OsmBackLayer.setVisible(true);
     } else {
         $(this).text('Map');
+        SatelliteLayer.setVisible(true);
+        OsmBackLayer.setVisible(false);
     }
 });
