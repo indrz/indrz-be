@@ -1,8 +1,4 @@
-from django.http import HttpResponse
 from django.shortcuts import render
-from django.http import Http404
-
-from buildings.models import Building
 
 
 def route_map(request, *args, **kwargs):
@@ -16,7 +12,7 @@ def route_map(request, *args, **kwargs):
         context.update({
             'map_name': map_name,
             'building_id': building_id,
-            'space_id': space_id,
+            'space_id': int(space_id),
             'zoom_level': zoom_level,
         })
 
@@ -27,9 +23,3 @@ def map_socgen_nantes(request):
     return render(request, 'socgen-nantes.html')
 
 
-def testswitch(request):
-    return render(request, 'testswitch.html')
-
-
-# def index(request):
-#     return render(request, 'route-map.html')
