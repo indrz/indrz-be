@@ -52,7 +52,8 @@ var spaceLayer = new ol.layer.Vector({
     source: space_source,
     style: getText,
     title: "Space",
-    name: "Space"
+    name: "Space",
+    zIndex: 99
 });
 
 map.getLayers().push(spaceLayer);

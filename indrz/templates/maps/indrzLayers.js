@@ -79,3 +79,9 @@ var OsmBackLayer = new ol.layer.Tile({
     source: new ol.source.OSM(),
     visible: true,
     type:"background"});
+
+var SatelliteLayer = new ol.layer.Tile({
+    source: new ol.source.MapQuest({layer: 'sat'}),
+    visible: false,
+    type:"background"
+})
