@@ -61,7 +61,7 @@ body, h1, h2, h3, h4, p, li, td, th {
 .floor-changer-float{
     position: absolute;
     top: 5%;
-    right: 3%;
+    right: 20px;
     z-index: 1001;
 }
 
@@ -126,6 +126,15 @@ body, h1, h2, h3, h4, p, li, td, th {
 }
 .tt-suggestion p {
 	margin: 0;
+}
+
+#id-map-switcher-widget{
+    position: absolute;
+    right: 120px;
+    top: 5%;
+}
+#id-map-switcher-widget button{
+    width: 120px;
 }
 
 .ol-popup {
