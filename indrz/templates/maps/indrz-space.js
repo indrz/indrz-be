@@ -42,7 +42,7 @@ $.ajax(spaceJSONURL).then(function(response) {
     var features = geojsonFormat.readFeatures(response,
         {featureProjection: 'EPSG:4326'});
     space_source.addFeatures(features);
-    var space_floor_num = features[0].getProperties().floor_num;
+    var space_floor_num = features[0].getProperties().floor_num + 1;
     map.getView().setCenter(ol.extent.getCenter(space_source.getExtent()));
     activateLayer(space_floor_num);
 });
