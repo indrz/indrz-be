@@ -34,7 +34,7 @@ var styles = [style];
           }
     };
 
-var spaceJSONURL = 'http://localhost:8000/api/v1/buildings/spaces/'+ space_id +'.json';
+var spaceJSONURL = '/api/v1/buildings/spaces/'+ space_id +'.json';
 
 var space_source = new ol.source.Vector();
 $.ajax(spaceJSONURL).then(function(response) {
@@ -42,17 +42,17 @@ $.ajax(spaceJSONURL).then(function(response) {
     var features = geojsonFormat.readFeatures(response,
         {featureProjection: 'EPSG:4326'});
     space_source.addFeatures(features);
-
-    // space_source.getExtent();
+    var space_floor_num = features[0].getProperties().floor_num + 1;
     map.getView().setCenter(ol.extent.getCenter(space_source.getExtent()));
-
+    activateLayer(space_floor_num);
 });
 
 var spaceLayer = new ol.layer.Vector({
     source: space_source,
     style: getText,
     title: "Space",
-    name: "Space"
+    name: "Space",
+    zIndex: 99
 });
 
 map.getLayers().push(spaceLayer);

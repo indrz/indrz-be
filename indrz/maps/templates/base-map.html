@@ -153,6 +153,9 @@
             <div id="map" class="map"></div>
             <a href="http://www.indrz.com" target="_blank"><img src="{% static "img/indrz-powered-by-90px.png" %}"
                                                                 class="indrz-logo"/></a>
+            <div id="id-map-switcher-widget">
+                <button id="id-map-switcher" class="btn btn-info">Satellite</button>
+            </div>
             {% block floor-change-float %}
                 <div class="floor-changer-float">
                     <ul class="nav nav-pills nav-stacked">
@@ -183,7 +186,7 @@
         var roomNums = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.whitespace,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
-            prefetch: 'http://localhost:8000/api/v1/spaces/search/?format=json'
+            prefetch: '/api/v1/spaces/search/?format=json'
         });
 
         // passing in `null` for the `options` arguments will result in the default

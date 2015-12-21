@@ -110,3 +110,10 @@ var spaces_vector = new ol.layer.Vector({
     zIndex: 99,
     visible: true
 });
+    type:"background"});
+
+var SatelliteLayer = new ol.layer.Tile({
+    source: new ol.source.MapQuest({layer: 'sat'}),
+    visible: false,
+    type:"background"
+})

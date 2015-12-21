@@ -22,10 +22,10 @@ Version number is passed inside the URL to help maintain backward compatibility,
 http://www.indrz.com/api/v1/
 ```
 
-## Zoom to a building
+## Zoom to a single building
 Start the map zoomed to the extent of a single building.  The {zoom} parameter is optional.
 
-    http://www.indrz.com/map/{map-name}/buildingid={building-id}&zoom={zoom-level}
+    http://www.indrz.com/map/{map-name}/?buildingid={building-id}&zoom={zoom-level}
     
 URL Parameter | value | required | description
 --- | --- | --- | ---
@@ -54,7 +54,7 @@ Example call:
 ## Zoom to a specific room location
 Zoom the map to a specific indoor space polygon such as a room or office location
 
-    http://www.indrz.com/map/{map-name}/buildingid={building-id}&spaceid={space-id}&zoom={zooom-value}
+    http://www.indrz.com/map/{map-name}/?buildingid={building-id}&spaceid={space-id}&zoom={zoom-value}
   
 URL Parameter | value | required | description
 --- | --- | --- | ---

@@ -28,6 +28,27 @@ function switchBackgroundTo(backNum) {
 
 }
 
+
+var vector = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: '/api/v1/buildings/spaces/' + building_id +'/' + space_id +'.json',
+    format: new ol.format.GeoJSON()
+  }),
+        style:  new ol.style.Style({
+            stroke: new ol.style.Stroke({
+              color: 'red',
+              width: 2
+            })
+          }),
+        title: "spaces",
+        name: "spaces",
+        zIndex: 1,
+        visible: true
+
+});
+
+
+
 var map = new ol.Map({
       interactions: ol.interaction.defaults().extend([
     new ol.interaction.DragRotateAndZoom()
@@ -36,12 +57,12 @@ var map = new ol.Map({
     layers: [
         new ol.layer.Group({
                 'title': 'Background',
-                layers: [mapQuestOsm, OsmBackLayer
+                layers: [mapQuestOsm, OsmBackLayer, SatelliteLayer
                 ]
-            }),
-            new ol.layer.Group({
-                title: 'Etage',
-                layers: [
+        }),
+        new ol.layer.Group({
+            title: 'Etage',
+            layers: [
 
                         wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03
                 ]
@@ -63,7 +84,7 @@ var map = new ol.Map({
 var routeLayer = null;
 
 function addRoute(buildingId, fromNumber, toNumber, routeType) {
-    var baseUrl = 'http://localhost:8000/api/v1/directions/';
+    var baseUrl = '/api/v1/directions/';
     var geoJsonUrl = baseUrl + 'buildingid=' +  buildingId + '&startid=' + fromNumber + '&endid=' + toNumber + '/?format=json';
 
     var startingLevel = fromNumber.charAt(0);
