@@ -31,7 +31,7 @@ function switchBackgroundTo(backNum) {
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    url: 'http://localhost:8000/api/v1/buildings/spaces/' + building_id +'/' + space_id +'.json',
+    url: '/api/v1/buildings/spaces/' + building_id +'/' + space_id +'.json',
     format: new ol.format.GeoJSON()
   }),
         style:  new ol.style.Style({
@@ -84,7 +84,7 @@ map.getLayers().push(vector);
 var routeLayer = null;
 
 function addRoute(buildingId, fromNumber, toNumber, routeType) {
-    var baseUrl = 'http://localhost:8000/api/v1/directions/';
+    var baseUrl = '/api/v1/directions/';
     var geoJsonUrl = baseUrl + 'buildingid=' +  buildingId + '&startid=' + fromNumber + '&endid=' + toNumber + '/?format=json';
 
     var startingLevel = fromNumber.charAt(0);
