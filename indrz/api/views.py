@@ -11,7 +11,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from geojson import loads, Feature, FeatureCollection
 from buildings.models import Building, BuildingFloorSpace, BuildingFloor
-from buildings.serializers import BuildingSerializer, BuildingFloorSpaceSerializer, BuildingFloorSerializer
+from buildings.serializers import (BuildingSerializer,
+                                   BuildingFloorSpaceSerializer,
+                                   BuildingFloorSerializer,
+                                   SpaceSerializer)
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +93,7 @@ def get_floor_space_id(request, space_id, format=None):
     """
     if request.method == 'GET':
         floor_space_info = BuildingFloorSpace.objects.filter(id=space_id)
-        serializer = BuildingFloorSpaceSerializer(floor_space_info, many=True)
+        serializer = SpaceSerializer(floor_space_info, many=True)
         return Response(serializer.data)
 
 
