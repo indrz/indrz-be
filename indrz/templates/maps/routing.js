@@ -4,9 +4,19 @@ function hideLayers() {
     for (var i=0; i<switchableLayers.length; i++) {
         switchableLayers[i].setVisible(false);
     }
+    if(floor_layers.length > 0) {
+        for (var i = 0; i < floor_layers.length; i++) {
+            floor_layers[i].setVisible(false);
+        }
+    }
+    $("#floor-links li").removeClass("active");
 }
 function setLayerVisible(index) {
     switchableLayers[index].setVisible(true);
+    if(floor_layers.length > 0) {
+        floor_layers[index].setVisible(true);
+        $("#floor-links li:nth-child(" + (index + 1) + ")").addClass("active");
+    }
 }
 function activateLayer(index) {
     hideLayers();
@@ -64,10 +74,9 @@ var map = new ol.Map({
             title: 'Etage',
             layers: [
 
-                    wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03
-            ]
-        }),
-        vector
+                        wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03
+                ]
+            }),
     ],
     target: 'map',
     controls: ol.control.defaults({
@@ -80,7 +89,7 @@ var map = new ol.Map({
         zoom: zoom_level
     })
 });
-map.getLayers().push(vector);
+
 var routeLayer = null;
 
 function addRoute(buildingId, fromNumber, toNumber, routeType) {

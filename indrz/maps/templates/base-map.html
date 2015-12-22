@@ -90,7 +90,7 @@
 
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">{% trans "Floor" %} <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" id="floor-links">
                             <li><a href="#" onclick="activateLayer(4);" id="action-3">{% trans "Etage 3" %}</a></li>
                             <li><a href="#" onclick="activateLayer(3);" id="action-2">{% trans "Etage 2" %}</a></li>
                             <li><a href="#" onclick="activateLayer(2);" id="action-1">{% trans "Etage 1" %}</a></li>
@@ -158,12 +158,12 @@
             </div>
             {% block floor-change-float %}
                 <div class="floor-changer-float">
-                    <ul class="nav nav-pills nav-stacked">
-                        <li><a href="#" onclick="activateLayer(4);" id="action-3">{% trans "Etage 3" %}</a></li>
-                        <li><a href="#" onclick="activateLayer(3);" id="action-2">{% trans "Etage 2" %}</a></li>
-                        <li><a href="#" onclick="activateLayer(2);" id="action-1">{% trans "Etage 1" %}</a></li>
-                        <li class="active"><a href="#" onclick="activateLayer(1);" id="action-0">{% trans "Etage 0" %}</a></li>
-                        <li><a href="#" onclick="activateLayer(0);" id="action--1">{% trans "Etage -1" %}</a></li>
+                    <ul class="nav nav-pills nav-stacked" id="floor-links">
+{#                        <li><a href="#" onclick="activateLayer(4);" id="action-3">{% trans "Etage 3" %}</a></li>#}
+{#                        <li><a href="#" onclick="activateLayer(3);" id="action-2">{% trans "Etage 2" %}</a></li>#}
+{#                        <li><a href="#" onclick="activateLayer(2);" id="action-1">{% trans "Etage 1" %}</a></li>#}
+{#                        <li class="active"><a href="#" onclick="activateLayer(1);" id="action-0">{% trans "Etage 0" %}</a></li>#}
+{#                        <li><a href="#" onclick="activateLayer(0);" id="action--1">{% trans "Etage -1" %}</a></li>#}
                     </ul>
                 </div>
             {% endblock floor-change-float %}
@@ -175,7 +175,10 @@
     </div>
 </div>
 
-<div id="indrz-popup" title="indrz info"></div>
+<div id="indrz-popup" title="indrz info" class="ol-popup">
+    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+    <div id="popup-content"></div>
+</div>
 
 
 {% block js-typeahead %}
