@@ -1,0 +1,965 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-12-22 12:20+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\buildings\models.py:6 .\landscape\models.py:6
+msgid "code value"
+msgstr ""
+
+#: .\buildings\models.py:7
+msgid "name value"
+msgstr ""
+
+#: .\buildings\models.py:111 .\buildings\models.py:116
+msgid "Active meaning show it yes - no"
+msgstr ""
+
+#: .\buildings\models.py:112 .\buildings\models.py:117
+msgid "Priority of POI"
+msgstr ""
+
+#: .\buildings\models.py:113 .\buildings\models.py:118
+msgid "Sort order in legend"
+msgstr ""
+
+#: .\buildings\models.py:126
+msgid "Street"
+msgstr ""
+
+#: .\buildings\models.py:128
+msgid "Building or house number"
+msgstr ""
+
+#: .\buildings\models.py:130
+msgid "Postal code"
+msgstr ""
+
+#: .\buildings\models.py:132
+msgid "Municipality"
+msgstr ""
+
+#: .\buildings\models.py:135
+msgid "City"
+msgstr ""
+
+#: .\buildings\models.py:139
+msgid "Country"
+msgstr ""
+
+#: .\buildings\models.py:151 .\landscape\models.py:94
+msgid "Name"
+msgstr ""
+
+#: .\buildings\models.py:152 .\landscape\models.py:97 .\maps\map-models.py:16
+msgid "Description"
+msgstr ""
+
+#: .\buildings\models.py:153 .\landscape\models.py:98
+msgid "Brief description"
+msgstr ""
+
+#: .\buildings\models.py:154
+msgid "Phone"
+msgstr ""
+
+#: .\buildings\models.py:156
+msgid "Email"
+msgstr ""
+
+#: .\buildings\models.py:158
+msgid "Website"
+msgstr ""
+
+#: .\buildings\models.py:164
+msgid "Building centroid for small scale maps"
+msgstr ""
+
+#: .\buildings\models.py:182
+msgid "Owner name"
+msgstr ""
+
+#: .\buildings\models.py:183
+msgid "Legal entity form..gmbh, verein"
+msgstr ""
+
+#: .\buildings\models.py:184
+msgid "Number of buildings"
+msgstr ""
+
+#: .\buildings\models.py:198
+msgid "Campus name"
+msgstr ""
+
+#: .\buildings\models.py:199 .\buildings\models.py:225
+msgid "Building description"
+msgstr ""
+
+#: .\buildings\models.py:218
+msgid "Building name"
+msgstr ""
+
+#: .\buildings\models.py:219
+msgid "Building height in meters"
+msgstr ""
+
+#: .\buildings\models.py:220
+msgid "Fancy building name"
+msgstr ""
+
+#: .\buildings\models.py:221
+msgid "Number of floors"
+msgstr ""
+
+#: .\buildings\models.py:222
+msgid "Unique facility number"
+msgstr ""
+
+#: .\buildings\models.py:223
+msgid "Operational hours"
+msgstr ""
+
+#: .\buildings\models.py:224
+msgid "EPSG code original data"
+msgstr ""
+
+#: .\buildings\models.py:240
+msgid "short name eg first floor"
+msgstr ""
+
+#: .\buildings\models.py:241 .\buildings\models.py:269
+#: .\buildings\models.py:298 .\buildings\models.py:350
+msgid "long name"
+msgstr ""
+
+#: .\buildings\models.py:242
+msgid "special name"
+msgstr ""
+
+#: .\buildings\models.py:244
+msgid "Floor order value"
+msgstr ""
+
+#: .\buildings\models.py:245
+msgid "Elevation value of floor in meters"
+msgstr ""
+
+#: .\buildings\models.py:247 .\buildings\models.py:272
+#: .\buildings\models.py:301 .\buildings\models.py:352 .\routing\models.py:58
+msgid "floor number"
+msgstr ""
+
+#: .\buildings\models.py:248
+msgid "height of floor"
+msgstr ""
+
+#: .\buildings\models.py:268 .\buildings\models.py:297
+#: .\buildings\models.py:349
+msgid "short name"
+msgstr ""
+
+#: .\buildings\models.py:270
+msgid "gis calculated area"
+msgstr ""
+
+#: .\buildings\models.py:271
+msgid "gis calculated perimeter"
+msgstr ""
+
+#: .\buildings\models.py:300
+msgid "gis calculated length"
+msgstr ""
+
+#: .\buildings\models.py:322
+msgid "Organization name e.g Engineering"
+msgstr ""
+
+#: .\buildings\models.py:323
+msgid "Department name e.g Engineering"
+msgstr ""
+
+#: .\buildings\models.py:324
+msgid "Division"
+msgstr ""
+
+#: .\buildings\models.py:332
+msgid "Room id imported from external system"
+msgstr ""
+
+#: .\buildings\models.py:333
+msgid "Room number"
+msgstr ""
+
+#: .\buildings\models.py:334
+msgid "Room number on door sign"
+msgstr ""
+
+#: .\buildings\models.py:335
+msgid "Room description"
+msgstr ""
+
+#: .\buildings\models.py:336
+msgid "Total number of occupants allowed in this space"
+msgstr ""
+
+#: .\buildings\models.py:340
+msgid "Tag values csv"
+msgstr ""
+
+#: .\buildings\models.py:351 .\maps\map-models.py:53
+msgid "description"
+msgstr ""
+
+#: .\buildings\models.py:354
+msgid "Force route to this location"
+msgstr ""
+
+#: .\buildings\models.py:355
+msgid "Activated and enabled"
+msgstr ""
+
+#: .\buildings\models.py:356
+msgid "Tree order in legend"
+msgstr ""
+
+#: .\buildings\models.py:357
+msgid "Sort oder of POI items"
+msgstr ""
+
+#: .\buildings\models.py:358
+msgid "Icon CSS name"
+msgstr ""
+
+#: .\conference\models.py:12
+msgid "name of conference"
+msgstr ""
+
+#: .\conference\models.py:13
+msgid "year of conference"
+msgstr ""
+
+#: .\conference\models.py:37
+msgid "short name of stand"
+msgstr ""
+
+#: .\conference\models.py:38
+msgid "long stand name"
+msgstr ""
+
+#: .\conference\models.py:39
+msgid "label of stand"
+msgstr ""
+
+#: .\conference\models.py:40
+msgid "foyer name location value"
+msgstr ""
+
+#: .\conference\models.py:41
+msgid "name of hall"
+msgstr ""
+
+#: .\conference\models.py:42
+msgid "stand id from external system"
+msgstr ""
+
+#: .\conference\models.py:43
+msgid "stand number from external"
+msgstr ""
+
+#: .\conference\models.py:44
+msgid "type of stand"
+msgstr ""
+
+#: .\landscape\models.py:7
+msgid "name descriptive value"
+msgstr ""
+
+#: .\landscape\models.py:99
+msgid "Surface type"
+msgstr ""
+
+#: .\maps\map-models.py:26
+msgid "style name"
+msgstr ""
+
+#: .\maps\map-models.py:52 .\maps\map-models.py:103 .\maps\map-models.py:125
+msgid "name"
+msgstr ""
+
+#: .\maps\map-models.py:54
+msgid "projection"
+msgstr ""
+
+#: .\maps\map-models.py:55
+msgid "map thumbnail"
+msgstr ""
+
+#: .\maps\map-models.py:61
+msgid "zoom"
+msgstr ""
+
+#: .\maps\map-models.py:62
+msgid "locate"
+msgstr ""
+
+#: .\maps\map-models.py:62
+msgid "Locate user on load?"
+msgstr ""
+
+#: .\maps\map-models.py:67
+msgid "background"
+msgstr ""
+
+#: .\maps\map-models.py:96
+msgid "Map"
+msgstr ""
+
+#: .\maps\map-models.py:97
+msgid "Maps"
+msgstr ""
+
+#: .\maps\map-models.py:99
+msgid "Can view the map"
+msgstr ""
+
+#: .\maps\map-models.py:104
+msgid "name for a group of layers"
+msgstr ""
+
+#: .\maps\map-models.py:106 .\maps\map-models.py:151
+msgid "opacity"
+msgstr ""
+
+#: .\maps\map-models.py:107
+msgid "visibility"
+msgstr ""
+
+#: .\maps\map-models.py:108 .\maps\map-models.py:153
+msgid "stack order"
+msgstr ""
+
+#: .\maps\map-models.py:121
+msgid "Can view the map layer"
+msgstr ""
+
+#: .\maps\map-models.py:128
+msgid "URL template using OSM tile format"
+msgstr ""
+
+#: .\maps\map-models.py:136
+msgid "Order of the tilelayers in the edit box"
+msgstr ""
+
+#: .\maps\map-models.py:141
+msgid "Can view the tilelayer"
+msgstr ""
+
+#: .\maps\map-models.py:152
+msgid "Visibility"
+msgstr ""
+
+#: .\maps\templates\base-map.html:52 .\maps\templates\base-map.html.py:103
+#: .\maps\templates\base-old.html:52
+msgid "GIT Source"
+msgstr ""
+
+#: .\maps\templates\base-map.html:92
+msgid "Floor"
+msgstr ""
+
+#: .\maps\templates\base-map.html:94 .\maps\templates\base-map.html.py:162
+msgid "Etage 3"
+msgstr ""
+
+#: .\maps\templates\base-map.html:95 .\maps\templates\base-map.html.py:163
+msgid "Etage 2"
+msgstr ""
+
+#: .\maps\templates\base-map.html:96 .\maps\templates\base-map.html.py:164
+msgid "Etage 1"
+msgstr ""
+
+#: .\maps\templates\base-map.html:97 .\maps\templates\base-map.html.py:165
+msgid "Etage 0"
+msgstr ""
+
+#: .\maps\templates\base-map.html:98 .\maps\templates\base-map.html.py:166
+msgid "Etage -1"
+msgstr ""
+
+#: .\maps\templates\base-map.html:124
+msgid "Route From:"
+msgstr ""
+
+#: .\maps\templates\base-map.html:128
+msgid "Route To:"
+msgstr ""
+
+#: .\maps\templates\base-map.html:136
+msgid "Standard Route"
+msgstr ""
+
+#: .\maps\templates\base-map.html:142
+msgid "Barrier Free Route"
+msgstr ""
+
+#: .\maps\templates\base-map.html:145
+msgid "Go !"
+msgstr ""
+
+#: .\maps\templates\search-form.html:5
+msgid "Search for ..."
+msgstr ""
+
+#: .\maps\templates\search-form.html:7
+msgid "Go!"
+msgstr ""
+
+#: .\maps\templates\search-form.html:13
+msgid "Share"
+msgstr ""
+
+#: .\maps\templates\search-form.html:14
+msgid "GPS"
+msgstr ""
+
+#: .\maps\templates\search-form.html:15
+msgid "Language"
+msgstr ""
+
+#: .\maps\templates\search-form.html:16
+msgid "Directions"
+msgstr ""
+
+#: .\maps\templates\search-form.html:19
+msgid "Info"
+msgstr ""
+
+#: .\maps\templates\search-form.html:20
+msgid "Report Bug"
+msgstr ""
+
+#: .\maps\templates\search-form.html:37
+msgid "Bug Report"
+msgstr ""
+
+#: .\maps\templates\search-form.html:40
+msgid "Please describe what did not work."
+msgstr ""
+
+#: .\routing\models.py:23
+msgid "Indoor way"
+msgstr ""
+
+#: .\routing\models.py:24
+msgid "Stairway"
+msgstr ""
+
+#: .\routing\models.py:25
+msgid "Elevator"
+msgstr ""
+
+#: .\routing\models.py:26
+msgid "Escalator"
+msgstr ""
+
+#: .\routing\models.py:27
+msgid "Outdoor way"
+msgstr ""
+
+#: .\routing\models.py:28
+msgid "Ramp"
+msgstr ""
+
+#: .\routing\models.py:29
+msgid "Zebra crossing"
+msgstr ""
+
+#: .\routing\models.py:30
+msgid "Stairway no floor change"
+msgstr ""
+
+#: .\routing\models.py:31
+msgid "Ramp no floor change"
+msgstr ""
+
+#: .\routing\models.py:32
+msgid "Elevator no floor change"
+msgstr ""
+
+#: .\routing\models.py:33
+msgid "Escalator no floor change"
+msgstr ""
+
+#: .\routing\models.py:37
+msgid "Public"
+msgstr ""
+
+#: .\routing\models.py:38
+msgid "Private"
+msgstr ""
+
+#: .\routing\models.py:39
+msgid "Employee"
+msgstr ""
+
+#: .\routing\models.py:40
+msgid "Visitor"
+msgstr ""
+
+#: .\routing\models.py:41
+msgid "Student"
+msgstr ""
+
+#: .\routing\models.py:42
+msgid "Faculty"
+msgstr ""
+
+#: .\routing\models.py:43
+msgid "Secure"
+msgstr ""
+
+#: .\routing\models.py:44
+msgid "Reserved"
+msgstr ""
+
+#: .\routing\models.py:45
+msgid "Maintenance"
+msgstr ""
+
+#: .\routing\models.py:46
+msgid "Handicap"
+msgstr ""
+
+#: .\routing\models.py:47
+msgid "Other"
+msgstr ""
+
+#: .\routing\models.py:48
+msgid "Unknown"
+msgstr ""
+
+#: .\routing\models.py:51
+msgid "short name eg fast networkline"
+msgstr ""
+
+#: .\routing\models.py:52
+msgid "speed value based on selection"
+msgstr ""
+
+#: .\routing\models.py:54
+msgid "source node id"
+msgstr ""
+
+#: .\routing\models.py:55
+msgid "target node id"
+msgstr ""
+
+#: .\routing\models.py:56
+msgid "cost to travel network"
+msgstr ""
+
+#: .\routing\models.py:57
+msgid "gis length of linestring"
+msgstr ""
+
+#: .\routing\models.py:60
+msgid "Type of network path type"
+msgstr ""
+
+#: .\routing\models.py:61
+msgid "Routing access type"
+msgstr ""
+
+#: .\templates\admin\404.html:4 .\templates\admin\404.html.py:8
+msgid "Page not found"
+msgstr ""
+
+#: .\templates\admin\404.html:10
+msgid "We're sorry, but the requested page could not be found."
+msgstr ""
+
+#: .\templates\admin\500.html:6 .\templates\admin\app_index.html:9
+#: .\templates\admin\auth\user\change_password.html:13
+#: .\templates\admin\base.html:58 .\templates\admin\change_form.html:18
+#: .\templates\admin\change_list.html:40
+#: .\templates\admin\delete_confirmation.html:8
+#: .\templates\admin\delete_selected_confirmation.html:8
+#: .\templates\admin\invalid_setup.html:6
+#: .\templates\admin\object_history.html:6
+msgid "Home"
+msgstr ""
+
+#: .\templates\admin\500.html:7
+msgid "Server error"
+msgstr ""
+
+#: .\templates\admin\500.html:11
+msgid "Server error (500)"
+msgstr ""
+
+#: .\templates\admin\500.html:14
+msgid "Server Error <em>(500)</em>"
+msgstr ""
+
+#: .\templates\admin\500.html:15
+msgid ""
+"There's been an error. It's been reported to the site administrators via "
+"email and should be fixed shortly. Thanks for your patience."
+msgstr ""
+
+#: .\templates\admin\actions.html:4
+msgid "Run the selected action"
+msgstr ""
+
+#: .\templates\admin\actions.html:4
+msgid "Go"
+msgstr ""
+
+#: .\templates\admin\actions.html:11
+msgid "Click here to select the objects across all pages"
+msgstr ""
+
+#: .\templates\admin\actions.html:11
+#, python-format
+msgid "Select all %(total_count)s %(module_name)s"
+msgstr ""
+
+#: .\templates\admin\actions.html:13
+msgid "Clear selection"
+msgstr ""
+
+#: .\templates\admin\auth\user\add_form.html:6
+msgid ""
+"First, enter a username and password. Then, you'll be able to edit more user "
+"options."
+msgstr ""
+
+#: .\templates\admin\auth\user\add_form.html:8
+msgid "Enter a username and password."
+msgstr ""
+
+#: .\templates\admin\auth\user\change_password.html:17
+#: .\templates\admin\auth\user\change_password.html:54
+#: .\templates\admin\base.html:46
+msgid "Change password"
+msgstr ""
+
+#: .\templates\admin\auth\user\change_password.html:27
+#: .\templates\admin\change_form.html:47 .\templates\admin\change_list.html:67
+#: .\templates\admin\login.html:19
+msgid "Please correct the error below."
+msgstr ""
+
+#: .\templates\admin\auth\user\change_password.html:27
+#: .\templates\admin\change_form.html:47 .\templates\admin\change_list.html:67
+#: .\templates\admin\login.html:19
+msgid "Please correct the errors below."
+msgstr ""
+
+#: .\templates\admin\auth\user\change_password.html:31
+#, python-format
+msgid "Enter a new password for the user <strong>%(username)s</strong>."
+msgstr ""
+
+#: .\templates\admin\base.html:32
+msgid "Welcome,"
+msgstr ""
+
+#: .\templates\admin\base.html:37
+msgid "View site"
+msgstr ""
+
+#: .\templates\admin\base.html:42
+msgid "Documentation"
+msgstr ""
+
+#: .\templates\admin\base.html:48
+msgid "Log out"
+msgstr ""
+
+#: .\templates\admin\base_site.html:3
+msgid "Django site admin"
+msgstr ""
+
+#: .\templates\admin\base_site.html:6
+msgid "Django administration"
+msgstr ""
+
+#: .\templates\admin\change_form.html:21 .\templates\admin\index.html:31
+#: .\templates\admin\related_widget_wrapper.html:18
+msgid "Add"
+msgstr ""
+
+#: .\templates\admin\change_form.html:33
+#: .\templates\admin\object_history.html:10
+msgid "History"
+msgstr ""
+
+#: .\templates\admin\change_form.html:35
+#: .\templates\admin\edit_inline\stacked.html:10
+#: .\templates\admin\edit_inline\tabular.html:33
+msgid "View on site"
+msgstr ""
+
+#: .\templates\admin\change_list.html:58
+#, python-format
+msgid "Add %(name)s"
+msgstr ""
+
+#: .\templates\admin\change_list.html:78
+msgid "Filter"
+msgstr ""
+
+#: .\templates\admin\change_list_results.html:17
+msgid "Remove from sorting"
+msgstr ""
+
+#: .\templates\admin\change_list_results.html:18
+#, python-format
+msgid "Sorting priority: %(priority_number)s"
+msgstr ""
+
+#: .\templates\admin\change_list_results.html:19
+msgid "Toggle sorting"
+msgstr ""
+
+#: .\templates\admin\delete_confirmation.html:12
+#: .\templates\admin\related_widget_wrapper.html:26
+#: .\templates\admin\submit_line.html:6
+msgid "Delete"
+msgstr ""
+
+#: .\templates\admin\delete_confirmation.html:18
+#, python-format
+msgid ""
+"Deleting the %(object_name)s '%(escaped_object)s' would result in deleting "
+"related objects, but your account doesn't have permission to delete the "
+"following types of objects:"
+msgstr ""
+
+#: .\templates\admin\delete_confirmation.html:25
+#, python-format
+msgid ""
+"Deleting the %(object_name)s '%(escaped_object)s' would require deleting the "
+"following protected related objects:"
+msgstr ""
+
+#: .\templates\admin\delete_confirmation.html:32
+#, python-format
+msgid ""
+"Are you sure you want to delete the %(object_name)s \"%(escaped_object)s\"? "
+"All of the following related items will be deleted:"
+msgstr ""
+
+#: .\templates\admin\delete_confirmation.html:34
+#: .\templates\admin\delete_selected_confirmation.html:33
+msgid "Objects"
+msgstr ""
+
+#: .\templates\admin\delete_confirmation.html:41
+#: .\templates\admin\delete_selected_confirmation.html:44
+msgid "Yes, I'm sure"
+msgstr ""
+
+#: .\templates\admin\delete_confirmation.html:42
+#: .\templates\admin\delete_selected_confirmation.html:45
+msgid "No, take me back"
+msgstr ""
+
+#: .\templates\admin\delete_selected_confirmation.html:11
+msgid "Delete multiple objects"
+msgstr ""
+
+#: .\templates\admin\delete_selected_confirmation.html:17
+#, python-format
+msgid ""
+"Deleting the selected %(objects_name)s would result in deleting related "
+"objects, but your account doesn't have permission to delete the following "
+"types of objects:"
+msgstr ""
+
+#: .\templates\admin\delete_selected_confirmation.html:24
+#, python-format
+msgid ""
+"Deleting the selected %(objects_name)s would require deleting the following "
+"protected related objects:"
+msgstr ""
+
+#: .\templates\admin\delete_selected_confirmation.html:31
+#, python-format
+msgid ""
+"Are you sure you want to delete the selected %(objects_name)s? All of the "
+"following objects and their related items will be deleted:"
+msgstr ""
+
+#: .\templates\admin\edit_inline\stacked.html:8
+#: .\templates\admin\edit_inline\tabular.html:31
+#: .\templates\admin\index.html:37
+#: .\templates\admin\related_widget_wrapper.html:10
+msgid "Change"
+msgstr ""
+
+#: .\templates\admin\edit_inline\stacked.html:27
+#: .\templates\admin\edit_inline\tabular.html:81
+msgid "Remove"
+msgstr ""
+
+#: .\templates\admin\edit_inline\stacked.html:28
+#: .\templates\admin\edit_inline\tabular.html:80
+#, python-format
+msgid "Add another %(verbose_name)s"
+msgstr ""
+
+#: .\templates\admin\edit_inline\tabular.html:17
+msgid "Delete?"
+msgstr ""
+
+#: .\templates\admin\filter.html:2
+#, python-format
+msgid " By %(filter_title)s "
+msgstr ""
+
+#: .\templates\admin\includes\object_delete_summary.html:2
+msgid "Summary"
+msgstr ""
+
+#: .\templates\admin\index.html:20
+#, python-format
+msgid "Models in the %(name)s application"
+msgstr ""
+
+#: .\templates\admin\index.html:47
+msgid "You don't have permission to edit anything."
+msgstr ""
+
+#: .\templates\admin\index.html:55
+msgid "Recent Actions"
+msgstr ""
+
+#: .\templates\admin\index.html:56
+msgid "My Actions"
+msgstr ""
+
+#: .\templates\admin\index.html:60
+msgid "None available"
+msgstr ""
+
+#: .\templates\admin\index.html:74
+msgid "Unknown content"
+msgstr ""
+
+#: .\templates\admin\invalid_setup.html:12
+msgid ""
+"Something's wrong with your database installation. Make sure the appropriate "
+"database tables have been created, and make sure the database is readable by "
+"the appropriate user."
+msgstr ""
+
+#: .\templates\admin\login.html:45
+msgid "Forgotten your password or username?"
+msgstr ""
+
+#: .\templates\admin\login.html:49
+msgid "Log in"
+msgstr ""
+
+#: .\templates\admin\object_history.html:22
+msgid "Date/time"
+msgstr ""
+
+#: .\templates\admin\object_history.html:23
+msgid "User"
+msgstr ""
+
+#: .\templates\admin\object_history.html:24
+msgid "Action"
+msgstr ""
+
+#: .\templates\admin\object_history.html:38
+msgid ""
+"This object doesn't have a change history. It probably wasn't added via this "
+"admin site."
+msgstr ""
+
+#: .\templates\admin\pagination.html:10 .\templates\admin\search_form.html:9
+msgid "Show all"
+msgstr ""
+
+#: .\templates\admin\pagination.html:11 .\templates\admin\submit_line.html:3
+msgid "Save"
+msgstr ""
+
+#: .\templates\admin\related_widget_wrapper.html:8
+#, python-format
+msgid "Change selected %(model)s"
+msgstr ""
+
+#: .\templates\admin\related_widget_wrapper.html:16
+#, python-format
+msgid "Add another %(model)s"
+msgstr ""
+
+#: .\templates\admin\related_widget_wrapper.html:24
+#, python-format
+msgid "Delete selected %(model)s"
+msgstr ""
+
+#: .\templates\admin\search_form.html:7
+msgid "Search"
+msgstr ""
+
+#: .\templates\admin\search_form.html:9
+#, python-format
+msgid "%(counter)s result"
+msgid_plural "%(counter)s results"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\templates\admin\search_form.html:9
+#, python-format
+msgid "%(full_result_count)s total"
+msgstr ""
+
+#: .\templates\admin\submit_line.html:8
+msgid "Save as new"
+msgstr ""
+
+#: .\templates\admin\submit_line.html:9
+msgid "Save and add another"
+msgstr ""
+
+#: .\templates\admin\submit_line.html:10
+msgid "Save and continue editing"
+msgstr ""
+
+#: .\templates\gis\admin\openlayers.html:35 .\templates\gis\openlayers.html:18
+msgid "Delete all Features"
+msgstr ""
+
+#: .\templates\gis\admin\openlayers.html:37
+msgid "WKT debugging window:"
+msgstr ""
+
+#: .\templates\gis\google\google-map.html:4
+msgid "Google Maps via GeoDjango"
+msgstr ""
+
+#: .\templates\gis\openlayers.html:19
+msgid "Debugging window (serialized value)"
+msgstr ""
