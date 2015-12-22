@@ -126,8 +126,13 @@ LANGUAGE_CODE = 'en'
 
 LANGUAGES = (
     ('en', 'English'),
-    ('de', 'Deutsch'),)
+    ('de', 'Deutsch'),
+    ('fr', 'French'),)
 
+# Location of translation files
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, "locale"),
+)
 
 TIME_ZONE = 'Europe/Vienna'
 
