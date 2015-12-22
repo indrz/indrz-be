@@ -125,7 +125,7 @@ var SatelliteLayer = new ol.layer.Tile({
 })
 
 function appendFloorNav(floor_info, index){
-    $("#floor-links").append("<li>" +
+    $("#floor-links").prepend("<li>" +
     "<a href='#' onclick='activateLayer(" +
     index +
     ");' id='action-1'>"+ floor_info.short_name +"</a></li>");
