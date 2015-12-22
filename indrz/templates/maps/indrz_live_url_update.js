@@ -2,7 +2,7 @@ map.on('moveend', function(e){
     var current_extent = map.getView().calculateExtent(map.getSize());
     var current_zoom = map.getView().getZoom();
 
-    var url = "/api/v1/left=" + current_extent[0] + "&right=" + current_extent[2] +
+    var url = "/map/" + map_name + "/left=" + current_extent[0] + "&right=" + current_extent[2] +
         "&top=" + current_extent[3]+"&bottom=" + current_extent[1] + "&campusid=4&zlevel=" + current_zoom;
     var data = {};
     data.extent = current_extent;
