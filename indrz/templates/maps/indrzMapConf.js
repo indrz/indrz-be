@@ -5,3 +5,4 @@ var baseUrlWms =  '';
 var zoom_level="{{ zoom_level }}";
 var building_id="{{ building_id }}";
 var space_id="{{ space_id }}";
+var map_name="{{map_name}}";
