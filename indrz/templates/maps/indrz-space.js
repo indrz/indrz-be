@@ -4,7 +4,7 @@ var style = new ol.style.Style({
   }),
   stroke: new ol.style.Stroke({
     color: '#319FD3',
-    width: 1
+    width: 2
   }),
   text: new ol.style.Text({
     font: 'bold 12px Arial,sans-serif',
@@ -68,7 +68,8 @@ var spaceLayer = new ol.layer.Vector({
     source: space_source,
     style: getText,
     title: "Space",
-    name: "Space"
+    name: "Space",
+    zIndex: 999
 });
 
 map.getLayers().push(spaceLayer);
