@@ -128,6 +128,12 @@ Task | Skill
 ## Licence
 indrz is under GNU General Public License v3.0.  The name "indrz" is not allowed to be used by third parties and is a trademark.  Other than that you can do what you want accordingly 
 
+Supporters
+==========
+A big shout out to the following supporters for sharing the open source love
+
+ - [**Browserstack**] (https://www.browserstack.com) for testing our mobile and desktop browser compatibility
+ - [**Transifex**] (https://www.transifex.com/) for translations
 
 Design Decisions
 ================

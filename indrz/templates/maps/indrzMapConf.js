@@ -8,3 +8,4 @@ var floor_id=5;
 var space_id="{{ space_id }}";
 var floor_layers = [];
 var building_info = null;
+var map_name="{{map_name}}";
