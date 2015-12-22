@@ -4,7 +4,9 @@ map.on('moveend', function(e){
 
     var url = "/api/v1/left=" + current_extent[0] + "&right=" + current_extent[2] +
         "&top=" + current_extent[3]+"&bottom=" + current_extent[1] + "&campusid=4&zlevel=" + current_zoom;
-
+    var data = {};
+    data.extent = current_extent;
+    data.zoom = current_zoom;
     history.pushState(data, 'live_url_update', url);
 });
 
