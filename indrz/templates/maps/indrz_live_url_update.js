@@ -11,6 +11,7 @@ map.on('moveend', function(e){
 });
 
 window.addEventListener('popstate', function(event) {
+    console.log("pop state");
     updateContent(event.state);
 });
 
