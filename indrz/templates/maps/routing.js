@@ -140,7 +140,7 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
         style:  new ol.style.Style({
             stroke: new ol.style.Stroke({
               color: 'red',
-              width: 2
+              width: 4
             })
           }),
         title: "Route",
@@ -158,7 +158,9 @@ $("#clearRoute").click(function(){
     if (routeLayer) {
         map.removeLayer(routeLayer);
     }
-    $("#clearRoute").addClass("hide")
+    $("#clearRoute").addClass("hide");
+    $("#route-to").val('');
+    $("#route-from").val('');
 });
 
 
