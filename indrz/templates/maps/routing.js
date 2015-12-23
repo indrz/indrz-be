@@ -140,7 +140,7 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
         style:  new ol.style.Style({
             stroke: new ol.style.Stroke({
               color: 'red',
-              width: 4
+              width: 2
             })
           }),
         title: "Route",
