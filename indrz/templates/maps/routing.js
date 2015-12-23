@@ -138,7 +138,7 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
         style:  new ol.style.Style({
             stroke: new ol.style.Stroke({
               color: 'red',
-              width: 2
+              width: 4
             })
           }),
         title: "Route",
@@ -147,7 +147,18 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
     });
 
     map.getLayers().push(routeLayer);
+
+    $("#clearRoute").removeClass("hide");
 }
+
+$("#clearRoute").click(function(){
+    if (routeLayer) {
+        map.removeLayer(routeLayer);
+    }
+    $("#clearRoute").addClass("hide");
+    $("#route-to").val('');
+    $("#route-from").val('');
+});
 
 function addMarkers(route_features){
     var coordinates = route_features[0].getGeometry().getCoordinates();
