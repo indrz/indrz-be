@@ -1,10 +1,20 @@
-var startMarker = new ol.Feature({
-    type: 'icon',
+var routeLayer = null;
+var markerLayer = null;
+
+var start_maker_style = new ol.style.Style({
+    image: new ol.style.Icon({
+        anchor: [0.5, 1],
+        src: '/static/img/route_start.png',
+    })
+});
+var end_maker_style = new ol.style.Style({
+    image: new ol.style.Icon({
+        anchor: [0.5, 1],
+        src: '/static/img/route_end.png'
+    })
 });
 
-var endMarker = new ol.Feature({
-    type: 'icon'
-});
+
 
 var switchableLayers = [wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03];
 function hideLayers() {
@@ -97,32 +107,11 @@ var map = new ol.Map({
     })
 });
 
-var routeLayer = null;
-
 function addRoute(buildingId, fromNumber, toNumber, routeType) {
     var baseUrl = '/api/v1/directions/';
     var geoJsonUrl = baseUrl + 'buildingid=' +  buildingId + '&startid=' + fromNumber + '&endid=' + toNumber + '/?format=json';
 
     var startingLevel = fromNumber.charAt(0);
-    //switch(startingLevel) {
-    //    case("9"):
-    //        activateLayer(0);
-    //        break;
-    //    case("0"):
-    //        activateLayer(0);
-    //        break;
-    //    case("1"):
-    //        activateLayer(1);
-    //        break;
-    //    case("2"):
-    //        activateLayer(2);
-    //        break;
-    //    case("3"):
-    //        activateLayer(3);
-    //        break;
-    //    default:
-    //        break;
-    //}
 
     if (routeLayer) {
       map.removeLayer(routeLayer);
@@ -138,7 +127,7 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
             {featureProjection: 'EPSG:4326'});
         source.addFeatures(features);
 
-        addMarkers(source, features);
+        addMarkers(features);
         //console.log("route layer source", source);
     });
 
@@ -155,18 +144,33 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
         title: "Route",
         name: "Route",
         visible: true
-            });
-    //map.addLayer(routeLayer);
+    });
 
     map.getLayers().push(routeLayer);
-
-
 }
 
-
-function addMarkers(source, route_features){
-    console.log(route_features);
-    var start_point = new ol.geom.Point(route_features[0].getGeometry().getCoordinates()[0]);
-    startMarker.setGeometry(start_point);
-    source.addFeature(startMarker);
+function addMarkers(route_features){
+    var coordinates = route_features[0].getGeometry().getCoordinates();
+    var start_point = new ol.geom.Point(coordinates[coordinates.length-1]);
+    coordinates = route_features[route_features.length-1].getGeometry().getCoordinates()
+    var end_point = new ol.geom.Point(coordinates[coordinates.length-1]);
+    var startMarker = new ol.Feature({
+        geometry: start_point
+    });
+    var endMarker = new ol.Feature({
+        geometry: end_point
+    });
+    endMarker.setGeometry(end_point);
+    startMarker.setStyle(start_maker_style);
+    endMarker.setStyle(end_maker_style);
+    markerLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [startMarker, endMarker]
+        }),
+        title: "icon_layer",
+        name: "icon_layer",
+        visible: true
+    });
+    map.getLayers().find()
+    map.getLayers().push(markerLayer);
 }
