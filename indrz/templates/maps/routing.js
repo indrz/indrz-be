@@ -151,7 +151,14 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
 
     map.getLayers().push(routeLayer);
 
-
+    $("#clearRoute").removeClass("hide");
 }
+
+$("#clearRoute").click(function(){
+    if (routeLayer) {
+        map.removeLayer(routeLayer);
+    }
+    $("#clearRoute").addClass("hide")
+});
 
 
