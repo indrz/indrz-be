@@ -218,7 +218,7 @@ class Building(OrganizationInfoBase):
     building_name = gis_models.CharField(verbose_name=_("Building name"), max_length=128, null=True, blank=True)
     building_height = gis_models.DecimalField(verbose_name=_("Building height in meters"), max_digits=10, decimal_places=2, null=True, blank=True)
     fancy_name = gis_models.CharField(verbose_name=_("Fancy building name"), max_length=256, null=True, blank=True)
-    num_floors = gis_models.IntegerField(verbose_name=_("Number of floors"))
+    num_floors = gis_models.IntegerField(verbose_name=_("Number of floors"), default=0)
     facility_number = gis_models.IntegerField(verbose_name=_("Unique facility number"), null=True, blank=True)
     operation_hrs = gis_models.CharField(verbose_name=_("Operational hours"), max_length=60, null=True, blank=True)
     native_epsg = gis_models.IntegerField(verbose_name=_("EPSG code original data"), null=True, blank=True)
