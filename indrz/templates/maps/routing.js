@@ -163,6 +163,11 @@ function addMarkers(route_features){
     endMarker.setGeometry(end_point);
     startMarker.setStyle(start_maker_style);
     endMarker.setStyle(end_maker_style);
+
+    if(markerLayer){
+        map.removeLayer(markerLayer);
+    }
+
     markerLayer = new ol.layer.Vector({
         source: new ol.source.Vector({
           features: [startMarker, endMarker]
@@ -171,6 +176,5 @@ function addMarkers(route_features){
         name: "icon_layer",
         visible: true
     });
-    map.getLayers().find()
     map.getLayers().push(markerLayer);
 }
