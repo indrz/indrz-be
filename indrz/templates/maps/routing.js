@@ -1,3 +1,10 @@
+var startMarker = new ol.Feature({
+    type: 'icon',
+});
+
+var endMarker = new ol.Feature({
+    type: 'icon'
+});
 
 var switchableLayers = [wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03];
 function hideLayers() {
@@ -121,6 +128,8 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
         var features = geojsonFormat.readFeatures(response,
             {featureProjection: 'EPSG:4326'});
         source.addFeatures(features);
+
+        addMarkers(source, features);
         //console.log("route layer source", source);
     });
 
@@ -146,3 +155,9 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
 }
 
 
+function addMarkers(source, route_features){
+    console.log(route_features);
+    var start_point = new ol.geom.Point(route_features[0].getGeometry().getCoordinates()[0]);
+    startMarker.setGeometry(start_point);
+    source.addFeature(startMarker);
+}
