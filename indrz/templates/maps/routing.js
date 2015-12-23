@@ -155,6 +155,9 @@ $("#clearRoute").click(function(){
     if (routeLayer) {
         map.removeLayer(routeLayer);
     }
+    if(markerLayer){
+        map.removeLayer(markerLayer);
+    }
     $("#clearRoute").addClass("hide");
     $("#route-to").val('');
     $("#route-from").val('');
