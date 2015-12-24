@@ -1,5 +1,20 @@
-
 var switchableLayers = [wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03];
+
+var route_active_style = new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'red',
+      width: 2,
+      lineDash: [0.1, 5],
+      zIndex: 999
+    })
+});
+var route_inactive_style = new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'red',
+      width: 2,
+      lineDash: [0.1, 5]
+    })
+});
 function hideLayers() {
     for (var i=0; i<switchableLayers.length; i++) {
         switchableLayers[i].setVisible(false);
@@ -130,6 +145,8 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
         var features = geojsonFormat.readFeatures(response,
             {featureProjection: 'EPSG:4326'});
         source.addFeatures(features);
+
+
         //console.log("route layer source", source);
     });
 
@@ -137,12 +154,9 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
         //url: geoJsonUrl,
         //format: new ol.format.GeoJSON(),
         source: source,
-        style:  new ol.style.Style({
-            stroke: new ol.style.Stroke({
-              color: 'red',
-              width: 2
-            })
-          }),
+        style: function(feature, resolution) {
+            feature.setStyle(route_active_style);
+        },
         title: "Route",
         name: "Route",
         visible: true
@@ -162,5 +176,4 @@ $("#clearRoute").click(function(){
     $("#route-to").val('');
     $("#route-from").val('');
 });
-
 
