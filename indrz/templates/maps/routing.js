@@ -158,8 +158,13 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
 
         addMarkers(features);
 
-
-        //console.log("route layer source", source);
+        // active the floor of the start point
+        var start_floor = features[0].getProperties().floor;
+        for(var i=0; i< floor_layers.length; i++) {
+            if(start_floor == floor_layers[i].getProperties().floor_num){
+                activateLayer(i);
+            }
+        }
     });
 
     routeLayer = new ol.layer.Vector({
