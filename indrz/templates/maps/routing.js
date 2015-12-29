@@ -17,6 +17,21 @@ var end_maker_style = new ol.style.Style({
 
 
 var switchableLayers = [wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03];
+
+var route_active_style = new ol.style.Style({
+    stroke: new ol.style.Stroke({
+        color: 'red',
+        width: 4
+    })
+});
+var route_inactive_style = new ol.style.Style({
+    stroke: new ol.style.Stroke({
+        color: 'red',
+        width: 2,
+        lineDash: [0.1, 5],
+        opacity: 0.5
+    })
+});
 function hideLayers() {
     for (var i=0; i<switchableLayers.length; i++) {
         switchableLayers[i].setVisible(false);
@@ -32,7 +47,21 @@ function setLayerVisible(index) {
     switchableLayers[index].setVisible(true);
     if(floor_layers.length > 0) {
         floor_layers[index].setVisible(true);
-        $("#floor-links li:nth-child(" + (index + 1) + ")").addClass("active");
+        $("#floor-links li:nth-child(" + (floor_layers.length - index) + ")").addClass("active");
+
+        // set active_floor_num
+        active_floor_num = floor_layers[index].getProperties().floor_num;
+        if(routeLayer){
+            var features = routeLayer.getSource().getFeatures();
+            for(var i=0; i< features.length; i++){
+                var feature_floor = features[i].getProperties().floor;
+                if(feature_floor==active_floor_num) {
+                    features[i].setStyle(route_active_style);
+                } else {
+                    features[i].setStyle(route_inactive_style);
+                }
+            }
+        }
     }
 }
 function activateLayer(index) {
@@ -128,19 +157,28 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
         source.addFeatures(features);
 
         addMarkers(features);
-        //console.log("route layer source", source);
+
+        // active the floor of the start point
+        var start_floor = features[0].getProperties().floor;
+        for(var i=0; i< floor_layers.length; i++) {
+            if(start_floor == floor_layers[i].getProperties().floor_num){
+                activateLayer(i);
+            }
+        }
     });
 
     routeLayer = new ol.layer.Vector({
         //url: geoJsonUrl,
         //format: new ol.format.GeoJSON(),
         source: source,
-        style:  new ol.style.Style({
-            stroke: new ol.style.Stroke({
-              color: 'red',
-              width: 4
-            })
-          }),
+        style: function(feature, resolution) {
+            var feature_floor = feature.getProperties().floor;
+            if(feature_floor==active_floor_num) {
+                feature.setStyle(route_active_style);
+            } else {
+                feature.setStyle(route_inactive_style);
+            }
+        },
         title: "Route",
         name: "Route",
         visible: true
