@@ -119,3 +119,5 @@ DROP TABLE IF EXISTS geodata.networklines_3857_vertices_pgr;
 -- building routing network vertices (fills source and target columns in those new tables)
 SELECT public.pgr_createTopology3d('geodata.networklines_3857', 0.0001, 'geom', 'id');
 
+
+--ALTER TABLE geodata.networklines_3857_vertices_pgr OWNER TO "indrz-pg";
