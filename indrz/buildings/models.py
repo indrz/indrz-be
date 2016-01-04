@@ -1,3 +1,6 @@
+from __future__ import unicode_literals
+from django.utils.encoding import python_2_unicode_compatible
+
 from django.contrib.gis.db import models as gis_models
 from django.utils.translation import  ugettext_lazy as _
 from taggit.managers import TaggableManager
@@ -203,7 +206,8 @@ class Campus(gis_models.Model):
 
     # GeoDjango-specific: a geometry field (MultiPolygonField), and
     # overriding the default manager with a GeoManager instance.
-    geom_mpoly = gis_models.MultiPolygonField(srid=3857)
+    geom = gis_models.MultiPolygonField(verbose_name=_("Campus area of one or more buildings"),
+                                                 db_column='geom', blank=True, null=True, srid=3857, spatial_index=True)
     objects = gis_models.GeoManager()
 
     def __str__(self):
@@ -232,7 +236,7 @@ class Building(OrganizationInfoBase):
     #mpoly = gis_models.MultiPolygonField(srid=4326)
     #objects = gis_models.GeoManager()
 
-
+@python_2_unicode_compatible
 class BuildingFloor(gis_models.Model):
     """
     Represents the floors contained in a building as a floor foot print
@@ -257,9 +261,9 @@ class BuildingFloor(gis_models.Model):
         ordering = ['floor_num']
 
     def __str__(self):
-        return str(self.short_name) or ''
+        return self.short_name or ''
 
-
+@python_2_unicode_compatible
 class FloorSpaceBase(gis_models.Model):
     """
     floor areas as polygons base
@@ -282,7 +286,7 @@ class FloorSpaceBase(gis_models.Model):
         abstract = True
 
     def __str__(self):
-        return str(self.short_name) or ''
+        return self.short_name or ''
 
 
 class BuildingFloorPlanLine(gis_models.Model):
