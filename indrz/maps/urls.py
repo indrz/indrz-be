@@ -7,7 +7,6 @@ urlpatterns = patterns('maps.views',
     # url(r'^(?P<map_name>[0-9a-zA-Z_-]+)/$', 'route_map', name='map_name'),
     url(r'^$', 'map_socgen_nantes', name='socgen-nantes'),
     url(r'^(?P<map_name>[^/]+)/$', 'route_map', name='map_name'),
-    url(r'^socgen-nantes/$', 'map_socgen_nantes', name='socgen-nantes'),
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)
