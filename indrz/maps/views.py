@@ -17,9 +17,3 @@ def route_map(request, *args, **kwargs):
         })
 
     return render(request, context=context, template_name='map.html')
-
-
-def map_socgen_nantes(request):
-    return render(request, 'socgen-nantes.html')
-
-
