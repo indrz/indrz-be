@@ -3,13 +3,11 @@ var markerLayer = null;
 
 var start_maker_style = new ol.style.Style({
     image: new ol.style.Icon({
-        anchor: [0.5, 1],
-        src: '/static/img/route_start.png',
+        src: '/static/img/route_start.png'
     })
 });
 var end_maker_style = new ol.style.Style({
     image: new ol.style.Icon({
-        anchor: [0.5, 1],
         src: '/static/img/route_end.png'
     })
 });
@@ -241,7 +239,6 @@ function addMarkers(route_features){
             });
             var floor_num_style = new ol.style.Style({
                 image: new ol.style.Icon({
-                    anchor: [0.5, 1],
                     src: '/static/img/route_floor_' + floor_num + '.png'
                 })
             });
