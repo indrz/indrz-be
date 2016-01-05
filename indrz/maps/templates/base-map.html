@@ -117,6 +117,8 @@
 
 <div class="container-fluid">
     <div class="row">
+
+    {% block routing-form %}
         <div class="col-md-2">
             <div id="directions" class="directions">
                 <form id="submitForm">
@@ -149,6 +151,9 @@
 
             </div>
         </div>
+    {% endblock routing-form %}
+
+    {% block map-section %}
 
         <div class="col-md-10">
             <div id="map" class="map"></div>
@@ -173,13 +178,16 @@
 
         </div>
 
+    {% endblock map-section %}
+
     </div>
 </div>
-
+{% block popup-markup %}
 <div id="indrz-popup" title="indrz info" class="ol-popup">
     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
     <div id="popup-content"></div>
 </div>
+{% endblock popup-markup %}
 
 
 {% block js-typeahead %}
