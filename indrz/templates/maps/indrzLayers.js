@@ -116,6 +116,13 @@ $.ajax('/api/v1/buildings/' + building_id +'/')
             floor_layers.push(floor_spaces_vector);
             appendFloorNav(floor_info, i);
         }
+        if(space_id=="0"){
+            for(var i=0; i< floor_layers.length; i++) {
+                if(active_floor_num == floor_layers[i].getProperties().floor_num){
+                    activateLayer(i);
+                }
+            }
+        }
 });
 
 
