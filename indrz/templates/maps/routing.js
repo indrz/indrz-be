@@ -163,6 +163,9 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
                 activateLayer(i);
             }
         }
+        // center up the route
+        var extent = source.getExtent();
+        map.getView().fit(extent, map.getSize());
     });
 
     routeLayer = new ol.layer.Vector({
