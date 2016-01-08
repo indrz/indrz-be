@@ -232,11 +232,12 @@ function addMarkers(route_features){
     for(i = 0; i < nFeatures; i++){
         var floor_num = route_features[i].getProperties().floor;
 
+        if(floorList[index]==floor_num)
+            distance += route_features[i].getGeometry().getLength();
         if(floorList[index]==floor_num && lengthList[index]/2 < distance){
-            // var line_extent = route_features[i].getGeometry().getExtent();
-            // var middlePoint = new ol.geom.Point(ol.extent.getCenter(line_extent));
-
-            var middlePoint = new ol.geom.Point(route_features[i].getGeometry().getFirstCoordinate());
+            var line_extent = route_features[i].getGeometry().getExtent();
+            var middleCoordinate = ol.extent.getCenter(line_extent);
+            var middlePoint = new ol.geom.Point(route_features[i].getGeometry().getClosestPoint(middleCoordinate));
 
             var middleFeature = new ol.Feature({
                 geometry: middlePoint
@@ -248,10 +249,11 @@ function addMarkers(route_features){
             });
             middleFeature.setStyle(floor_num_style);
             marker_features.push(middleFeature);
+
             index ++;
             distance = 0;
         }
-        distance += route_features[i].getGeometry().getLength();
+
     }
 
     console.log(floorList);
