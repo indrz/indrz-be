@@ -103,7 +103,7 @@ $.ajax('/api/v1/buildings/' + building_id +'/')
                         color: 'rgba(255, 255, 255, 0.6)'
                     }),
                     stroke: new ol.style.Stroke({
-                      color: 'red',
+                      color: 'grey',
                       width: 1
                     })
                   }),
