@@ -1,26 +1,30 @@
 {% load i18n %}
 <div class="indrz-search">
     <div class="col-lg-3">
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="{% trans "Search for ..." %}">
-      <span class="input-group-btn">
-        <button class="btn btn-default" type="button">{% trans "Go!" %}</button>
+        <form id="submitFormSearch">
+            <div id="search-prefetch" class="input-group">
 
-          <a class="btn btn-primary" href="#"><i class="fa fa-cog fa-fw"></i></a>
-          <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-              <span class="fa fa-caret-down"></span></a>
-          <ul class="dropdown-menu">
-              <li><a href="#"><i class="fa fa-share fa-fw"></i> {% trans "Share" %}</a></li>
-              <li><a href="#"><i class="fa fa-map-marker fa-fw"></i> {% trans "GPS" %}</a></li>
-              <li><a href="#"><i class="fa fa-language fa-fw"></i> {% trans "Language" %}</a></li>
-              <li><a href="#"><i class="fa fa-map-signs fa-fw"></i> {% trans "Directions" %}</a></li>
-              <li id="id-fullscreen"><i class="fa fa-expand fa-fw"></i></li>
-              <li class="divider"></li>
-              <li><a href="#"><i class="fa fa-info fa-fw"></i> {% trans "Info" %}</a></li>
-              <li><a href="#myModal" data-toggle="modal" data-target="#myModal"><i class="fa fa-bug fa-fw"></i>{% trans "Report Bug" %}</a></li>
-          </ul>
-      </span>
-        </div><!-- /input-group -->
+                <input type="text" class="typeahead form-control" id="search-input" placeholder="{% trans "Search for ..." %}">
+
+          <span class="input-group-btn">
+              <button id="enterSearch" class="btn btn-default" type="submit">{% trans "Go!" %}</button>
+              <a class="btn btn-primary" href="#"><i class="fa fa-cog fa-fw"></i></a>
+              <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                  <span class="fa fa-caret-down"></span></a>
+              <ul class="dropdown-menu">
+                  <li><a href="#"><i class="fa fa-share fa-fw"></i> {% trans "Share" %}</a></li>
+                  <li><a href="#"><i class="fa fa-map-marker fa-fw"></i> {% trans "GPS" %}</a></li>
+                  <li><a href="#"><i class="fa fa-language fa-fw"></i> {% trans "Language" %}</a></li>
+                  <li><a href="#"><i class="fa fa-map-signs fa-fw"></i> {% trans "Directions" %}</a></li>
+                  <li id="id-fullscreen"><i class="fa fa-expand fa-fw"></i></li>
+                  <li class="divider"></li>
+                  <li><a href="#"><i class="fa fa-info fa-fw"></i> {% trans "Info" %}</a></li>
+                  <li><a href="#myModal" data-toggle="modal" data-target="#myModal"><i class="fa fa-bug fa-fw"></i>{% trans "Report Bug" %}</a></li>
+              </ul>
+          </span>
+
+            </div><!-- /input-group -->
+        </form>
 
     </div><!-- /.col-lg-3 -->
 </div><!-- /.row -->
