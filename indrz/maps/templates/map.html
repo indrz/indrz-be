@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
     <style> body {
-      padding-top: 0px;
+        padding-top: 0px;
     }</style>
 
 
@@ -29,13 +29,49 @@
 
 {% endblock search_form %}
 
+{% block js-search-box %}
+
+    <script>
+
+
+        var searchValues = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: '/api/v1/spaces/search/?format=json'
+        });
+
+        // passing in `null` for the `options` arguments will result in the default
+        // options being used
+        $('#search-prefetch .typeahead').typeahead(null, {
+            name: 'search-field',
+            limit: 100,
+            source: searchValues
+        });
+
+
+        $("#submitFormSearch").submit(function (event) {
+            {#              alert( "Handler for .submit() called."  );#}
+
+            {#            var buildingid = buildingNantesId;#}
+            var searchText = $('#search-input').val();
+            searchIndrz();
+            event.preventDefault();
+        });
+    </script>
+
+
+{% endblock js-search-box %}
+
+
+
 {% block map_frame %}
     <script>  {% include 'maps/indrzMapConf.js' %} </script>
     <script>  {% include 'maps/indrzLayers.js' %} </script>
     <script>  {% include 'maps/routing.js' %} </script>
+    <script>  {% include 'maps/search.js' %} </script>
     <script>  {% include 'maps/indrz-popup.js' %} </script>
     <script>  {% include 'maps/indrz-controls.js' %} </script>
-{#    <script>  {% include 'maps/indrz_live_url_update.js' %} </script>#}
+    {#    <script>  {% include 'maps/indrz_live_url_update.js' %} </script>#}
     {% if space_id > 0 and space_id != None %}
         <script>  {% include 'maps/indrz-space.js' %} </script>
     {% endif %}
