@@ -108,6 +108,19 @@ def get_external_id(request, building_id, external_room_id, format=None):
         return Response(serializer.data)
 
 
+@api_view(['GET'])
+def get_space_by_name(request, building_id, space_name, format=None):
+    """
+    Return the GeoJSON of a single space passing your local space name
+    """
+    if request.method == 'GET':
+        data = request.data
+        floor_space_info = BuildingFloorSpace.objects.filter(short_name=space_name, fk_building_id=building_id)
+        serializer = BuildingFloorSpaceSerializer(floor_space_info, many=True)
+        return Response(serializer.data)
+        # return Response(data)
+
+
 def find_closest_network_node(x_coord, y_coord, floor):
     """
     Enter a given coordinate x,y and floor number and
