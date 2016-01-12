@@ -1,18 +1,13 @@
 var routeLayer = null;
 var markerLayer = null;
 
-
 var start_maker_style = new ol.style.Style({
     image: new ol.style.Icon({
-        anchor: [0.5, 1],
-        src: '/static/img/route_start.png',
+        src: '/static/img/route_start.png'
     })
 });
-
-
 var end_maker_style = new ol.style.Style({
     image: new ol.style.Icon({
-        anchor: [0.5, 1],
         src: '/static/img/route_end.png'
     })
 });
@@ -156,6 +151,9 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
                 activateLayer(i);
             }
         }
+        // center up the route
+        var extent = source.getExtent();
+        map.getView().fit(extent, map.getSize());
     });
 
     routeLayer = new ol.layer.Vector({
@@ -192,12 +190,66 @@ $("#clearRoute").click(function () {
     $("#route-from").val('');
 });
 
+function addMarkers(route_features){
+    var marker_features = [];
+    var lengthList = [];
+    var floorList = [];
+    var prevFloorNum = -99;
+    var index = -1;
+    var nFeatures = route_features.length;
+    var distance = 0;
 
-function addMarkers(route_features) {
-    var coordinates = route_features[0].getGeometry().getCoordinates();
-    var start_point = new ol.geom.Point(coordinates[coordinates.length - 1]);
-    coordinates = route_features[route_features.length - 1].getGeometry().getCoordinates()
-    var end_point = new ol.geom.Point(coordinates[coordinates.length - 1]);
+    if(markerLayer){
+        map.removeLayer(markerLayer);
+    }
+
+    if(nFeatures == 0 ) return;
+    // add middle icons
+    for(var i = 0; i < nFeatures; i++) {
+        var floor_num = route_features[i].getProperties().floor;
+        if (prevFloorNum != floor_num) {
+            floorList.push(floor_num);
+            index++;
+            prevFloorNum = floor_num;
+            if (!lengthList[index]) lengthList[index] = 0;
+        }
+        lengthList[index] += route_features[i].getGeometry().getLength();
+    }
+
+    index = 0;
+    for(i = 0; i < nFeatures; i++){
+        var floor_num = route_features[i].getProperties().floor;
+
+        if(floorList[index]==floor_num)
+            distance += route_features[i].getGeometry().getLength();
+        if(floorList[index]==floor_num && lengthList[index]/2 < distance){
+            var line_extent = route_features[i].getGeometry().getExtent();
+            var middleCoordinate = ol.extent.getCenter(line_extent);
+            var middlePoint = new ol.geom.Point(route_features[i].getGeometry().getClosestPoint(middleCoordinate));
+
+            var middleFeature = new ol.Feature({
+                geometry: middlePoint
+            });
+            var floor_num_style = new ol.style.Style({
+                image: new ol.style.Icon({
+                    src: '/static/img/route_floor_' + floor_num + '.png'
+                })
+            });
+            middleFeature.setStyle(floor_num_style);
+            marker_features.push(middleFeature);
+
+            index ++;
+            distance = 0;
+        }
+
+    }
+
+    console.log(floorList);
+    console.log(lengthList);
+
+    // Add start/end marker
+    var start_point = new ol.geom.Point(route_features[0].getGeometry().getLastCoordinate());
+    var end_point = new ol.geom.Point(route_features[route_features.length-1].getGeometry().getLastCoordinate());
     var startMarker = new ol.Feature({
         geometry: start_point
     });
@@ -208,13 +260,12 @@ function addMarkers(route_features) {
     startMarker.setStyle(start_maker_style);
     endMarker.setStyle(end_maker_style);
 
-    if (markerLayer) {
-        map.removeLayer(markerLayer);
-    }
+    marker_features.push(startMarker);
+    marker_features.push(endMarker);
 
     markerLayer = new ol.layer.Vector({
         source: new ol.source.Vector({
-            features: [startMarker, endMarker]
+          features: marker_features
         }),
         title: "icon_layer",
         name: "icon_layer",
