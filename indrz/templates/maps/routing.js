@@ -13,7 +13,6 @@ var end_maker_style = new ol.style.Style({
 });
 
 
-
 var switchableLayers = [wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03];
 
 var route_active_style = new ol.style.Style({
@@ -22,6 +21,7 @@ var route_active_style = new ol.style.Style({
         width: 4
     })
 });
+
 var route_inactive_style = new ol.style.Style({
     stroke: new ol.style.Stroke({
         color: 'red',
@@ -30,30 +30,50 @@ var route_inactive_style = new ol.style.Style({
         opacity: 0.5
     })
 });
+
+
+function waitForFloors(space_floor_id) {
+    if (floor_layers.length > 0) {
+        for (var i = 0; i < building_info.num_floors; i++) {
+            if (building_info.buildingfloor_set[i].id == space_floor_id) {
+                activateLayer(i);
+            }
+        }
+    }
+    else {
+        setTimeout(function () {
+            waitForFloors(space_floor_id);
+        }, 250);
+    }
+}
+
+
 function hideLayers() {
-    for (var i=0; i<switchableLayers.length; i++) {
+    for (var i = 0; i < switchableLayers.length; i++) {
         switchableLayers[i].setVisible(false);
     }
-    if(floor_layers.length > 0) {
+    if (floor_layers.length > 0) {
         for (var i = 0; i < floor_layers.length; i++) {
             floor_layers[i].setVisible(false);
         }
     }
     $("#floor-links li").removeClass("active");
 }
+
+
 function setLayerVisible(index) {
     switchableLayers[index].setVisible(true);
-    if(floor_layers.length > 0) {
+    if (floor_layers.length > 0) {
         floor_layers[index].setVisible(true);
         $("#floor-links li:nth-child(" + (floor_layers.length - index) + ")").addClass("active");
 
         // set active_floor_num
         active_floor_num = floor_layers[index].getProperties().floor_num;
-        if(routeLayer){
+        if (routeLayer) {
             var features = routeLayer.getSource().getFeatures();
-            for(var i=0; i< features.length; i++){
+            for (var i = 0; i < features.length; i++) {
                 var feature_floor = features[i].getProperties().floor;
-                if(feature_floor==active_floor_num) {
+                if (feature_floor == active_floor_num) {
                     features[i].setStyle(route_active_style);
                 } else {
                     features[i].setStyle(route_inactive_style);
@@ -62,65 +82,32 @@ function setLayerVisible(index) {
         }
     }
 }
+
+
 function activateLayer(index) {
     hideLayers();
     setLayerVisible(index);
 }
 
 
-function switchBackgroundTo(backNum) {
-    if (backNum === 1) // OSM
-    {
-        backgroundLayers[1].setVisible(true);
-        backgroundLayers[0].setVisible(false);
-    }
-    else if (backNum === 0) // Mapquest OSM
-    {
-        backgroundLayers[0].setVisible(true);
-        backgroundLayers[1].setVisible(false);
-    }
-
-}
-
-
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    url: '/api/v1/buildings/spaces/' + building_id +'/' + space_id +'.json',
-    format: new ol.format.GeoJSON()
-  }),
-        style:  new ol.style.Style({
-            stroke: new ol.style.Stroke({
-              color: 'red',
-              width: 2
-            })
-          }),
-        title: "spaces",
-        name: "spaces",
-        zIndex: 1,
-        visible: true
-
-});
-
-
-
 var map = new ol.Map({
-      interactions: ol.interaction.defaults().extend([
-    new ol.interaction.DragRotateAndZoom()
-  ]),
+    interactions: ol.interaction.defaults().extend([
+        new ol.interaction.DragRotateAndZoom()
+    ]),
     //layers: [backgroundLayers[0], backgroundLayers[1], wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03],
     layers: [
         new ol.layer.Group({
-                'title': 'Background',
-                layers: [mapQuestOsm, OsmBackLayer, SatelliteLayer
-                ]
+            'title': 'Background',
+            layers: [mapQuestOsm, OsmBackLayer, SatelliteLayer
+            ]
         }),
         new ol.layer.Group({
             title: 'Etage',
             layers: [
 
-                        wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03
-                ]
-            }),
+                wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03
+            ]
+        }),
     ],
     target: 'map',
     controls: ol.control.defaults({
@@ -134,20 +121,21 @@ var map = new ol.Map({
     })
 });
 
+
 function addRoute(buildingId, fromNumber, toNumber, routeType) {
     var baseUrl = '/api/v1/directions/';
-    var geoJsonUrl = baseUrl + 'buildingid=' +  buildingId + '&startid=' + fromNumber + '&endid=' + toNumber + '/?format=json';
+    var geoJsonUrl = baseUrl + 'buildingid=' + buildingId + '&startid=' + fromNumber + '&endid=' + toNumber + '/?format=json';
 
     var startingLevel = fromNumber.charAt(0);
 
     if (routeLayer) {
-      map.removeLayer(routeLayer);
+        map.removeLayer(routeLayer);
         console.log("removing layer now");
         //map.getLayers().pop();
-   }
+    }
 
     var source = new ol.source.Vector();
-    $.ajax(geoJsonUrl).then(function(response) {
+    $.ajax(geoJsonUrl).then(function (response) {
         //console.log("response", response);
         var geojsonFormat = new ol.format.GeoJSON();
         var features = geojsonFormat.readFeatures(response,
@@ -158,8 +146,8 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
 
         // active the floor of the start point
         var start_floor = features[0].getProperties().floor;
-        for(var i=0; i< floor_layers.length; i++) {
-            if(start_floor == floor_layers[i].getProperties().floor_num){
+        for (var i = 0; i < floor_layers.length; i++) {
+            if (start_floor == floor_layers[i].getProperties().floor_num) {
                 activateLayer(i);
             }
         }
@@ -172,9 +160,9 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
         //url: geoJsonUrl,
         //format: new ol.format.GeoJSON(),
         source: source,
-        style: function(feature, resolution) {
+        style: function (feature, resolution) {
             var feature_floor = feature.getProperties().floor;
-            if(feature_floor==active_floor_num) {
+            if (feature_floor == active_floor_num) {
                 feature.setStyle(route_active_style);
             } else {
                 feature.setStyle(route_inactive_style);
@@ -190,11 +178,11 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
     $("#clearRoute").removeClass("hide");
 }
 
-$("#clearRoute").click(function(){
+$("#clearRoute").click(function () {
     if (routeLayer) {
         map.removeLayer(routeLayer);
     }
-    if(markerLayer){
+    if (markerLayer) {
         map.removeLayer(markerLayer);
     }
     $("#clearRoute").addClass("hide");

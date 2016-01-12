@@ -108,6 +108,19 @@ def get_external_id(request, building_id, external_room_id, format=None):
         return Response(serializer.data)
 
 
+@api_view(['GET'])
+def get_space_by_name(request, building_id, space_name, format=None):
+    """
+    Return the GeoJSON of a single space passing your local space name
+    """
+    if request.method == 'GET':
+        data = request.data
+        floor_space_info = BuildingFloorSpace.objects.filter(short_name=space_name, fk_building_id=building_id)
+        serializer = BuildingFloorSpaceSerializer(floor_space_info, many=True)
+        return Response(serializer.data)
+        # return Response(data)
+
+
 def find_closest_network_node(x_coord, y_coord, floor):
     """
     Enter a given coordinate x,y and floor number and
@@ -124,12 +137,13 @@ def find_closest_network_node(x_coord, y_coord, floor):
 
     # find nearest node on network within 200 m
     # and snap to nearest node
+
     query = """ SELECT
         verts.id as id
         FROM geodata.networklines_3857_vertices_pgr AS verts
         INNER JOIN
           (select ST_PointFromText('POINT({0} {1} {2})', 3857)as geom) AS pt
-        ON ST_DWithin(verts.the_geom, pt.geom, 200.0)
+        ON ST_DWithin(verts.the_geom, pt.geom, 3.6)
         ORDER BY ST_3DDistance(verts.the_geom, pt.geom)
         LIMIT 1;""".format(x_coord, y_coord, floor)
 

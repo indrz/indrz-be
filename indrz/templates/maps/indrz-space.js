@@ -48,21 +48,6 @@ $.ajax(spaceJSONURL).then(function(response) {
 
 });
 
-function waitForFloors(space_floor_id){
-    if(floor_layers.length > 0){
-        for(var i =0; i< building_info.num_floors; i++)
-        {
-            if(building_info.buildingfloor_set[i].id == space_floor_id ){
-                activateLayer(i);
-            }
-        }
-    }
-    else{
-        setTimeout(function(){
-            waitForFloors(space_floor_id);
-        },250);
-    }
-}
 
 var spaceLayer = new ol.layer.Vector({
     source: space_source,
