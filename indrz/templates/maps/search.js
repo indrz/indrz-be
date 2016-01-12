@@ -37,9 +37,8 @@ function setSearchFeatureStyle (feature, resolution){
 }
 
 
-function searchIndrz() {
-    var searchUrl = '/api/v1/buildings/space/1348.json';
-
+function searchIndrz(buildingId, spaceName) {
+    var searchUrl = '/api/v1/building/' + buildingId + '/' + spaceName + '.json';
 
     if (searchLayer) {
         map.removeLayer(searchLayer);
@@ -54,12 +53,22 @@ function searchIndrz() {
         var featuresSearch = geojsonFormat3.readFeatures(response,
             {featureProjection: 'EPSG:4326'});
         searchSource.addFeatures(featuresSearch);
-        var searchFloorId = featuresSearch[0].getProperties().fk_building_floor.id;
+        //var searchFloorId = featuresSearch[0].getProperties().fk_building_floor.id;
         map.getView().setCenter(ol.extent.getCenter(searchSource.getExtent()));
         map.getView().setZoom(21);
-        waitForFloors(searchFloorId);
+        //waitForFloors(searchFloorId);
+
+        // active the floor of the start point
+        var searchResFloorNum = featuresSearch[0].getProperties().floor_num;
+        for (var i = 0; i < floor_layers.length; i++) {
+            if (searchResFloorNum == floor_layers[i].getProperties().floor_num) {
+                activateLayer(i);
+            }
+        }
 
     });
+
+
 
     var searchLayer = new ol.layer.Vector({
         source: searchSource,
