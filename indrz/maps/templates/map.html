@@ -33,6 +33,7 @@
 
     <script>
 
+       var building_id = 1;
 
         var searchValues = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.whitespace,
@@ -42,7 +43,10 @@
 
         // passing in `null` for the `options` arguments will result in the default
         // options being used
-        $('#search-prefetch .typeahead').typeahead(null, {
+        $('#search-input').typeahead(null, {
+            hint: true,
+            highlight: true,
+            minLength: 1,
             name: 'search-field',
             limit: 100,
             source: searchValues
@@ -54,7 +58,7 @@
 
             {#            var buildingid = buildingNantesId;#}
             var searchText = $('#search-input').val();
-            searchIndrz();
+            searchIndrz(building_id, searchText);
             event.preventDefault();
         });
     </script>
