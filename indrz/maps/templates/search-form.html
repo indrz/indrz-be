@@ -47,10 +47,11 @@
                 <h4 class="modal-title">{% trans "Bug Report" %}</h4>
             </div>
             <div class="modal-body">
-                <p>{% trans "Please describe what did not work." %}</p>
+                <input class="form-control" type="text" placeholder="{% trans "Please describe what went wrong." %}">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <a class="btn btn-default" href="#" data-dismiss="modal"> {% trans "Close" %}</a>
+                <a class="btn btn-primary" href="#"><i class="fa fa-paper-plane-o fa-fw"></i> {% trans "Send" %}</a>
             </div>
         </div>
 
