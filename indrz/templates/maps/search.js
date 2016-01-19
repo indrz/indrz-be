@@ -23,8 +23,8 @@ var search_res_style = new ol.style.Style({
 });
 
 
-function setSearchFeatureStyle (feature, resolution){
-        if (feature) {
+function setSearchFeatureStyle(feature, resolution) {
+    if (feature) {
 
         if (feature.get('short_name') !== null) {
             //info.innerHTML = feature.getId() + ': ' + feature.get('name');
@@ -69,8 +69,7 @@ function searchIndrz(buildingId, spaceName) {
     });
 
 
-
-    var searchLayer = new ol.layer.Vector({
+    searchLayer = new ol.layer.Vector({
         source: searchSource,
         style: setSearchFeatureStyle,
         title: "SearchLayer",
@@ -79,6 +78,16 @@ function searchIndrz(buildingId, spaceName) {
     });
 
     map.getLayers().push(searchLayer);
-    console.log("setting search layer now");
+    $("#clearSearch").removeClass("hide");
 
 }
+
+$("#clearSearch").click(function () {
+    if (searchLayer) {
+        map.removeLayer(searchLayer);
+    }
+
+    $("#clearSearch").addClass("hide");
+    $("#search-input").val('');
+
+});

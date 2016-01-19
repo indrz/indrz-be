@@ -189,4 +189,6 @@ body, h1, h2, h3, h4, p, li, td, th {
 #id-map-switcher-widget button{
     width: 120px;
 }
+
+.twitter-typeahead{ float:left; width:100%}
 /* END  STYLE CSS for the TYPEAHEAD drop down */
