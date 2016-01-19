@@ -176,6 +176,7 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
     map.getLayers().push(routeLayer);
 
     $("#clearRoute").removeClass("hide");
+    $("#shareRoute").removeClass("hide");
 }
 
 $("#clearRoute").click(function () {
@@ -186,6 +187,7 @@ $("#clearRoute").click(function () {
         map.removeLayer(markerLayer);
     }
     $("#clearRoute").addClass("hide");
+    $("#shareRoute").addClass("hide");
     $("#route-to").val('');
     $("#route-from").val('');
 });

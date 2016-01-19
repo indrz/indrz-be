@@ -1,5 +1,27 @@
 {% load i18n %}
-<div id="ShareModal" class="modal fade" role="dialog">
+<div id="ShareMapModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{% trans "Share map" %}</h4>
+            </div>
+            <div class="modal-body">
+                <p> <code id="popup-link"><input type="text" class="share-link" placeholder="here is the link static hard coded" style="width:100%;"></code></p>
+            </div>
+            <div class="modal-footer">
+                <p>ctl +c  strg + c</p>
+                <a class="btn btn-default" href="#" data-dismiss="modal"> {% trans "Close" %}</a>
+                <a class="btn btn-primary" href="#"><i class="fa fa-share-square fa-fw"></i> {% trans "Share" %}</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="ShareSearchModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
         <!-- Modal content-->
@@ -9,7 +31,29 @@
                 <h4 class="modal-title">{% trans "Share search results" %}</h4>
             </div>
             <div class="modal-body">
-                <p> <code id="popup-link"><input type="text" id="id-share-link" placeholder="here is the link static hard coded" style="width:100%;"></code></p>
+                <p> <code id="popup-link"><input type="text" class="share-link" placeholder="here is the link static hard coded" style="width:100%;"></code></p>
+            </div>
+            <div class="modal-footer">
+                <p>ctl +c  strg + c</p>
+                <a class="btn btn-default" href="#" data-dismiss="modal"> {% trans "Close" %}</a>
+                <a class="btn btn-primary" href="#"><i class="fa fa-share-square fa-fw"></i> {% trans "Share" %}</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="ShareRouteModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{% trans "Share route results" %}</h4>
+            </div>
+            <div class="modal-body">
+                <p> <code id="popup-link"><input type="text" class="share-link" placeholder="here is the link static hard coded" style="width:100%;"></code></p>
             </div>
             <div class="modal-footer">
                 <p>ctl +c  strg + c</p>
