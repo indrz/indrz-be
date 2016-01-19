@@ -11,9 +11,10 @@ urlpatterns = patterns('api.views',
     url(r'^buildings/(?P<pk>[0-9]+)/$', 'building_detail', name='building_details'),
     url(r'^buildings/spaces/(?P<building_id>\d{1,5})/(?P<floor_id>\d{1,5})/$', 'building_spaces_list', name='building_spaces_list'),
     url(r'^buildings/space/(?P<space_id>\d{1,5})/$', 'get_floor_space_id', name='get_space_info'),
-    url(r'^building/(?P<building_id>\d{1,5})/(?P<space_name>.+)/$', 'get_space_by_name', name='get_space_by_name'),
     url(r'^buildings/floor/(?P<building_id>\d{1,5})/$', 'building_floors_list', name='get_floor_ids'),
+   
     url(r'^building/(?P<building_id>\d{1,5})/externid/(?P<external_room_id>.+)/$', 'get_external_id', name='get_external_ids'),
+    url(r'^building/(?P<building_id>\d{1,5})/(?P<space_name>.+)/$', 'get_space_by_name', name='get_space_by_name'),
     #url(r'^directions/(?P<building_name>building=d{1,5})&start={1,6}&destination={1,6}/$', 'route_room_to_room', name='route-space-to-space' )
 
 )
