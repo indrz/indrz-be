@@ -11,7 +11,7 @@ function update_url(mode) {
     var data = {};
 
     if(mode == "route") {
-        url += "&route_from=" + $("#route-from").val() + "&route_to=" + $("#route-to").val();
+        url = "/map/" + map_name + "/?buildingid=" + building_id + "&route_from=" + $("#route-from").val() + "&route_to=" + $("#route-to").val();
     } else if(mode == "search") {
         url = "/map/" + map_name + "/?buildingid=" + building_id + "&spaceid=" + space_id;
     }

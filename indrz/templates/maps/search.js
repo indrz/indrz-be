@@ -58,7 +58,6 @@ function searchIndrz(buildingId, spaceName) {
         map.getView().setZoom(21);
         //waitForFloors(searchFloorId);
 
-        building_id = featuresSearch[0].getProperties().fk_building.id;
         space_id = response.features[0].id;
 
         // active the floor of the start point

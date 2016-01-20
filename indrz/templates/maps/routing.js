@@ -170,7 +170,8 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
         },
         title: "Route",
         name: "Route",
-        visible: true
+        visible: true,
+        zIndex: 9999
     });
 
     map.getLayers().push(routeLayer);
@@ -271,7 +272,8 @@ function addMarkers(route_features){
         }),
         title: "icon_layer",
         name: "icon_layer",
-        visible: true
+        visible: true,
+        zIndex: 9999
     });
     map.getLayers().push(markerLayer);
 }

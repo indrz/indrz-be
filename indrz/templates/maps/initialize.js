@@ -1,0 +1,14 @@
+$(document).ready(function(){
+    function initialize() {
+        if (floor_layers.length > 0) {
+            if(route_from!='' && route_to !=''){
+                $("#route-from").val(route_from);
+                $("#route-to").val(route_to);
+            }
+            $("#submitForm").submit();
+        } else {
+            setTimeout(do_action, 250);
+        }
+    }
+    initialize();
+});
