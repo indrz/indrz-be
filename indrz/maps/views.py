@@ -12,6 +12,7 @@ def route_map(request, *args, **kwargs):
         route_to, = request.GET.get('route_to', ''),
         centerx, = request.GET.get('centerx', 0),
         centery, = request.GET.get('centery', 0),
+        floor_num, = request.GET.get('floor', 0),
 
         context.update({
             'map_name': map_name,
@@ -22,6 +23,7 @@ def route_map(request, *args, **kwargs):
             'route_to': route_to,
             'centerx': centerx,
             'centery': centery,
+            'floor_num': floor_num
         })
 
     return render(request, context=context, template_name='map.html')

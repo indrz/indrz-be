@@ -9,7 +9,9 @@ function update_url(mode) {
     var center_crd = ol.extent.getCenter(current_extent);
     console.log(center_crd);
 
-    var url = "/map/" + map_name + "/?buildingid=" + building_id + "&centerx=" + center_crd[0] + "&centery=" + center_crd[1] + "&zlevel=" + current_zoom;
+    var url = "/map/" + map_name + "/?buildingid=" + building_id +
+        "&centerx=" + center_crd[0] + "&centery=" + center_crd[1] + "&zlevel=" + current_zoom +
+        "&floor=" + active_floor_num;
     var data = {};
 
     if(mode == "route") {
