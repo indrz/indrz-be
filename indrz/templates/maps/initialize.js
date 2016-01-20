@@ -7,7 +7,7 @@ $(document).ready(function(){
             }
             $("#submitForm").submit();
         } else {
-            setTimeout(do_action, 250);
+            setTimeout(initialize, 250);
         }
     }
     initialize();
