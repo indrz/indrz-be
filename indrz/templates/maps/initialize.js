@@ -5,6 +5,10 @@ $(document).ready(function(){
                 $("#route-from").val(route_from);
                 $("#route-to").val(route_to);
                 $("#submitForm").submit();
+            } else if(centerx != 0 && centery != 0){
+                var view = map.getView();
+                view.setCenter([centerx, centery]);
+                view.setZoom(zoom_level);
             }
         } else {
             setTimeout(initialize, 250);

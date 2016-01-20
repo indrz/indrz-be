@@ -11,3 +11,5 @@ var building_info = null;
 var map_name="{{map_name}}";
 var route_from = "{{route_from}}";
 var route_to = "{{route_to}}";
+var centerx = "{{centerx}}";
+var centery = "{{centery}}";

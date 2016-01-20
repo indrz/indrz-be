@@ -6,8 +6,10 @@ function update_url(mode) {
     var current_extent = map.getView().calculateExtent(map.getSize());
     var current_zoom = map.getView().getZoom();
 
-    var url = "/map/" + map_name + "/left=" + current_extent[0] + "&right=" + current_extent[2] +
-        "&top=" + current_extent[3] + "&bottom=" + current_extent[1] + "&campusid=4&zlevel=" + current_zoom;
+    var center_crd = ol.extent.getCenter(current_extent);
+    console.log(center_crd);
+
+    var url = "/map/" + map_name + "/?buildingid=" + building_id + "&centerx=" + center_crd[0] + "&centery=" + center_crd[1] + "&zlevel=" + current_zoom;
     var data = {};
 
     if(mode == "route") {
