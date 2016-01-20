@@ -170,12 +170,14 @@ function addRoute(buildingId, fromNumber, toNumber, routeType) {
         },
         title: "Route",
         name: "Route",
-        visible: true
+        visible: true,
+        zIndex: 9999
     });
 
     map.getLayers().push(routeLayer);
 
     $("#clearRoute").removeClass("hide");
+    $("#shareRoute").removeClass("hide");
 }
 
 $("#clearRoute").click(function () {
@@ -186,6 +188,7 @@ $("#clearRoute").click(function () {
         map.removeLayer(markerLayer);
     }
     $("#clearRoute").addClass("hide");
+    $("#shareRoute").addClass("hide");
     $("#route-to").val('');
     $("#route-from").val('');
 });
@@ -269,7 +272,8 @@ function addMarkers(route_features){
         }),
         title: "icon_layer",
         name: "icon_layer",
-        visible: true
+        visible: true,
+        zIndex: 9999
     });
     map.getLayers().push(markerLayer);
 }

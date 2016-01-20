@@ -110,7 +110,8 @@ $.ajax('/api/v1/buildings/' + building_id +'/')
                 title: "spaces",
                 name: "spaces",
                 floor_num: floor_info.floor_num,
-                visible: false
+                visible: false,
+                zIndex: 99
             });
             map.getLayers().push(floor_spaces_vector);
             floor_layers.push(floor_spaces_vector);
