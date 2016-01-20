@@ -1,5 +1,5 @@
 map.on('moveend', function(e){
-    update_url('map');
+    // update_url('map');
 });
 
 function update_url(mode) {
@@ -13,7 +13,7 @@ function update_url(mode) {
     if(mode == "route") {
         url += "&route_from=" + $("#route-from").val() + "&route_to=" + $("#route-to").val();
     } else if(mode == "search") {
-        url += "&room=" + $("#search-input").val();
+        url = "/map/" + map_name + "/?buildingid=" + building_id + "&spaceid=" + space_id;
     }
 
     data.extent = current_extent;

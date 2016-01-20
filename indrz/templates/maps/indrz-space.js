@@ -43,9 +43,13 @@ $.ajax(spaceJSONURL).then(function(response) {
         {featureProjection: 'EPSG:4326'});
     space_source.addFeatures(features);
     var space_floor_id = features[0].getProperties().fk_building_floor.id;
-    map.getView().setCenter(ol.extent.getCenter(space_source.getExtent()));
     waitForFloors(space_floor_id);
 
+    var center_crd = ol.extent.getCenter(space_source.getExtent());
+    open_popup(features[0].getProperties(), center_crd);
+
+    // zoom to the room
+    map.getView().fit(space_source.getExtent(), map.getSize());
 });
 
 
