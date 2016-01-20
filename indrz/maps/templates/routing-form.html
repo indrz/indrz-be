@@ -29,8 +29,17 @@
                 </label>
             </div>
             <button id="enterRoute" type="submit" class="btn btn-default">{% trans "Go !" %}</button>
-            <button id="shareRoute" type="button" class="btn btn-info hide" data-toggle="modal" data-target="#ShareRouteModal">{% trans "Share route" %}</button>
-            <button id="clearRoute" type="button" class="btn btn-warning hide">{% trans "Clear route" %}</button>
+            <button id="shareRoute" type="button" class="btn btn-info hide" data-toggle="modal" data-target="#ShareRouteModal">
+                <span >
+                    <i class="fa fa-share"></i>
+                </span>
+{#                {% trans " Share route" %}#}
+
+            </button>
+            <button id="clearRoute" type="button" class="btn btn-warning hide">
+                <i class="fa fa-refresh"></i>
+{#                {% trans "Clear route" %}#}
+            </button>
             <br>
         </form>
 
