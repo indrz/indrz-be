@@ -4,8 +4,8 @@ $(document).ready(function(){
             if(route_from!='' && route_to !=''){
                 $("#route-from").val(route_from);
                 $("#route-to").val(route_to);
+                $("#submitForm").submit();
             }
-            $("#submitForm").submit();
         } else {
             setTimeout(initialize, 250);
         }
