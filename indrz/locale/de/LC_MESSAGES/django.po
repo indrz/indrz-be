@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-22 12:19+0100\n"
+"POT-Creation-Date: 2016-01-21 13:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,230 +18,237 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\buildings\models.py:6 .\landscape\models.py:6
+#: .\buildings\models.py:9 .\landscape\models.py:7
 msgid "code value"
 msgstr ""
 
-#: .\buildings\models.py:7
+#: .\buildings\models.py:10 .\landscape\models.py:8
 msgid "name value"
 msgstr ""
 
-#: .\buildings\models.py:111 .\buildings\models.py:116
+#: .\buildings\models.py:114 .\buildings\models.py:119
 msgid "Active meaning show it yes - no"
 msgstr ""
 
-#: .\buildings\models.py:112 .\buildings\models.py:117
+#: .\buildings\models.py:115 .\buildings\models.py:120
 msgid "Priority of POI"
 msgstr ""
 
-#: .\buildings\models.py:113 .\buildings\models.py:118
+#: .\buildings\models.py:116 .\buildings\models.py:121
 msgid "Sort order in legend"
 msgstr ""
 
-#: .\buildings\models.py:126
+#: .\buildings\models.py:129
 msgid "Street"
 msgstr ""
 
-#: .\buildings\models.py:128
+#: .\buildings\models.py:131
 msgid "Building or house number"
 msgstr ""
 
-#: .\buildings\models.py:130
+#: .\buildings\models.py:133
 msgid "Postal code"
 msgstr ""
 
-#: .\buildings\models.py:132
+#: .\buildings\models.py:135
 msgid "Municipality"
 msgstr ""
 
-#: .\buildings\models.py:135
+#: .\buildings\models.py:138
 msgid "City"
 msgstr ""
 
-#: .\buildings\models.py:139
+#: .\buildings\models.py:142
 msgid "Country"
 msgstr ""
 
-#: .\buildings\models.py:151 .\landscape\models.py:94
+#: .\buildings\models.py:154 .\landscape\models.py:165
+#: .\landscape\models.py:190
 msgid "Name"
 msgstr ""
 
-#: .\buildings\models.py:152 .\landscape\models.py:97 .\maps\map-models.py:16
+#: .\buildings\models.py:155 .\landscape\models.py:168
+#: .\landscape\models.py:193 .\maps\map-models.py:16
 msgid "Description"
 msgstr ""
 
-#: .\buildings\models.py:153 .\landscape\models.py:98
+#: .\buildings\models.py:156 .\landscape\models.py:169
+#: .\landscape\models.py:194
 msgid "Brief description"
 msgstr ""
 
-#: .\buildings\models.py:154
+#: .\buildings\models.py:157
 msgid "Phone"
 msgstr ""
 
-#: .\buildings\models.py:156
+#: .\buildings\models.py:159
 msgid "Email"
 msgstr ""
 
-#: .\buildings\models.py:158
+#: .\buildings\models.py:161
 msgid "Website"
 msgstr ""
 
-#: .\buildings\models.py:164
+#: .\buildings\models.py:167
 msgid "Building centroid for small scale maps"
 msgstr ""
 
-#: .\buildings\models.py:182
+#: .\buildings\models.py:185
 msgid "Owner name"
 msgstr ""
 
-#: .\buildings\models.py:183
+#: .\buildings\models.py:186
 msgid "Legal entity form..gmbh, verein"
 msgstr ""
 
-#: .\buildings\models.py:184
+#: .\buildings\models.py:187
 msgid "Number of buildings"
 msgstr ""
 
-#: .\buildings\models.py:198
+#: .\buildings\models.py:201
 msgid "Campus name"
 msgstr ""
 
-#: .\buildings\models.py:199 .\buildings\models.py:225
+#: .\buildings\models.py:202 .\buildings\models.py:229
 msgid "Building description"
 msgstr ""
 
-#: .\buildings\models.py:218
-msgid "Building name"
-msgstr ""
-
-#: .\buildings\models.py:219
-msgid "Building height in meters"
-msgstr ""
-
-#: .\buildings\models.py:220
-msgid "Fancy building name"
-msgstr ""
-
-#: .\buildings\models.py:221
-msgid "Number of floors"
+#: .\buildings\models.py:209
+msgid "Campus area of one or more buildings"
 msgstr ""
 
 #: .\buildings\models.py:222
-msgid "Unique facility number"
+msgid "Building name"
 msgstr ""
 
 #: .\buildings\models.py:223
-msgid "Operational hours"
+msgid "Building height in meters"
 msgstr ""
 
 #: .\buildings\models.py:224
+msgid "Fancy building name"
+msgstr ""
+
+#: .\buildings\models.py:225
+msgid "Number of floors"
+msgstr ""
+
+#: .\buildings\models.py:226
+msgid "Unique facility number"
+msgstr ""
+
+#: .\buildings\models.py:227
+msgid "Operational hours"
+msgstr ""
+
+#: .\buildings\models.py:228
 msgid "EPSG code original data"
 msgstr ""
 
-#: .\buildings\models.py:240
+#: .\buildings\models.py:244
 msgid "short name eg first floor"
 msgstr ""
 
-#: .\buildings\models.py:241 .\buildings\models.py:269
-#: .\buildings\models.py:298 .\buildings\models.py:350
+#: .\buildings\models.py:245 .\buildings\models.py:273
+#: .\buildings\models.py:302 .\buildings\models.py:354
 msgid "long name"
 msgstr ""
 
-#: .\buildings\models.py:242
+#: .\buildings\models.py:246
 msgid "special name"
 msgstr ""
 
-#: .\buildings\models.py:244
+#: .\buildings\models.py:248
 msgid "Floor order value"
 msgstr ""
 
-#: .\buildings\models.py:245
+#: .\buildings\models.py:249
 msgid "Elevation value of floor in meters"
 msgstr ""
 
-#: .\buildings\models.py:247 .\buildings\models.py:272
-#: .\buildings\models.py:301 .\buildings\models.py:352 .\routing\models.py:58
+#: .\buildings\models.py:251 .\buildings\models.py:276
+#: .\buildings\models.py:305 .\buildings\models.py:356 .\routing\models.py:58
 msgid "floor number"
 msgstr ""
 
-#: .\buildings\models.py:248
+#: .\buildings\models.py:252
 msgid "height of floor"
 msgstr ""
 
-#: .\buildings\models.py:268 .\buildings\models.py:297
-#: .\buildings\models.py:349
+#: .\buildings\models.py:272 .\buildings\models.py:301
+#: .\buildings\models.py:353
 msgid "short name"
 msgstr ""
 
-#: .\buildings\models.py:270
+#: .\buildings\models.py:274
 msgid "gis calculated area"
 msgstr ""
 
-#: .\buildings\models.py:271
+#: .\buildings\models.py:275
 msgid "gis calculated perimeter"
 msgstr ""
 
-#: .\buildings\models.py:300
+#: .\buildings\models.py:304
 msgid "gis calculated length"
 msgstr ""
 
-#: .\buildings\models.py:322
+#: .\buildings\models.py:326
 msgid "Organization name e.g Engineering"
 msgstr ""
 
-#: .\buildings\models.py:323
+#: .\buildings\models.py:327
 msgid "Department name e.g Engineering"
 msgstr ""
 
-#: .\buildings\models.py:324
+#: .\buildings\models.py:328
 msgid "Division"
 msgstr ""
 
-#: .\buildings\models.py:332
+#: .\buildings\models.py:336
 msgid "Room id imported from external system"
 msgstr ""
 
-#: .\buildings\models.py:333
+#: .\buildings\models.py:337
 msgid "Room number"
 msgstr ""
 
-#: .\buildings\models.py:334
+#: .\buildings\models.py:338
 msgid "Room number on door sign"
 msgstr ""
 
-#: .\buildings\models.py:335
+#: .\buildings\models.py:339
 msgid "Room description"
 msgstr ""
 
-#: .\buildings\models.py:336
+#: .\buildings\models.py:340
 msgid "Total number of occupants allowed in this space"
 msgstr ""
 
-#: .\buildings\models.py:340
+#: .\buildings\models.py:344
 msgid "Tag values csv"
 msgstr ""
 
-#: .\buildings\models.py:351 .\maps\map-models.py:53
+#: .\buildings\models.py:355 .\maps\map-models.py:53
 msgid "description"
 msgstr ""
 
-#: .\buildings\models.py:354
+#: .\buildings\models.py:358
 msgid "Force route to this location"
 msgstr ""
 
-#: .\buildings\models.py:355
+#: .\buildings\models.py:359
 msgid "Activated and enabled"
 msgstr ""
 
-#: .\buildings\models.py:356
+#: .\buildings\models.py:360
 msgid "Tree order in legend"
 msgstr ""
 
-#: .\buildings\models.py:357
+#: .\buildings\models.py:361
 msgid "Sort oder of POI items"
 msgstr ""
 
-#: .\buildings\models.py:358
+#: .\buildings\models.py:362
 msgid "Icon CSS name"
 msgstr ""
 
@@ -285,12 +292,16 @@ msgstr ""
 msgid "type of stand"
 msgstr ""
 
-#: .\landscape\models.py:7
-msgid "name descriptive value"
+#: .\landscape\models.py:174
+msgid "Geometry multi-polygon outside facility areas"
 msgstr ""
 
-#: .\landscape\models.py:99
-msgid "Surface type"
+#: .\landscape\models.py:200
+msgid "Geometry multi-linestrings outside area lines"
+msgstr ""
+
+#: .\landscape\models.py:218
+msgid "Geometry multi-linestrings pavement lines"
 msgstr ""
 
 #: .\maps\map-models.py:26
@@ -374,7 +385,6 @@ msgid "Visibility"
 msgstr ""
 
 #: .\maps\templates\base-map.html:52 .\maps\templates\base-map.html.py:103
-#: .\maps\templates\base-old.html:52
 msgid "GIT Source"
 msgstr ""
 
@@ -382,84 +392,123 @@ msgstr ""
 msgid "Floor"
 msgstr ""
 
-#: .\maps\templates\base-map.html:94 .\maps\templates\base-map.html.py:162
+#: .\maps\templates\base-map.html:94
 msgid "Etage 3"
 msgstr ""
 
-#: .\maps\templates\base-map.html:95 .\maps\templates\base-map.html.py:163
+#: .\maps\templates\base-map.html:95
 msgid "Etage 2"
 msgstr ""
 
-#: .\maps\templates\base-map.html:96 .\maps\templates\base-map.html.py:164
+#: .\maps\templates\base-map.html:96
 msgid "Etage 1"
 msgstr ""
 
-#: .\maps\templates\base-map.html:97 .\maps\templates\base-map.html.py:165
+#: .\maps\templates\base-map.html:97
 msgid "Etage 0"
 msgstr ""
 
-#: .\maps\templates\base-map.html:98 .\maps\templates\base-map.html.py:166
+#: .\maps\templates\base-map.html:98
 msgid "Etage -1"
 msgstr ""
 
-#: .\maps\templates\base-map.html:124
-msgid "Route From:"
-msgstr ""
-
-#: .\maps\templates\base-map.html:128
-msgid "Route To:"
-msgstr ""
-
-#: .\maps\templates\base-map.html:136
-msgid "Standard Route"
-msgstr ""
-
-#: .\maps\templates\base-map.html:142
-msgid "Barrier Free Route"
-msgstr ""
-
-#: .\maps\templates\base-map.html:145
-msgid "Go !"
-msgstr ""
-
-#: .\maps\templates\search-form.html:5
-msgid "Search for ..."
-msgstr ""
-
-#: .\maps\templates\search-form.html:7
-msgid "Go!"
-msgstr ""
-
-#: .\maps\templates\search-form.html:13
-msgid "Share"
-msgstr ""
-
-#: .\maps\templates\search-form.html:14
-msgid "GPS"
-msgstr ""
-
-#: .\maps\templates\search-form.html:15
-msgid "Language"
-msgstr ""
-
-#: .\maps\templates\search-form.html:16
-msgid "Directions"
-msgstr ""
-
-#: .\maps\templates\search-form.html:19
-msgid "Info"
-msgstr ""
-
-#: .\maps\templates\search-form.html:20
-msgid "Report Bug"
-msgstr ""
-
-#: .\maps\templates\search-form.html:37
+#: .\maps\templates\modal-bugreport.html:9
 msgid "Bug Report"
 msgstr ""
 
-#: .\maps\templates\search-form.html:40
-msgid "Please describe what did not work."
+#: .\maps\templates\modal-bugreport.html:12
+msgid "Please describe what went wrong."
+msgstr ""
+
+#: .\maps\templates\modal-bugreport.html:15
+#: .\maps\templates\modal-share.html:16 .\maps\templates\modal-share.html:37
+#: .\maps\templates\modal-share.html:59
+msgid "Close"
+msgstr ""
+
+#: .\maps\templates\modal-bugreport.html:16
+msgid "Send"
+msgstr ""
+
+#: .\maps\templates\modal-share.html:9
+msgid "Share map"
+msgstr ""
+
+#: .\maps\templates\modal-share.html:15
+msgid "Simply copy"
+msgstr ""
+
+#: .\maps\templates\modal-share.html:15
+msgid "CTRL + c"
+msgstr ""
+
+#: .\maps\templates\modal-share.html:15
+msgid "then paste"
+msgstr ""
+
+#: .\maps\templates\modal-share.html:15
+msgid "CTRL + v"
+msgstr ""
+
+#: .\maps\templates\modal-share.html:15
+msgid "in your browser"
+msgstr ""
+
+#: .\maps\templates\modal-share.html:30
+msgid "Share search results"
+msgstr ""
+
+#: .\maps\templates\modal-share.html:38 .\maps\templates\modal-share.html:60
+#: .\maps\templates\search-form.html:17
+msgid "Share"
+msgstr ""
+
+#: .\maps\templates\modal-share.html:52
+msgid "Share route results"
+msgstr ""
+
+#: .\maps\templates\routing-form.html:22
+msgid "Standard Route"
+msgstr ""
+
+#: .\maps\templates\routing-form.html:28
+msgid "Barrier Free Route"
+msgstr ""
+
+#: .\maps\templates\routing-form.html:31
+msgid "Go !"
+msgstr ""
+
+#: .\maps\templates\search-form.html:8
+msgid "Search for ..."
+msgstr ""
+
+#: .\maps\templates\search-form.html:12
+msgid "Go!"
+msgstr ""
+
+#: .\maps\templates\search-form.html:19
+msgid "GPS"
+msgstr ""
+
+#: .\maps\templates\search-form.html:20
+msgid "Language"
+msgstr ""
+
+#: .\maps\templates\search-form.html:21
+msgid "Directions"
+msgstr ""
+
+#: .\maps\templates\search-form.html:22
+msgid "Clear"
+msgstr ""
+
+#: .\maps\templates\search-form.html:26
+msgid "Info"
+msgstr ""
+
+#: .\maps\templates\search-form.html:28
+msgid "Report Bug"
 msgstr ""
 
 #: .\routing\models.py:23
