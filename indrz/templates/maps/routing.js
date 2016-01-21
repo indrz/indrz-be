@@ -87,6 +87,7 @@ function setLayerVisible(index) {
 function activateLayer(index) {
     hideLayers();
     setLayerVisible(index);
+    update_url('map');
 }
 
 

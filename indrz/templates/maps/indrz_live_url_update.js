@@ -1,5 +1,5 @@
 map.on('moveend', function(e){
-    // update_url('map');
+    update_url('map');
 });
 
 function update_url(mode) {
