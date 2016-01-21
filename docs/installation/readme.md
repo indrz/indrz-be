@@ -13,7 +13,7 @@ Software      | License
 PostgreSQL 9.3  | PostgreSQL License
 Postgis 2.1     | GNU General Public License (GPLv2)
 pgRouting 2.0   | GNU General Public License (GPLv2)
-python 2.7.x    | PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
+python 3.x & 2.x    | PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
 Django 1.8      | Django Software Foundation  a type BSD
 GDAL            | MIT
 Geoserver       | GNU General Public License (GPLv2), plus Apache 2.0
@@ -29,7 +29,7 @@ Requirements
   1. PostgreSQL 9.3.x
   1. PostGIS 2.1.x
   1. pgRouting 2.x
-  1. Python 2.7.x
+  1. Python 3 recommended and 2.9 +
   1. Django 1.8 (web framework) + other Django Apps(see requirements.txt) [link to requirements](requirements.txt)
 
 Instructions
