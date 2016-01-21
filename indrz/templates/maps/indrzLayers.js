@@ -1,72 +1,28 @@
-var wmsUG01 = new ol.layer.Image({
+function createWmsLayer(layerName, geoserverLayer, floorNumber, isVisible, zIndexValue){
+    var newWmsLayer = new ol.layer.Image({
     source: new ol.source.ImageWMS({
         url: baseUrlWms,
-        params: {'LAYERS': 'indrz:ug01'},
+        params: {'LAYERS': geoserverLayer},
         serverType: 'geoserver',
         crossOrigin: ''
     }),
-    visible: false,
-    name: "wmsUG01",
-    floor: "-1",
-    type: "floor"
+    visible: isVisible,
+    name: layerName,
+    floor: floorNumber,
+    type: "floor",
+    zIndex: zIndexValue
 
 });
 
-var wmsE00 = new ol.layer.Image({
-    source: new ol.source.ImageWMS({
-        url: baseUrlWms,
-        params: {'LAYERS': 'indrz:e00'},
-        serverType: 'geoserver',
-        crossOrigin: ''
-    }),
-    visible: true,
-    name: "wmsE00",
-    floor: "0",
-    type: "floor"
+    return newWmsLayer;
+}
 
-});
 
-var wmsE01 = new ol.layer.Image({
-    source: new ol.source.ImageWMS({
-        url: baseUrlWms,
-        params: {'LAYERS': 'indrz:e01'},
-        serverType: 'geoserver',
-        crossOrigin: ''
-    }),
-    visible: false,
-    name: "wmsE01",
-    floor: "1",
-    type: "floor"
-
-});
-
-var wmsE02 = new ol.layer.Image({
-    source: new ol.source.ImageWMS({
-        url: baseUrlWms,
-        params: {'LAYERS': 'indrz:e02'},
-        serverType: 'geoserver',
-        crossOrigin: ''
-    }),
-    visible: false,
-    name: "wmsE02",
-    floor: "2",
-    type: "floor"
-
-});
-
-var wmsE03 = new ol.layer.Image({
-    source: new ol.source.ImageWMS({
-        url: baseUrlWms,
-        params: {'LAYERS': 'indrz:e03'},
-        serverType: 'geoserver',
-        crossOrigin: ''
-    }),
-    visible: false,
-    name: "wmsE03",
-    floor: "3",
-    type: "floor"
-
-});
+wmsUG01 = createWmsLayer('wmsUG01','indrz:ug01', '-1', 'false', 3 );
+wmsE00 = createWmsLayer('wmsE00','indrz:e00', '0', 'false', 3 );
+wmsE01 = createWmsLayer('wmsE01','indrz:e01', '1', 'false', 3 );
+wmsE02 = createWmsLayer('wmsE02','indrz:e02', '2', 'false', 3 );
+wmsE03 = createWmsLayer('wmsE03','indrz:e03', '3', 'false', 3 );
 
 
 var mapQuestOsm = new ol.layer.Tile({
@@ -126,12 +82,6 @@ $.ajax('/api/v1/buildings/' + building_id +'/')
         }
 });
 
-
-var SatelliteLayer = new ol.layer.Tile({
-    source: new ol.source.MapQuest({layer: 'sat'}),
-    visible: false,
-    type:"background"
-})
 
 function appendFloorNav(floor_info, index){
     $("#floor-links").prepend("<li>" +
