@@ -58,6 +58,9 @@ function searchIndrz(buildingId, spaceName) {
         map.getView().setZoom(21);
         //waitForFloors(searchFloorId);
 
+        var centerCoord = ol.extent.getCenter(searchSource.getExtent());
+        open_popup(featuresSearch[0].getProperties(), centerCoord);
+
         space_id = response.features[0].id;
 
         // active the floor of the start point
