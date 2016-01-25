@@ -1,0 +1,17 @@
+{% load mptt_tags %}
+<ul>
+    {% recursetree nodes %}
+        <li>
+            {{ node.cat_name }}
+            {% if not node.is_leaf_node %}
+                <ul class="children">
+                    {{ children }}
+                </ul>
+            {% endif %}
+        </li>
+    {% endrecursetree %}
+</ul>
+<p>
+
+    <a href="/poi/add_category"> go add a new category</a>
+</p>
