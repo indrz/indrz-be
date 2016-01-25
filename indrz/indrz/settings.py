@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     #### third party apps
     'rest_framework',
     'taggit',
+    'mptt',
 
 
     ##### our local indrz apps
@@ -52,6 +53,7 @@ INSTALLED_APPS = (
     'buildings',
     'routing',
     'conference',
+    'poi_manager',
 
 )
 
@@ -79,6 +81,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR,  'templates'),
                  os.path.join(BASE_DIR,  'maps/templates'),
+                 os.path.join(BASE_DIR,  'poi_manager/templates'),
             # insert your TEMPLATE_DIRS here
         ],
         'APP_DIRS': True,
