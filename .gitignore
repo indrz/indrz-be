@@ -79,6 +79,7 @@ $RECYCLE.BIN/
 /indrz/landscape/migrations/
 /indrz/maps/migrations/
 /indrz/conference/migrations/
+/indrz/poi_manager/migrations/
 /indrz/logs/
 
 
