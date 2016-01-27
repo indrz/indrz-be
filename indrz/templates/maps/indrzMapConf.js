@@ -1,5 +1,4 @@
-var startCenterX = -168527.958404064;
-var startCenterY = 5983885.94934575;
+
 var baseUrlWms =  'http://176.28.23.163:8080/geoserver/indrz/wms';
 var zoom_level="{{ zoom_level }}";
 var building_id="{{ building_id }}";
@@ -13,3 +12,7 @@ var route_from = "{{route_from}}";
 var route_to = "{{route_to}}";
 var centerx = "{{centerx}}";
 var centery = "{{centery}}";
+
+var StartCenterX = -168547.958404064;
+var StartCenterY = 5983885.94934575;
+// set the starting coordinate of the map

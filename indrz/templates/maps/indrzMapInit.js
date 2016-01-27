@@ -24,7 +24,7 @@ var map = new ol.Map({
         })
     }),
     view: new ol.View({
-        center: [startCenterX, startCenterY],
+        center: [StartCenterX, StartCenterY],
         zoom: zoom_level
     })
 });
