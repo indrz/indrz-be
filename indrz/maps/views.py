@@ -21,9 +21,9 @@ def route_map(request, *args, **kwargs):
             'zoom_level': zoom_level,
             'route_from': route_from,
             'route_to': route_to,
-            'centerx': centerx,
-            'centery': centery,
-            'floor_num': floor_num
+            'centerx':  float(centerx),
+            'centery': float(centery),
+            'floor_num': int(floor_num)
         })
 
     return render(request, context=context, template_name='map.html')
