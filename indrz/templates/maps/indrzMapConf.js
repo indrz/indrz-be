@@ -1,5 +1,5 @@
 
-var baseUrlWms =  'http://176.28.23.163:8080/geoserver/indrz/wms';
+var baseUrlWms =  '';
 var zoom_level="{{ zoom_level }}";
 var building_id="{{ building_id }}";
 var active_floor_num="{{floor_num}}";

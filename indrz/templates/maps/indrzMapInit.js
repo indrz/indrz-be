@@ -15,7 +15,7 @@ var map = new ol.Map({
 
                 wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03
             ]
-        }),
+        })
     ],
     target: 'map',
     controls: ol.control.defaults({
