@@ -144,6 +144,47 @@ def create_route_from_coords(request, start_coord, start_floor, end_coord, end_f
         return HttpResponseNotFound('<h1>Sorry not a GET or POST request</h1>')
 
 
+def format_walk_time(walk_time):
+    """
+    takes argument: float walkTime in seconds
+    returns argument: string time  "xx minutes xx seconds"
+    """
+    if walk_time > 0.0:
+        return str(int(walk_time / 60.0)) + " minutes " + str(int(round(walk_time % 60))) + " seconds"
+    else:
+        return "Walk time is less than zero! something is wrong"
+
+
+def calc_distance_walktime(rows):
+    """
+    calculates distance and walk_time.
+    rows must be an array of linestrings --> a route, retrieved from the DB.
+    rows[5]: type of line (stairs, elevator, etc)
+    rows[3]: cost as length of segment
+    returns a dict with key/value pairs route_length, walk_time
+    """
+
+    route_length = 0
+    walk_time = 0
+
+    for row in rows:
+
+        route_length += row[3]
+        # calculate walk time
+        if row[5] == 3 or row[5] == 4:  # stairs
+            walk_speed = 1.2  # meters per second m/s
+        elif row[5] == 5 or row[5] == 6:  # elevator
+            walk_speed = 1.1  # m/s
+        else:
+            walk_speed = 1.39  # m/s
+
+        walk_time += (row[3] / walk_speed)
+
+    length_format = "%.2f" % route_length
+    real_time = format_walk_time(walk_time)
+    return {"route_length": length_format, "walk_time": real_time}
+
+
 def run_route(start_node_id, end_node_id, route_type):
     '''
 
@@ -192,26 +233,30 @@ def run_route(start_node_id, end_node_id, route_type):
     # get entire query results to work with
     route_segments = cur.fetchall()
 
+
+    route_info = calc_distance_walktime(route_segments)
+
     # empty list to hold each segment for our GeoJSON output
     route_result = []
 
     # loop over each segment in the result route segments
     # create the list of our new GeoJSON
     for segment in route_segments:
-        seg_cost = segment[3]  # cost value
+        seg_length = segment[3]  # length of segment
         layer_level = segment[4]  # floor number
         seg_type = segment[5]
         geojs = segment[6]  # geojson coordinates
         geojs_geom = loads(geojs)  # load string to geom
         geojs_feat = Feature(geometry=geojs_geom,
                              properties={'floor': layer_level,
-                                         'length': seg_cost,
-                                         'network_type': seg_type})
+                                         'length': seg_length,
+                                         'network_type': seg_type}
+                                         )
         route_result.append(geojs_feat)
 
     # using the geojson module to create our GeoJSON Feature Collection
     geojs_fc = FeatureCollection(route_result)
-
+    geojs_fc.update(route_info)
     return geojs_fc
 
 
