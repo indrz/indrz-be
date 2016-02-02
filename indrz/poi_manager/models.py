@@ -37,10 +37,51 @@ from buildings.models import Building, BuildingFloor
 #         self.date_update = fromdb.date_update
 #         return self
 
+# Receive the pre_delete signal and delete the file associated with the model instance.
+from django.db.models.signals import pre_delete, post_delete
+from django.dispatch.dispatcher import receiver
+import os
+
+
+class PoiIcon(models.Model):
+    """
+    An image added to an icon of the map.
+    """
+    name = models.CharField(verbose_name=_('Name of map icon'),max_length=255)
+
+    poi_icon = models.FileField(upload_to="poi-icons")
+
+    class Meta:
+        ordering = ('name', )
+
+    @property
+    def json(self):
+        return {
+            "id": self.pk,
+            "name": self.name,
+            "src": self.poi_icon.url
+        }
+
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.name
+
+
+@receiver(post_delete, sender=PoiIcon)
+def poi_icon_delete(sender, instance, **kwargs):
+    # Pass false so FileField doesn't save the model.
+    if instance.poi_icon and instance.poi_icon.name:
+        if os.path.isfile(instance.poi_icon.path):
+            os.remove(instance.poi_icon.path)
+
 
 class PoiCategory(MPTTModel):
     cat_name = models.CharField(verbose_name=_('Category name'),max_length=255, null=True, blank=True)
     icon_css_name = models.CharField(verbose_name=_("Icon CSS name"), max_length=255, null=True, blank=True)
+    fk_poi_icon = models.ForeignKey(PoiIcon,null=True, blank=True)
     description = models.CharField(verbose_name=_("description"), max_length=255, null=True, blank=True)
 
     force_mid_point = models.NullBooleanField(verbose_name=_("Force route to this location"), null=True, blank=True)

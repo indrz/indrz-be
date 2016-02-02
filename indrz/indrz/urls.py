@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 # from maps import views as map_view
 
 urlpatterns = [
@@ -26,3 +28,11 @@ urlpatterns = [
 
     #url(r'^', map_view.index, name='index'),
 ]
+
+
+
+
+
+urlpatterns += [
+    # ... the rest of your URLconf goes here ...
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
