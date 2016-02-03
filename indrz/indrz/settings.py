@@ -70,11 +70,6 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'indrz.urls'
 
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
-
 
 TEMPLATES = [
     {
@@ -97,8 +92,13 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
             ],
+            # loaders NOT needed if APP_DIR : True  see above
+            # 'loaders':[
+            #     ('django.template.loaders.filesystem.Loader',
+            #         'django.template.loaders.app_directories.Loader',
+            #     )]
         },
-    },
+    }
 ]
 
 
