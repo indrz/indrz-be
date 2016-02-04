@@ -12,12 +12,29 @@ from rest_framework.response import Response
 
 from buildings.models import Building, BuildingFloorSpace, BuildingFloor
 from buildings.serializers import (BuildingSerializer,
+                                   BuildingShortSerializer,
                                    BuildingFloorSpaceSerializer,
                                    BuildingFloorSerializer,
                                    SpaceSerializer)
 
 logger = logging.getLogger(__name__)
 
+@api_view(['GET', ])
+def building_short_list(request, format=None):
+    """
+    List all buildings without details
+    """
+    if request.method == 'GET':
+        buildings = Building.objects.all()
+        serializer = BuildingShortSerializer(buildings, many=True)
+        return Response(serializer.data)
+
+    # elif request.method == 'POST':
+    #     serializer = BuildingSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'POST'])

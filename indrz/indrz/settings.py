@@ -12,7 +12,11 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from indrz import secret_settings
+
+try:
+    from indrz import secret_settings
+except ImportError:
+    pass
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -92,13 +96,12 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
             ],
-            # loaders NOT needed if APP_DIR : True  see above
-            # 'loaders':[
-            #     ('django.template.loaders.filesystem.Loader',
-            #         'django.template.loaders.app_directories.Loader',
-            #     )]
+            # not needed if APP_DIRS is true
+            # 'loaders':[(
+            #     'django.template.loaders.filesystem.Loader',
+            #     'django.template.loaders.app_directories.Loader',)]
         },
-    }
+    },
 ]
 
 
