@@ -72,7 +72,7 @@ def find_closest_network_node(x_coord, y_coord, floor):
         FROM geodata.networklines_3857_vertices_pgr AS verts
         INNER JOIN
           (select ST_PointFromText('POINT({0} {1} {2})', 3857)as geom) AS pt
-        ON ST_DWithin(verts.the_geom, pt.geom, 3.6)
+        ON ST_DWithin(verts.the_geom, pt.geom, 3.6) and st_Z(verts.the_geom)={2}
         ORDER BY ST_3DDistance(verts.the_geom, pt.geom)
         LIMIT 1;""".format(x_coord, y_coord, floor)
 
