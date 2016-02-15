@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 import traceback
 import logging
@@ -314,15 +315,15 @@ def create_route_from_search(request, building_id, start_term, end_term, route_t
         building_id = building_id.split("=")[1]
 
         cur = connection.cursor()
-        logger.debug('*************************start term' + str(start_room))
-        logger.debug('*************************end term' + str(end_room))
+        # logger.debug('*************************start term' + str(start_room))
+        # logger.debug('*************************end term' + str(end_room))
 
         start_query = """SELECT id, external_id, search_string FROM geodata.search_index_v
                           WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper('%{0}%')
                           ORDER BY length(search_string) LIMIT 1""".format(start_room)
 
 
-        logger.debug('**************print query' + str(start_query))
+        # logger.debug('**************print query' + str(start_query))
         cur.execute(start_query)
 
 
@@ -331,21 +332,21 @@ def create_route_from_search(request, building_id, start_term, end_term, route_t
 
 
 
-        logger.debug('**************get start id' + str(start_id_value))
+        # logger.debug('**************get start id' + str(start_id_value))
 
 
         end_query = """SELECT id, external_id, search_string FROM geodata.search_index_v
                           WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper('%{0}%')
                           ORDER BY length(search_string) LIMIT 1""".format(end_room)
 
-        logger.debug('**************print END  query' + str(end_query))
+        # logger.debug('**************print END  query' + str(end_query))
         cur.execute(end_query)
 
         get_end_id_list = cur.fetchone()
         end_id_value = get_end_id_list[0]
 
-        logger.debug('*************************current start id' + str(start_id_value))
-        logger.debug('*************************current end id' + str(end_id_value))
+        # logger.debug('*************************current start id' + str(start_id_value))
+        # logger.debug('*************************current end id' + str(end_id_value))
 
         start_node_id = get_room_centroid_node(building_id, start_id_value)
         end_node_id = get_room_centroid_node(building_id, end_id_value)
