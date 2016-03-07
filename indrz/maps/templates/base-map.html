@@ -61,9 +61,17 @@
 
                     {% endblock floor-change-float %}
 
-                    <a href="http://www.indrz.com" target="_blank"><img
-                            src="{% static "img/indrz-powered-by-90px.png" %}"
-                            class="indrz-logo"/></a>
+                     {% block indrz-logo-imgt %}
+
+                        <div class="indrz-logo">
+
+                            <a href="http://www.indrz.com" target="_blank"><img
+                            src="{% static "img/indrz-powered-by-90px.png" %}"/></a>
+
+                         </div>
+
+                    {% endblock indrz-logo-imgt %}
+
 
                 </div>
 

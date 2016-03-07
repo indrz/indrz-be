@@ -32,14 +32,10 @@ body {
 #layerswitcher { margin:0; padding:10px; border-radius:4px; background:rgba(0, 60, 136, 0.5); list-style-type:none; }
 
 .indrz-logo {
-  position: fixed; /* or absolute */
+  position: absolute; /* or absolute */
   bottom: 2%;
   left: 50%;
     z-index: 1001;
-
-    /*width: 90px;*/
-    /*height: auto;*/
-        /*127px x 63px*/
 }
 
 .indrz-floor-changer-float{
