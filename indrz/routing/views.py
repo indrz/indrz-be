@@ -224,9 +224,10 @@ def run_route(start_node_id, end_node_id, route_type):
 
     # run our shortest path query
     if start_node_id or end_node_id:
-        cur.execute(routing_query, (start_node_id, end_node_id))
+        if start_node_id != end_node_id:
+            cur.execute(routing_query, (start_node_id, end_node_id))
     else:
-        logger.error("start or end node is None "
+        logger.error("start or end node is None or is the same node "
                      + str(start_node_id))
         return HttpResponseNotFound('<h1>Sorry NO start or end node'
                                     ' found within 200m</h1>')
