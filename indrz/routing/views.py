@@ -16,7 +16,7 @@ from geojson import loads, Feature, FeatureCollection
 logger = logging.getLogger(__name__)
 
 
-def get_room_centroid_node(building_id, room_id):
+def get_room_centroid_node(building_id, space_id):
     '''
     Find the room center point coordinates
     and find the closest route node point
@@ -27,7 +27,7 @@ def get_room_centroid_node(building_id, room_id):
     room_center_q = """SELECT  layer,
             ST_asGeoJSON(st_centroid(geom))
             AS geom FROM geodata.search_index_v
-            WHERE building_id={0} and id ={1};""".format(building_id, room_id)
+            WHERE building_id={0} and id ={1};""".format(building_id, space_id)
 
     cur = connection.cursor()
     cur.execute(room_center_q)
@@ -36,18 +36,18 @@ def get_room_centroid_node(building_id, room_id):
 
     res2 = res[0]
 
-    room_floor = res2[0]
-    room_geom_x = json.loads(res2[1])
-    room_geom_y = json.loads(res2[1])
+    space_floor = res2[0]
+    space_geom_x = json.loads(res2[1])
+    space_geom_y = json.loads(res2[1])
 
-    x_coord = float(room_geom_x['coordinates'][0])
-    y_coord = float(room_geom_y['coordinates'][1])
+    x_coord = float(space_geom_x['coordinates'][0])
+    y_coord = float(space_geom_y['coordinates'][1])
 
-    room_node = find_closest_network_node(x_coord, y_coord, room_floor)
+    space_node_id = find_closest_network_node(x_coord, y_coord, space_floor)
     try:
-        return room_node
+        return space_node_id
     except:
-        logger.error("error get room center " + str(room_node))
+        logger.error("error get room center " + str(space_node_id))
         logger.error(traceback.format_exc())
         return {'error': 'error get room center'}
 
@@ -62,7 +62,7 @@ def find_closest_network_node(x_coord, y_coord, floor):
     :return: node id as an integer
     """
     # connect to our Database
-    logger.debug("now running function find_closest_network_node")
+    # logger.debug("now running function find_closest_network_node")
     cur = connection.cursor()
 
     # find nearest node on network within 200 m
@@ -73,11 +73,10 @@ def find_closest_network_node(x_coord, y_coord, floor):
         FROM geodata.networklines_3857_vertices_pgr AS verts
         INNER JOIN
           (select ST_PointFromText('POINT({0} {1} {2})', 3857)as geom) AS pt
-        ON ST_DWithin(verts.the_geom, pt.geom, 3.6) and st_Z(verts.the_geom)={2}
+        ON ST_DWithin(verts.the_geom, pt.geom, 10) and st_Z(verts.the_geom)={2}
         ORDER BY ST_3DDistance(verts.the_geom, pt.geom)
         LIMIT 1;""".format(x_coord, y_coord, floor)
 
-    # pass 3 variables to our %s %s %s place holder in query
     cur.execute(query)
 
     # get the result
@@ -186,14 +185,81 @@ def calc_distance_walktime(rows):
     return {"route_length": length_format, "walk_time": real_time}
 
 
-def run_route(start_node_id, end_node_id, route_type):
+def merge_geojson(geojs1, geojs2):
+    feat = geojs1['features'] # list of geom
+    feat2 = geojs2['features'] # list of geom
+
+    route_merge = []
+
+    route_merge.extend(feat)
+    route_merge.extend(feat2)
+
+
+    return route_merge
+
+@api_view(['GET', 'POST'])
+def force_route_mid_point(request, search_result=None):
+    """
+    Force a route over a middle point such as a front office
+    :return: a GeoJSON route with a middle point
+    """
+
+    demo_options = {'route_types':
+        {'standard_route' : 1,
+         'barrierfree route' : 2,
+         'indoor_only_prefered': 3,
+         'fastest': 4
+         }
+
+    ,
+    'route_logic':{
+        'force_route_through_location': True,
+        'set_route_mid_point': True
+    },
+                    'extra_location':{
+                        'node_id': 1234,
+                        'floor_num': 1,
+                        'space_id' : 123
+
+                    }}
+    building_id = 1
+    search_result = {'building-id': 1, 'start-node-id': 1385, 'mid-node-id': 1167, 'end-node-id': 1252}
+
+    # remove last coordinate of first route
+    start_node_id = get_room_centroid_node(building_id, search_result['start-node-id'])
+    mid_node_id = get_room_centroid_node(building_id, search_result['mid-node-id'])
+    end_node_id = get_room_centroid_node(building_id, search_result['end-node-id'])
+
+    route_start_to_mid_point = run_route(start_node_id, mid_node_id, 1)
+    route_mid_to_end_point = run_route(mid_node_id, end_node_id, 1)
+
+    route_out_merge = merge_geojson(route_start_to_mid_point, route_mid_to_end_point )
+    # return all but the first and last item in python list
+    #my_list = my_list[1:-1]
+    f = []
+    route_to_mid_features = route_start_to_mid_point['features'][1:-1]
+    route_to_end_features = route_mid_to_end_point['features']
+
+    f.append(route_start_to_mid_point)
+    f.append(route_mid_to_end_point)
+
+
+    #route_to_mid_point['features'][-1:] # returns the last line segment in route
+    #route_to_mid_point['features'][-1:][0]['geometry']['coordinates'][-1] # returns last coordinate on route
+
+    return Response({'type' : 'FeatureCollection', 'features': route_out_merge})
+
+
+def run_route(start_node_id, end_node_id, route_type, route_options=None):
     '''
 
     :param start_node_id:
     :param end_node_id:
     :param route_type:
+    :param route_options: a dictionary
     :return:
     '''
+
 
     cur = connection.cursor()
     base_route_q = """SELECT id, source, target,
@@ -247,12 +313,16 @@ def run_route(start_node_id, end_node_id, route_type):
         seg_length = segment[3]  # length of segment
         layer_level = segment[4]  # floor number
         seg_type = segment[5]
+        seg_node_id = segment[1]
+        seq_sequence = segment[0]
         geojs = segment[6]  # geojson coordinates
         geojs_geom = loads(geojs)  # load string to geom
         geojs_feat = Feature(geometry=geojs_geom,
                              properties={'floor': layer_level,
                                          'length': seg_length,
-                                         'network_type': seg_type}
+                                         'network_type': seg_type,
+                                         'seg_node_id': seg_node_id,
+                                         'sequence': seq_sequence}
                                          )
         route_result.append(geojs_feat)
 
