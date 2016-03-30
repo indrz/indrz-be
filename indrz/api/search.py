@@ -1,6 +1,10 @@
 import re
 
 from django.db.models import Q
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from buildings.models import BuildingFloorSpace
+
 
 def normalize_query(query_string,
                     findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
@@ -35,3 +39,18 @@ def get_query(query_string, search_fields):
         else:
             query = query & or_query
     return query
+
+
+def search(request):
+    query_string = ''
+    found_entries = None
+    if ('q' in request.GET) and request.GET['q'].strip():
+        query_string = request.GET['q']
+
+        entry_query = get_query(query_string, ['short_name', 'long_name', 'tag', 'tags'])
+
+        found_entries = BuildingFloorSpace.objects.filter(entry_query).order_by('-pub_date')
+    # TODO add search html code
+    # return render_to_response('search/search_results.html',
+    #                       { 'query_string': query_string, 'found_entries': found_entries },
+    #                       context_instance=RequestContext(request))
