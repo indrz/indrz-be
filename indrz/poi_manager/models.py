@@ -3,8 +3,7 @@ from taggit.managers import TaggableManager
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.contrib.gis.db import models as gis_model
-from buildings.models import Building, BuildingFloor
-
+from buildings.models import Building, BuildingFloor, Campus
 
 # class BaseLookupDomain(models.Model):
 #     code = models.CharField(verbose_name=_("code value"), max_length=150, null=True, blank=True)
@@ -116,8 +115,9 @@ class Poi(models.Model):
 
     fk_building_floor = models.ForeignKey(BuildingFloor, null=True, blank=True)
     fk_building = models.ForeignKey(Building, null=True, blank=True)
+    fk_campus = models.ForeignKey(Campus)
 
-    fk_poi_category = models.ForeignKey(PoiCategory, null=True, blank=True)
+    fk_poi_category = models.ForeignKey(PoiCategory)
 
     geom = gis_model.MultiPointField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
     objects = gis_model.GeoManager()
