@@ -12,22 +12,22 @@ from rest_framework.response import Response
 from geojson import loads, Feature, FeatureCollection
 
 
-
 logger = logging.getLogger(__name__)
 
 
-def get_room_centroid_node(building_id, room_id):
+def get_room_centroid_node(building_id, space_id):
     '''
     Find the room center point coordinates
     and find the closest route node point
-    :param room_number: integer value of room number
+    :param building_id: integer value of building
+    :param space_id: internal space id as integer
     :return: Closest route node to submitted room number
     '''
 
     room_center_q = """SELECT  layer,
             ST_asGeoJSON(st_centroid(geom))
             AS geom FROM geodata.search_index_v
-            WHERE building_id={0} and id ={1};""".format(building_id, room_id)
+            WHERE building_id={0} and id ={1};""".format(building_id, space_id)
 
     cur = connection.cursor()
     cur.execute(room_center_q)
@@ -36,20 +36,21 @@ def get_room_centroid_node(building_id, room_id):
 
     res2 = res[0]
 
-    room_floor = res2[0]
-    room_geom_x = json.loads(res2[1])
-    room_geom_y = json.loads(res2[1])
+    space_floor = res2[0]
+    space_geom_x = json.loads(res2[1])
+    space_geom_y = json.loads(res2[1])
 
-    x_coord = float(room_geom_x['coordinates'][0])
-    y_coord = float(room_geom_y['coordinates'][1])
+    x_coord = float(space_geom_x['coordinates'][0])
+    y_coord = float(space_geom_y['coordinates'][1])
 
-    room_node = find_closest_network_node(x_coord, y_coord, room_floor)
+    space_node_id = find_closest_network_node(x_coord, y_coord, space_floor)
     try:
-        return room_node
+        return space_node_id
     except:
-        logger.error("error get room center " + str(room_node))
+        logger.error("error get room center " + str(space_node_id))
         logger.error(traceback.format_exc())
         return {'error': 'error get room center'}
+
 
 def find_closest_network_node(x_coord, y_coord, floor):
     """
@@ -62,7 +63,7 @@ def find_closest_network_node(x_coord, y_coord, floor):
     :return: node id as an integer
     """
     # connect to our Database
-    logger.debug("now running function find_closest_network_node")
+    # logger.debug("now running function find_closest_network_node")
     cur = connection.cursor()
 
     # find nearest node on network within 200 m
@@ -73,11 +74,10 @@ def find_closest_network_node(x_coord, y_coord, floor):
         FROM geodata.networklines_3857_vertices_pgr AS verts
         INNER JOIN
           (select ST_PointFromText('POINT({0} {1} {2})', 3857)as geom) AS pt
-        ON ST_DWithin(verts.the_geom, pt.geom, 3.6) and st_Z(verts.the_geom)={2}
+        ON ST_DWithin(verts.the_geom, pt.geom, 10) and st_Z(verts.the_geom)={2}
         ORDER BY ST_3DDistance(verts.the_geom, pt.geom)
         LIMIT 1;""".format(x_coord, y_coord, floor)
 
-    # pass 3 variables to our %s %s %s place holder in query
     cur.execute(query)
 
     # get the result
@@ -91,6 +91,7 @@ def find_closest_network_node(x_coord, y_coord, floor):
     else:
         logger.debug("query is none check tolerance value of 200")
         return False
+
 
 # use the rest_framework decorator to create our api
 #  view for get, post requests
@@ -110,8 +111,6 @@ def create_route_from_coords(request, start_coord, start_floor, end_coord, end_f
     """
 
     if request.method == 'GET' or request.method == 'POST':
-
-        cur = connection.cursor()
 
         # parse the incoming coordinates and floor using
         # split by comma
@@ -186,14 +185,81 @@ def calc_distance_walktime(rows):
     return {"route_length": length_format, "walk_time": real_time}
 
 
+def merge_2_routes(route_part1, route_part2):
+    """
+    Merges two route feature geometries into a single GeoJSON
+    features list.
+    :param route_part1 a valid route GeoJSON route result from A to B
+    :param route_part2 a valid GeoJSON route result from B to C
+    :return: the GeoJSON features key with all route segements
+        of both routes from A to B and B to C where A is start
+        B is middle destination and C is final destination
+    """
+
+    if route_part1:
+        geo_features_route_part_1 = route_part1['features']  # list of geom
+        geo_features_route_part_2 = route_part2['features']  # list of geom
+
+        routes_merged = []
+
+        routes_merged.extend(geo_features_route_part_1)
+        routes_merged.extend(geo_features_route_part_2)
+
+        return routes_merged
+    else:
+        return None
+
+
+@api_view(['GET', 'POST'])
+def force_route_mid_point(request, **kwargs):
+    """
+    Force a route over a middle point such as a front office
+    :return: a single GeoJSON featureCollection with a middle point
+    :param
+    """
+    start_node = request.GET.get('startnode', 1)  # 1385
+    mnode = request.GET.get('midnode', 1)  # 1167
+    end_node = request.GET.get('endnode', 1)  # 1252
+
+    building_id = 1
+    route_nodes = {'building-id': 1, 'start-node-id': start_node, 'mid-node-id': mnode, 'end-node-id': end_node}
+
+    # remove last coordinate of first route
+    start_node_id = get_room_centroid_node(building_id, route_nodes['start-node-id'])
+    mid_node_id = get_room_centroid_node(building_id, route_nodes['mid-node-id'])
+    end_node_id = get_room_centroid_node(building_id, route_nodes['end-node-id'])
+
+    route_start_to_mid_point = run_route(start_node_id, mid_node_id, 1)
+    route_mid_to_end_point = run_route(mid_node_id, end_node_id, 1)
+
+    route_out_merge = merge_2_routes(route_start_to_mid_point, route_mid_to_end_point)
+
+    return Response({'type': 'FeatureCollection', 'features': route_out_merge})
+
+
 def run_route(start_node_id, end_node_id, route_type):
-    '''
+    """
 
     :param start_node_id:
     :param end_node_id:
     :param route_type:
+    :param route_options: a dictionary
     :return:
-    '''
+    """
+    # TODO add route options dictionary
+    # TODO add parameter to function   route_options=None
+
+    # sample dictionary of options
+    # route_options = {'route_types': {
+    #     'standard_route': 1,
+    #     'barrierfree route': 2,
+    #     'indoor_only_prefered': 3,
+    #     'fastest': 4
+    # },
+    #     'route_logic': {
+    #         'force_route_through_location': True
+    #     }
+    # }
 
     cur = connection.cursor()
     base_route_q = """SELECT id, source, target,
@@ -227,14 +293,12 @@ def run_route(start_node_id, end_node_id, route_type):
         if start_node_id != end_node_id:
             cur.execute(routing_query, (start_node_id, end_node_id))
     else:
-        logger.error("start or end node is None or is the same node "
-                     + str(start_node_id))
+        logger.error("start or end node is None or is the same node " + str(start_node_id))
         return HttpResponseNotFound('<h1>Sorry NO start or end node'
                                     ' found within 200m</h1>')
 
     # get entire query results to work with
     route_segments = cur.fetchall()
-
 
     route_info = calc_distance_walktime(route_segments)
 
@@ -247,13 +311,17 @@ def run_route(start_node_id, end_node_id, route_type):
         seg_length = segment[3]  # length of segment
         layer_level = segment[4]  # floor number
         seg_type = segment[5]
+        seg_node_id = segment[1]
+        seq_sequence = segment[0]
         geojs = segment[6]  # geojson coordinates
         geojs_geom = loads(geojs)  # load string to geom
         geojs_feat = Feature(geometry=geojs_geom,
                              properties={'floor': layer_level,
                                          'length': seg_length,
-                                         'network_type': seg_type}
-                                         )
+                                         'network_type': seg_type,
+                                         'seg_node_id': seg_node_id,
+                                         'sequence': seq_sequence}
+                             )
         route_result.append(geojs_feat)
 
     # using the geojson module to create our GeoJSON Feature Collection
@@ -264,18 +332,18 @@ def run_route(start_node_id, end_node_id, route_type):
 
 @api_view(['GET', 'POST'])
 def create_route_from_id(request, building_id, start_room_id, end_room_id, route_type):
-    '''
+    """
     Generate a GeoJSON route from external room id
     to external room id
+    :param building_id: id of building as integer
     :param request: GET or POST request
-    :param start_room_num: an integer room number
-    :param end_room_num: an integer room number
+    :param start_room_id: an integer room number
+    :param end_room_id: an integer room number
     :param route_type: an integer room type
     :return: a GeoJSON linestring of the route
-    '''
+    """
 
     if request.method == 'GET' or request.method == 'POST':
-
 
         start_room = int(start_room_id.split("=")[1])
         end_room = int(end_room_id.split("=")[1])
@@ -298,18 +366,18 @@ def create_route_from_id(request, building_id, start_room_id, end_room_id, route
 
 @api_view(['GET', 'POST'])
 def create_route_from_search(request, building_id, start_term, end_term, route_type=0):
-    '''
+    """
     Generate a GeoJSON route from room number
     to room number
     :param request: GET or POST request
-    :param start_room_num: an integer room number
-    :param end_room_num: an integer room number
+    :param building_id: buiilding id as integer
+    :param start_term: a text string as search term
+    :param end_term: a text string as search term
     :param route_type: an integer room type
     :return: a GeoJSON linestring of the route
-    '''
+    """
 
     if request.method == 'GET' or request.method == 'POST':
-
 
         start_room = start_term.split("=")[1]
         end_room = end_term.split("=")[1]
@@ -323,18 +391,11 @@ def create_route_from_search(request, building_id, start_term, end_term, route_t
                           WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper('%{0}%')
                           ORDER BY length(search_string) LIMIT 1""".format(start_room)
 
-
         # logger.debug('**************print query' + str(start_query))
         cur.execute(start_query)
 
-
         get_start_id_list = cur.fetchone()
         start_id_value = get_start_id_list[0]
-
-
-
-        # logger.debug('**************get start id' + str(start_id_value))
-
 
         end_query = """SELECT id, external_id, search_string FROM geodata.search_index_v
                           WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper('%{0}%')

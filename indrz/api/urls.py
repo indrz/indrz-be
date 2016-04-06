@@ -28,13 +28,11 @@ urlpatterns += patterns('routing.views',
         'create_route_from_id', name='routing-from-id'),
     url(r'^directions/(?P<building_id>buildingid=\d{1,5})&(?P<start_term>startid=.+)&(?P<end_term>endid=.+)(?P<route_type>&type=\d{1,5})?/$',
         'create_route_from_search', name='routing-from-search'),
-    url(r'^directions3/(?P<room_num>\d{5})/$', 'get_room_centroid_node', name='room-center')
+    url(r'^directions/force_mid/', 'force_route_mid_point', name='force-route-midpoint')
 
                         )
-
-# http://localhost:8000/api/v1/directions/building=1&startid=1327&endid=1369
-
-# http://localhost:8000/api/v1/directions/building=1&startid=307: Orne&endid=311: Mayenne
-# http://localhost:8000/api/v1/directions/building=1&startid=1173&endid=1231
+# http://localhost:8000/api/v1/directions/force_mid/?startnode=1385&midnode=1167&endnode=1252
+# http://localhost:8000/api/v1/directions/buildingid=1&startid=307: Orne&endid=311: Mayenne
+# http://localhost:8000/api/v1/directions/buildingid=1&startid=1173&endid=1231
 
 urlpatterns = format_suffix_patterns(urlpatterns)
