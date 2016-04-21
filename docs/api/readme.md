@@ -159,6 +159,17 @@ Your response is a GeoJSON LineString showing a 2D line for the entire route.
             ...
 ```
 
+
+#### Create directions forcing the route over a mid point
+
+This API call forces a route through a mid point.  This calls the normal routing call but checks if the destination node requires a mid point.  You would use such a call when you want force a generated route to visit a front office for example.
+
+    GET /api/v1/directions/force_mid/?startnode=1385&midnode=1167&endnode=1252
+    
+Here you can see we simply pass in a start node id and an end node it.  Our logic will check the endnode id if it requires a mid point.
+
+
+
     
 ### Route from coordinate to coordinate in building
 
