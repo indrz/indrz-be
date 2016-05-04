@@ -1,7 +1,7 @@
 # indrz
 digital wayfinding indoors, maps, orientation and indoor routing for buildings large or small, app or webpage.
 
-### What is indrz?
+## What is indrz?
 indrz is open source software to provide indoor maps and routes for buildings.  indrz will allow you to integrate indoor maps and routing services into your homepage or application.  If you work at a university or other organization and need an online wayfinder [www.indrz.com] (www.indrz.com) will offer our services to build or host it for you.  Our business model is like Mapbox, free open source software and payed services such as data conversion, preparation or import.  The [www.indrz.com] (www.indrz.com) cloud based platform can host the solution for you.
 
 Indrz was developed out of the need to quickly communicate
@@ -12,15 +12,19 @@ to help the students out indrz was born.
 
 ## Documentation
 
-Read the Documenation
+Our documentation is built upon the [mapbox docbox] (https://github.com/mapbox/docbox) structure for static documentation generation with react.js.
 
-[indrz Docs] (https://github.com/indrz/indrz/tree/master/docs)
 
-[indrz Installation] (https://github.com/indrz/indrz/tree/master/docs/installation)
+You can find our documentation project here [indrz Docs] (https://github.com/indrz/indrz-doc)
 
-[indrz API] (https://github.com/indrz/indrz/tree/master/docs/api)
 
-[indrz GeoData] (https://github.com/indrz/indrz/tree/master/docs/geodata)
+[indrz introduction to API] (https://github.com/indrz/indrz-doc/blob/master/content/introduction.md)
+
+[indrz Installation] (https://github.com/indrz/indrz-doc/blob/master/content/installation.md)
+
+[indrz Directions API] (https://github.com/indrz/indrz-doc/blob/master/content/directions.md)
+
+[indrz Working with GeoData] (https://github.com/indrz/indrz/tree/master/docs/geodata)
 
 
 ## Supported and built by:
