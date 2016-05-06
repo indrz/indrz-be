@@ -11,6 +11,7 @@
 
                       <input id="enterSearch" type="submit" class="btn btn-default " href="#" value="{% trans "Go!" %}">
                       <a id="clearSearch" class="btn btn-primary hide " href="#"><i class="fa fa-refresh fa-fw"></i></a>
+
                       <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><i
                               class="fa fa-cog fa-fw"></i>
                           <span class="fa fa-caret-down"></span></a>
@@ -19,7 +20,8 @@
                                   class="fa fa-share fa-fw"></i> {% trans "Share" %}</a></li>
 
                           <li><a href="#"><i class="fa fa-map-marker fa-fw"></i> {% trans "GPS" %}</a></li>
-                          <li><a href="#"><i class="fa fa-language fa-fw"></i> {% trans "Language" %}</a></li>
+                          <li><a href="#"><i class="fa fa-language"></i>  {{ LANGUAGE_CODE|upper }}</a></li>
+
                           <li><a href="#"><i class="fa fa-map-signs fa-fw"></i> {% trans "Directions" %}</a></li>
                           <li><a href="#"><i class="fa fa-print fa-fw"></i> {% trans "Print" %}</a></li>
                           <li id="clear-search-results"><a href="#"><i
