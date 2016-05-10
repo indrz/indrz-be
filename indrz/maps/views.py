@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 
-def route_map(request, *args, **kwargs):
+def view_map(request, *args, **kwargs):
     context = {}
     if request.method == 'GET':
         map_name = kwargs.pop('map_name', None)
