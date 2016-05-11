@@ -198,9 +198,8 @@ body, h1, h2, h3, h4, p, li, td, th {
   right: 8px;
 }
 .ol-popup-closer:after {
-  content: "✖";
+  content: "X";
 }
-
 #id-map-switcher-widget{
     position: absolute;
     right: 120px;

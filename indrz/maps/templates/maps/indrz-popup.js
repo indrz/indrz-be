@@ -41,6 +41,9 @@ map.on('singleclick', function (e) {
 });
 
 function open_popup(properties, coordinate){
+
+  var titlePopup = "Building Name: ";
+
   var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
       coordinate, 'EPSG:3857', 'EPSG:4326'));
     if (properties.short_name){
