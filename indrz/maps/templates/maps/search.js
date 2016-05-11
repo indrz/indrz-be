@@ -91,6 +91,7 @@ $("#clearSearch").click(function () {
     if (searchLayer) {
         map.removeLayer(searchLayer);
     }
+    close_popup();
 
     $("#clearSearch").addClass("hide");
     $("#search-input").val('');

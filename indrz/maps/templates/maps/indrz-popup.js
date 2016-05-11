@@ -20,11 +20,28 @@ var popup_overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
  * Add a click handler to hide the popup.
  * @return {boolean} Don't follow the href.
  */
+function close_popup(){
+  popup_overlay.setPosition(undefined);
+  popup_closer.blur();
+    if (searchLayer) {
+        map.removeLayer(searchLayer);
+
+    }
+  return false;
+}
+
 popup_closer.onclick = function() {
   popup_overlay.setPosition(undefined);
   popup_closer.blur();
+    if (searchLayer) {
+        map.removeLayer(searchLayer);
+        //map.getLayers().pop();
+    }
+    // map.getLayers().pop();
   return false;
 };
+
+
 
 map.addOverlay(popup_overlay);
 
@@ -63,6 +80,13 @@ function open_popup(properties, coordinate){
 
   popup_content.innerHTML += '<p>Coordinate:</p><code>' + hdms + '</code><p><a href="#"><i class="fa fa-bug fa-fw"></i> Bug report</a>  </p>';
   popup_overlay.setPosition(coordinate);
+}
+
+function close_popup(){
+  popup_overlay.setPosition(undefined);
+  popup_closer.blur();
+    $("#search-input").val('');
+  return false;
 }
 /*
 map.on('singleclick', function(evt) {
