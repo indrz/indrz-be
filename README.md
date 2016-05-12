@@ -1,30 +1,62 @@
-# indrz
+# indrz open source wayfinding, routting, navigation
+Project homepage [www.indrz.com] (http://www.indrz.com)
 digital wayfinding indoors, maps, orientation and indoor routing for buildings large or small, app or webpage.
+[![GitHub stars](https://img.shields.io/github/stars/indrz/indrz.svg?style=flat-square)](https://github.com/indrz/indrz/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/indrz/indrz.svg)](https://github.com/indrz/indrz/issues)
+[![GitHub release](https://img.shields.io/github/release/indrz/indrz.svg)](https://github.com/indrz/indrz/releases)
+[![license](https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square)](https://raw.githubusercontent.com/indrz/indrz/master/LICENSE)
+[![Twitter](https://img.shields.io/twitter/url/https/github.com/indrz/indrz.svg?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=%5Bobject%20Object%5D)
+
+## Documentation
+
+You can find our documentation project here [indrz Docs] (https://github.com/indrz/indrz-doc)
+
+Our documentation structure and build environment is built upon the [mapbox docbox] (https://github.com/mapbox/docbox) nodejs static
+ documentation generator.  The main content is found under the (content) folder.
+
+[indrz Installation] (https://github.com/indrz/indrz-doc/blob/master/content/installation.md)
+
+[indrz introduction to API] (https://github.com/indrz/indrz-doc/blob/master/content/introduction.md)
+
+[indrz Directions API] (https://github.com/indrz/indrz-doc/blob/master/content/directions.md)
+
+[indrz Buildings API] (https://github.com/indrz/indrz-doc/blob/master/content/buildings.md)
+
+[indrz Working with GeoData](https://github.com/indrz/indrz-doc/blob/master/content/geodata.md)
+
+
+## Building blocks Libraries we use
+
+* [Django](http://djangoproject.com) – Web Framework Backend
+* [Django Rest Framework](http://www.django-rest-framework.org) – Django Rest Web Framework our API
+* [PostGIS](http://postgis.net) – Spatial Database extension to Postgresql
+* [PGRouting](http://pgrouting.org) - Routing extension to PostGIS and Posgresql
+* [Postgresql](http://www.postgresql.org) – Database
+* [Geoserver](http://geoserver.org) – Web map server to serve and create, maps and data
+* [Openlayers 3](http://openlayers.org) – Slippy client side javascript mapping library
+* [Bootstrap css](http://bootstrap.com/) - css framework bootstrap
+* Not YET implemented [Angularjs](http://angularjs.org/) - Javascript framework
+* Not YET implemented [three.js](http://threejs.org) - 3d Javascript library
+* will be depreciated [jQuery Mobile js](http://http://jquerymobile.com) - mobile web pages made easy
+* Not YET implemented [ionic Framework](http://ionicframework.com) - hybrid mobile apps with html 5
+* Not YET implemented [Gulpjs js](http://gulpjs.com) - js building 
+
+## Licence
+indrz is under GNU General Public License v3.0.  The name "indrz" is not allowed to be used by third parties and is a trademark.  Other than that you can do what you want accordingly 
+
 
 ## What is indrz?
-indrz is open source software to provide indoor maps and routes for buildings.  indrz will allow you to integrate indoor maps and routing services into your homepage or application.  If you work at a university or other organization and need an online wayfinder [www.indrz.com] (www.indrz.com) will offer our services to build or host it for you.  Our business model is like Mapbox, free open source software and payed services such as data conversion, preparation or import.  The [www.indrz.com] (www.indrz.com) cloud based platform can host the solution for you.
+indrz is open source software API to provide indoor maps and routing directions. 
+ indrz will allow you to integrate indoor maps and routing services into your homepage or application.  
+ If you work at a university or other organization and need an online wayfinder [www.indrz.com] (www.indrz.com) 
+ will offer our services to build or host it for you.  Our business model is like Mapbox, free open source software 
+ and payed services such as data conversion, preparation or import.  The [www.indrz.com] (www.indrz.com) cloud based 
+ platform can host the solution for you.
 
 Indrz was developed out of the need to quickly communicate
 how to get from point A to point B in a complex set of buildings.
 Being late for your first class is never a good thing, so
 to help the students out indrz was born.
-
-
-## Documentation
-
-Our documentation is built upon the [mapbox docbox] (https://github.com/mapbox/docbox) structure for static documentation generation with react.js.
-
-
-You can find our documentation project here [indrz Docs] (https://github.com/indrz/indrz-doc)
-
-
-[indrz introduction to API] (https://github.com/indrz/indrz-doc/blob/master/content/introduction.md)
-
-[indrz Installation] (https://github.com/indrz/indrz-doc/blob/master/content/installation.md)
-
-[indrz Directions API] (https://github.com/indrz/indrz-doc/blob/master/content/directions.md)
-
-[indrz Working with GeoData] (https://github.com/indrz/indrz/tree/master/docs/geodata)
 
 
 ## Supported and built by:
@@ -33,8 +65,7 @@ Contact: Michael Diener
 
 Email: office@gomogi.com
 
-www:  www.gomogi.com
-www:  www.indrz.com
+[www.gomogi.com] (http://www.gomogi.com)
 
 ### What you GET
 The code is for building the routing services, client side javascript to view routes, show maps, integrate maps, change floors, ...  All the functionality is baked in for your own indoor routing app or webpage.  
@@ -86,15 +117,13 @@ We can do this for you but if you know how you will need to know how to make the
 
 ## Translations
 Translations are hosted by [Transifex here]  (https://www.transifex.com/organization/indrz/dashboard)
-Currently supported languages include English and German
+Currently we have translations for English and German, feel free to add your language.
 
 ### Current branches in use
 * indrz Wirtschafts Universität Wien  indrz-campus (http://campus.wu.ac.at)
 * indrz library [Vienna University of Economics and Business Administration Library](http://gis.wu.ac.at/?key=ST%20261.w34%20G744)
 * indrz business park [Lakeside Science & Technology Park](http://ws1.gomogi.com/lakeside/Firmensuche.html)
 * indrz Alpen Adria University Klagenfurt indzr-campus (http://campus-gis.aau.at)
-
-[Indrz Campus](http://www.indrz.com) is a indoor cloud mapping, wayfinding platform.[GIT Project Page](https://github.com/indrz/indrz).  It allows you to find your way around in an indoor environment such as large building complexes. The man behind it is [Michael Diener](http://twitter.com/spatialmounty) &mdash; [get in touch](#contact--community) if you'd like to discuss the project in more detail.
 
 
 ## Contact & community
@@ -105,7 +134,7 @@ indrz would love your help. There are more than enough things to get done so we 
 
 Task | Skill 
 --- | --- 
-`write documentation` | writer
+`write documentation` | anyone
 `write translations` | multi-lingual
 `submit bug report` | write detailed
 `fix bugs` | git, coding
@@ -113,34 +142,14 @@ Task | Skill
     
 
 
-## Building blocks Libraries we use
 
-* [Django](http://djangoproject.com) – Web Framework Backend
-* [Django Rest Framework](http://www.django-rest-framework.org) – Django Rest Web Framework our API
-* [PostGIS](http://postgis.net) – Spatial Database extension to Postgresql
-* [PGRouting](http://pgrouting.org) - Routing extension to PostGIS and Posgresql
-* [Postgresql](http://www.postgresql.org) – Database
-* [Geoserver](http://geoserver.org) – Web map server to serve and create, maps and data
-* [Openlayers 3](http://openlayers.org) – Slippy client side javascript mapping library
-* [Bootstrap css](http://bootstrap.com/) - css framework bootstrap
-* Not YET implemented [Angularjs](http://angularjs.org/) - Javascript framework
-* Not YET implemented [three.js](http://threejs.org) - 3d Javascript library
-* will be depreciated [jQuery Mobile js](http://http://jquerymobile.com) - mobile web pages made easy
-* Not YET implemented [ionic Framework](http://ionicframework.com) - hybrid mobile apps with html 5
-* Not YET implemented [Gulpjs js](http://gulpjs.com) - js building 
-
-## Licence
-indrz is under GNU General Public License v3.0.  The name "indrz" is not allowed to be used by third parties and is a trademark.  Other than that you can do what you want accordingly 
-
-Supporters
-==========
+## Supporters
 A big shout out to the following supporters for sharing the open source love
 
  - [**Browserstack**] (https://www.browserstack.com) for testing our mobile and desktop browser compatibility
  - [**Transifex**] (https://www.transifex.com/) for translations
 
-Design Decisions
-================
+## Design Decisions
 
 Indrz is built for pure simplicity and quick information exchange.
 A user visiting a site should quickly see their destination and
@@ -149,8 +158,7 @@ guiding you every step of the way but more like a quick reference.
 You still will need to look around, but getting lost and walking
 into pillars while staring at your phone should no longer happen.
 
-Research Areas
-==============
+## Research Areas
 
 We are looking to expand our horizons
 
@@ -159,10 +167,7 @@ We are looking to expand our horizons
  * Generation of polygon centerlines, skeletons
  * Complex topology rule checking
 
-Goals - Vision
-==============
+## Goals - Vision
+
 
 We want to make sure every one can find there way with ease and make them aware of how wayfinding works teaching you at the same time how to find your way in any and every indoor environment.
-
- 
-
