@@ -204,7 +204,7 @@ class Campus(gis_models.Model):
 
 class Building(OrganizationInfoBase):
     """
-    Model of a single golf course owned by 1 or more owners
+    Model of a single building owned by 1 or more owners
     """
 
     building_name = gis_models.CharField(verbose_name=_("Building name"), max_length=128, null=True, blank=True)

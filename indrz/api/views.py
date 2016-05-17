@@ -37,6 +37,19 @@ def building_short_list(request, format=None):
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+@api_view(['GET', 'POST'])
+def list_buildings_on_campus(request, pk_campus):
+    """
+    List all buildings, located on a specific campus area
+    """
+    if request.method == 'GET':
+        buildings = Building.objects.filter(fk_campus=pk_campus)
+        serializer = BuildingSerializer(buildings, many=True)
+
+        return Response(serializer.data)
+
+
 @api_view(['GET', 'POST'])
 def building_list(request, format=None):
     """
