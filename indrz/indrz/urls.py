@@ -23,7 +23,7 @@ from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', 'maps.views.route_map'),  # homepage start page url
+    url(r'^$', 'maps.views.view_map'),  # homepage start page url
 
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
@@ -35,7 +35,7 @@ urlpatterns = [
     ]
 
 urlpatterns += i18n_patterns(
-    url(r'^$', 'maps.views.route_map'),  # homepage start page url
+    url(r'^$', 'maps.views.view_map'),  # homepage start page url
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
 
