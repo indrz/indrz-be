@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = patterns('api.views',
@@ -7,17 +7,8 @@ urlpatterns = patterns('api.views',
 
     # url(r'^spaces/search/(?P<search_term>[a-zA-Z0-9]{2,5})/$', 'autocomplete_list', name='spaces_list'),
     url(r'^spaces/search/$', 'autocomplete_list', name='spaces_list'),
-    url(r'^buildings/$', 'building_list', name='list_buildings'),
-    url(r'^buildings/list/$', 'building_short_list', name='building_short_list'),
-    url(r'^buildings/campus/(?P<pk_campus>[0-9]+)/$', 'list_buildings_on_campus', name='building_on_campus_list'),
-    url(r'^buildings/(?P<pk>[0-9]+)/$', 'building_detail', name='building_details'),
-    url(r'^buildings/spaces/(?P<building_id>\d{1,5})/(?P<floor_id>\d{1,5})/$', 'building_spaces_list', name='building_spaces_list'),
-    url(r'^buildings/space/(?P<space_id>\d{1,5})/$', 'get_floor_space_id', name='get_space_info'),
-    url(r'^buildings/floor/(?P<building_id>\d{1,5})/$', 'building_floors_list', name='get_floor_ids'),
-    url(r'^buildings/(?P<building_id>\d{1,5})/externid/(?P<external_room_id>.+)/$', 'get_external_id', name='get_external_ids'),
-    url(r'^buildings/(?P<building_id>\d{1,5})/(?P<space_name>.+)/$', 'get_space_by_name', name='get_space_by_name'),
     #url(r'^directions/(?P<building_name>building=d{1,5})&start={1,6}&destination={1,6}/$', 'route_room_to_room', name='route-space-to-space' )
-
+    url(r'^buildings/', include('buildings.urls')),
 )
 
 urlpatterns += patterns('routing.views',
