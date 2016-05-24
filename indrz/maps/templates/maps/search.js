@@ -38,7 +38,7 @@ function setSearchFeatureStyle(feature, resolution) {
 
 
 function searchIndrz(buildingId, spaceName) {
-    var searchUrl = '/api/v1/building/' + buildingId + '/' + spaceName + '.json';
+    var searchUrl = '/api/v1/buildings/' + buildingId + '/' + spaceName + '.json';
 
     if (searchLayer) {
         map.removeLayer(searchLayer);
