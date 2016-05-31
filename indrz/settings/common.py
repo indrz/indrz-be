@@ -14,7 +14,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 
 try:
-    from indrz import secret_settings
+    from settings import secret_settings
 except ImportError:
     pass
 
