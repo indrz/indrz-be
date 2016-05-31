@@ -8,8 +8,9 @@ from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from buildings.models import Building, BuildingFloorSpace, BuildingFloor
-from buildings.serializers import (BuildingSerializer,
+from buildings.models import Campus, Building, BuildingFloorSpace, BuildingFloor
+from buildings.serializers import (CampusSerializer,
+                                   BuildingSerializer,
                                    BuildingShortSerializer,
                                    BuildingFloorSpaceSerializer,
                                    BuildingFloorSerializer,
@@ -17,6 +18,17 @@ from buildings.serializers import (BuildingSerializer,
                                    )
 
 logger = logging.getLogger(__name__)
+
+@api_view(['GET', ])
+def campus_list(request, format=None):
+    """
+    List all buildings without details
+    """
+    if request.method == 'GET':
+        campus = Campus.objects.all()
+        serializer = CampusSerializer(campus, many=True)
+        return Response(serializer.data)
+
 
 @api_view(['GET', ])
 def building_short_list(request, format=None):
@@ -116,6 +128,17 @@ def building_spaces_list(request, building_id, floor_id, format=None):
 
 
 @api_view(['GET'])
+def space_details(request, spaces_id, format=None):
+    """
+    Return the GeoJSON of a single space ex. a single room
+    """
+    if request.method == 'GET':
+        floor_space_info = BuildingFloorSpace.objects.filter(id=spaces_id)
+        serializer = SpaceSerializer(floor_space_info, many=True)
+        return Response(serializer.data)
+
+
+@api_view(['GET'])
 def get_space_by_name(request, building_id, space_name, format=None):
     """
     Return the GeoJSON of a single space passing your local space name
@@ -135,16 +158,3 @@ def get_external_id(request, building_id, external_room_id, format=None):
         floor_space_info = BuildingFloorSpace.objects.filter(room_external_id=external_room_id, fk_building_id=building_id)
         serializer = SpaceSerializer(floor_space_info, many=True)
         return Response(serializer.data)
-
-
-@api_view(['GET'])
-def get_floor_space_id(request, space_id, format=None):
-    """
-    Return the GeoJSON of a single space ex. a single room
-    """
-    if request.method == 'GET':
-        floor_space_info = BuildingFloorSpace.objects.filter(id=space_id)
-        serializer = SpaceSerializer(floor_space_info, many=True)
-        return Response(serializer.data)
-
-
