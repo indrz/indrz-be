@@ -14,7 +14,7 @@ indrz is under GNU General Public License v3.0.  The name "indrz" is not allowed
 
 ## Documentation
 
-You can find our documentation project here [indrz Docs] (https://github.com/indrz/indrz-doc)
+You can find our documentation project here [indrz Docs] (https://github.com/indrz/indrz-doc) in the folder content
 
 Our documentation structure and build environment is built upon the [mapbox docbox] (https://github.com/mapbox/docbox) nodejs static
  documentation generator.  The main content is found under the (content) folder.
@@ -30,6 +30,8 @@ Our documentation structure and build environment is built upon the [mapbox docb
 [indrz Working with GeoData](https://github.com/indrz/indrz-doc/blob/master/content/geodata.md)
 
 ## Quick start installation for developers
+
+coming soon. along with a nice bash script
 
 
 ### Create indrz Ubuntu system user
