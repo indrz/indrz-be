@@ -171,7 +171,7 @@ class Organization(OrganizationInfoBase):
 
     """
     owner = gis_models.CharField(verbose_name=_("Owner name"), max_length=128, null=True, blank=True)
-    legal_form = gis_models.CharField(verbose_name=_("Legal entity form..gmbh, verein"), max_length=128, null=True, blank=True)
+    legal_form = gis_models.CharField(verbose_name=_("Legal entity form"), max_length=128, null=True, blank=True)
     num_buildings = gis_models.IntegerField(verbose_name=_("Number of buildings"), null=True, blank=True)
 
 
@@ -217,7 +217,7 @@ class Building(OrganizationInfoBase):
     detail_description = gis_models.CharField(verbose_name=_("Building description"), max_length=256, null=True, blank=True)
 
     fk_organization = gis_models.ForeignKey(Organization)
-    fk_campus = gis_models.ForeignKey(Campus, null=True, blank=True)
+    fk_campus = gis_models.ForeignKey(Campus, null=True, blank=True, related_name='buildings')
 
     # GeoDjango-specific: a geometry field (MultiPolygonField), and
     # overriding the default manager with a GeoManager instance.
