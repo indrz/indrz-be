@@ -1,13 +1,22 @@
 from rest_framework import serializers
-from buildings.models import Building, BuildingFloorSpace, LtSpaceType, BuildingFloor
+from buildings.models import Campus, Building, BuildingFloorSpace, LtSpaceType, BuildingFloor
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
+
+
+class CampusSerializer(serializers.ModelSerializer):
+    # buildings = serializers.StringRelatedField(many=True)
+    class Meta:
+        model = Campus
+        # fields = ('id', 'campus_name', 'description', 'fk_organization', 'buildings')
+        fields = ('id', 'campus_name', 'description', 'fk_organization')
+        # depth = 1  # include organization information
 
 
 class BuildingShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Building
-        fields = ('id', 'building_name', 'num_floors')
+        fields = ('id', 'building_name', 'num_floors', 'fk_organization', 'fk_campus')
 
 
 class BuildingFloorSpaceSerializer(GeoFeatureModelSerializer):
