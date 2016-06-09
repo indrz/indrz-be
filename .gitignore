@@ -82,7 +82,7 @@ $RECYCLE.BIN/
 /indrz/poi_manager/migrations/
 /indrz/logs/
 /indrz/settings.py
-/indrz/secret_settings.py
+/indrz/settings/secret_settings.py
 
 
 
