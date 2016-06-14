@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'taggit',
     'mptt',
+    'rest_framework_swagger',
 
 
     ##### our local indrz apps
