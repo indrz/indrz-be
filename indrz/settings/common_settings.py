@@ -28,7 +28,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = secret_settings.secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 ALLOWED_HOSTS = ['www.indrz.com', '.indrz.com', 'indrz.com', '*.indrz.com', ]
@@ -127,7 +127,7 @@ DATABASES = {
     }
 }
 
-POSTGIS_VERSION = ( 2, 1 )
+POSTGIS_VERSION = ( 2, 2, 0 )
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -162,6 +162,7 @@ STATIC_ROOT = "/var/www/vhosts/www.indrz.com/static/"
 
 STATICFILES_DIRS = [
    os.path.join(BASE_DIR, STATIC_FOLDER),
+    os.path.join(BASE_DIR, STATIC_FOLDER + "admin")
 ]
 
 # finds all static folders in all apps
@@ -169,6 +170,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
+
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = "media"

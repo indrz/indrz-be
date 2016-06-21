@@ -2,6 +2,9 @@
 import os
 from .common_settings import *
 
+DEBUG = True
+
+
 LOGGING_CONFIG = None
 
 LOGGING = {
