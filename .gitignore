@@ -8,17 +8,18 @@
 # if you remove the above rule, at least ignore the following:
 
 
-
-# secret pwd and user names
-/indrz/indrz/secret_settings.py
 *.pyc
 
 *migrations
 
 /indrz/logs/
-/indrz/settings.py
-/indrz/secret_settings.py
+
+/indrz/settings/secret_settings.py
 /indrz/htmlcov/
+
+/.cache/
+/indrz/tests/.cache/
+
 
 *.cache
 
