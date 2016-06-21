@@ -2,9 +2,6 @@
 import os
 from .common_settings import *
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
 LOGGING_CONFIG = None
 
 LOGGING = {
