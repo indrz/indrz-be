@@ -32,13 +32,22 @@
 {% block nav %}{% include 'navbar-top.html' %}{% endblock nav %}
 
 <div id="indrz-main-container" class="container-fluid">
-
-
+    <div class="row">
     {% block map-section %}
-
+        <nav class="navbar navbar-default hidden-md hidden-lg">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#map-search-form" aria-expanded="true">
+                        <span class="sr-only">{% trans 'Toggle search form' %}</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span></button>
+                    <a class="navbar-brand" href="#">Indrz</a></div>
+            </div>
+        </nav>
         <div class="row">
 
-            <div class="col-md-2">
+            <div class="col-md-3 col-lg-2" id="map-search-form">
                 <div class="panel panel-default">
 
                     <div class="panel-body">
@@ -57,25 +66,28 @@
 
             </div>
 
-            <div class="col-md-10">
+            <div class="col-md-9 col-lg-10">
                 <div id="map" class="indrz-map-container">
 
                     {% block floor-change-float %}
 
                         <div class="indrz-floor-changer-float">
-                            <ul class="nav nav-pills nav-stacked" id="floor-links"></ul>
+                            <select class="form-control hidden-md hidden-lg" id="floor-links-select"></select>
+                            <ul class="nav nav-pills nav-stacked visible-md-block visible-lg-block" id="floor-links"></ul>
                         </div>
 
                     {% endblock floor-change-float %}
 
-                     {% block indrz-logo-imgt %}
+                    <div id="map-block"></div>
+
+                    {% block indrz-logo-imgt %}
 
                         <div class="indrz-logo">
 
                             <a href="http://www.indrz.com" target="_blank"><img
-                            src="{% static "img/indrz-powered-by-90px.png" %}"/></a>
+                                    src="{% static "img/indrz-powered-by-90px.png" %}"/></a>
 
-                         </div>
+                        </div>
 
                     {% endblock indrz-logo-imgt %}
 
@@ -85,8 +97,9 @@
                 {% block background-base-changer %}
 
                     <div id="id-map-switcher-widget">
-                        <button id="id-map-switcher" class="btn btn-info">Satellite</button>
-                        <br><br>
+                        <button id="id-map-switcher" class="btn btn-info">
+                            Satellite
+                        </button>
                     </div>
 
                 {% endblock background-base-changer %}
@@ -97,7 +110,7 @@
 
         </div>
     {% endblock map-section %}
-
+    </div>
 </div>
 
 
@@ -149,6 +162,12 @@
     $(".nav a").on("click", function () {
         $(".nav").find(".active").removeClass("active");
         $(this).parent().addClass("active");
+    });
+
+    $(function () {
+        $("#floor-links-select").on('change', function () {
+            activateLayer($(this).val());
+        });
     });
 
 </script>
