@@ -215,8 +215,8 @@ body, h1, h2, h3, h4, p, li, td, th {
 
 @media (max-width: 990px) {
     #id-map-switcher-widget {
-        bottom: 1em;
-        left: 1.5em;
+        bottom: 1.5em;
+        left: 1em;
 
         right: auto;
         top: auto;
@@ -264,4 +264,13 @@ body, h1, h2, h3, h4, p, li, td, th {
     width: 100%;
     text-align: center;
     left: auto;
+}
+
+.ol-zoom {
+    bottom: 1.5em;
+    left: auto;
+
+    right: 1em;
+    top: auto;
+    z-index: 9999;
 }
