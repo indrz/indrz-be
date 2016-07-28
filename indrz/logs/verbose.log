@@ -1,0 +1,198 @@
+[28/Jul/2016 11:33:20] DEBUG [django.db.backends:89] (0.014) 
+            SELECT c.relname, c.relkind
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid); args=None
+[28/Jul/2016 11:33:20] DEBUG [django.db.backends:89] (0.002) SELECT "django_migrations"."app", "django_migrations"."name" FROM "django_migrations"; args=()
+[28/Jul/2016 11:34:55] DEBUG [django.db.backends:89] (0.011) 
+            SELECT c.relname, c.relkind
+            FROM pg_catalog.pg_class c
+            LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind IN ('r', 'v')
+                AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
+                AND pg_catalog.pg_table_is_visible(c.oid); args=None
+[28/Jul/2016 11:34:55] DEBUG [django.db.backends:89] (0.003) SELECT "django_migrations"."app", "django_migrations"."name" FROM "django_migrations"; args=()
+[28/Jul/2016 11:35:02] DEBUG [django.db.backends:89] (0.005) SELECT "django_session"."session_key", "django_session"."session_data", "django_session"."expire_date" FROM "django_session" WHERE ("django_session"."session_key" = 'wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh' AND "django_session"."expire_date" > '2016-07-28T09:35:01.951294+00:00'::timestamptz); args=('wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh', datetime.datetime(2016, 7, 28, 9, 35, 1, 951294, tzinfo=<UTC>))
+[28/Jul/2016 11:35:02] DEBUG [django.template:927] Exception while resolving variable 'redirect_to' in template 'map.html'.
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 883, in _resolve_lookup
+    current = current[bit]
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\context.py", line 77, in __getitem__
+    raise KeyError(key)
+KeyError: 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 889, in _resolve_lookup
+    if isinstance(current, BaseContext) and getattr(type(current), bit):
+AttributeError: type object 'RequestContext' has no attribute 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 898, in _resolve_lookup
+    current = current[int(bit)]
+ValueError: invalid literal for int() with base 10: 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 905, in _resolve_lookup
+    (bit, current))  # missing attribute
+django.template.base.VariableDoesNotExist: Failed lookup for key [redirect_to] in '[{\'None\': None, \'True\': True, \'False\': False}, {\'MEDIA_URL\': \'/media/\', \'DEFAULT_MESSAGE_LEVELS\': {\'INFO\': 20, \'DEBUG\': 10, \'ERROR\': 40, \'WARNING\': 30, \'SUCCESS\': 25}, \'TIME_ZONE\': \'Mitteleuropäische Zeit\', \'LANGUAGE_BIDI\': False, \'messages\': <django.contrib.messages.storage.fallback.FallbackStorage object at 0x05015490>, \'user\': <SimpleLazyObject: <function AuthenticationMiddleware.process_request.<locals>.<lambda> at 0x0500E618>>, \'STATIC_URL\': \'/static/\', \'perms\': <django.contrib.auth.context_processors.PermWrapper object at 0x05E0FBB0>, \'LANGUAGE_CODE\': \'en\', \'csrf_token\': <SimpleLazyObject: \'KD76rtOhfPGVo2giqhFF4FDRiHdRgdpT\'>, \'LANGUAGES\': ((\'en\', \'English\'), (\'de\', \'Deutsch\'), (\'fr\', \'French\'))}, {}, {\'route_to\': \'\', \'centerx\': 0.0, \'zoom_level\': 18, \'floor_num\': 0, \'space_id\': 0, \'map_name\': \'socgen-nantes\', \'route_from\': \'\', \'centery\': 0.0, \'building_id\': 1}, {\'block\': <Block Node: map-section. Contents: [<TextNode: \'\\n        <div class="row"\'>, <Block Node: search_form. Contents: [<django.template.loader_tags.IncludeNode object at 0x05E1AEF0>]>, <TextNode: \'\\n                    </di\'>, <Block Node: routing-form. Contents: [<TextNode: \' \'>, <django.template.loader_tags.IncludeNode object at 0x05E1AF70>, <TextNode: \' \'>]>, <TextNode: \'\\n                    </di\'>, <django.template.loader_tags.IncludeNode object at 0x05E1AEB0>, <TextNode: \'\\n                    </di\'>, <Block Node: floor-change-float. Contents: [<TextNode: \'\\n\\n                       \'>]>, <TextNode: \'\\n\\n                       \'>, <Block Node: indrz-logo-imgt. Contents: [<TextNode: \'\\n\\n                       \'>, <django.contrib.staticfiles.templatetags.staticfiles.StaticFilesNode object at 0x05E1F0F0>, <TextNode: \'"/></a>\\n\\n                \'>]>, <TextNode: \'\\n\\n\\n                    </\'>, <Block Node: background-base-changer. Contents: [<TextNode: \'\\n\\n                    <di\'>]>, <TextNode: \'\\n\\n                </div>\\n\'>]>}, {}]'
+[28/Jul/2016 11:35:03] DEBUG [django.db.backends:89] (0.005) SELECT "django_session"."session_key", "django_session"."session_data", "django_session"."expire_date" FROM "django_session" WHERE ("django_session"."session_key" = 'wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh' AND "django_session"."expire_date" > '2016-07-28T09:35:03.242134+00:00'::timestamptz); args=('wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh', datetime.datetime(2016, 7, 28, 9, 35, 3, 242134, tzinfo=<UTC>))
+[28/Jul/2016 11:35:03] DEBUG [django.db.backends:89] (0.027) SELECT "buildings_building"."id", "buildings_building"."street", "buildings_building"."house_num", "buildings_building"."postal_code", "buildings_building"."municipality", "buildings_building"."city", "buildings_building"."country", "buildings_building"."name", "buildings_building"."description", "buildings_building"."telephone", "buildings_building"."email", "buildings_building"."website", "buildings_building"."geom", "buildings_building"."building_name", "buildings_building"."building_height", "buildings_building"."fancy_name", "buildings_building"."num_floors", "buildings_building"."facility_number", "buildings_building"."operation_hrs", "buildings_building"."native_epsg", "buildings_building"."detail_description", "buildings_building"."fk_organization_id", "buildings_building"."fk_campus_id" FROM "buildings_building" WHERE "buildings_building"."id" = 1; args=(1,)
+[28/Jul/2016 11:35:03] DEBUG [django.db.backends:89] (0.004) SELECT "buildings_buildingfloor"."id", "buildings_buildingfloor"."short_name", "buildings_buildingfloor"."long_name", "buildings_buildingfloor"."special_name", "buildings_buildingfloor"."vertical_order", "buildings_buildingfloor"."base_elevation", "buildings_buildingfloor"."floor_num", "buildings_buildingfloor"."floor_height", "buildings_buildingfloor"."fk_building_id", "buildings_buildingfloor"."geom" FROM "buildings_buildingfloor" WHERE "buildings_buildingfloor"."fk_building_id" = 1 ORDER BY "buildings_buildingfloor"."floor_num" ASC; args=(1,)
+[28/Jul/2016 11:35:03] DEBUG [django.db.backends:89] (0.005) SELECT "buildings_buildingfloorspace"."id", "buildings_buildingfloorspace"."short_name", "buildings_buildingfloorspace"."long_name", "buildings_buildingfloorspace"."area", "buildings_buildingfloorspace"."perimeter", "buildings_buildingfloorspace"."floor_num", "buildings_buildingfloorspace"."geom", "buildings_buildingfloorspace"."fk_access_type_id", "buildings_buildingfloorspace"."fk_building_floor_id", "buildings_buildingfloorspace"."fk_building_id", "buildings_buildingfloorspace"."room_external_id", "buildings_buildingfloorspace"."room_number", "buildings_buildingfloorspace"."room_number_sign", "buildings_buildingfloorspace"."room_description", "buildings_buildingfloorspace"."room_code", "buildings_buildingfloorspace"."capacity", "buildings_buildingfloorspace"."space_type_id", "buildings_buildingfloorspace"."tag" FROM "buildings_buildingfloorspace" WHERE "buildings_buildingfloorspace"."fk_building_floor_id" = 8; args=(8,)
+[28/Jul/2016 11:35:03] DEBUG [django.db.backends:89] (0.003) SELECT "buildings_buildingfloorspace"."id", "buildings_buildingfloorspace"."short_name", "buildings_buildingfloorspace"."long_name", "buildings_buildingfloorspace"."area", "buildings_buildingfloorspace"."perimeter", "buildings_buildingfloorspace"."floor_num", "buildings_buildingfloorspace"."geom", "buildings_buildingfloorspace"."fk_access_type_id", "buildings_buildingfloorspace"."fk_building_floor_id", "buildings_buildingfloorspace"."fk_building_id", "buildings_buildingfloorspace"."room_external_id", "buildings_buildingfloorspace"."room_number", "buildings_buildingfloorspace"."room_number_sign", "buildings_buildingfloorspace"."room_description", "buildings_buildingfloorspace"."room_code", "buildings_buildingfloorspace"."capacity", "buildings_buildingfloorspace"."space_type_id", "buildings_buildingfloorspace"."tag" FROM "buildings_buildingfloorspace" WHERE "buildings_buildingfloorspace"."fk_building_floor_id" = 2; args=(2,)
+[28/Jul/2016 11:35:03] DEBUG [django.db.backends:89] (0.014) SELECT "django_session"."session_key", "django_session"."session_data", "django_session"."expire_date" FROM "django_session" WHERE ("django_session"."session_key" = 'wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh' AND "django_session"."expire_date" > '2016-07-28T09:35:03.554851+00:00'::timestamptz); args=('wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh', datetime.datetime(2016, 7, 28, 9, 35, 3, 554851, tzinfo=<UTC>))
+[28/Jul/2016 11:35:03] DEBUG [django.db.backends:89] (0.009) SELECT "django_session"."session_key", "django_session"."session_data", "django_session"."expire_date" FROM "django_session" WHERE ("django_session"."session_key" = 'wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh' AND "django_session"."expire_date" > '2016-07-28T09:35:03.560303+00:00'::timestamptz); args=('wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh', datetime.datetime(2016, 7, 28, 9, 35, 3, 560303, tzinfo=<UTC>))
+[28/Jul/2016 11:35:03] DEBUG [django.db.backends:89] (0.007) SELECT "django_session"."session_key", "django_session"."session_data", "django_session"."expire_date" FROM "django_session" WHERE ("django_session"."session_key" = 'wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh' AND "django_session"."expire_date" > '2016-07-28T09:35:03.565303+00:00'::timestamptz); args=('wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh', datetime.datetime(2016, 7, 28, 9, 35, 3, 565303, tzinfo=<UTC>))
+[28/Jul/2016 11:35:03] DEBUG [django.template:927] Exception while resolving variable 'redirect_to' in template 'map.html'.
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 883, in _resolve_lookup
+    current = current[bit]
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\context.py", line 77, in __getitem__
+    raise KeyError(key)
+KeyError: 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 889, in _resolve_lookup
+    if isinstance(current, BaseContext) and getattr(type(current), bit):
+AttributeError: type object 'RequestContext' has no attribute 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 898, in _resolve_lookup
+    current = current[int(bit)]
+ValueError: invalid literal for int() with base 10: 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 905, in _resolve_lookup
+    (bit, current))  # missing attribute
+django.template.base.VariableDoesNotExist: Failed lookup for key [redirect_to] in '[{\'None\': None, \'True\': True, \'False\': False}, {\'MEDIA_URL\': \'/media/\', \'DEFAULT_MESSAGE_LEVELS\': {\'INFO\': 20, \'DEBUG\': 10, \'ERROR\': 40, \'WARNING\': 30, \'SUCCESS\': 25}, \'TIME_ZONE\': \'Mitteleuropäische Zeit\', \'LANGUAGE_BIDI\': False, \'messages\': <django.contrib.messages.storage.fallback.FallbackStorage object at 0x05E457B0>, \'user\': <SimpleLazyObject: <function AuthenticationMiddleware.process_request.<locals>.<lambda> at 0x05E5B390>>, \'STATIC_URL\': \'/static/\', \'perms\': <django.contrib.auth.context_processors.PermWrapper object at 0x052A4090>, \'LANGUAGE_CODE\': \'en\', \'csrf_token\': <SimpleLazyObject: \'KD76rtOhfPGVo2giqhFF4FDRiHdRgdpT\'>, \'LANGUAGES\': ((\'en\', \'English\'), (\'de\', \'Deutsch\'), (\'fr\', \'French\'))}, {}, {\'route_to\': \'\', \'centerx\': 0.0, \'zoom_level\': 18, \'floor_num\': 0, \'space_id\': 0, \'map_name\': \'socgen-nantes\', \'route_from\': \'\', \'centery\': 0.0, \'building_id\': 1}, {\'block\': <Block Node: map-section. Contents: [<TextNode: \'\\n        <div class="row"\'>, <Block Node: search_form. Contents: [<django.template.loader_tags.IncludeNode object at 0x052BC730>]>, <TextNode: \'\\n                    </di\'>, <Block Node: routing-form. Contents: [<TextNode: \' \'>, <django.template.loader_tags.IncludeNode object at 0x052BC7D0>, <TextNode: \' \'>]>, <TextNode: \'\\n                    </di\'>, <django.template.loader_tags.IncludeNode object at 0x052BC6F0>, <TextNode: \'\\n                    </di\'>, <Block Node: floor-change-float. Contents: [<TextNode: \'\\n\\n                       \'>]>, <TextNode: \'\\n\\n                       \'>, <Block Node: indrz-logo-imgt. Contents: [<TextNode: \'\\n\\n                       \'>, <django.contrib.staticfiles.templatetags.staticfiles.StaticFilesNode object at 0x052BC930>, <TextNode: \'"/></a>\\n\\n                \'>]>, <TextNode: \'\\n\\n\\n                    </\'>, <Block Node: background-base-changer. Contents: [<TextNode: \'\\n\\n                    <di\'>]>, <TextNode: \'\\n\\n                </div>\\n\'>]>}, {}]'
+[28/Jul/2016 11:35:03] DEBUG [django.template:927] Exception while resolving variable 'redirect_to' in template 'map.html'.
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 883, in _resolve_lookup
+    current = current[bit]
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\context.py", line 77, in __getitem__
+    raise KeyError(key)
+KeyError: 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 889, in _resolve_lookup
+    if isinstance(current, BaseContext) and getattr(type(current), bit):
+AttributeError: type object 'RequestContext' has no attribute 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 898, in _resolve_lookup
+    current = current[int(bit)]
+ValueError: invalid literal for int() with base 10: 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 905, in _resolve_lookup
+    (bit, current))  # missing attribute
+django.template.base.VariableDoesNotExist: Failed lookup for key [redirect_to] in '[{\'None\': None, \'True\': True, \'False\': False}, {\'MEDIA_URL\': \'/media/\', \'DEFAULT_MESSAGE_LEVELS\': {\'INFO\': 20, \'DEBUG\': 10, \'ERROR\': 40, \'WARNING\': 30, \'SUCCESS\': 25}, \'TIME_ZONE\': \'Mitteleuropäische Zeit\', \'LANGUAGE_BIDI\': False, \'messages\': <django.contrib.messages.storage.fallback.FallbackStorage object at 0x05E38730>, \'user\': <SimpleLazyObject: <function AuthenticationMiddleware.process_request.<locals>.<lambda> at 0x05E5BF18>>, \'STATIC_URL\': \'/static/\', \'perms\': <django.contrib.auth.context_processors.PermWrapper object at 0x0529DA70>, \'LANGUAGE_CODE\': \'en\', \'csrf_token\': <SimpleLazyObject: \'KD76rtOhfPGVo2giqhFF4FDRiHdRgdpT\'>, \'LANGUAGES\': ((\'en\', \'English\'), (\'de\', \'Deutsch\'), (\'fr\', \'French\'))}, {}, {\'route_to\': \'\', \'centerx\': 0.0, \'zoom_level\': 18, \'floor_num\': 0, \'space_id\': 0, \'map_name\': \'socgen-nantes\', \'route_from\': \'\', \'centery\': 0.0, \'building_id\': 1}, {\'block\': <Block Node: map-section. Contents: [<TextNode: \'\\n        <div class="row"\'>, <Block Node: search_form. Contents: [<django.template.loader_tags.IncludeNode object at 0x052B60B0>]>, <TextNode: \'\\n                    </di\'>, <Block Node: routing-form. Contents: [<TextNode: \' \'>, <django.template.loader_tags.IncludeNode object at 0x052B6130>, <TextNode: \' \'>]>, <TextNode: \'\\n                    </di\'>, <django.template.loader_tags.IncludeNode object at 0x052B6070>, <TextNode: \'\\n                    </di\'>, <Block Node: floor-change-float. Contents: [<TextNode: \'\\n\\n                       \'>]>, <TextNode: \'\\n\\n                       \'>, <Block Node: indrz-logo-imgt. Contents: [<TextNode: \'\\n\\n                       \'>, <django.contrib.staticfiles.templatetags.staticfiles.StaticFilesNode object at 0x052B6290>, <TextNode: \'"/></a>\\n\\n                \'>]>, <TextNode: \'\\n\\n\\n                    </\'>, <Block Node: background-base-changer. Contents: [<TextNode: \'\\n\\n                    <di\'>]>, <TextNode: \'\\n\\n                </div>\\n\'>]>}, {}]'
+[28/Jul/2016 11:35:03] DEBUG [django.template:927] Exception while resolving variable 'redirect_to' in template 'map.html'.
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 883, in _resolve_lookup
+    current = current[bit]
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\context.py", line 77, in __getitem__
+    raise KeyError(key)
+KeyError: 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 889, in _resolve_lookup
+    if isinstance(current, BaseContext) and getattr(type(current), bit):
+AttributeError: type object 'RequestContext' has no attribute 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 898, in _resolve_lookup
+    current = current[int(bit)]
+ValueError: invalid literal for int() with base 10: 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 905, in _resolve_lookup
+    (bit, current))  # missing attribute
+django.template.base.VariableDoesNotExist: Failed lookup for key [redirect_to] in '[{\'None\': None, \'True\': True, \'False\': False}, {\'MEDIA_URL\': \'/media/\', \'DEFAULT_MESSAGE_LEVELS\': {\'INFO\': 20, \'DEBUG\': 10, \'ERROR\': 40, \'WARNING\': 30, \'SUCCESS\': 25}, \'TIME_ZONE\': \'Mitteleuropäische Zeit\', \'LANGUAGE_BIDI\': False, \'messages\': <django.contrib.messages.storage.fallback.FallbackStorage object at 0x05E45BF0>, \'user\': <SimpleLazyObject: <function AuthenticationMiddleware.process_request.<locals>.<lambda> at 0x05E5BAE0>>, \'STATIC_URL\': \'/static/\', \'perms\': <django.contrib.auth.context_processors.PermWrapper object at 0x052AB730>, \'LANGUAGE_CODE\': \'en\', \'csrf_token\': <SimpleLazyObject: \'KD76rtOhfPGVo2giqhFF4FDRiHdRgdpT\'>, \'LANGUAGES\': ((\'en\', \'English\'), (\'de\', \'Deutsch\'), (\'fr\', \'French\'))}, {}, {\'route_to\': \'\', \'centerx\': 0.0, \'zoom_level\': 18, \'floor_num\': 0, \'space_id\': 0, \'map_name\': \'socgen-nantes\', \'route_from\': \'\', \'centery\': 0.0, \'building_id\': 1}, {\'block\': <Block Node: map-section. Contents: [<TextNode: \'\\n        <div class="row"\'>, <Block Node: search_form. Contents: [<django.template.loader_tags.IncludeNode object at 0x052CD9D0>]>, <TextNode: \'\\n                    </di\'>, <Block Node: routing-form. Contents: [<TextNode: \' \'>, <django.template.loader_tags.IncludeNode object at 0x052CDA50>, <TextNode: \' \'>]>, <TextNode: \'\\n                    </di\'>, <django.template.loader_tags.IncludeNode object at 0x052CD990>, <TextNode: \'\\n                    </di\'>, <Block Node: floor-change-float. Contents: [<TextNode: \'\\n\\n                       \'>]>, <TextNode: \'\\n\\n                       \'>, <Block Node: indrz-logo-imgt. Contents: [<TextNode: \'\\n\\n                       \'>, <django.contrib.staticfiles.templatetags.staticfiles.StaticFilesNode object at 0x052CDBB0>, <TextNode: \'"/></a>\\n\\n                \'>]>, <TextNode: \'\\n\\n\\n                    </\'>, <Block Node: background-base-changer. Contents: [<TextNode: \'\\n\\n                    <di\'>]>, <TextNode: \'\\n\\n                </div>\\n\'>]>}, {}]'
+[28/Jul/2016 11:35:03] DEBUG [django.db.backends:89] (0.022) SELECT "django_session"."session_key", "django_session"."session_data", "django_session"."expire_date" FROM "django_session" WHERE ("django_session"."session_key" = 'wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh' AND "django_session"."expire_date" > '2016-07-28T09:35:03.884131+00:00'::timestamptz); args=('wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh', datetime.datetime(2016, 7, 28, 9, 35, 3, 884131, tzinfo=<UTC>))
+[28/Jul/2016 11:35:03] DEBUG [django.db.backends:89] (0.005) SELECT "django_session"."session_key", "django_session"."session_data", "django_session"."expire_date" FROM "django_session" WHERE ("django_session"."session_key" = 'wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh' AND "django_session"."expire_date" > '2016-07-28T09:35:03.884131+00:00'::timestamptz); args=('wanxzdn0xcmqo6ozl0qtkfr2lkm60hwh', datetime.datetime(2016, 7, 28, 9, 35, 3, 884131, tzinfo=<UTC>))
+[28/Jul/2016 11:35:04] DEBUG [django.template:927] Exception while resolving variable 'redirect_to' in template 'map.html'.
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 883, in _resolve_lookup
+    current = current[bit]
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\context.py", line 77, in __getitem__
+    raise KeyError(key)
+KeyError: 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 889, in _resolve_lookup
+    if isinstance(current, BaseContext) and getattr(type(current), bit):
+AttributeError: type object 'RequestContext' has no attribute 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 898, in _resolve_lookup
+    current = current[int(bit)]
+ValueError: invalid literal for int() with base 10: 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 905, in _resolve_lookup
+    (bit, current))  # missing attribute
+django.template.base.VariableDoesNotExist: Failed lookup for key [redirect_to] in '[{\'None\': None, \'True\': True, \'False\': False}, {\'MEDIA_URL\': \'/media/\', \'DEFAULT_MESSAGE_LEVELS\': {\'INFO\': 20, \'DEBUG\': 10, \'ERROR\': 40, \'WARNING\': 30, \'SUCCESS\': 25}, \'TIME_ZONE\': \'Mitteleuropäische Zeit\', \'LANGUAGE_BIDI\': False, \'messages\': <django.contrib.messages.storage.fallback.FallbackStorage object at 0x052D3590>, \'user\': <SimpleLazyObject: <function AuthenticationMiddleware.process_request.<locals>.<lambda> at 0x052BA540>>, \'STATIC_URL\': \'/static/\', \'perms\': <django.contrib.auth.context_processors.PermWrapper object at 0x052F8D10>, \'LANGUAGE_CODE\': \'en\', \'csrf_token\': <SimpleLazyObject: \'KD76rtOhfPGVo2giqhFF4FDRiHdRgdpT\'>, \'LANGUAGES\': ((\'en\', \'English\'), (\'de\', \'Deutsch\'), (\'fr\', \'French\'))}, {}, {\'route_to\': \'\', \'centerx\': 0.0, \'zoom_level\': 18, \'floor_num\': 0, \'space_id\': 0, \'map_name\': \'socgen-nantes\', \'route_from\': \'\', \'centery\': 0.0, \'building_id\': 1}, {\'block\': <Block Node: map-section. Contents: [<TextNode: \'\\n        <div class="row"\'>, <Block Node: search_form. Contents: [<django.template.loader_tags.IncludeNode object at 0x05304DF0>]>, <TextNode: \'\\n                    </di\'>, <Block Node: routing-form. Contents: [<TextNode: \' \'>, <django.template.loader_tags.IncludeNode object at 0x05304E70>, <TextNode: \' \'>]>, <TextNode: \'\\n                    </di\'>, <django.template.loader_tags.IncludeNode object at 0x05304DB0>, <TextNode: \'\\n                    </di\'>, <Block Node: floor-change-float. Contents: [<TextNode: \'\\n\\n                       \'>]>, <TextNode: \'\\n\\n                       \'>, <Block Node: indrz-logo-imgt. Contents: [<TextNode: \'\\n\\n                       \'>, <django.contrib.staticfiles.templatetags.staticfiles.StaticFilesNode object at 0x05309030>, <TextNode: \'"/></a>\\n\\n                \'>]>, <TextNode: \'\\n\\n\\n                    </\'>, <Block Node: background-base-changer. Contents: [<TextNode: \'\\n\\n                    <di\'>]>, <TextNode: \'\\n\\n                </div>\\n\'>]>}, {}]'
+[28/Jul/2016 11:35:04] DEBUG [django.template:927] Exception while resolving variable 'redirect_to' in template 'map.html'.
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 883, in _resolve_lookup
+    current = current[bit]
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\context.py", line 77, in __getitem__
+    raise KeyError(key)
+KeyError: 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 889, in _resolve_lookup
+    if isinstance(current, BaseContext) and getattr(type(current), bit):
+AttributeError: type object 'RequestContext' has no attribute 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 898, in _resolve_lookup
+    current = current[int(bit)]
+ValueError: invalid literal for int() with base 10: 'redirect_to'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\02_DEV\venvs\indrz-ve\lib\site-packages\django\template\base.py", line 905, in _resolve_lookup
+    (bit, current))  # missing attribute
+django.template.base.VariableDoesNotExist: Failed lookup for key [redirect_to] in '[{\'None\': None, \'True\': True, \'False\': False}, {\'MEDIA_URL\': \'/media/\', \'DEFAULT_MESSAGE_LEVELS\': {\'INFO\': 20, \'DEBUG\': 10, \'ERROR\': 40, \'WARNING\': 30, \'SUCCESS\': 25}, \'TIME_ZONE\': \'Mitteleuropäische Zeit\', \'LANGUAGE_BIDI\': False, \'messages\': <django.contrib.messages.storage.fallback.FallbackStorage object at 0x052D3AF0>, \'user\': <SimpleLazyObject: <function AuthenticationMiddleware.process_request.<locals>.<lambda> at 0x052BA588>>, \'STATIC_URL\': \'/static/\', \'perms\': <django.contrib.auth.context_processors.PermWrapper object at 0x0530C650>, \'LANGUAGE_CODE\': \'en\', \'csrf_token\': <SimpleLazyObject: \'KD76rtOhfPGVo2giqhFF4FDRiHdRgdpT\'>, \'LANGUAGES\': ((\'en\', \'English\'), (\'de\', \'Deutsch\'), (\'fr\', \'French\'))}, {}, {\'route_to\': \'\', \'centerx\': 0.0, \'zoom_level\': 18, \'floor_num\': 0, \'space_id\': 0, \'map_name\': \'socgen-nantes\', \'route_from\': \'\', \'centery\': 0.0, \'building_id\': 1}, {\'block\': <Block Node: map-section. Contents: [<TextNode: \'\\n        <div class="row"\'>, <Block Node: search_form. Contents: [<django.template.loader_tags.IncludeNode object at 0x053240F0>]>, <TextNode: \'\\n                    </di\'>, <Block Node: routing-form. Contents: [<TextNode: \' \'>, <django.template.loader_tags.IncludeNode object at 0x05324170>, <TextNode: \' \'>]>, <TextNode: \'\\n                    </di\'>, <django.template.loader_tags.IncludeNode object at 0x053240B0>, <TextNode: \'\\n                    </di\'>, <Block Node: floor-change-float. Contents: [<TextNode: \'\\n\\n                       \'>]>, <TextNode: \'\\n\\n                       \'>, <Block Node: indrz-logo-imgt. Contents: [<TextNode: \'\\n\\n                       \'>, <django.contrib.staticfiles.templatetags.staticfiles.StaticFilesNode object at 0x053242D0>, <TextNode: \'"/></a>\\n\\n                \'>]>, <TextNode: \'\\n\\n\\n                    </\'>, <Block Node: background-base-changer. Contents: [<TextNode: \'\\n\\n                    <di\'>]>, <TextNode: \'\\n\\n                </div>\\n\'>]>}, {}]'
+[28/Jul/2016 11:35:04] DEBUG [django.db.backends:89] (0.000) SELECT "buildings_buildingfloorspace"."id", "buildings_buildingfloorspace"."short_name", "buildings_buildingfloorspace"."long_name", "buildings_buildingfloorspace"."area", "buildings_buildingfloorspace"."perimeter", "buildings_buildingfloorspace"."floor_num", "buildings_buildingfloorspace"."geom", "buildings_buildingfloorspace"."fk_access_type_id", "buildings_buildingfloorspace"."fk_building_floor_id", "buildings_buildingfloorspace"."fk_building_id", "buildings_buildingfloorspace"."room_external_id", "buildings_buildingfloorspace"."room_number", "buildings_buildingfloorspace"."room_number_sign", "buildings_buildingfloorspace"."room_description", "buildings_buildingfloorspace"."room_code", "buildings_buildingfloorspace"."capacity", "buildings_buildingfloorspace"."space_type_id", "buildings_buildingfloorspace"."tag" FROM "buildings_buildingfloorspace" WHERE "buildings_buildingfloorspace"."fk_building_floor_id" = 3; args=(3,)
+[28/Jul/2016 11:35:04] DEBUG [django.db.backends:89] (0.004) SELECT "buildings_buildingfloorspace"."id", "buildings_buildingfloorspace"."short_name", "buildings_buildingfloorspace"."long_name", "buildings_buildingfloorspace"."area", "buildings_buildingfloorspace"."perimeter", "buildings_buildingfloorspace"."floor_num", "buildings_buildingfloorspace"."geom", "buildings_buildingfloorspace"."fk_access_type_id", "buildings_buildingfloorspace"."fk_building_floor_id", "buildings_buildingfloorspace"."fk_building_id", "buildings_buildingfloorspace"."room_external_id", "buildings_buildingfloorspace"."room_number", "buildings_buildingfloorspace"."room_number_sign", "buildings_buildingfloorspace"."room_description", "buildings_buildingfloorspace"."room_code", "buildings_buildingfloorspace"."capacity", "buildings_buildingfloorspace"."space_type_id", "buildings_buildingfloorspace"."tag" FROM "buildings_buildingfloorspace" WHERE "buildings_buildingfloorspace"."fk_building_floor_id" = 4; args=(4,)
+[28/Jul/2016 11:35:04] DEBUG [django.db.backends:89] (0.003) SELECT "buildings_buildingfloorspace"."id", "buildings_buildingfloorspace"."short_name", "buildings_buildingfloorspace"."long_name", "buildings_buildingfloorspace"."area", "buildings_buildingfloorspace"."perimeter", "buildings_buildingfloorspace"."floor_num", "buildings_buildingfloorspace"."geom", "buildings_buildingfloorspace"."fk_access_type_id", "buildings_buildingfloorspace"."fk_building_floor_id", "buildings_buildingfloorspace"."fk_building_id", "buildings_buildingfloorspace"."room_external_id", "buildings_buildingfloorspace"."room_number", "buildings_buildingfloorspace"."room_number_sign", "buildings_buildingfloorspace"."room_description", "buildings_buildingfloorspace"."room_code", "buildings_buildingfloorspace"."capacity", "buildings_buildingfloorspace"."space_type_id", "buildings_buildingfloorspace"."tag" FROM "buildings_buildingfloorspace" WHERE "buildings_buildingfloorspace"."fk_building_floor_id" = 5; args=(5,)
