@@ -18,9 +18,9 @@ import sys
 
 try:
     print("Trying import local_seetings.py settings...", file=sys.stderr)
-    from .local_settings import *
+    from .dev_settings import *
     print("yes it worked imported...", file=sys.stderr)
 except ImportError:
     print("Trying import development.py settings...", file=sys.stderr)
-    from .dev_settings import *
+    from .common_settings import *
     print("Now importing development.py settings...", file=sys.stderr)
