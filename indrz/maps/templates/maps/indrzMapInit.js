@@ -5,12 +5,12 @@ var map = new ol.Map({
     //layers: [backgroundLayers[0], backgroundLayers[1], wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03],
     layers: [
         new ol.layer.Group({
-            'title': 'Background',
+            'title': getText('Background'),
             layers: [mapQuestOsm, OsmBackLayer, SatelliteLayer
             ]
         }),
         new ol.layer.Group({
-            title: 'Etage',
+            title: getText('Floor'),
             layers: [
 
                 wmsUG01, wmsE00, wmsE01, wmsE02, wmsE03
