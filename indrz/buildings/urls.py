@@ -21,12 +21,11 @@ urlpatterns = patterns('buildings.views',
 
     # url(r'^spaces/search/(?P<search_term>[a-zA-Z0-9]{2,5})/$', 'autocomplete_list', name='spaces_list'),
     url(r'^$', 'building_list', name='list_buildings'),
-    url(r'^list/$', 'building_short_list', name='building_short_list'),
 
     url(r'^(?P<pk>[0-9]+)/$', 'building_detail', name='building_details'),
     url(r'^spaces/(?P<building_id>\d{1,5})/(?P<floor_id>\d{1,5})/$', 'building_spaces_list', name='building_spaces_list'),
 
-    url(r'^campus/(?P<campus_id>\d{1,5})/$', 'get_campus_info', name='get_campus_info'),
+
     url(r'^(?P<building_id>\d{1,5})/externid/(?P<external_room_id>.+)/$', 'get_external_id', name='get_external_ids'),
     url(r'^(?P<building_id>\d{1,5})/floors/$', 'building_floors_list', name='get_floor_ids'),
     # url(r'^(?P<building_id>\d{1,5})/(?P<space_name>.+)/$', 'get_space_by_name', name='get_space_by_name'),
