@@ -12,7 +12,7 @@ from buildings.serializers import (CampusSerializer,
                                    BuildingSerializer,
                                    BuildingSerializerDetails,
                                    BuildingFloorSpaceSerializer,
-                                   BuildingFloorSerializer,
+                                   BuildingFloorGeomSerializer,
                                    SpaceSerializer,
                                    SpacesOnFloor,
                                    )
@@ -101,7 +101,7 @@ def building_list(request, format=None):
 @api_view(['GET'])
 def building_detail(request, pk, format=None):
     """
-    Retrieve, update or delete a code snippet.
+    Return all floors
     """
     try:
         building = Building.objects.get(pk=pk)
@@ -120,7 +120,7 @@ def building_floors_list(request, building_id, format=None):
     """
     if request.method == 'GET':
         floor_ids = BuildingFloor.objects.filter(fk_building=building_id)
-        serializer = BuildingFloorSerializer(floor_ids, many=True)
+        serializer = BuildingFloorGeomSerializer(floor_ids, many=True)
         return Response(serializer.data)
 
 
@@ -133,7 +133,7 @@ def get_floor_info(request, building_id, floor_id, format=None):
     if request.method == 'GET':
         floor_ids = BuildingFloor.objects.filter(fk_building=building_id)
         floor_data = floor_ids.filter(pk=floor_id)
-        serializer = BuildingFloorSerializer(floor_data, many=True, context={'request': request})
+        serializer = BuildingFloorGeomSerializer(floor_data, many=True, context={'request': request})
         return Response(serializer.data)
 
 
@@ -186,7 +186,7 @@ def get_space_by_name(request, building_id, floor_id, space_name, format=None):
     """
     if request.method == 'GET':
         floor_ids = BuildingFloor.objects.filter(fk_building=building_id, fk_building_floor=floor_id)
-        serializer = BuildingFloorSerializer(floor_ids, many=True)
+        serializer = BuildingFloorGeomSerializer(floor_ids, many=True)
         return Response(serializer.data)
 
 
