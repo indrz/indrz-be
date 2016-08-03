@@ -25,21 +25,12 @@ wmsE02 = createWmsLayer('wmsE02','indrz:e02', '2', 'false', 3 );
 wmsE03 = createWmsLayer('wmsE03','indrz:e03', '3', 'false', 3 );
 
 
-var mapQuestOsm = new ol.layer.Tile({
-    source: new ol.source.MapQuest({
-        layer: 'osm'}),
-    visible: false,
-    type: "background"});
 
 var OsmBackLayer = new ol.layer.Tile({
     source: new ol.source.OSM(),
     visible: true,
     type:"background"});
 
-var SatelliteLayer = new ol.layer.Tile({
-    source: new ol.source.MapQuest({layer: 'sat'}),
-    visible: false,
-    type:"background"});
 
 $.ajax('/api/v1/buildings/' + building_id +'/')
     .then(function(response) {
