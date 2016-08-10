@@ -20,7 +20,9 @@ from django.conf.urls.static import static
 from django.contrib.auth.views import login, logout
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import javascript_catalog
-# from maps import views as map_view
+
+
+from maps.views import view_map
 
 js_info_dict = {
     'domain': 'djangojs',
@@ -30,7 +32,7 @@ js_info_dict = {
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', 'maps.views.view_map'),  # homepage start page url
+    url(r'^$', view_map),  # homepage start page url
     url(r'^i18n/', include('django.conf.urls.i18n')),
 
     url(r'^login/$', login, name='login'),
