@@ -16,6 +16,8 @@ from buildings.serializers import (CampusSerializer,
                                    BuildingFloorGeomSerializer,
                                    SpaceSerializer,
                                    BuildingFloor,
+FloorSerializer,
+FloorSerializerDetails
 
 
                                    )
@@ -156,7 +158,7 @@ def building_floors_list(request, building_id, format=None):
     """
     if request.method == 'GET':
         floor_ids = BuildingFloor.objects.filter(fk_building=building_id)
-        serializer = BuildingFloorGeomSerializer(floor_ids, many=True)
+        serializer = FloorSerializer(floor_ids, many=True)
         return Response(serializer.data)
 
 
