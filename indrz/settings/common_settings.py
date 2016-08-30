@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'conference',
     'poi_manager',
     'landscape',
+    'users',
 
 )
 
