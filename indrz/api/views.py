@@ -4,12 +4,17 @@ import json
 
 import traceback
 import logging
-from django.http import HttpResponseNotFound, HttpResponse
+from django.http import HttpResponse
 
 from django.db import connection
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from django.contrib.gis.db.models.functions import Centroid, AsGeoJSON
+
+from buildings.models import BuildingFloorSpace
+
+from geojson import Feature
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +39,7 @@ def autocomplete_list(request):
 
         cur.execute("""SELECT search_string FROM geodata.search_index_v
                           """
-                      )
+                    )
         # cur.execute(room_query)
         room_nums = cur.fetchall()
 
@@ -44,7 +49,7 @@ def autocomplete_list(request):
             room_num_list.append(v)
 
         try:
-            #return Response(room_num_list)
+            # return Response(room_num_list)
             return HttpResponse(json.dumps(room_num_list), content_type='application/json')
         except:
             logger.error("error exporting to json model: " + str(room_num_list))
@@ -52,4 +57,22 @@ def autocomplete_list(request):
             return Response({'error': 'either no JSON or no key params in your JSON'})
 
 
+@api_view(['GET'])
+def space_centroid(request, space_id):
 
+    space_qs = BuildingFloorSpace.objects.filter(pk=space_id)
+
+    if space_qs:
+        att = space_qs.values()[0]
+
+        if att['multi_poly']:
+            att['multi_poly'] = None
+
+        centroid_res = BuildingFloorSpace.objects.annotate(json=AsGeoJSON(Centroid('multi_poly'))).get(pk=space_id).json
+
+        res = Feature(geometry=json.loads(centroid_res), properties=att)
+
+        return Response(res)
+    else:
+        return Response(
+            {'error': 'Sorry we did not find any record in our database matching your id = ' + str(space_id)})

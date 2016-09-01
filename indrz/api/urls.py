@@ -5,7 +5,7 @@ from routing.views import create_route_from_coords, create_route_from_id, create
     force_route_mid_point
 from buildings.views import get_spaces_on_floor, campus_list, campus_buildings_list, campus_buildings_short_list, \
     space_details, get_campus_info, campus_floor_spaces
-from api.views import autocomplete_list
+from api.views import autocomplete_list, space_centroid
 from api import search
 
 urlpatterns = [
@@ -23,6 +23,7 @@ urlpatterns = [
 urlpatterns += [
     # url(r'^spaces/$', 'spaces_list', name='list_all_campuses'),
     url(r'^spaces/(?P<space_id>\d{1,5})/$', space_details, name='show_space_details'),
+    url(r'^spaces/centroid/(?P<space_id>\d{1,5})/$', space_centroid, name='centroid'),
     # url(r'^spaces/(?P<building_id>\d{1,5})/(?P<floor_id>\d{1,5})/$', 'building_spaces_list',
     #                         name='building_spaces_list'),
     # url(r'^spaces/(?P<space_name>.+)/$', 'get_space_by_name', name='get_space_by_name'),
