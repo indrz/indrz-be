@@ -100,7 +100,10 @@ def create_route_from_coords(request, start_coord, start_floor, end_coord, end_f
     """
     Generate a GeoJSON indoor route passing in a start x,y,floor
     followed by &  then the end x,y,floor
-    Sample request: http:/localhost:8000/api/v1/directions/1587848.414,5879564.080,2&1588005.547,5879736.039,2&0
+
+    Example:
+    http:/localhost:8000/api/v1/directions/1587848.414,5879564.080,2&1588005.547,5879736.039,2&0
+
     :param request:
     :param start_coord: start location x,y
     :param start_floor: floor number  ex)  2
@@ -334,7 +337,9 @@ def run_route(start_node_id, end_node_id, route_type):
 def create_route_from_id(request, start_room_id, end_room_id, route_type):
     """
     Generate a GeoJSON route from external room id
-    to external room id
+
+    example: /api/v1/directions/start_id=834&end_id=450&type=0
+
     :param building_id: id of building as integer
     :param request: GET or POST request
     :param start_room_id: an integer room number
@@ -368,6 +373,10 @@ def create_route_from_id(request, start_room_id, end_room_id, route_type):
 def create_route_from_search(request, start_term, end_term, route_type=0):
     """
     Generate a GeoJSON route from room number
+
+    example:
+    http://localhost:8000/api/v1/directions/startstr=SomeSearchTerm&endstr=SomeSearchTerm&type=0
+
     to room number
     :param request: GET or POST request
     :param building_id: buiilding id as integer
@@ -387,7 +396,7 @@ def create_route_from_search(request, start_term, end_term, route_type=0):
         # logger.debug('*************************end term' + str(end_room))
 
         start_query = """SELECT id, external_id, search_string FROM geodata.search_index_v
-                          WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper('%{0}%')
+                          WHERE search_string LIKE '%{0}%'
                           ORDER BY length(search_string) LIMIT 1""".format(start_room)
 
         # logger.debug('**************print query' + str(start_query))
@@ -397,7 +406,7 @@ def create_route_from_search(request, start_term, end_term, route_type=0):
         start_id_value = get_start_id_list[0]
 
         end_query = """SELECT id, external_id, search_string FROM geodata.search_index_v
-                          WHERE replace(replace (upper(search_string), '.', ''),'.', '') LIKE upper('%{0}%')
+                          WHERE search_string LIKE '%{0}%'
                           ORDER BY length(search_string) LIMIT 1""".format(end_room)
 
         # logger.debug('**************print END  query' + str(end_query))
