@@ -114,7 +114,7 @@ lynx http://localhost:8000/api/v1/
 * will be depreciated [jQuery Mobile js](http://http://jquerymobile.com) - mobile web pages made easy
 * Not YET implemented [ionic Framework](http://ionicframework.com) - hybrid mobile apps with html 5
 * Not YET implemented [Gulpjs js](http://gulpjs.com) - js building 
-
+* Not YET implemented [Material Design](https://getmdl.io/)
 
 ## Supported and built by:
 
