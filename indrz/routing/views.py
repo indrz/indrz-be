@@ -419,7 +419,7 @@ def run_route(start_node_id, end_node_id, route_type):
         geojs_geom = loads(geojs)  # load string to geom
         geojs_feat = Feature(geometry=geojs_geom,
                              properties={'floor': layer_level,
-                                         'length': seg_length,
+                                         'segment_length': seg_length,
                                          'network_type': seg_type,
                                          'seg_node_id': seg_node_id,
                                          'sequence': seq_sequence}
