@@ -1,5 +1,7 @@
 # indrz open source wayfinding, routing, navigation
 Project homepage [www.indrz.com] (http://www.indrz.com)
+
+If you want detailed instructions on how to build a demo indoor routing application check out this book (shameless self plug) [Python Geospatial Analysis Cookbook](https://www.packtpub.com/big-data-and-business-intelligence/python-geospatial-analysis-cookbook)  The book source code is on Github https://github.com/mdiener21/python-geospatial-analysis-cookbook
 digital wayfinding indoors, maps, orientation and indoor routing for buildings large or small, app or webpage.
 [![GitHub stars](https://img.shields.io/github/stars/indrz/indrz.svg?style=flat-square)](https://github.com/indrz/indrz/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/indrz/indrz.svg)](https://github.com/indrz/indrz/issues)
