@@ -1,4 +1,4 @@
-# indrz open source wayfinding, routing, navigation
+# indrz open source indoor maps, routing and data API
 Project homepage [www.indrz.com] (http://www.indrz.com)
 
 If you want detailed instructions on how to build a demo indoor routing application check out this book (shameless self plug) [Python Geospatial Analysis Cookbook](https://www.packtpub.com/big-data-and-business-intelligence/python-geospatial-analysis-cookbook)  The book source code is on Github https://github.com/mdiener21/python-geospatial-analysis-cookbook
