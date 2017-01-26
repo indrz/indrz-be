@@ -39,7 +39,7 @@ body {
 }
 
 .indrz-floor-changer-float{
-    position: fixed;
+    position: absolute;
     /*top: 5%;*/
     right: 20px;
     z-index: 1001;
@@ -51,6 +51,19 @@ body {
   left: 40px;
   z-index: 1002;
 }
+
+
+.indrz-search-kiosk {
+    position: absolute; /* or absolute */
+    top:2%;
+    left: 5%;
+    z-index: 2000;
+}
+
+.indrz-poi-kiosk {
+
+}
+
 
 .olImageLoadError { display: none; }
 
@@ -70,7 +83,7 @@ body {
 }
 
 body, h1, h2, h3, h4, p, li, td, th {
-  font-family: Quattrocento Sans;
+  font-family: 'Quattrocento Sans';
 }
 .navbar-inverse .navbar-inner {
   background: #1F6B75;

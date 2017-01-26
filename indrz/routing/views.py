@@ -5,11 +5,19 @@ from __future__ import unicode_literals
 import traceback
 import logging
 import json
+
+import requests
+from django.conf import settings
 from django.http import HttpResponseNotFound
 from django.db import connection
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from geojson import loads, Feature, FeatureCollection
+
+from poi_manager.models import Poi
+
+
 
 
 logger = logging.getLogger(__name__)
@@ -240,6 +248,74 @@ def force_route_mid_point(request, **kwargs):
     return Response({'type': 'FeatureCollection', 'features': route_out_merge})
 
 
+@api_view(['GET',])
+def route_to_nearest_poi(request, start_xy, floor, poi_cat_id):
+
+    coords = start_xy.split("=")[1]
+    x_start_coord = float(coords.split(',')[0])
+    y_start_coord = float(coords.split(',')[1])
+    start_floor_num = int(floor.split('=')[1])
+    poi_cat_id_v = int(poi_cat_id.split("=")[1])
+
+    startid = find_closest_network_node(x_start_coord, y_start_coord, start_floor_num)
+
+    cur = connection.cursor()
+
+    # bus = pk 27  underground= 26
+    qs_nearest_poi = Poi.objects.filter(fk_poi_category=poi_cat_id_v)
+
+    if qs_nearest_poi:
+        dest_nodes = []
+        pois_found = []
+
+        for i, res in enumerate(qs_nearest_poi):
+            network_node_id = find_closest_network_node(res.geom.coords[0][0], res.geom.coords[0][1], res.floor_num )
+            if network_node_id:
+                pois_found.append({"result_index": i, 'name': res.name, 'floor': res.floor_num, 'id': res.id,
+                                 'network_node_id': network_node_id, 'geometry':loads(res.geom.geojson)})
+
+                dest_nodes.append(network_node_id)
+            else:
+                return Response({"error": "no network node found close to poi"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+        pgr_query = """SELECT end_vid, sum(cost) as distance_to_poi
+            FROM pgr_dijkstra(
+                'SELECT id, source, target, cost FROM geodata.networklines_3857',
+                {start_node_id}, ARRAY{poi_ids},FALSE
+                -- 2, ARRAY[1077, 1255],
+                 )
+            GROUP BY end_vid
+            ORDER BY distance_to_poi asc
+            LIMIT 1;""".format(start_node_id=startid, poi_ids=dest_nodes)
+
+
+        cur.execute(pgr_query)
+        res = cur.fetchall()
+
+        node_id_closest_poi = res[0][0]
+
+        closest_poi = None
+
+        for x in pois_found:
+            if node_id_closest_poi == x['network_node_id']:
+                closest_poi = x
+
+
+        geojs_fc = run_route(startid, node_id_closest_poi, 1)
+        geojs_fc.update({'route_info':[{'destination':closest_poi},{'start': 'work in progress'}]})
+
+        return Response(geojs_fc)
+    else:
+        return Response({"error":"no Pois with that poi_cat_id found"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+def set_route_start_end_feature():
+    # add the name of the start route item and destination route item
+    pass
+
+
 def run_route(start_node_id, end_node_id, route_type):
     """
 
@@ -265,10 +341,11 @@ def run_route(start_node_id, end_node_id, route_type):
     # }
 
     cur = connection.cursor()
-    base_route_q = """SELECT id, source, target,
-                     total_cost:: DOUBLE PRECISION AS cost,
-                     floor, network_type
-                     FROM geodata.networklines_3857"""
+    # base_route_q = """SELECT id, source, target,
+    #                  total_cost:: DOUBLE PRECISION AS cost,
+    #                  floor, network_type
+    #                  FROM geodata.networklines_3857"""
+    base_route_q = """SELECT id, source, target, cost, reverse_cost FROM geodata.networklines_3857"""
 
     # set default query
     barrierfree_q = "WHERE 1=1"
@@ -276,25 +353,47 @@ def run_route(start_node_id, end_node_id, route_type):
         # exclude all networklines of type stairs
         barrierfree_q = "WHERE network_type not in (1,3)"
 
-    routing_query = '''
-        SELECT seq,
-        id1 AS node,
-        id2 AS edge,
-          ST_Length(geom) AS cost,
-           floor,
-          network_type,
-          ST_AsGeoJSON(geom) AS geoj
-          FROM pgr_dijkstra('
-            {normal} {type}', %s, %s, FALSE, FALSE
-          ) AS dij_route
-          JOIN  geodata.networklines_3857 AS input_network
-          ON dij_route.id2 = input_network.id ;
-      '''.format(normal=base_route_q, type=barrierfree_q)
+
+    # routing_query = '''
+    #  SELECT seq, id, node, edge, ST_Length(geom) AS cost, floor, network_type, ST_AsGeoJSON(geom) AS geoj
+    #   FROM pgr_dijkstra( '{normal} {type}', %s, %s, FALSE) AS dij_route
+    #   LEFT JOIN geodata.networklines_3857 AS input_network
+    #   ON dij_route.edge = input_network.id
+    #   ORDER BY dij_route.seq;
+    # '''.format(normal=base_route_q,type=barrierfree_q)
+    route_query = "SELECT id, source, target, cost, reverse_cost FROM geodata.networklines_3857"
+
+    routing_query = """
+        SELECT seq, id, node, edge,
+            ST_Length(geom) AS cost, agg_cost, floor, network_type,
+            ST_AsGeoJSON(geom) AS geoj
+        FROM pgr_dijkstra( '{normal} {type}',{start_node}, {end_node}) AS dij_route
+
+          JOIN geodata.networklines_3857 AS input_network
+          ON dij_route.edge = input_network.id ;""".format(normal=route_query, type=barrierfree_q, start_node=start_node_id, end_node=end_node_id)
+
+    print(routing_query)
+
+    # routing_query = '''
+    #     SELECT seq,
+    #     id1 AS node,
+    #     id2 AS edge,
+    #       ST_Length(geom) AS cost,
+    #        floor,
+    #       network_type,
+    #       ST_AsGeoJSON(geom) AS geoj
+    #       FROM pgr_dijkstra('
+    #         {normal} {type}', %s, %s, FALSE, FALSE
+    #       ) AS dij_route
+    #       JOIN  geodata.networklines_3857 AS input_network
+    #       ON dij_route.id2 = input_network.id ;
+    #   '''.format(normal=base_route_q, type=barrierfree_q)
 
     # run our shortest path query
     if start_node_id or end_node_id:
         if start_node_id != end_node_id:
-            cur.execute(routing_query, (start_node_id, end_node_id))
+            # cur.execute(routing_query, (start_node_id, end_node_id))
+            cur.execute(routing_query)
     else:
         logger.error("start or end node is None or is the same node " + str(start_node_id))
         return HttpResponseNotFound('<h1>Sorry NO start or end node'
@@ -311,12 +410,12 @@ def run_route(start_node_id, end_node_id, route_type):
     # loop over each segment in the result route segments
     # create the list of our new GeoJSON
     for segment in route_segments:
-        seg_length = segment[3]  # length of segment
-        layer_level = segment[4]  # floor number
-        seg_type = segment[5]
-        seg_node_id = segment[1]
+        seg_length = segment[4]  # length of segment
+        layer_level = segment[6]  # floor number
+        seg_type = segment[7]
+        seg_node_id = segment[2]
         seq_sequence = segment[0]
-        geojs = segment[6]  # geojson coordinates
+        geojs = segment[8]  # geojson coordinates
         geojs_geom = loads(geojs)  # load string to geom
         geojs_feat = Feature(geometry=geojs_geom,
                              properties={'floor': layer_level,
@@ -368,6 +467,13 @@ def create_route_from_id(request, start_room_id, end_room_id, route_type):
     else:
         return HttpResponseNotFound('<h1>Sorry not a GET or POST request</h1>')
 
+
+def get_features(FeatureCollection):
+    props_list = []
+    for feature in FeatureCollection:
+        props_list.append(feature['properties'])
+
+    return props_list
 
 @api_view(['GET', 'POST'])
 def create_route_from_search(request, start_term, end_term, route_type=0):
