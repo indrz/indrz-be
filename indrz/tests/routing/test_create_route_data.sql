@@ -1,173 +1,148 @@
-# Licensed to the Software Freedom Conservancy (SFC) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The SFC licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
 
-import errno
-import os
-import platform
-import subprocess
-from subprocess import PIPE
-import time
-from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common import utils
+CREATE SCHEMA test AUTHORIZATION postgres;
 
-try:
-    from subprocess import DEVNULL
-    _HAS_NATIVE_DEVNULL = True
-except ImportError:
-    DEVNULL = -3
-    _HAS_NATIVE_DEVNULL = False
+DROP TABLE IF EXISTS test.edge_table_e00;
+DROP TABLE IF EXISTS test.edge_table_e01;
+CREATE TABLE test.edge_table_e00 (
+    id serial PRIMARY KEY ,
+    dir character varying,
+    source BIGINT,
+    target BIGINT,
+    cost FLOAT,
+    reverse_cost FLOAT,
+    x1 FLOAT,
+    y1 FLOAT,
+    z1 FLOAT,
+    x2 FLOAT,
+    y2 FLOAT,
+    z2 FLOAT,
+    floor_num INT,
+    way_type character varying,
+    length FLOAT
+);
+
+SELECT AddGeometryColumn ('test','edge_table_e00','geom',3857,'LINESTRING',3);
+
+CREATE TABLE test.edge_table_e01 (
+    id serial PRIMARY KEY ,
+    dir character varying,
+    source BIGINT,
+    target BIGINT,
+    cost FLOAT,
+    reverse_cost FLOAT,
+    x1 FLOAT,
+    y1 FLOAT,
+    z1 FLOAT,
+    x2 FLOAT,
+    y2 FLOAT,
+    z2 FLOAT,
+    floor_num INT,
+    way_type character varying,
+    length FLOAT
+);
+SELECT AddGeometryColumn ('test','edge_table_e01','geom',3857,'LINESTRING',3);
+
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  2,0,0,   2,1,0); --1
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES (-1, 1,  2,1,0,   3,1,0); --2
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES (-1, 1,  3,1,0,   4,1,0); --3
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  2,1,0,   2,2,0); --4
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1,-1,  3,1,0,   3,2,0); --5
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  0,2,0,   1,2,0); --6
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  1,2,0,   2,2,0); --7
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  2,2,0,   3,2,0); --8
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  3,2,0,   4,2,0); --9
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  2,2,0,   2,3,0); --10
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1,-1,  3,2,0,   3,3,0); --11
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1,-1,  2,3,0,   3,3,0); --12
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1,-1,  3,3,0,   4,3,0); --13
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  2,3,0,   2,4,0); --14
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  4,2,0,   4,3,0); --15
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  4,1,0,   4,2,0); --16
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  0.5,3.5,0,  1.9909999999999,3.5,0); --17
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  3.5,2.3,0,  3.5,4,0); --18
+INSERT INTO test.edge_table_e00 (cost,reverse_cost,x1,y1,z1,x2,y2,z2, way_type) VALUES ( 1, 1,  0,2,0,   0,3,0, 'stairs');  -- 19 first floor
+INSERT INTO test.edge_table_e01 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  0,3,1,   1,3,1);  -- 20 first floor
+INSERT INTO test.edge_table_e01 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  1,3,1,   2,2,1);  -- 21 first floor
+INSERT INTO test.edge_table_e01 (cost,reverse_cost,x1,y1,z1,x2,y2,z2) VALUES ( 1, 1,  2,2,1,   1,1,1);  -- 22 first floor
+
+UPDATE test.edge_table_e00 SET geom = ST_MakeLine(ST_SetSRID(ST_MakePoint(x1,y1,z1),3857),ST_SetSRID(ST_MakePoint(x2,y2,z2),3857)),
+    dir = CASE WHEN (cost>0 and reverse_cost>0) THEN 'B'   -- both ways
+           WHEN (cost>0 and reverse_cost<0) THEN 'FT'  -- direction of the LINESSTRING
+           WHEN (cost<0 and reverse_cost>0) THEN 'TF'  -- reverse direction of the LINESTRING
+
+           ELSE '' END,
+    floor_num = CASE WHEN (z1=0 or z2=0) THEN 0 ELSE 0 END;  
+
+UPDATE test.edge_table_e01 SET geom = ST_MakeLine(ST_SetSRID(ST_MakePoint(x1,y1,z1),3857),ST_SetSRID(ST_MakePoint(x2,y2,z2),3857)),
+    dir = CASE WHEN (cost>0 and reverse_cost>0) THEN 'B'   -- both ways
+           WHEN (cost>0 and reverse_cost<0) THEN 'FT'  -- direction of the LINESSTRING
+           WHEN (cost<0 and reverse_cost>0) THEN 'TF'  -- reverse direction of the LINESTRING
+
+           ELSE '' END,
+    floor_num = CASE WHEN (z1=1 or z2=1) THEN 1 ELSE 0 END;
+    
+DROP TABLE IF EXISTS test.networklines_e00;
+DROP TABLE IF EXISTS test.networklines_e01;
+    
+    
+-- convert to 3d coordinates with EPSG:3857
+SELECT id, ST_Force3D(ST_Force2D(st_geometryN(geom, 1))) AS geom,
+  way_type, cost, reverse_cost, length, 0 AS source, 0 AS target
+  INTO test.networklines_e00
+  FROM test.edge_table_e00;
+  
+  -- convert to 3d coordinates with EPSG:3857
+SELECT id, ST_Force3D(ST_Force2D(st_geometryN(geom, 1))) AS geom,
+  way_type, cost, reverse_cost, length, 0 AS source, 0 AS target
+  INTO test.networklines_e01
+  FROM test.edge_table_e01;
+  
+UPDATE test.networklines_e00 SET geom=ST_Translate(ST_Force3DZ(geom),0,0,0);
+UPDATE test.networklines_e01 SET geom=ST_Translate(ST_Force3DZ(geom),0,0,1);
+
+UPDATE test.networklines_e00 SET length =ST_Length(geom);
+UPDATE test.networklines_e01 SET length =ST_Length(geom);
+  
+UPDATE test.networklines_e00 SET id=id+100000;
+UPDATE test.networklines_e01 SET id=id+200000;
+
+DROP TABLE IF EXISTS test.networklines_3857;
+
+SELECT * INTO test.networklines_3857 FROM
+    (
+      (SELECT id, geom, length, way_type, length*e0.cost as cost, reverse_cost,
+       0 as floor FROM test.networklines_e00 e0) UNION
+    (SELECT id, geom, length, way_type, length*e1.cost as cost, reverse_cost,
+       1 as floor FROM test.networklines_e01 e1)
+
+    )
+    as foo ORDER BY id;
+    
+
+-- create populate geometry view with info
+SELECT Populate_Geometry_Columns('test.networklines_3857'::regclass);
 
 
-class Service(object):
+UPDATE test.networklines_3857 SET geom=ST_AddPoint(geom,ST_EndPoint(ST_Translate(geom,0,0,1)))
+  WHERE way_type='stairs';
+-- remove the second last point
+UPDATE test.networklines_3857 SET geom=ST_RemovePoint(geom,ST_NPoints(geom) - 2)
+  WHERE way_type='stairs';
+  
+  -- add columns source and target
+ALTER TABLE test.networklines_3857 add column source integer;
+ALTER TABLE test.networklines_3857 add column target integer;
+ALTER TABLE test.networklines_3857 OWNER TO "postgres";
 
-    def __init__(self, executable, port=0, log_file=DEVNULL, env=None, start_error_message=""):
-        self.path = executable
 
-        self.port = port
-        if self.port == 0:
-            self.port = utils.free_port()
+DROP TABLE IF EXISTS test.networklines_e00;
+DROP TABLE IF EXISTS test.networklines_e01;
+DROP TABLE IF EXISTS test.networklines_3857_vertices_pgr;
+SELECT pgr_createtopology3dIndrz('test.networklines_3857',0.0001, 'geom', 'id');
 
-        if not _HAS_NATIVE_DEVNULL and log_file == DEVNULL:
-            log_file = open(os.devnull, 'wb')
+SELECT * FROM pgr_dijkstra(
+    'SELECT id, source, target, cost, reverse_cost FROM test.networklines_3857',
+    1, 20, FALSE
+);
 
-        self.start_error_message = start_error_message
-        self.log_file = log_file
-        self.env = env or os.environ
-
-    @property
-    def service_url(self):
-        """
-        Gets the url of the Service
-        """
-        return "http://%s" % utils.join_host_port('localhost', self.port)
-
-    def command_line_args(self):
-        raise NotImplemented("This method needs to be implemented in a sub class")
-
-    def start(self):
-        """
-        Starts the Service.
-
-        :Exceptions:
-         - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
-        """
-        try:
-            cmd = [self.path]
-            cmd.extend(self.command_line_args())
-            self.process = subprocess.Popen(cmd, env=self.env,
-                                            close_fds=platform.system() != 'Windows',
-                                            stdout=self.log_file, stderr=self.log_file)
-        except TypeError:
-            raise
-        except OSError as err:
-            if err.errno == errno.ENOENT:
-                raise WebDriverException(
-                    "'%s' executable needs to be in PATH. %s" % (
-                        os.path.basename(self.path), self.start_error_message)
-                )
-            elif err.errno == errno.EACCES:
-                raise WebDriverException(
-                    "'%s' executable may have wrong permissions. %s" % (
-                        os.path.basename(self.path), self.start_error_message)
-                )
-            else:
-                raise
-        except Exception as e:
-            raise WebDriverException(
-                "The executable %s needs to be available in the path. %s\n%s" %
-                (os.path.basename(self.path), self.start_error_message, str(e)))
-        count = 0
-        while True:
-            self.assert_process_still_running()
-            if self.is_connectable():
-                break
-            count += 1
-            time.sleep(1)
-            if count == 30:
-                raise WebDriverException("Can not connect to the Service %s" % self.path)
-
-    def assert_process_still_running(self):
-        return_code = self.process.poll()
-        if return_code is not None:
-            raise WebDriverException(
-                'Service %s unexpectedly exited. Status code was: %s'
-                % (self.path, return_code)
-            )
-
-    def is_connectable(self):
-        return utils.is_connectable(self.port)
-
-    def send_remote_shutdown_command(self):
-        try:
-            from urllib import request as url_request
-            URLError = url_request.URLError
-        except ImportError:
-            import urllib2 as url_request
-            import urllib2
-            URLError = urllib2.URLError
-
-        try:
-            url_request.urlopen("%s/shutdown" % self.service_url)
-        except URLError:
-            return
-        count = 0
-        while self.is_connectable():
-            if count == 30:
-                break
-            count += 1
-            time.sleep(1)
-
-    def stop(self):
-        """
-        Stops the service.
-        """
-        if self.log_file != PIPE and not (self.log_file == DEVNULL and _HAS_NATIVE_DEVNULL):
-            try:
-                self.log_file.close()
-            except Exception:
-                pass
-
-        if self.process is None:
-            return
-
-        try:
-            self.send_remote_shutdown_command()
-        except TypeError:
-            pass
-
-        try:
-            if self.process:
-                for stream in [self.process.stdin,
-                               self.process.stdout,
-                               self.process.stderr]:
-                    try:
-                        stream.close()
-                    except AttributeError:
-                        pass
-                self.process.terminate()
-                self.process.kill()
-                self.process.wait()
-                self.process = None
-        except OSError:
-            # kill may not be available under windows environment
-            pass
-
-    def __del__(self):
-        # subprocess.Popen doesn't send signal on __del__;
-        # we have to try to stop the launched process.
-        self.stop()
+SELECT id, source, target, st_asewkt(geom) from test.networklines_3857 ORDER BY id;
