@@ -11,6 +11,7 @@ db_port = "5432"
 conn = psycopg2.connect(host=db_host, user=db_user, port=db_port, password=db_passwd, database=db_database)
 cur = conn.cursor()
 
+# list of floors containing routing network line geometry
 floors = ["ug01", "e00", "e01", "e02", "e03", "e04", "e05", "e06"]
 extension_name = "routing_networklines"
 level = None
