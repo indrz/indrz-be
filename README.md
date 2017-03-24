@@ -73,11 +73,10 @@ install the requirements using pip.
 If you have problems, make sure you have the right version of pip installed
 you may need to use pip3
 ```bash
-pip install -r requirements.txt
+pip install -r requirements/local.txt
 ```
 load the demo campus, building, space data
 ```bash
-pip install -r requirements.txt
 python manage.py migrate --noinput
 python manage.py loaddata initial_ltspacetype_data
 python manage.py loaddata initial_poi_categories
