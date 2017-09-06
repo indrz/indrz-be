@@ -4,6 +4,11 @@ Project homepage [www.indrz.com] (http://www.indrz.com)
 If you want detailed instructions on how to build a demo indoor routing application check out this book (shameless self plug) [Python Geospatial Analysis Cookbook](https://www.packtpub.com/big-data-and-business-intelligence/python-geospatial-analysis-cookbook)  The book source code is on Github https://github.com/mdiener21/python-geospatial-analysis-cookbook
 digital wayfinding indoors, maps, orientation and indoor routing for buildings large or small, app or webpage.
 
+## Sponsors
+Browserstack is awesome and they provide the great service to test if everythings works in the wild browser world, check them out at https://www.browserstack.com
+
+
+
 [![GitHub stars](https://img.shields.io/github/stars/indrz/indrz.svg?style=flat-square)](https://github.com/indrz/indrz/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/indrz/indrz.svg)](https://github.com/indrz/indrz/issues)
 [![GitHub release](https://img.shields.io/github/release/indrz/indrz.svg)](https://github.com/indrz/indrz/releases)
