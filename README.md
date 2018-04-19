@@ -15,6 +15,8 @@ Browserstack is awesome and they provide the great service to test if everything
 [![license](https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square)](https://raw.githubusercontent.com/indrz/indrz/master/LICENSE)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/indrz/indrz.svg?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=%5Bobject%20Object%5D)
 
+[![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/mdiener21/geoweb)
+
 
 ## Licence
 indrz is under GNU General Public License v3.0.  The name "indrz" is not allowed to be used by third parties and is a trademark.  Other than that you can do what you want accordingly 
