@@ -1,3 +1,4 @@
-# indrz-tu
+# TU Wien INDRZ  campus 
 
-Technical University of Vienna
+Technical University of Vienna wayfinding
+
