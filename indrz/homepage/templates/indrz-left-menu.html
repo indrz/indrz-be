@@ -1,0 +1,97 @@
+{% load i18n %}
+{% load staticfiles %}
+
+{% block search-form %} {% endblock search-form %}
+{% block routing-form %} {% endblock routing-form %}
+{% block language-changer %}{% endblock language-changer %}
+{% block poi-menu %}{% endblock poi-menu %}
+
+<div class="col-md-4 col-lg-2" id="map-search-form" >
+
+
+
+
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+        <h3>{% trans 'Search' %}</h3>
+
+
+         {% include 'search-form.html' %}
+
+
+{% comment %}
+      <a id="id-share-map" class="btn btn-primary " data-toggle="modal" data-target="#ShareMapModal" data-placement="top" title="{% trans 'Share Map' %}" ><i class="fas fa-share-" aria-hidden="true"></i></a>
+
+
+        <a id="id-zoom-to-campus-left" class="btn btn-primary" data-placement="top" title="{% trans 'Zoom to Campus' %}"  ><i class="fa fa-home"  aria-hidden="true"></i></a>
+
+        <p style="padding-bottom: 15px;"></p>
+
+{% endcomment %}
+
+
+      <div id="campuslocations" class="panel panel-default">
+        <div class="panel-heading" role="tab" id="campusLocations">
+          <h4 class="panel-title">
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseCampus" aria-expanded="false" aria-controls="collapseCampus">
+              {% trans 'Campus Locations' %}
+            </a>
+          </h4>
+        </div>
+        <div id="collapseCampus" class="panel-collapse collapse" role="tabpanel" aria-labelledby="campusLocations">
+          <div class="panel-body">
+                <div>
+                    {% include 'campus-locations.html' %}
+                </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTwo">
+          <h4 class="panel-title">
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseRouting" aria-expanded="false" aria-controls="collapseRouting">
+              {% trans 'Route' %}
+            </a>
+          </h4>
+        </div>
+        <div id="collapseRouting" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+                <div>
+                    {% include 'routing-form.html' %}
+                </div>
+          </div>
+        </div>
+      </div>
+      <div id="poi-accordian" class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingThree">
+          <h4 class="panel-title">
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsePoi" aria-expanded="false" aria-controls="collapsePoi">
+              {% trans 'Points of Interest' %}
+            </a>
+          </h4>
+        </div>
+        <div id="collapsePoi" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div id="poi-panel-body" class="panel-body">
+
+            <div >
+
+                <div>
+{#                     {% include "includes/poi-tree.html" %}#}
+                    {% include "poi/poi-tree.html" %}
+                </div>
+
+             </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+$(function () {
+  $('[data-placement="top"]').tooltip()
+
+})
+
+</script>

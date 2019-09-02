@@ -1,0 +1,486 @@
+CAMPUS;TRAKT;TRAKTBEZEICHNUNG;ADRESSE;PLZ;ORT;GESCHOSS
+A_KARLSPLATZ;AA;Haupttrakt;Karlsplatz 13;1040;Wien;U1
+A_KARLSPLATZ;AA;Haupttrakt;Karlsplatz 13;1040;Wien;EG
+A_KARLSPLATZ;AA;Haupttrakt;Karlsplatz 13;1040;Wien;ZE
+A_KARLSPLATZ;AA;Haupttrakt;Karlsplatz 13;1040;Wien;01
+A_KARLSPLATZ;AA;Haupttrakt;Karlsplatz 13;1040;Wien;Z1
+A_KARLSPLATZ;AA;Haupttrakt;Karlsplatz 13;1040;Wien;02
+A_KARLSPLATZ;AA;Haupttrakt;Karlsplatz 13;1040;Wien;03
+A_KARLSPLATZ;AA;Haupttrakt;Karlsplatz 13;1040;Wien;Z3
+A_KARLSPLATZ;AA;Haupttrakt;Karlsplatz 13;1040;Wien;04
+A_KARLSPLATZ;AB;Hoftrakt;Karlsplatz 13;1040;Wien;U1
+A_KARLSPLATZ;AB;Hoftrakt;Karlsplatz 13;1040;Wien;EG
+A_KARLSPLATZ;AB;Hoftrakt;Karlsplatz 13;1040;Wien;01
+A_KARLSPLATZ;AB;Hoftrakt;Karlsplatz 13;1040;Wien;02
+A_KARLSPLATZ;AB;Hoftrakt;Karlsplatz 13;1040;Wien;03
+A_KARLSPLATZ;AB;Hoftrakt;Karlsplatz 13;1040;Wien;04
+A_KARLSPLATZ;AB;Hoftrakt;Karlsplatz 13;1040;Wien;DG
+A_KARLSPLATZ;AC;Mitteltrakt;Karlsplatz 13;1040;Wien;U1
+A_KARLSPLATZ;AC;Mitteltrakt;Karlsplatz 13;1040;Wien;EG
+A_KARLSPLATZ;AC;Mitteltrakt;Karlsplatz 13;1040;Wien;ZE
+A_KARLSPLATZ;AC;Mitteltrakt;Karlsplatz 13;1040;Wien;01
+A_KARLSPLATZ;AC;Mitteltrakt;Karlsplatz 13;1040;Wien;Z1
+A_KARLSPLATZ;AC;Mitteltrakt;Karlsplatz 13;1040;Wien;02
+A_KARLSPLATZ;AC;Mitteltrakt;Karlsplatz 13;1040;Wien;Z2
+A_KARLSPLATZ;AC;Mitteltrakt;Karlsplatz 13;1040;Wien;03
+A_KARLSPLATZ;AC;Mitteltrakt;Karlsplatz 13;1040;Wien;Z3
+A_KARLSPLATZ;AC;Mitteltrakt;Karlsplatz 13;1040;Wien;04
+A_KARLSPLATZ;AC;Mitteltrakt;Karlsplatz 13;1040;Wien;Z4
+A_KARLSPLATZ;AC;Mitteltrakt;Karlsplatz 13;1040;Wien;DG
+A_KARLSPLATZ;AD;Resseltrakt;Karlsplatz 13;1040;Wien;U1
+A_KARLSPLATZ;AD;Resseltrakt;Karlsplatz 13;1040;Wien;EG
+A_KARLSPLATZ;AD;Resseltrakt;Karlsplatz 13;1040;Wien;ZE
+A_KARLSPLATZ;AD;Resseltrakt;Karlsplatz 13;1040;Wien;01
+A_KARLSPLATZ;AD;Resseltrakt;Karlsplatz 13;1040;Wien;02
+A_KARLSPLATZ;AD;Resseltrakt;Karlsplatz 13;1040;Wien;03
+A_KARLSPLATZ;AD;Resseltrakt;Karlsplatz 13;1040;Wien;04
+A_KARLSPLATZ;AE;Karlstrakt;Karlsplatz 13;1040;Wien;U2
+A_KARLSPLATZ;AE;Karlstrakt;Karlsplatz 13;1040;Wien;U1
+A_KARLSPLATZ;AE;Karlstrakt;Karlsplatz 13;1040;Wien;ZU
+A_KARLSPLATZ;AE;Karlstrakt;Karlsplatz 13;1040;Wien;EG
+A_KARLSPLATZ;AE;Karlstrakt;Karlsplatz 13;1040;Wien;ZE
+A_KARLSPLATZ;AE;Karlstrakt;Karlsplatz 13;1040;Wien;01
+A_KARLSPLATZ;AE;Karlstrakt;Karlsplatz 13;1040;Wien;Z1
+A_KARLSPLATZ;AE;Karlstrakt;Karlsplatz 13;1040;Wien;02
+A_KARLSPLATZ;AE;Karlstrakt;Karlsplatz 13;1040;Wien;03
+A_KARLSPLATZ;AE;Karlstrakt;Karlsplatz 13;1040;Wien;Z3
+A_KARLSPLATZ;AF;Panigltrakt;Karlsplatz 13;1040;Wien;U1
+A_KARLSPLATZ;AF;Panigltrakt;Karlsplatz 13;1040;Wien;EG
+A_KARLSPLATZ;AF;Panigltrakt;Karlsplatz 13;1040;Wien;ZE
+A_KARLSPLATZ;AF;Panigltrakt;Karlsplatz 13;1040;Wien;01
+A_KARLSPLATZ;AF;Panigltrakt;Karlsplatz 13;1040;Wien;02
+A_KARLSPLATZ;AF;Panigltrakt;Karlsplatz 13;1040;Wien;Z2
+A_KARLSPLATZ;AF;Panigltrakt;Karlsplatz 13;1040;Wien;03
+A_KARLSPLATZ;AF;Panigltrakt;Karlsplatz 13;1040;Wien;DG
+A_KARLSPLATZ;AF;Panigltrakt;Karlsplatz 13;1040;Wien;ZD
+A_KARLSPLATZ;AG;Lammtrakt;Karlsplatz 13;1040;Wien;U1
+A_KARLSPLATZ;AG;Lammtrakt;Karlsplatz 13;1040;Wien;EG
+A_KARLSPLATZ;AG;Lammtrakt;Karlsplatz 13;1040;Wien;ZE
+A_KARLSPLATZ;AG;Lammtrakt;Karlsplatz 13;1040;Wien;01
+A_KARLSPLATZ;AG;Lammtrakt;Karlsplatz 13;1040;Wien;Z2
+A_KARLSPLATZ;AG;Lammtrakt;Karlsplatz 13;1040;Wien;02
+A_KARLSPLATZ;AG;Lammtrakt;Karlsplatz 13;1040;Wien;03
+A_KARLSPLATZ;AG;Lammtrakt;Karlsplatz 13;1040;Wien;DG
+A_KARLSPLATZ;AH;Hofpavillon;Karlsplatz 13;1040;Wien;EG
+A_KARLSPLATZ;AH;Hofpavillon;Karlsplatz 13;1040;Wien;ZE
+A_KARLSPLATZ;AH;Hofpavillon;Karlsplatz 13;1040;Wien;01
+A_KARLSPLATZ;AI;Luftpavillon;Karlsplatz 13;1040;Wien;U1
+A_KARLSPLATZ;AI;Luftpavillon;Karlsplatz 13;1040;Wien;EG
+A_KARLSPLATZ;AI;Luftpavillon;Karlsplatz 13;1040;Wien;01
+A_KARLSPLATZ;AK;Institutsgebäude;Paniglgasse 16;1040;Wien;U1
+A_KARLSPLATZ;AK;Institutsgebäude;Paniglgasse 16;1040;Wien;EG
+A_KARLSPLATZ;AK;Institutsgebäude;Paniglgasse 16;1040;Wien;ZE
+A_KARLSPLATZ;AK;Institutsgebäude;Paniglgasse 16;1040;Wien;01
+A_KARLSPLATZ;AK;Institutsgebäude;Paniglgasse 16;1040;Wien;04
+A_KARLSPLATZ;AP;Goldenes Lamm;Wiedner Hauptstraße 7;1040;Wien;U1
+A_KARLSPLATZ;AP;Goldenes Lamm;Wiedner Hauptstraße 7;1040;Wien;ZU
+A_KARLSPLATZ;AP;Goldenes Lamm;Wiedner Hauptstraße 7;1040;Wien;EG
+A_KARLSPLATZ;AP;Goldenes Lamm;Wiedner Hauptstraße 7;1040;Wien;01
+A_KARLSPLATZ;AP;Goldenes Lamm;Wiedner Hauptstraße 7;1040;Wien;02
+A_KARLSPLATZ;AQ;Ödenburg;Wiedner Hauptstraße 9;1040;Wien;U1
+A_KARLSPLATZ;AQ;Ödenburg;Wiedner Hauptstraße 9;1040;Wien;EG
+A_KARLSPLATZ;AQ;Ödenburg;Wiedner Hauptstraße 9;1040;Wien;01
+A_KARLSPLATZ;AS;Wohnhaus;Reselgasse 3;1040;Wien;U1
+A_KARLSPLATZ;AS;Wohnhaus;Reselgasse 3;1040;Wien;EG
+A_KARLSPLATZ;AS;Wohnhaus;Reselgasse 3;1040;Wien;01
+A_KARLSPLATZ;AS;Wohnhaus;Reselgasse 3;1040;Wien;02
+A_KARLSPLATZ;AS;Wohnhaus;Reselgasse 3;1040;Wien;03
+A_KARLSPLATZ;AT;Wohnhaus;Resselgasse 5;1040;Wien;EG
+A_KARLSPLATZ;AT;Wohnhaus;Resselgasse 5;1040;Wien;01
+A_KARLSPLATZ;AT;Wohnhaus;Resselgasse 5;1040;Wien;02
+A_KARLSPLATZ;AT;Wohnhaus;Resselgasse 5;1040;Wien;03
+A_KARLSPLATZ;EA;Institutsgebäude;Argentinierstraße 8;1040;Wien;U1
+A_KARLSPLATZ;EA;Institutsgebäude;Argentinierstraße 8;1040;Wien;EG
+A_KARLSPLATZ;EA;Institutsgebäude;Argentinierstraße 8;1040;Wien;ZE
+A_KARLSPLATZ;EA;Institutsgebäude;Argentinierstraße 8;1040;Wien;01
+A_KARLSPLATZ;EA;Institutsgebäude;Argentinierstraße 8;1040;Wien;02
+A_KARLSPLATZ;EA;Institutsgebäude;Argentinierstraße 8;1040;Wien;03
+A_KARLSPLATZ;EA;Institutsgebäude;Argentinierstraße 8;1040;Wien;04
+A_KARLSPLATZ;EA;Institutsgebäude;Argentinierstraße 8;1040;Wien;05
+A_KARLSPLATZ;EA;Institutsgebäude;Argentinierstraße 8;1040;Wien;DG
+A_KARLSPLATZ;EB;Institutsgebäude;Karlsgasse 11;1040;Wien;U2
+A_KARLSPLATZ;EB;Institutsgebäude;Karlsgasse 11;1040;Wien;U1
+A_KARLSPLATZ;EB;Institutsgebäude;Karlsgasse 11;1040;Wien;EG
+A_KARLSPLATZ;EB;Institutsgebäude;Karlsgasse 11;1040;Wien;01
+A_KARLSPLATZ;EB;Institutsgebäude;Karlsgasse 11;1040;Wien;02
+A_KARLSPLATZ;EB;Institutsgebäude;Karlsgasse 11;1040;Wien;03
+A_KARLSPLATZ;EB;Institutsgebäude;Karlsgasse 11;1040;Wien;04
+A_KARLSPLATZ;EB;Institutsgebäude;Karlsgasse 11;1040;Wien;DG
+A_KARLSPLATZ;EC;Institutsgebäude;Karlsgasse 13;1040;Wien;U1
+A_KARLSPLATZ;EC;Institutsgebäude;Karlsgasse 13;1040;Wien;EG
+A_KARLSPLATZ;EC;Institutsgebäude;Karlsgasse 13;1040;Wien;01
+A_KARLSPLATZ;EC;Institutsgebäude;Karlsgasse 13;1040;Wien;02
+A_KARLSPLATZ;EC;Institutsgebäude;Karlsgasse 13;1040;Wien;03
+A_KARLSPLATZ;EC;Institutsgebäude;Karlsgasse 13;1040;Wien;DG
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;U2
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;U1
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;ZU
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;EG
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;01
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;02
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;03
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;04
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;05
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;06
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;07
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;08
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;09
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;10
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;11
+B_GETREIDEMARKT;BA;Plus Energie Büro Hochhaus;Getreidemarkt 9;1060;Wien;DG
+B_GETREIDEMARKT;BB;Eckbau;Getreidemarkt 9;1060;Wien;U1
+B_GETREIDEMARKT;BB;Eckbau;Getreidemarkt 9;1060;Wien;EG
+B_GETREIDEMARKT;BB;Eckbau;Getreidemarkt 9;1060;Wien;01
+B_GETREIDEMARKT;BB;Eckbau;Getreidemarkt 9;1060;Wien;02
+B_GETREIDEMARKT;BB;Eckbau;Getreidemarkt 9;1060;Wien;03
+B_GETREIDEMARKT;BB;Eckbau;Getreidemarkt 9;1060;Wien;04
+B_GETREIDEMARKT;BB;Eckbau;Getreidemarkt 9;1060;Wien;Z4
+B_GETREIDEMARKT;BB;Eckbau;Getreidemarkt 9;1060;Wien;05
+B_GETREIDEMARKT;BB;Eckbau;Getreidemarkt 9;1060;Wien;Z5
+B_GETREIDEMARKT;BB;Eckbau;Getreidemarkt 9;1060;Wien;06
+B_GETREIDEMARKT;BC;Lehartrakt;Getreidemarkt 9;1060;Wien;U2
+B_GETREIDEMARKT;BC;Lehartrakt;Getreidemarkt 9;1060;Wien;U1
+B_GETREIDEMARKT;BC;Lehartrakt;Getreidemarkt 9;1060;Wien;EG
+B_GETREIDEMARKT;BC;Lehartrakt;Getreidemarkt 9;1060;Wien;01
+B_GETREIDEMARKT;BC;Lehartrakt;Getreidemarkt 9;1060;Wien;02
+B_GETREIDEMARKT;BC;Lehartrakt;Getreidemarkt 9;1060;Wien;03
+B_GETREIDEMARKT;BC;Lehartrakt;Getreidemarkt 9;1060;Wien;04
+B_GETREIDEMARKT;BC;Lehartrakt;Getreidemarkt 9;1060;Wien;05
+B_GETREIDEMARKT;BD;Hoftrakt;Getreidemarkt 9;1060;Wien;U2
+B_GETREIDEMARKT;BD;Hoftrakt;Getreidemarkt 9;1060;Wien;U1
+B_GETREIDEMARKT;BD;Hoftrakt;Getreidemarkt 9;1060;Wien;EG
+B_GETREIDEMARKT;BD;Hoftrakt;Getreidemarkt 9;1060;Wien;01
+B_GETREIDEMARKT;BD;Hoftrakt;Getreidemarkt 9;1060;Wien;02
+B_GETREIDEMARKT;BD;Hoftrakt;Getreidemarkt 9;1060;Wien;03
+B_GETREIDEMARKT;BD;Hoftrakt;Getreidemarkt 9;1060;Wien;04
+B_GETREIDEMARKT;BD;Hoftrakt;Getreidemarkt 9;1060;Wien;05
+B_GETREIDEMARKT;BD;Hoftrakt;Getreidemarkt 9;1060;Wien;06
+B_GETREIDEMARKT;BD;Hoftrakt;Getreidemarkt 9;1060;Wien;07
+B_GETREIDEMARKT;BD;Hoftrakt;Getreidemarkt 9;1060;Wien;DG
+B_GETREIDEMARKT;BE;Lückenbau;Getreidemarkt 9;1060;Wien;U1
+B_GETREIDEMARKT;BE;Lückenbau;Getreidemarkt 9;1060;Wien;EG
+B_GETREIDEMARKT;BE;Lückenbau;Getreidemarkt 9;1060;Wien;01
+B_GETREIDEMARKT;BE;Lückenbau;Getreidemarkt 9;1060;Wien;02
+B_GETREIDEMARKT;BE;Lückenbau;Getreidemarkt 9;1060;Wien;03
+B_GETREIDEMARKT;BE;Lückenbau;Getreidemarkt 9;1060;Wien;04
+B_GETREIDEMARKT;BE;Lückenbau;Getreidemarkt 9;1060;Wien;05
+B_GETREIDEMARKT;BE;Lückenbau;Getreidemarkt 9;1060;Wien;06
+B_GETREIDEMARKT;BE;Lückenbau;Getreidemarkt 9;1060;Wien;DG
+B_GETREIDEMARKT;BG;Tiefgarage;Getreidemarkt 9;1060;Wien;U2
+B_GETREIDEMARKT;BG;Tiefgarage;Getreidemarkt 9;1060;Wien;U1
+B_GETREIDEMARKT;BH;Institutsgebäude;Gumpendorfer Straße 1a;1060;Wien;U1
+B_GETREIDEMARKT;BH;Institutsgebäude;Gumpendorfer Straße 1a;1060;Wien;EG
+B_GETREIDEMARKT;BH;Institutsgebäude;Gumpendorfer Straße 1a;1060;Wien;01
+B_GETREIDEMARKT;BH;Institutsgebäude;Gumpendorfer Straße 1a;1060;Wien;02
+B_GETREIDEMARKT;BH;Institutsgebäude;Gumpendorfer Straße 1a;1060;Wien;03
+B_GETREIDEMARKT;BH;Institutsgebäude;Gumpendorfer Straße 1a;1060;Wien;04
+B_GETREIDEMARKT;BH;Institutsgebäude;Gumpendorfer Straße 1a;1060;Wien;05
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;U2
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;U1
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;EG
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;01
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;02
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;03
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;04
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;05
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;06
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;07
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;08
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;09
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;10
+B_GETREIDEMARKT;BI;Loschmidt Trakt;Getreidemarkt 9;1060;Wien;DG
+B_GETREIDEMARKT;BK;Loschmidt Trakt Keller;Getreidemarkt 9;1060;Wien;U2
+B_GETREIDEMARKT;BK;Loschmidt Trakt Keller;Getreidemarkt 9;1060;Wien;U1
+B_GETREIDEMARKT;BL;Wirtschaftsgebäude;Getreidemarkt 9;1060;Wien;U2
+B_GETREIDEMARKT;BL;Wirtschaftsgebäude;Getreidemarkt 9;1060;Wien;U1
+B_GETREIDEMARKT;BL;Wirtschaftsgebäude;Getreidemarkt 9;1060;Wien;EG
+B_GETREIDEMARKT;BL;Wirtschaftsgebäude;Getreidemarkt 9;1060;Wien;01
+B_GETREIDEMARKT;BL;Wirtschaftsgebäude;Getreidemarkt 9;1060;Wien;02
+B_GETREIDEMARKT;BZ;Geniegebäude;Getreidemarkt 9;1060;Wien;U1
+B_GETREIDEMARKT;BZ;Geniegebäude;Getreidemarkt 9;1060;Wien;EG
+B_GETREIDEMARKT;BZ;Geniegebäude;Getreidemarkt 9;1060;Wien;01
+B_GETREIDEMARKT;BZ;Geniegebäude;Getreidemarkt 9;1060;Wien;02
+B_GETREIDEMARKT;BZ;Geniegebäude;Getreidemarkt 9;1060;Wien;03
+B_GETREIDEMARKT;BZ;Geniegebäude;Getreidemarkt 9;1060;Wien;DG
+B_GETREIDEMARKT;PF;Aspern IQ;Seestadtstraße 27/3;1220;Wien;EG
+B_GETREIDEMARKT;QA;Institutsgebäude;Theresianumgasse 27;1040;Wien;U1
+B_GETREIDEMARKT;QA;Institutsgebäude;Theresianumgasse 27;1040;Wien;EG
+B_GETREIDEMARKT;QA;Institutsgebäude;Theresianumgasse 27;1040;Wien;ZE
+B_GETREIDEMARKT;QA;Institutsgebäude;Theresianumgasse 27;1040;Wien;01
+B_GETREIDEMARKT;QA;Institutsgebäude;Theresianumgasse 27;1040;Wien;02
+C_GUSSHAUS;CA;Trakt 1;Gußhausstraße 27-29;1040;Wien;U2
+C_GUSSHAUS;CA;Trakt 1;Gußhausstraße 27-29;1040;Wien;U1
+C_GUSSHAUS;CA;Trakt 1;Gußhausstraße 27-29;1040;Wien;EG
+C_GUSSHAUS;CA;Trakt 1;Gußhausstraße 27-29;1040;Wien;01
+C_GUSSHAUS;CA;Trakt 1;Gußhausstraße 27-29;1040;Wien;02
+C_GUSSHAUS;CA;Trakt 1;Gußhausstraße 27-29;1040;Wien;03
+C_GUSSHAUS;CA;Trakt 1;Gußhausstraße 27-29;1040;Wien;04
+C_GUSSHAUS;CA;Trakt 1;Gußhausstraße 27-29;1040;Wien;05
+C_GUSSHAUS;CA;Trakt 1;Gußhausstraße 27-29;1040;Wien;06
+C_GUSSHAUS;CB;Trakt 2;Gußhausstraße 27-29;1040;Wien;U2
+C_GUSSHAUS;CB;Trakt 2;Gußhausstraße 27-29;1040;Wien;U1
+C_GUSSHAUS;CB;Trakt 2;Gußhausstraße 27-29;1040;Wien;EG
+C_GUSSHAUS;CB;Trakt 2;Gußhausstraße 27-29;1040;Wien;01
+C_GUSSHAUS;CB;Trakt 2;Gußhausstraße 27-29;1040;Wien;02
+C_GUSSHAUS;CB;Trakt 2;Gußhausstraße 27-29;1040;Wien;03
+C_GUSSHAUS;CB;Trakt 2;Gußhausstraße 27-29;1040;Wien;04
+C_GUSSHAUS;CB;Trakt 2;Gußhausstraße 27-29;1040;Wien;05
+C_GUSSHAUS;CB;Trakt 2;Gußhausstraße 27-29;1040;Wien;06
+C_GUSSHAUS;CC;Trakt 3;Gußhausstraße 27-29;1040;Wien;U2
+C_GUSSHAUS;CC;Trakt 3;Gußhausstraße 27-29;1040;Wien;U1
+C_GUSSHAUS;CC;Trakt 3;Gußhausstraße 27-29;1040;Wien;EG
+C_GUSSHAUS;CC;Trakt 3;Gußhausstraße 27-29;1040;Wien;01
+C_GUSSHAUS;CC;Trakt 3;Gußhausstraße 27-29;1040;Wien;02
+C_GUSSHAUS;CC;Trakt 3;Gußhausstraße 27-29;1040;Wien;03
+C_GUSSHAUS;CC;Trakt 3;Gußhausstraße 27-29;1040;Wien;04
+C_GUSSHAUS;CD;Trakt 4;Gußhausstraße 27-29;1040;Wien;U2
+C_GUSSHAUS;CD;Trakt 4;Gußhausstraße 27-29;1040;Wien;U1
+C_GUSSHAUS;CD;Trakt 4;Gußhausstraße 27-29;1040;Wien;EG
+C_GUSSHAUS;CD;Trakt 4;Gußhausstraße 27-29;1040;Wien;ZE
+C_GUSSHAUS;CD;Trakt 4;Gußhausstraße 27-29;1040;Wien;01
+C_GUSSHAUS;CD;Trakt 4;Gußhausstraße 27-29;1040;Wien;02
+C_GUSSHAUS;CD;Trakt 4;Gußhausstraße 27-29;1040;Wien;03
+C_GUSSHAUS;CD;Trakt 4;Gußhausstraße 27-29;1040;Wien;04
+C_GUSSHAUS;CD;Trakt 4;Gußhausstraße 27-29;1040;Wien;05
+C_GUSSHAUS;CD;Trakt 4;Gußhausstraße 27-29;1040;Wien;06
+C_GUSSHAUS;CE;Hoftrakt;Gußhausstraße 27-29;1040;Wien;U2
+C_GUSSHAUS;CF;Haupttrakt;Gußhausstraße 25-25a;1040;Wien;U2
+C_GUSSHAUS;CF;Haupttrakt;Gußhausstraße 25-25a;1040;Wien;U1
+C_GUSSHAUS;CF;Haupttrakt;Gußhausstraße 25-25a;1040;Wien;SO
+C_GUSSHAUS;CF;Haupttrakt;Gußhausstraße 25-25a;1040;Wien;EG
+C_GUSSHAUS;CF;Haupttrakt;Gußhausstraße 25-25a;1040;Wien;01
+C_GUSSHAUS;CF;Haupttrakt;Gußhausstraße 25-25a;1040;Wien;02
+C_GUSSHAUS;CF;Haupttrakt;Gußhausstraße 25-25a;1040;Wien;Z2
+C_GUSSHAUS;CF;Haupttrakt;Gußhausstraße 25-25a;1040;Wien;03
+C_GUSSHAUS;CF;Haupttrakt;Gußhausstraße 25-25a;1040;Wien;04
+C_GUSSHAUS;CF;Haupttrakt;Gußhausstraße 25-25a;1040;Wien;DG
+C_GUSSHAUS;CG;Seitentrakt;Gußhausstraße 25-25a;1040;Wien;U1
+C_GUSSHAUS;CG;Seitentrakt;Gußhausstraße 25-25a;1040;Wien;EG
+C_GUSSHAUS;CG;Seitentrakt;Gußhausstraße 25-25a;1040;Wien;01
+C_GUSSHAUS;CG;Seitentrakt;Gußhausstraße 25-25a;1040;Wien;02
+C_GUSSHAUS;CG;Seitentrakt;Gußhausstraße 25-25a;1040;Wien;03
+C_GUSSHAUS;CG;Seitentrakt;Gußhausstraße 25-25a;1040;Wien;04
+C_GUSSHAUS;CG;Seitentrakt;Gußhausstraße 25-25a;1040;Wien;05
+C_GUSSHAUS;CG;Seitentrakt;Gußhausstraße 25-25a;1040;Wien;06
+C_GUSSHAUS;CG;Seitentrakt;Gußhausstraße 25-25a;1040;Wien;DG
+C_GUSSHAUS;CH;Nano Center;Gußhausstraße 25-25a;1040;Wien;U1
+C_GUSSHAUS;CH;Nano Center;Gußhausstraße 25-25a;1040;Wien;EG
+C_GUSSHAUS;CH;Nano Center;Gußhausstraße 25-25a;1040;Wien;01
+C_GUSSHAUS;CH;Nano Center;Gußhausstraße 25-25a;1040;Wien;02
+C_GUSSHAUS;CH;Nano Center;Gußhausstraße 25-25a;1040;Wien;03
+C_GUSSHAUS;CI;Markatvilla;Gußhausstraße 25-25a;1040;Wien;EG
+C_GUSSHAUS;CI;Markatvilla;Gußhausstraße 25-25a;1040;Wien;01
+C_GUSSHAUS;CI;Markatvilla;Gußhausstraße 25-25a;1040;Wien;DG
+C_GUSSHAUS;FA;Institutsgebäude;Gußhausstraße 28;1040;Wien;U1
+C_GUSSHAUS;FA;Institutsgebäude;Gußhausstraße 28;1040;Wien;EG
+C_GUSSHAUS;FA;Institutsgebäude;Gußhausstraße 28;1040;Wien;ZE
+C_GUSSHAUS;FA;Institutsgebäude;Gußhausstraße 28;1040;Wien;01
+C_GUSSHAUS;FA;Institutsgebäude;Gußhausstraße 28;1040;Wien;02
+C_GUSSHAUS;FA;Institutsgebäude;Gußhausstraße 28;1040;Wien;03
+C_GUSSHAUS;FB;Institutsgebäude;Gußhausstraße 28;1040;Wien;U1
+C_GUSSHAUS;FB;Institutsgebäude;Gußhausstraße 28;1040;Wien;EG
+C_GUSSHAUS;FB;Institutsgebäude;Gußhausstraße 28;1040;Wien;ZE
+C_GUSSHAUS;FB;Institutsgebäude;Gußhausstraße 28;1040;Wien;01
+C_GUSSHAUS;FB;Institutsgebäude;Gußhausstraße 28;1040;Wien;02
+C_GUSSHAUS;FB;Institutsgebäude;Gußhausstraße 28;1040;Wien;03
+C_GUSSHAUS;FB;Institutsgebäude;Gußhausstraße 28;1040;Wien;04
+C_GUSSHAUS;FB;Institutsgebäude;Gußhausstraße 28;1040;Wien;05
+C_GUSSHAUS;FC;Hoftrakt;Gußhausstraße 28;1040;Wien;U1
+C_GUSSHAUS;FC;Hoftrakt;Gußhausstraße 28;1040;Wien;EG
+C_GUSSHAUS;FC;Hoftrakt;Gußhausstraße 28;1040;Wien;ZE
+C_GUSSHAUS;GA;Institutsgebäude;Floragasse 7;1040;Wien;U2
+C_GUSSHAUS;GA;Institutsgebäude;Floragasse 7;1040;Wien;U1
+C_GUSSHAUS;GA;Institutsgebäude;Floragasse 7;1040;Wien;EG
+C_GUSSHAUS;GA;Institutsgebäude;Floragasse 7;1040;Wien;01
+C_GUSSHAUS;GA;Institutsgebäude;Floragasse 7;1040;Wien;02
+C_GUSSHAUS;GA;Institutsgebäude;Floragasse 7;1040;Wien;07
+C_GUSSHAUS;GA;Institutsgebäude;Floragasse 7;1040;Wien;DG
+C_GUSSHAUS;HA;Institutsgebäude;Favoritenstr. 9;1040;Wien;EG
+C_GUSSHAUS;HA;Institutsgebäude;Favoritenstr. 9;1040;Wien;01
+C_GUSSHAUS;HA;Institutsgebäude;Favoritenstr. 9;1040;Wien;02
+C_GUSSHAUS;HA;Institutsgebäude;Favoritenstr. 9;1040;Wien;03
+C_GUSSHAUS;HA;Institutsgebäude;Favoritenstr. 9;1040;Wien;04
+C_GUSSHAUS;HA;Institutsgebäude;Favoritenstr. 9;1040;Wien;05
+C_GUSSHAUS;HB;Institutsgebäude;Favoritenstr. 9;1040;Wien;EG
+C_GUSSHAUS;HB;Institutsgebäude;Favoritenstr. 9;1040;Wien;01
+C_GUSSHAUS;HB;Institutsgebäude;Favoritenstr. 9;1040;Wien;02
+C_GUSSHAUS;HB;Institutsgebäude;Favoritenstr. 9;1040;Wien;03
+C_GUSSHAUS;HB;Institutsgebäude;Favoritenstr. 9;1040;Wien;04
+C_GUSSHAUS;HB;Institutsgebäude;Favoritenstr. 9;1040;Wien;05
+C_GUSSHAUS;HC;Institutsgebäude;Favoritenstr. 9;1040;Wien;EG
+C_GUSSHAUS;HC;Institutsgebäude;Favoritenstr. 9;1040;Wien;01
+C_GUSSHAUS;HC;Institutsgebäude;Favoritenstr. 9;1040;Wien;02
+C_GUSSHAUS;HC;Institutsgebäude;Favoritenstr. 9;1040;Wien;03
+C_GUSSHAUS;HC;Institutsgebäude;Favoritenstr. 9;1040;Wien;04
+C_GUSSHAUS;HC;Institutsgebäude;Favoritenstr. 9;1040;Wien;05
+C_GUSSHAUS;HD;Institutsgebäude;Favoritenstr. 9;1040;Wien;EG
+C_GUSSHAUS;HD;Institutsgebäude;Favoritenstr. 9;1040;Wien;01
+C_GUSSHAUS;HD;Institutsgebäude;Favoritenstr. 9;1040;Wien;02
+C_GUSSHAUS;HD;Institutsgebäude;Favoritenstr. 9;1040;Wien;03
+C_GUSSHAUS;HD;Institutsgebäude;Favoritenstr. 9;1040;Wien;04
+C_GUSSHAUS;HD;Institutsgebäude;Favoritenstr. 9;1040;Wien;05
+C_GUSSHAUS;HE;Institutsgebäude;Favoritenstr. 11;1040;Wien;EG
+C_GUSSHAUS;HE;Institutsgebäude;Favoritenstr. 11;1040;Wien;01
+C_GUSSHAUS;HE;Institutsgebäude;Favoritenstr. 11;1040;Wien;02
+C_GUSSHAUS;HE;Institutsgebäude;Favoritenstr. 11;1040;Wien;03
+C_GUSSHAUS;HE;Institutsgebäude;Favoritenstr. 11;1040;Wien;04
+C_GUSSHAUS;HF;Institutsgebäude;Favoritenstr. 11;1040;Wien;EG
+C_GUSSHAUS;HF;Institutsgebäude;Favoritenstr. 11;1040;Wien;01
+C_GUSSHAUS;HF;Institutsgebäude;Favoritenstr. 11;1040;Wien;02
+C_GUSSHAUS;HF;Institutsgebäude;Favoritenstr. 11;1040;Wien;03
+C_GUSSHAUS;HF;Institutsgebäude;Favoritenstr. 11;1040;Wien;04
+C_GUSSHAUS;HF;Institutsgebäude;Favoritenstr. 11;1040;Wien;05
+C_GUSSHAUS;HG;Institutsgebäude;Favoritenstr. 11;1040;Wien;EG
+C_GUSSHAUS;HG;Institutsgebäude;Favoritenstr. 11;1040;Wien;01
+C_GUSSHAUS;HG;Institutsgebäude;Favoritenstr. 11;1040;Wien;02
+C_GUSSHAUS;HG;Institutsgebäude;Favoritenstr. 11;1040;Wien;03
+C_GUSSHAUS;HG;Institutsgebäude;Favoritenstr. 11;1040;Wien;04
+C_GUSSHAUS;HG;Institutsgebäude;Favoritenstr. 11;1040;Wien;05
+C_GUSSHAUS;HH;Institutsgebäude;Favoritenstraße 11;1040;Wien;EG
+C_GUSSHAUS;HI;Institutsgebäude;Favoritenstraße 9;1040;Wien;EG
+C_GUSSHAUS;HK;Institutsgebäude;Favoritenstraße 16;1040;Wien;EG
+C_GUSSHAUS;HK;Institutsgebäude;Favoritenstraße 16;1040;Wien;03
+C_GUSSHAUS;HK;Institutsgebäude;Favoritenstraße 16;1040;Wien;04
+C_GUSSHAUS;HL;Institutsgebäude;Taubstummengasse 11;1040;Wien;01
+C_GUSSHAUS;HL;Institutsgebäude;Taubstummengasse 11;1040;Wien;04
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;U4
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;U3
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;U2
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;U1
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;EG
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;01
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;02
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;03
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;04
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;05
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;06
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;07
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;08
+D_FREIHAUS;DA;Turm 1;Wiedner Hauptstraße 8;1040;Wien;09
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;U4
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;U3
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;U2
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;U1
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;EG
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;01
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;02
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;03
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;04
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;05
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;06
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;07
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;08
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;09
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;10
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;11
+D_FREIHAUS;DB;Turm 2;Wiedner Hauptstraße 8;1040;Wien;12
+D_FREIHAUS;DC;Turm 3;Wiedner Hauptstraße 8;1040;Wien;U4
+D_FREIHAUS;DC;Turm 3;Wiedner Hauptstraße 8;1040;Wien;U3
+D_FREIHAUS;DC;Turm 3;Wiedner Hauptstraße 8;1040;Wien;U2
+D_FREIHAUS;DC;Turm 3;Wiedner Hauptstraße 8;1040;Wien;U1
+D_FREIHAUS;DC;Turm 3;Wiedner Hauptstraße 8;1040;Wien;EG
+D_FREIHAUS;DC;Turm 3;Wiedner Hauptstraße 8;1040;Wien;01
+D_FREIHAUS;DC;Turm 3;Wiedner Hauptstraße 8;1040;Wien;02
+D_FREIHAUS;DC;Turm 3;Wiedner Hauptstraße 8;1040;Wien;03
+D_FREIHAUS;DC;Turm 3;Wiedner Hauptstraße 8;1040;Wien;04
+D_FREIHAUS;DC;Turm 3;Wiedner Hauptstraße 8;1040;Wien;05
+D_FREIHAUS;DC;Turm 3;Wiedner Hauptstraße 8;1040;Wien;06
+D_FREIHAUS;DC;Turm 3;Wiedner Hauptstraße 8;1040;Wien;07
+D_FREIHAUS;DC;Turm 3;Wiedner Hauptstraße 8;1040;Wien;08
+D_FREIHAUS;DD;Hauptbibliothek;Resselgasse 4;1040;Wien;U3
+D_FREIHAUS;DD;Hauptbibliothek;Resselgasse 4;1040;Wien;U2
+D_FREIHAUS;DD;Hauptbibliothek;Resselgasse 4;1040;Wien;U1
+D_FREIHAUS;DD;Hauptbibliothek;Resselgasse 4;1040;Wien;EG
+D_FREIHAUS;DD;Hauptbibliothek;Resselgasse 4;1040;Wien;01
+D_FREIHAUS;DD;Hauptbibliothek;Resselgasse 4;1040;Wien;02
+D_FREIHAUS;DD;Hauptbibliothek;Resselgasse 4;1040;Wien;03
+D_FREIHAUS;DD;Hauptbibliothek;Resselgasse 4;1040;Wien;04
+D_FREIHAUS;DD;Hauptbibliothek;Resselgasse 4;1040;Wien;05
+D_FREIHAUS;DD;Hauptbibliothek;Resselgasse 4;1040;Wien;06
+D_FREIHAUS;DD;Hauptbibliothek;Resselgasse 4;1040;Wien;07
+D_FREIHAUS;DD;Hauptbibliothek;Resselgasse 4;1040;Wien;DG
+D_FREIHAUS;DE;Institutsgebäude;Treitlstraße 3;1040;Wien;U3
+D_FREIHAUS;DE;Institutsgebäude;Treitlstraße 3;1040;Wien;U2
+D_FREIHAUS;DE;Institutsgebäude;Treitlstraße 3;1040;Wien;U1
+D_FREIHAUS;DE;Institutsgebäude;Treitlstraße 3;1040;Wien;EG
+D_FREIHAUS;DE;Institutsgebäude;Treitlstraße 3;1040;Wien;ZE
+D_FREIHAUS;DE;Institutsgebäude;Treitlstraße 3;1040;Wien;01
+D_FREIHAUS;DE;Institutsgebäude;Treitlstraße 3;1040;Wien;02
+D_FREIHAUS;DE;Institutsgebäude;Treitlstraße 3;1040;Wien;03
+D_FREIHAUS;DE;Institutsgebäude;Treitlstraße 3;1040;Wien;04
+D_FREIHAUS;DE;Institutsgebäude;Treitlstraße 3;1040;Wien;DG
+D_FREIHAUS;DF;Perlmooser- Haus;Operngasse 11;1040;Wien;U1
+D_FREIHAUS;DF;Perlmooser- Haus;Operngasse 11;1040;Wien;EG
+D_FREIHAUS;DF;Perlmooser- Haus;Operngasse 11;1040;Wien;01
+D_FREIHAUS;DF;Perlmooser- Haus;Operngasse 11;1040;Wien;02
+D_FREIHAUS;DF;Perlmooser- Haus;Operngasse 11;1040;Wien;03
+D_FREIHAUS;DF;Perlmooser- Haus;Operngasse 11;1040;Wien;04
+D_FREIHAUS;DF;Perlmooser- Haus;Operngasse 11;1040;Wien;05
+D_FREIHAUS;DF;Perlmooser- Haus;Operngasse 11;1040;Wien;06
+D_FREIHAUS;ZA;Physiktrakt Atominstitut;Stadionallee 2;1020;Wien;U2
+D_FREIHAUS;ZA;Physiktrakt Atominstitut;Stadionallee 2;1020;Wien;U1
+D_FREIHAUS;ZA;Physiktrakt Atominstitut;Stadionallee 2;1020;Wien;EG
+D_FREIHAUS;ZA;Physiktrakt Atominstitut;Stadionallee 2;1020;Wien;01
+D_FREIHAUS;ZA;Physiktrakt Atominstitut;Stadionallee 2;1020;Wien;DG
+D_FREIHAUS;ZB;Chemietrakt Atominstitut;Stadionallee 2;1020;Wien;U2
+D_FREIHAUS;ZB;Chemietrakt Atominstitut;Stadionallee 2;1020;Wien;U1
+D_FREIHAUS;ZB;Chemietrakt Atominstitut;Stadionallee 2;1020;Wien;EG
+D_FREIHAUS;ZB;Chemietrakt Atominstitut;Stadionallee 2;1020;Wien;01
+D_FREIHAUS;ZB;Chemietrakt Atominstitut;Stadionallee 2;1020;Wien;DG
+D_FREIHAUS;ZC;Reaktor Atominstitut;Stadionallee 2;1020;Wien;U1
+D_FREIHAUS;ZC;Reaktor Atominstitut;Stadionallee 2;1020;Wien;EG
+D_FREIHAUS;ZC;Reaktor Atominstitut;Stadionallee 2;1020;Wien;01
+D_FREIHAUS;ZC;Reaktor Atominstitut;Stadionallee 2;1020;Wien;DG
+D_FREIHAUS;ZD;Hörsaaltrakt Atominstitut;Stadionallee 2;1020;Wien;U1
+D_FREIHAUS;ZD;Hörsaaltrakt Atominstitut;Stadionallee 2;1020;Wien;ZU
+D_FREIHAUS;ZD;Hörsaaltrakt Atominstitut;Stadionallee 2;1020;Wien;EG
+O_ARSENAL;MA;Funke- Halle (Büro);Adolf Blamauergasse 1-3;1030;Wien;EG
+O_ARSENAL;MB;Funke- Halle (Werk);Adolf Blamauergasse 1-3;1030;Wien;EG
+O_ARSENAL;MC;Plechaty- Halle;Adolf Blamauergasse 1-3;1030;Wien;EG
+O_ARSENAL;MD;Hirnböckhalle;Adolf Blamauergasse 1-3;1030;Wien;U1
+O_ARSENAL;MD;Hirnböckhalle;Adolf Blamauergasse 1-3;1030;Wien;EG
+O_ARSENAL;MG;Transalpinahalle NEU;Adolf Blamauergasse 1-3;1030;Wien;EG
+O_ARSENAL;MG;Transalpinahalle NEU;Adolf Blamauergasse 1-3;1030;Wien;01
+O_ARSENAL;MH;Transalpinahalle NEU;Adolf Blamauergasse 1-3;1030;Wien;EG
+O_ARSENAL;MH;Transalpinahalle NEU;Adolf Blamauergasse 1-3;1030;Wien;01
+O_ARSENAL;MI;Segelfliegerhalle;Adolf Blamauergasse 1-3;1030;Wien;EG
+O_ARSENAL;OA;Arsenal (Objekt 221);Franz Grill Straße 2-4;1030;Wien;U1
+O_ARSENAL;OA;Arsenal (Objekt 221);Franz Grill Straße 2-4;1030;Wien;EG
+O_ARSENAL;OA;Arsenal (Objekt 221);Franz Grill Straße 2-4;1030;Wien;01
+O_ARSENAL;OA;Arsenal (Objekt 221);Franz Grill Straße 2-4;1030;Wien;02
+O_ARSENAL;OB;Magna- Halle ((Obj.227);Franz Grill Straße 6;1030;Wien;U1
+O_ARSENAL;OB;Magna- Halle ((Obj.227);Franz Grill Straße 6;1030;Wien;EG
+O_ARSENAL;OB;Magna- Halle ((Obj.227);Franz Grill Straße 6;1030;Wien;01
+O_ARSENAL;OB;Magna- Halle ((Obj.227);Franz Grill Straße 6;1030;Wien;02
+O_ARSENAL;OB;Magna- Halle ((Obj.227);Franz Grill Straße 6;1030;Wien;03
+O_ARSENAL;OC;Arsenal (Objekt 222);Lilienthalgasse 14;1030;Wien;U1
+O_ARSENAL;OC;Arsenal (Objekt 222);Lilienthalgasse 14;1030;Wien;EG
+O_ARSENAL;OC;Arsenal (Objekt 222);Lilienthalgasse 14;1030;Wien;ZE
+O_ARSENAL;OC;Arsenal (Objekt 222);Lilienthalgasse 14;1030;Wien;01
+O_ARSENAL;OY;Nordtrakt (Obj. 214);Franz Grill Straße 9;1030;Wien;U2
+O_ARSENAL;OY;Nordtrakt (Obj. 214);Franz Grill Straße 9;1030;Wien;U1
+O_ARSENAL;OY;Nordtrakt (Obj. 214);Franz Grill Straße 9;1030;Wien;EG
+O_ARSENAL;OY;Nordtrakt (Obj. 214);Franz Grill Straße 9;1030;Wien;01
+O_ARSENAL;OY;Nordtrakt (Obj. 214);Franz Grill Straße 9;1030;Wien;02
+O_ARSENAL;OY;Nordtrakt (Obj. 214);Franz Grill Straße 9;1030;Wien;03
+O_ARSENAL;OZ;Südtrakt und  Atrium (Obj. 214);Franz Grill Straße 9;1030;Wien;U2
+O_ARSENAL;OZ;Südtrakt und  Atrium (Obj. 214);Franz Grill Straße 9;1030;Wien;U1
+O_ARSENAL;OZ;Südtrakt und  Atrium (Obj. 214);Franz Grill Straße 9;1030;Wien;EG
+O_ARSENAL;OZ;Südtrakt und  Atrium (Obj. 214);Franz Grill Straße 9;1030;Wien;01
+O_ARSENAL;OZ;Südtrakt und  Atrium (Obj. 214);Franz Grill Straße 9;1030;Wien;02
+O_ARSENAL;OZ;Südtrakt und  Atrium (Obj. 214);Franz Grill Straße 9;1030;Wien;03
+W_AUSWEICHQUARTIER;WA;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;U1
+W_AUSWEICHQUARTIER;WA;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;U2
+W_AUSWEICHQUARTIER;WA;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;EG
+W_AUSWEICHQUARTIER;WA;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;02
+W_AUSWEICHQUARTIER;WB;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;U1
+W_AUSWEICHQUARTIER;WB;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;EG
+W_AUSWEICHQUARTIER;WB;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;02
+W_AUSWEICHQUARTIER;WB;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;03
+W_AUSWEICHQUARTIER;WC;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;U1
+W_AUSWEICHQUARTIER;WC;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;02
+W_AUSWEICHQUARTIER;WC;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;03
+W_AUSWEICHQUARTIER;WD;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;U1
+W_AUSWEICHQUARTIER;WD;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;EG
+W_AUSWEICHQUARTIER;WD;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;02
+W_AUSWEICHQUARTIER;WD;alte WU-Wien Ausweich.;Augasse 2-6;1090;Wien;03

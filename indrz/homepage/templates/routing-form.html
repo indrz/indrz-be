@@ -1,0 +1,45 @@
+{% load i18n %}
+{% load staticfiles %}
+
+    <div id="directions" class="directions" style="padding: 5px;">
+        <form id="directionsForm">
+
+            <div id="prefetch-start-location" class="input-group margin-bottom-sm">
+                <span class="input-group-addon"><i class="fas fa-flag"></i></span>
+                <input id="route-from" class="typeahead form-control" type="text" placeholder="{% trans "Start Route" %}">
+            </div>
+            <br>
+
+            <div id="prefetch-end-location" class="input-group margin-bottom-sm">
+                <span class="input-group-addon"><i class="fas fa-flag-checkered"></i></span>
+                <input id="route-to" class="typeahead form-control" type="text" placeholder="{% trans "End Route" %}">
+
+            </div>
+
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="typeRoute" id="routeTypeBarrierFree" value="1">
+                    {% trans "Barrier Free Route" %}
+                </label>
+            </div>
+
+            <div id="routeText" class="hide">
+                <h5>{% trans "Route Description" %}</h5>
+                <div id="routeTextContainer"> </div>
+
+
+            </div>
+
+            <div id="routing-buttons" class="indrz-search-tools " >
+
+                <a id="enterRoute" class="btn btn-primary"><i class="fas fa-map-signs" aria-hidden="true"></i> {% trans "Go !" %}</a>
+                <a id="shareRoute" class="btn btn-primary hide" data-toggle="modal" data-target="#ShareRouteModal" data-placement="top" title="{% trans 'Share Route' %}"><i class="fas fa-share"></i> </a>
+                <a id="clearRoute" class="btn btn-primary hide" data-placement="top" title="{% trans 'Clear route' %}">
+                    <i class="fas fa-times"></i>
+                </a>
+             </div>
+
+        </form>
+
+    </div>

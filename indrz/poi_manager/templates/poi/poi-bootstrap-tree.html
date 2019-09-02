@@ -1,0 +1,475 @@
+{% load mptt_tags %}
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+        <meta name="description" content="indrz indoor map">
+        <meta name="author" content="GOMOGI platform indrz.com">
+
+    <title>
+        Hello
+    </title>
+        <link rel="stylesheet" href="{% static "homepage/css/font-awesome.min.css" %}" type="text/css">
+    <link rel="stylesheet" href="{% static "homepage/css/wu-icons.css" %}" type="text/css">
+
+        <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}" type="text/css">
+        <link rel="stylesheet" href="{% static "css/custom-layout.css" %}" type="text/css">
+        <link rel="stylesheet" href="{% static "homepage/css/map_poi.main.css" %}" type="text/css">
+
+
+        <script src="{% url 'javascript-catalog' %}" type="text/javascript"></script>
+        <script src="{% static "homepage/js/jquery-1.12.1.min.js" %}" type="text/javascript"></script>
+        <script src="{% static "homepage/wu-neu/app.min.js" %}" type="text/javascript"></script>
+        <script src="{% static "js/bootstrap.min.js" %}" type="text/javascript"></script>
+
+
+
+    <link rel="stylesheet" href="{% static "homepage/css/wu-indrz-style.css" %}" type="text/css">
+
+
+
+
+</head>
+
+  <body>
+  <div>
+<li id="catid_6"><i ></i><a ><i ></i><i class="access_parking_parking jstree-themeicon-custom" role="presentation"></i>
+            Parken</a></li>
+</div>
+
+  	<div class="container">
+    	<h1>Bootstrap Tree View</h1>
+      <br>
+      <div class="row">
+        <div class="col-sm-4">
+          <h2>Blue Theme</h2>
+          <div id="treeview4" class=""></div>
+        </div>
+        <div class="col-sm-4">
+          <h2>Custom Icons</h2>
+          <div id="treeview5" class=""></div>
+        </div>
+        <div class="col-sm-4">
+          <h2>Tags as Badges</h2>
+          <div id="treeview6" class=""></div>
+        </div>
+      </div>
+
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.js" type="application/javascript"></script>
+
+    <script src="./data.json" type="application/json"></script>
+  	<script type="text/javascript">
+
+  		$(function() {
+
+var defaultData = [{"id":1,"text":"Access","icon":"icon-h","nodes":[{"id":6,"text":"Parking","icon":"access_parking_parking","nodes":[{"id":17,"text":"Bike","icon":"access_parking_bike"},{"id":18,"text":"Bike Covered","icon":"access_parking_bikecovered"},{"id":19,"text":"Delivery","icon":"access_parking_delivery"},{"id":20,"text":"Entrance Underground Parking","icon":"access_other_rampup"},{"id":21,"text":"Motor Bike","icon":"access_parking_motorbike"},{"id":22,"text":"P1","icon":"access_parking_p1"},{"id":23,"text":"P2","icon":"access_parking_p2"},{"id":24,"text":"P3","icon":"access_parking_p3"},{"id":25,"text":"P4","icon":"access_parking_p4"}]},{"id":7,"text":"Public Transport","icon":"access_public_bus","nodes":[{"id":26,"text":"Bus","icon":"access_public_bus"},{"id":27,"text":"Underground","icon":"access_public_ubahn"}]},{"id":13,"text":"Entrance","icon":"access_entrance_entrance"},{"id":14,"text":"Info Point","icon":"infrastructure_public_infopoint"},{"id":15,"text":"Info Terminal","icon":"access_information_info"},{"id":16,"text":"Ramp Up","icon":"access_other_rampup"},{"id":28,"text":"Taxi","icon":"access_public_taxi"},{"id":29,"text":"Taxi Meeting Point","icon":"access_public_taxi"}]},{"id":2,"text":"Education","icon":"education_active","nodes":[{"id":8,"text":"Library","icon":"education_Bibliothek_Bibliothek","nodes":[{"id":37,"text":"Information","icon":"access_information_info"},{"id":38,"text":"Library Location","icon":"access_information_info"},{"id":39,"text":"Quiet Room","icon":"education_Bibliothek_silent"},{"id":40,"text":"Scanner","icon":"education_Bibliothek_scanner"},{"id":41,"text":"Search Terminal","icon":"education_Bibliothek_selfcheckout"},{"id":42,"text":"Self Checkout","icon":"education_Bibliothek_selfcheckout"},{"id":43,"text":"Study Area","icon":"education_Bibliothek_studystand"},{"id":44,"text":"Computer Desks","icon":"education_departments_pc"},{"id":45,"text":"Telephone Zone","icon":"infrastructure_public_tel"}]},{"id":30,"text":"Front Office","icon":"education_departments_frontoffice"},{"id":32,"text":"Study Area","icon":"education_Bibliothek_studystand"},{"id":33,"text":"Surf Station","icon":"education_departments_pc"},{"id":34,"text":"Self Service Terminal","icon":"education_Bibliothek_selfcheckout"},{"id":35,"text":"Computer Room","icon":"education_departments_pc"}]},{"id":3,"text":"Facilities","icon":"services_active","nodes":[{"id":9,"text":"Food","icon":"services_food_food","nodes":[{"id":47,"text":"Restaurant","icon":"services_food_food"},{"id":48,"text":"Vending Machine","icon":"services_food_automat"},{"id":49,"text":"Cafe - Snack","icon":"services_food_cafe"}]},{"id":10,"text":"Shop","icon":"services_shop_shop","nodes":[{"id":50,"text":"Bookstore","icon":"services_shop_bookstore"},{"id":51,"text":"Grocery","icon":"services_shop_shop"},{"id":69,"text":"WU Shop","icon":"services_shop_shop"}]},{"id":11,"text":"Toilet","icon":"services_wc_wc","nodes":[{"id":52,"text":"Public WC","icon":"services_wc_wc"},{"id":53,"text":"Toilet","icon":"services_wc_wc"},{"id":54,"text":"Mens WC","icon":"services_wc_men"},{"id":55,"text":"Womens WC","icon":"services_wc_women"},{"id":56,"text":"Barrierfree WC","icon":"services_wc_wheelchair"},{"id":70,"text":"Baby Change Room","icon":"services_wc_baby"}]},{"id":12,"text":"Other","icon":"access_active","nodes":[{"id":57,"text":"Sport","icon":"services_sports_soccer"},{"id":58,"text":"Sights","icon":"access_information_info"}]}]},{"id":4,"text":"Public Infrastructure","icon":"infrastructure_active","nodes":[{"id":60,"text":"Change Rooms","icon":"infrastructure_students_locker"},{"id":61,"text":"Copy Machines","icon":"infrastructure_students_copy"},{"id":62,"text":"Locker","icon":"infrastructure_students_locker"},{"id":63,"text":"Bank Machine","icon":"infrastructure_students_bankomat"}]},{"id":5,"text":"Safety & Security","icon":"security_active","nodes":[{"id":64,"text":"Company Medical Officer","icon":"security_safety_doctor"},{"id":65,"text":"Emergency Telephone","icon":"security_safety_emergency_telephone"},{"id":66,"text":"Quiet Room -  First Aid","icon":"security_safety_first_aid"},{"id":67,"text":"Meeting Point","icon":"security_safety_meetingplace"},{"id":71,"text":"Defibrillator","icon":"security_safety_defibrillator"}]}];
+
+        var alternateData = [
+          {
+            text: 'Parent 1',
+            tags: ['2'],
+            nodes: [
+              {
+                text: 'Child 1',
+                tags: ['3'],
+                nodes: [
+                  {
+                    text: 'Grandchild 1',
+                    tags: ['6']
+                  },
+                  {
+                    text: 'Grandchild 2',
+                    tags: ['3']
+                  }
+                ]
+              },
+              {
+                text: 'Child 2',
+                tags: ['3']
+              }
+            ]
+          },
+          {
+            text: 'Parent 2',
+            tags: ['7']
+          },
+          {
+            text: 'Parent 3',
+            icon: 'fa fa-car',
+            href: '#demo',
+            tags: ['11']
+          },
+          {
+            text: 'Parent 4',
+            icon: 'fa fa-cloud',
+            href: '/demo.html',
+            tags: ['19'],
+            selected: true
+          },
+          {
+            text: 'Parent 5',
+            icon: 'fa fa-certificate',
+            color: 'pink',
+            backColor: 'red',
+            href: 'http://www.tesco.com',
+            tags: ['available','0']
+          }
+        ];
+
+        var json = '[' +
+          '{' +
+            '"text": "Parent 1",' +
+            '"nodes": [' +
+              '{' +
+                '"text": "Child 1",' +
+                '"nodes": [' +
+                  '{' +
+                    '"text": "Grandchild 1"' +
+                  '},' +
+                  '{' +
+                    '"text": "Grandchild 2"' +
+                  '}' +
+                ']' +
+              '},' +
+              '{' +
+                '"text": "Child 2"' +
+              '}' +
+            ']' +
+          '},' +
+          '{' +
+            '"text": "Parent 2"' +
+          '},' +
+          '{' +
+            '"text": "Parent 3"' +
+          '},' +
+          '{' +
+            '"text": "Parent 4"' +
+          '},' +
+          '{' +
+            '"text": "Parent 5"' +
+          '}' +
+        ']';
+
+
+        $('#treeview1').treeview({
+          data: defaultData
+        });
+
+        $('#treeview2').treeview({
+          levels: 1,
+          data: defaultData
+        });
+
+        $('#treeview3').treeview({
+          levels: 99,
+          data: defaultData
+        });
+
+        $('#treeview4').treeview({
+
+          color: "#428bca",
+          data: defaultData
+        });
+
+        $('#treeview5').treeview({
+          color: "#428bca",
+          expandIcon: 'fa fa-chevron-right',
+          collapseIcon: 'fa fa-chevron-down',
+          nodeIcon: 'access_parking_p2_active',
+          data: defaultData
+        });
+
+        $('#treeview6').treeview({
+          color: "#428bca",
+          expandIcon: "fa fa-stop",
+          collapseIcon: "fa fa-unchecked",
+          nodeIcon: "fa fa-user",
+          showTags: true,
+          data: defaultData
+        });
+
+        $('#treeview7').treeview({
+          color: "#428bca",
+          showBorder: false,
+          data: defaultData
+        });
+
+        $('#treeview8').treeview({
+          expandIcon: "fa fa-stop",
+          collapseIcon: "fa fa-unchecked",
+          nodeIcon: "fa fa-user",
+          color: "yellow",
+          backColor: "purple",
+          onhoverColor: "orange",
+          borderColor: "red",
+          showBorder: false,
+          showTags: true,
+          highlightSelected: true,
+          selectedColor: "yellow",
+          selectedBackColor: "darkorange",
+          data: defaultData
+        });
+
+        $('#treeview9').treeview({
+          expandIcon: "fa fa-stop",
+          collapseIcon: "fa fa-unchecked",
+          nodeIcon: "fa fa-user",
+          color: "yellow",
+          backColor: "purple",
+          onhoverColor: "orange",
+          borderColor: "red",
+          showBorder: false,
+          showTags: true,
+          highlightSelected: true,
+          selectedColor: "yellow",
+          selectedBackColor: "darkorange",
+          data: alternateData
+        });
+
+        $('#treeview10').treeview({
+          color: "#428bca",
+          enableLinks: true,
+          data: defaultData
+        });
+
+
+
+        var $searchableTree = $('#treeview-searchable').treeview({
+          data: defaultData,
+        });
+
+        var search = function(e) {
+          var pattern = $('#input-search').val();
+          var options = {
+            ignoreCase: $('#chk-ignore-case').is(':checked'),
+            exactMatch: $('#chk-exact-match').is(':checked'),
+            revealResults: $('#chk-reveal-results').is(':checked')
+          };
+          var results = $searchableTree.treeview('search', [ pattern, options ]);
+
+          var output = '<p>' + results.length + ' matches found</p>';
+          $.each(results, function (index, result) {
+            output += '<p>- ' + result.text + '</p>';
+          });
+          $('#search-output').html(output);
+        }
+
+        $('#btn-search').on('click', search);
+        $('#input-search').on('keyup', search);
+
+        $('#btn-clear-search').on('click', function (e) {
+          $searchableTree.treeview('clearSearch');
+          $('#input-search').val('');
+          $('#search-output').html('');
+        });
+
+
+        var initSelectableTree = function() {
+          return $('#treeview-selectable').treeview({
+            data: defaultData,
+            multiSelect: $('#chk-select-multi').is(':checked'),
+            onNodeSelected: function(event, node) {
+              $('#selectable-output').prepend('<p>' + node.text + ' was selected</p>');
+            },
+            onNodeUnselected: function (event, node) {
+              $('#selectable-output').prepend('<p>' + node.text + ' was unselected</p>');
+            }
+          });
+        };
+        var $selectableTree = initSelectableTree();
+
+        var findSelectableNodes = function() {
+          return $selectableTree.treeview('search', [ $('#input-select-node').val(), { ignoreCase: false, exactMatch: false } ]);
+        };
+        var selectableNodes = findSelectableNodes();
+
+        $('#chk-select-multi:checkbox').on('change', function () {
+{#          console.log('multi-select change');#}
+          $selectableTree = initSelectableTree();
+          selectableNodes = findSelectableNodes();
+        });
+
+        // Select/unselect/toggle nodes
+        $('#input-select-node').on('keyup', function (e) {
+          selectableNodes = findSelectableNodes();
+          $('.select-node').prop('disabled', !(selectableNodes.length >= 1));
+        });
+
+        $('#btn-select-node.select-node').on('click', function (e) {
+          $selectableTree.treeview('selectNode', [ selectableNodes, { silent: $('#chk-select-silent').is(':checked') }]);
+        });
+
+        $('#btn-unselect-node.select-node').on('click', function (e) {
+          $selectableTree.treeview('unselectNode', [ selectableNodes, { silent: $('#chk-select-silent').is(':checked') }]);
+        });
+
+        $('#btn-toggle-selected.select-node').on('click', function (e) {
+          $selectableTree.treeview('toggleNodeSelected', [ selectableNodes, { silent: $('#chk-select-silent').is(':checked') }]);
+        });
+
+
+
+        var $expandibleTree = $('#treeview-expandible').treeview({
+          data: defaultData,
+          onNodeCollapsed: function(event, node) {
+            $('#expandible-output').prepend('<p>' + node.text + ' was collapsed</p>');
+          },
+          onNodeExpanded: function (event, node) {
+            $('#expandible-output').prepend('<p>' + node.text + ' was expanded</p>');
+          }
+        });
+
+        var findExpandibleNodess = function() {
+          return $expandibleTree.treeview('search', [ $('#input-expand-node').val(), { ignoreCase: false, exactMatch: false } ]);
+        };
+        var expandibleNodes = findExpandibleNodess();
+
+        // Expand/collapse/toggle nodes
+        $('#input-expand-node').on('keyup', function (e) {
+          expandibleNodes = findExpandibleNodess();
+          $('.expand-node').prop('disabled', !(expandibleNodes.length >= 1));
+        });
+
+        $('#btn-expand-node.expand-node').on('click', function (e) {
+          var levels = $('#select-expand-node-levels').val();
+          $expandibleTree.treeview('expandNode', [ expandibleNodes, { levels: levels, silent: $('#chk-expand-silent').is(':checked') }]);
+        });
+
+        $('#btn-collapse-node.expand-node').on('click', function (e) {
+          $expandibleTree.treeview('collapseNode', [ expandibleNodes, { silent: $('#chk-expand-silent').is(':checked') }]);
+        });
+
+        $('#btn-toggle-expanded.expand-node').on('click', function (e) {
+          $expandibleTree.treeview('toggleNodeExpanded', [ expandibleNodes, { silent: $('#chk-expand-silent').is(':checked') }]);
+        });
+
+        // Expand/collapse all
+        $('#btn-expand-all').on('click', function (e) {
+          var levels = $('#select-expand-all-levels').val();
+          $expandibleTree.treeview('expandAll', { levels: levels, silent: $('#chk-expand-silent').is(':checked') });
+        });
+
+        $('#btn-collapse-all').on('click', function (e) {
+          $expandibleTree.treeview('collapseAll', { silent: $('#chk-expand-silent').is(':checked') });
+        });
+
+
+
+        var $checkableTree = $('#treeview-checkable').treeview({
+          data: defaultData,
+          showIcon: false,
+          showCheckbox: true,
+          onNodeChecked: function(event, node) {
+            $('#checkable-output').prepend('<p>' + node.text + ' was checked</p>');
+          },
+          onNodeUnchecked: function (event, node) {
+            $('#checkable-output').prepend('<p>' + node.text + ' was unchecked</p>');
+          }
+        });
+
+        var findCheckableNodess = function() {
+          return $checkableTree.treeview('search', [ $('#input-check-node').val(), { ignoreCase: false, exactMatch: false } ]);
+        };
+        var checkableNodes = findCheckableNodess();
+
+        // Check/uncheck/toggle nodes
+        $('#input-check-node').on('keyup', function (e) {
+          checkableNodes = findCheckableNodess();
+          $('.check-node').prop('disabled', !(checkableNodes.length >= 1));
+        });
+
+        $('#btn-check-node.check-node').on('click', function (e) {
+          $checkableTree.treeview('checkNode', [ checkableNodes, { silent: $('#chk-check-silent').is(':checked') }]);
+        });
+
+        $('#btn-uncheck-node.check-node').on('click', function (e) {
+          $checkableTree.treeview('uncheckNode', [ checkableNodes, { silent: $('#chk-check-silent').is(':checked') }]);
+        });
+
+        $('#btn-toggle-checked.check-node').on('click', function (e) {
+          $checkableTree.treeview('toggleNodeChecked', [ checkableNodes, { silent: $('#chk-check-silent').is(':checked') }]);
+        });
+
+        // Check/uncheck all
+        $('#btn-check-all').on('click', function (e) {
+          $checkableTree.treeview('checkAll', { silent: $('#chk-check-silent').is(':checked') });
+        });
+
+        $('#btn-uncheck-all').on('click', function (e) {
+          $checkableTree.treeview('uncheckAll', { silent: $('#chk-check-silent').is(':checked') });
+        });
+
+
+
+        var $disabledTree = $('#treeview-disabled').treeview({
+          data: defaultData,
+          onNodeDisabled: function(event, node) {
+            $('#disabled-output').prepend('<p>' + node.text + ' was disabled</p>');
+          },
+          onNodeEnabled: function (event, node) {
+            $('#disabled-output').prepend('<p>' + node.text + ' was enabled</p>');
+          },
+          onNodeCollapsed: function(event, node) {
+            $('#disabled-output').prepend('<p>' + node.text + ' was collapsed</p>');
+          },
+          onNodeUnchecked: function (event, node) {
+            $('#disabled-output').prepend('<p>' + node.text + ' was unchecked</p>');
+          },
+          onNodeUnselected: function (event, node) {
+            $('#disabled-output').prepend('<p>' + node.text + ' was unselected</p>');
+          }
+        });
+
+        var findDisabledNodes = function() {
+          return $disabledTree.treeview('search', [ $('#input-disable-node').val(), { ignoreCase: false, exactMatch: false } ]);
+        };
+        var disabledNodes = findDisabledNodes();
+
+        // Expand/collapse/toggle nodes
+        $('#input-disable-node').on('keyup', function (e) {
+          disabledNodes = findDisabledNodes();
+          $('.disable-node').prop('disabled', !(disabledNodes.length >= 1));
+        });
+
+        $('#btn-disable-node.disable-node').on('click', function (e) {
+          $disabledTree.treeview('disableNode', [ disabledNodes, { silent: $('#chk-disable-silent').is(':checked') }]);
+        });
+
+        $('#btn-enable-node.disable-node').on('click', function (e) {
+          $disabledTree.treeview('enableNode', [ disabledNodes, { silent: $('#chk-disable-silent').is(':checked') }]);
+        });
+
+        $('#btn-toggle-disabled.disable-node').on('click', function (e) {
+          $disabledTree.treeview('toggleNodeDisabled', [ disabledNodes, { silent: $('#chk-disable-silent').is(':checked') }]);
+        });
+
+        // Expand/collapse all
+        $('#btn-disable-all').on('click', function (e) {
+          $disabledTree.treeview('disableAll', { silent: $('#chk-disable-silent').is(':checked') });
+        });
+
+        $('#btn-enable-all').on('click', function (e) {
+          $disabledTree.treeview('enableAll', { silent: $('#chk-disable-silent').is(':checked') });
+        });
+
+
+
+        var $tree = $('#treeview12').treeview({
+          data: json
+        });
+  		});
+  	</script>
+  </body>
+</html>

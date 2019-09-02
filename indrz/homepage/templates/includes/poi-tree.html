@@ -1,0 +1,19 @@
+{% load staticfiles %}
+{% load i18n %}
+
+<div style="overflow: auto; height:500px;">
+  <div id="jstree">
+    <!-- in this example the tree is populated from inline HTML -->
+      {% include "poi/poi-category.html" %}
+
+  </div>
+
+</div>
+
+
+
+  <!-- 4 include the jQuery library -->
+  <!-- 5 include the minified jstree source -->
+<script src="{% static "js/jstree/jstree.min.js" %}"></script>
+<script>  {% include "homepage/indrzJstree.js" %} </script>
+

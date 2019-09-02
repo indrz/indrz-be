@@ -1,0 +1,149 @@
+---
+- hosts: tulive
+  remote_user: root
+  become: yes
+  become_user: wsgi
+  gather_facts: no
+  vars:
+    # Application settings.
+    #django_python_interpreter: /usr/bin/python3
+    repo_dir: "/srv/indrz_src/"
+    static_dir: "/srv/www/tuwien.at/wsgi/static"
+    django_src_dir: "/srv/indrz_src/indrz"
+    django_deploy_dir: "/srv/www/tuwien.at/wsgi"
+    django_conf_dir: "/srv/indrz_conf"
+    requirements_file: "{{ django_src_dir }}/requirements/requirements.txt"
+    gitlabuser: "someusername"
+    gitlabpwd: "somepwd"
+
+  tasks:
+  - name: pull branch master
+    git:
+      repo: "https://{{ gitlabuser | urlencode }}:{{ gitlabpwd }}@gitlab.com/indrz/indrz-aau.git"
+      dest: "{{ repo_dir }}"
+
+  - name: delete deploy dir
+    command: rm -rf "{{ django_deploy_dir }}"/indrz
+    args:
+      chdir: "{{ django_deploy_dir }}"
+
+  - name: copy to deploy dir
+    command: cp -R "{{ django_src_dir }}" "{{ django_deploy_dir }}/indrz"
+
+  - name: copy secret settings
+    command: cp secret_settings.py "{{ django_deploy_dir }}/indrz/settings/"
+    args:
+      chdir: "{{ django_conf_dir }}"
+
+  - name: install pip requriements
+    pip:
+      requirements: "{{ requirements_file }}"
+      executable: pip3
+      extra_args: --user
+    become: true
+    become_user: wsgi
+
+  - name: Reload Apache httpd
+    command: service httpd reload
+    become: true
+    become_user: root
+
+#  - django_manage:
+#      command: collectstatic
+#      clear: yes
+#      app_path: "{{ django_deploy_dir }}/indrz"
+#    become: true
+#    become_user: wsgi
+#
+#  - django_manage:
+#      command: migrate
+#      app_path: "{{ django_deploy_dir }}/indrz"
+#    become: true
+#    become_user: wsgi
+
+#  - name: django collect static
+#    command: python3 manage.py collectstatic --clear --noinput
+#    args:
+#      chdir: "{{ django_deploy_dir }}/indrz"
+#    become: true
+#    become_user: wsgi
+#
+#  - name: django migrate
+#    command: python3 manage.py migrate
+#    args:
+#      chdir: "{{ django_deploy_dir }}/indrz"
+#    become: true
+#    become_user: wsgi
+
+
+
+
+#  - name: remove code in dir
+#    command: rm -rf /srv/www/campusplan.aau.at/wsgi/indrz
+#
+#  - name: add code in dir
+#    command: cp /srv/indrz_src/indrz /srv/www/campusplan.aau.at/wsgi/
+
+
+#  - name: run local bash deploy calls
+#    shell: aau_deploy.sh
+#      chdir: /srv/indrz_conf
+
+#  - name: install python3 requirements
+#    pip:
+#      executable: pip3
+#      requirements: "{{ requirements_file }}"
+
+#  - name: Delete all .pyc files
+#    command: find . -name '*.pyc' -delete
+#    args:
+#      chdir: "{{ django_dir }}"
+#    tags: git
+#    changed_when: False
+#
+#  - name: create static_root dir
+#    file: path={{ static_dir }} state=directory mode=0755
+
+
+
+
+#  - django_manage:
+#      command: collectstatic --clear >>>yes
+##      pythonpath: "/usr/bin/python3"
+#      settings: "/srv/indrz_src/indrz.settings.production_settings"
+#      app_path: "{{ django_dir }}"
+
+
+#  - name: django migrate
+#    shell: ./manage.py migrate --noinput chdir={{ django_dir }}
+
+#  environment:
+#    DJANGO_SETTINGS_MODULE: "{{ django_dir }}.settings.production_settings"
+#    STATIC_ROOT: "{{ static_dir }}"
+
+
+#- name: Run Django database migrations
+#  django_manage:
+#    command: migrate
+#    app_path: "{{ django_dir }}"
+#    virtualenv: "{{ virtualenv_path }}"
+#    settings: "{{ django_settings_file }}"
+#  environment: "{{ django_environment }}"
+#  when: run_django_db_migrations is defined and run_django_db_migrations
+#  tags: django.migrate
+
+#- hosts: aaulive
+#  vars:
+#    http_port: 80
+#    max_clients: 200
+#  remote_user: root
+#  tasks:
+#  - name: ensure apache is running (and enable it at boot)
+#    service: name=httpd state=started enabled=yes
+#    notify:
+#    - restart httpd
+#  handlers:
+#    - name: restart httpd
+#      service: name=httpd state=restarted
+
+

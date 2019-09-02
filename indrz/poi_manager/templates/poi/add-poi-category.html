@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add poi cat</title>
+</head>
+
+<body>
+<h1>Add a POI Category go</h1>
+
+<form id="category_form" method="post" action="/poi/add_category/">
+
+    {% csrf_token %}
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+
+    {% for field in form.visible_fields %}
+        {{ field.errors }}
+        {{ field.help_text }}
+        {{ field }}
+    {% endfor %}
+
+    <input type="submit" name="submit" value="Create Category"/>
+</form>
+
+<p>
+    skip it and show me the list
+    <a href="/poi/category-list"> go add a new category</a>
+</p>
+</body>
+
+</html>

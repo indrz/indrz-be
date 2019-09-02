@@ -1,0 +1,31 @@
+# Created by .ignore support plugin (hsz.mobi)
+### JetBrains template
+
+*.iml
+.env
+
+## Directory-based project format:
+.idea/
+# if you remove the above rule, at least ignore the following:
+
+indrz/logs
+
+*.pyc
+
+
+
+/indrz/logs/
+
+/indrz/settings/secret_settings.py
+/indrz/settings/client_secret.json
+
+/indrz/homepage/scripts/roomlog.log
+
+
+/indrz/htmlcov/
+
+/.cache/
+
+*.cache
+*.coverage
+/indrz/homepage/scripts/geoserver/roomlog.log
