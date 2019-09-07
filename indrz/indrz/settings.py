@@ -8,7 +8,7 @@ load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.getenv('secret_key')
+SECRET_KEY = os.getenv('SECRET_KEY')
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'campusplan.aau.at', 'campus-gis.aau.at', ]
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -37,20 +37,14 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'rosetta',
     'compressor',
-    'raven.contrib.django.raven_compat',
-
 
     ##### our local indrz apps
     'api',
-    # 'maps',
     'buildings',
     'routing',
-    # 'conference',
     'poi_manager',
     'landscape',
     'homepage',
-    'bookway',
-    'kiosk',
     'users'
 
 ]
@@ -74,13 +68,9 @@ ROOT_URLCONF = 'indrz.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,  'templates'),
-                 # os.path.join(BASE_DIR,  'maps/templates'),
-                 os.path.join(BASE_DIR,  'poi_manager/templates'),
-                 os.path.join(BASE_DIR,  'homepage/templates'),
-                 os.path.join(BASE_DIR, 'bookway/templates'),
-                 os.path.join(BASE_DIR,  'kiosk/templates'),
-            # insert your TEMPLATE_DIRS here
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'poi_manager/templates'),
+                 os.path.join(BASE_DIR, 'homepage/templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -116,16 +106,11 @@ DATABASES = {
         # Postgresql with PostGIS
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('db_name'),  # DB name
-        'USER': os.getenv('db_user'),  # DB user name
-        'PASSWORD': os.getenv('db_pwd'),  # DB user password
-        'HOST': os.getenv('db_host'),
-
-        # 'NAME': secret_settings.db_prod_name, # DB name
-        # 'USER': secret_settings.db_prod_user, # DB user name
-        # 'PASSWORD': secret_settings.db_prod_pwd, # DB user password
-        # 'HOST': secret_settings.db_prod_host,
-        'PORT': os.getenv('db_port'),
+        'NAME': os.getenv('DB_NAME'),  # DB name
+        'USER': os.getenv('DB_USER'),  # DB user name
+        'PASSWORD': os.getenv('DB_PASS'),  # DB user password
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
@@ -153,11 +138,11 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATIC_URL = '/static/'
-STATIC_FOLDER = 'static'
+STATIC_URL = os.getenv('STATIC_URL')
+STATIC_FOLDER = os.getenv('STATIC_FOLDER')
 STATIC_ROOT = os.getenv('STATIC_ROOT')
 
-MEDIA_URL = "/media/"
+MEDIA_URL = os.getenv("MEDIA_URL")
 MEDIA_ROOT = os.getenv('MEDIA_ROOT')
 
 STATICFILES_DIRS = [
@@ -176,7 +161,6 @@ STATICFILES_DIRS += [
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-
     'compressor.finders.CompressorFinder',
 )
 
@@ -211,15 +195,12 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated', )
 }
 
-RAVEN_URL = os.getenv('RAVEN_URL')
-sentry_sdk.init(RAVEN_URL, integrations=[DjangoIntegration()])
 
-# RAVEN_CONFIG = {'dsn': RAVEN_URL,
-#     # 'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
-# }
+sentry_sdk.init(os.getenv('SENTRY_URL'), integrations=[DjangoIntegration()])
 
+LOGFILE_DIR = os.getenv('LOGFILE_DIR')
 
-if os.path.isdir(os.getenv('LOGFILE_DIR')):
+if os.path.isdir(LOGFILE_DIR):
     LOGGING_CONFIG = None
 
     LOGGING = {
@@ -238,13 +219,13 @@ if os.path.isdir(os.getenv('LOGFILE_DIR')):
             'file_verbose': {
                 'level': 'DEBUG',
                 'class': 'logging.FileHandler',
-                'filename': '/srv/indrz_logs/verbose.log',
+                'filename': os.path.join(LOGFILE_DIR, 'verbose.log'),
                 'formatter': 'verbose'
             },
             'file_debug': {
                 'level': 'DEBUG',
                 'class': 'logging.FileHandler',
-                'filename': '/srv/indrz_logs/debug.log',
+                'filename': os.path.join(LOGFILE_DIR, 'debug.log'),
                 'formatter': 'verbose'
             },
         },
