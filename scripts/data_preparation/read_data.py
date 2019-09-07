@@ -370,7 +370,7 @@ def import_dxf(campus, dxf_files, re_import=False):
             conn.commit()
 
             sql_delete = F"DELETE FROM campuses.indrz_lines_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
-            cur.execute(sql_drop)
+            cur.execute(sql_delete)
             conn.commit()
 
             sql_delete_s = F"DELETE FROM campuses.indrz_spaces_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
@@ -387,7 +387,7 @@ def import_dxf(campus, dxf_files, re_import=False):
 # drop_cad_table_reimport('Freihaus', ['DD_EG_IP_092018.dxf',])
 # import_dxf('Gusshaus', [])
 
-missing_gusshaus = ['FA_FB_01_IP_042019.dxf',
+new_dxf_gusshaus = ['FA_FB_01_IP_042019.dxf',
                     'FA_FB_02_IP_042019.dxf',
                     'FA_FB_03_IP_042019.dxf',
                     'FA_FB_FC_EG_IP_042019.dxf',
@@ -401,7 +401,15 @@ missing_gusshaus = ['FA_FB_01_IP_042019.dxf',
                     'GA_EG_IP_042019.dxf',
                     'GA_U1_U2_IP_042019.dxf']
 
-import_dxf('Gusshaus', missing_gusshaus)
+ch_new = ['CH_U1_IP_092018.dxf',
+          'CH_03_IP_092018.dxf',
+          'CH_02_IP_092018.dxf',
+          'CH_EG_IP_092018.dxf',
+          'CH_01_IP_092018.dxf']
+
+#import_dxf('Gusshaus', ch_new, re_import=True)
+
+
 
 conn.close()
 
