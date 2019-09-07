@@ -1,17 +1,25 @@
 import pandas as pd
-from pandas.compat import StringIO, BytesIO
 import os
 from pathlib import Path, PurePath
 
 import subprocess
 import psycopg2
 
+from dotenv import load_dotenv
+load_dotenv()
 
-con_string = "dbname=" + os.getenv('DB_NAME') + " user=" + os.getenv('DB_USER') + " host=" + os.getenv('DB_HOST') + " password=" + os.getenv('DB_PASSWORD')
+db_user = os.getenv('DB_USER')
+db_name = os.getenv('DB_NAME')
+db_host = os.getenv('DB_HOST')
+db_pass = os.getenv('DB_PASSWORD')
+
+con_string = f"dbname={db_name} user={db_user} host={db_host} password={db_pass}"
+ogr_db_con = f"PG: host={db_host} user={db_user} dbname={db_name} password={db_pass}"
+
+
 
 conn = psycopg2.connect(con_string)
 cur = conn.cursor()
-
 linefeatures = [
 {'layer': 'E_S29', 'type': 'sink'},
 {'layer': 'O_F49', 'type': 'window'},
@@ -185,91 +193,30 @@ def get_dxf_files(campus_name, floor=None):
 
     return dxf_file_paths
 
+
+def table_exists(dxf_file):
+    in_db = False
+    t_name = str(dxf_file.stem)
+
+    sql_table_exists = f"""select exists(select * from information_schema.tables where table_name={t_name})"""
+    cur.execute(sql_table_exists)
+
+    if cur.fetchone()[0]:
+        # if true this table exists so do NOT run it
+        in_db = True
+        return in_db
+    else:
+        return in_db
+
+
 def dxf2postgis(dxf_file, campus_name):
-    
-    floor_names = set()
-    track_names = set()
 
-    line_table_names = []
-    space_table_names = []
-    lable_table_names = []
-        
-    dxf_floor = dxf_file.stem.split('_')[-3]
-    floor_names.add(dxf_floor)
-    track_names.add(dxf_file.stem.split('_')[0])
-
-    dxf_file_name = dxf_file.stem
-
-    # import linestrings
-    # line_table_name = "indrz_lines_" + str(dxf_floor)
     table_name = str(dxf_file.stem)
-    line_table_names.append(dxf_file.stem)
-
-    sql_linestrings = "SELECT Layer from entities where Layer in {0}".format(cad_layer_names)
-    print(f"now running table {table_name}")
 
     subprocess.run([
         "ogr2ogr", "-a_srs", "EPSG:31259", "-oo", "DXF_FEATURE_LIMIT_PER_BLOCK=-1", 
         "-nlt", "PROMOTE_TO_MULTI", "-oo", "DXF_INLINE_BLOCKS=FALSE", "-oo", "DXF_MERGE_BLOCK_GEOMETRIES=False", 
-        "-lco", f"SCHEMA={campus_name.lower()}", "-skipfailures", "-f", "PostgreSQL", db_connection, "-nln", table_name, str(dxf_file)])
-
-    #--config DXF_INLINE_BLOCKS FALSE --config DXF_MERGE_BLOCK_GEOMETRIES FALSE
-    #subprocess.run(["ogr2ogr", "-a_srs", "EPSG:31259", "-nlt", "PROMOTE_TO_MULTI", "-sql", sql_linestrings, "-lco", f"SCHEMA={campus_name.lower()}", "-lco", "DXF_FEATURE_LIMIT_PER_BLOCK=-1", "-skipfailures", "-f", "PostgreSQL", db_connection, "-nln", line_table_name, str(dxf_file)])
-    # subprocess.run(["ogr2ogr", "-a_srs", "EPSG:31259", "-nlt", "PROMOTE_TO_MULTI", "-sql", sql_linestrings, "-lco", f"SCHEMA={campus_name.lower()}", "-lco", "DXF_FEATURE_LIMIT_PER_BLOCK=-1", "-skipfailures", "-f", "PostgreSQL", db_connection, "-nln", line_table_name, str(dxf_file),"-append", "-update",])
-    #subprocess.run(["ogr2ogr", "-a_srs", "EPSG:31259", "-nlt", "PROMOTE_TO_MULTI", "-sql", sql_linestrings, "-lco", "SCHEMA=geodata", "-skipfailures", "-f", "PostgreSQL", db_connection, str(dxf_file), "-nln", line_table_name])
-    
-    # import spaces
-    space_table_name = "indrz_spaces_" + str(dxf_floor)
-    space_table_names.append(space_table_name)
-    sql_spaces = "SELECT Layer from entities where Layer='Z_009'"
-    #subprocess.run(["ogr2ogr", "-a_srs", "EPSG:31259", "-nlt", "PROMOTE_TO_MULTI", "-nlt", "POLYGON", "-sql", sql_spaces, "-lco", "SCHEMA=geodata", "-skipfailures", "-f", "PostgreSQL", db_connection, "-nln", space_table_name, str(dxf_file)])
-    #subprocess.run(["ogr2ogr", "-update", "-append", "-a_srs", "EPSG:31259", "-nlt", "PROMOTE_TO_MULTI", "-nlt", "POLYGON", "-sql", sql_spaces, "-lco", "SCHEMA=geodata", "-skipfailures", "-f", "PostgreSQL", db_connection, "-nln", space_table_name, str(dxf_file)])
-
-    # import txt points
-    text_table_name = "indrz_text_" + str(dxf_floor)
-    lable_table_names.append(text_table_name)
-    sql_text = "SELECT Layer from entities where Layer in ('B_127N', 'B_227Z')"
-    #subprocess.run(["ogr2ogr", "-update", "-append", "-a_srs", "EPSG:31259", "-nlt", "POINT", "-sql", sql_text, "-lco", "SCHEMA=geodata", "-skipfailures", "-f", "PostgreSQL", db_connection, "-dsco", "DXF_INLINE_BLOCKS=False", "-nln", text_table_name, str(dxf_file)])
-
-
-            #print("running dxf file ", str(dxf_file))
-    # print("floor nums , ", sorted(floor_names))
-    # print("trackt names : ", sorted(track_names))
-            #DXF_INLINE_BLOCKS
-
-            # "-nlt", "MULTILINESTRING",
-                #ogr2ogr -f "PostgreSQL" PG:"host=localhost user=indrztu dbname=indrztudata password=air" -nlt GEOMETRY ACAD-BIK_U2_IP_042019.dxf
-                # ogr2ogr -update -append -fieldmap -1,-1,2 -a_srs EPSG:900913 -nlt MULTILINESTRING -lco "SCHEMA=geodata" -f PostgreSQL "PG:host=localhost port=5432 user=postgres dbname=mydb password=secret" -nln geodata.table_name shapefileName.shp
-
-
-
-def dxf_to_postgis_old(dxf_file_name, campus):
-
-    dxf_dir_path = Path('c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/' + campus + '/dxf')
-
-    dxf_filepath = Path.joinpath(dxf_dir_path, dxf_file_name)
-
-    
-    floor = dxf_filepath.stem.split('_')[1]
-# "-sql", sql_linestrings, 
-    # sql_linestrings = "SELECT Layer from entities where Layer in {0}".format(cad_layer_names)
-    subprocess.run(["ogr2ogr", "-a_srs", "EPSG:31259", "-oo", "DXF_FEATURE_LIMIT_PER_BLOCK=-1", 
-    "-nlt", "PROMOTE_TO_MULTI", 
-    "-oo", "DXF_INLINE_BLOCKS=FALSE", "-oo", "DXF_MERGE_BLOCK_GEOMETRIES=False", "-lco", f"SCHEMA={campus.lower()}", 
-    "-skipfailures", "-f", "PostgreSQL", db_connection, "-nln", dxf_filepath.stem, str(dxf_filepath)])
-
-    # floor = dxf_file.stem.split('_')[1]
-    
-    # dest_table_name = f"indrz_lines_{floor}"
-
-    # sql = f"""INSERT INTO {campus}.{dest_table_name}(long_name, geom) SELECT layer, wkb_geometry 
-    #             FROM {campus}.indrz_lines_{table.stem} 
-    #             WHERE GeometryType(wkb_geometry)='MULTILINESTRING'"""
-    # print(sql)
-    # cur.execute(sql)
-    # conn.commit()
-
-#dxf_to_postgis("BB_01_IP_042019.dxf", "Getreidemarkt")
+        "-lco", f"SCHEMA={campus_name.lower()}", "-skipfailures", "-f", "PostgreSQL", ogr_db_con, "-nln", table_name, str(dxf_file)])
 
 
 def step1_import_all_dxf_to_working(campus):
@@ -400,7 +347,7 @@ def insert_campuses(campus, lines=False, spaces=False):
     table_names = get_dxf_files(campus)
 
     for table in table_names:
-        insert_campuses_all(campus, table, lines=True, spaces=Trued)
+        insert_campuses_all(campus, table, lines=True, spaces=True)
         #insert_missing_cadlines(campus, table)
 
 # insert_campuses("Getreidemarkt", lines=True, spaces=True)
@@ -408,7 +355,7 @@ def insert_campuses(campus, lines=False, spaces=False):
 # insert_campuses("Gusshaus", lines=True, spaces=True)
 
 
-def drop_cad_table_reimport(campus, dxf_files):
+def import_dxf(campus, dxf_files, re_import=False):
 
     for dxf_file_name in dxf_files:
         
@@ -416,28 +363,49 @@ def drop_cad_table_reimport(campus, dxf_files):
 
         floor = dxf_file.stem.split('_')[-3]
 
-        # print(f"now droping table {dxf_file.stem}")
-        # sql_drop = F"DROP TABLE IF EXISTS {campus.lower()}.{dxf_file.stem} CASCADE"
-        # cur.execute(sql_drop)
-        # conn.commit()
+        if re_import:
+            print(f"now droping table {dxf_file.stem}")
+            sql_drop = F"DROP TABLE IF EXISTS {campus.lower()}.{dxf_file.stem} CASCADE"
+            cur.execute(sql_drop)
+            conn.commit()
 
-        # sql_delete = F"DELETE FROM campuses.indrz_lines_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
-        # cur.execute(sql_drop)
-        # conn.commit()
+            sql_delete = F"DELETE FROM campuses.indrz_lines_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
+            cur.execute(sql_drop)
+            conn.commit()
 
-        # sql_delete_s = F"DELETE FROM campuses.indrz_spaces_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
-        # print(sql_delete_s)
-        # cur.execute(sql_delete_s)
-        # conn.commit()
+            sql_delete_s = F"DELETE FROM campuses.indrz_spaces_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
+            print(sql_delete_s)
+            cur.execute(sql_delete_s)
+            conn.commit()
 
-        print(f"now re-importing dxf {dxf_file.stem}")
+        print(f"now running ogr to import dxf {dxf_file.stem}")
         dxf2postgis(dxf_file, campus)
 
         print(f"now inserting to lines and spaces table {dxf_file.stem}")
         insert_campuses_all(campus, dxf_file, lines=True, spaces=True)
 
-drop_cad_table_reimport('Freihaus', ['DD_EG_IP_092018.dxf',])
+# drop_cad_table_reimport('Freihaus', ['DD_EG_IP_092018.dxf',])
+# import_dxf('Gusshaus', [])
+
+missing_gusshaus = ['FA_FB_01_IP_042019.dxf',
+                    'FA_FB_02_IP_042019.dxf',
+                    'FA_FB_03_IP_042019.dxf',
+                    'FA_FB_FC_EG_IP_042019.dxf',
+                    'FA_FB_FC_U1_IP_042019.dxf',
+                    'FA_FB_ZE_IP_042019.dxf',
+                    'FB_04_IP_042019.dxf',
+                    'FB_05_IP_042019.dxf',
+                    'GA_01_IP_042019.dxf',
+                    'GA_02_IP_042019.dxf',
+                    'GA_07_DG_IP_042019.dxf',
+                    'GA_EG_IP_042019.dxf',
+                    'GA_U1_U2_IP_042019.dxf']
+
+import_dxf('Gusshaus', missing_gusshaus)
+
 conn.close()
+
+
 # 2019.08.27 22:04
 # ran this below
 # 'DF_02_IP_092018.dxf' had many wrong layer names that need importing

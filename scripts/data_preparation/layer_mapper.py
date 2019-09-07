@@ -1,10 +1,17 @@
+import os
 from django.contrib.gis.gdal import DataSource, SpatialReference
 import psycopg2
 
-#from create_tables import create_lines_table, create_spaces_table
-from read_data import get_dxf_files, get_floor_int, create_floor_group_name
+from pathlib import Path
 
-con_string = "dbname=" + os.getenv('DB_NAME') + " user=" + os.getenv('DB_USER') + " host=" + os.getenv('DB_HOST') + " password=" + os.getenv('DB_PASSWORD')
+
+db_user = os.getenv('DB_USER')
+db_name = os.getenv('DB_NAME')
+db_host = os.getenv('DB_HOST')
+db_pass = os.getenv('DB_PASSWORD')
+
+con_string = f"dbname={db_name} user={db_user} host={db_host} password={db_pass}"
+ogr_db_con = f"PG: host={db_host} user={db_user} dbname={db_name} password={db_pass}"
 
 conn = psycopg2.connect(con_string)
 cur = conn.cursor()
@@ -192,7 +199,7 @@ def import_dxf_files():
             
             
 
-import_dxf_files()
+# import_dxf_files()
 
 
 

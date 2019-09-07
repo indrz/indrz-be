@@ -2,7 +2,7 @@
 ### JetBrains template
 
 *.iml
-.env
+indrz/indrz/.env
 
 ## Directory-based project format:
 .idea/
@@ -17,7 +17,7 @@ indrz/logs
 /indrz/logs/
 
 /indrz/settings/secret_settings.py
-/indrz/settings/client_secret.json
+/indrz/indrz/client_secret.json
 
 /indrz/homepage/scripts/roomlog.log
 
