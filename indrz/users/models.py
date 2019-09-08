@@ -2,8 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from buildings.models import Organization, Campus
 from rest_framework.authtoken.models import Token
+
+from django.contrib.auth.models import UserManager
 
 from django.conf import settings
 
@@ -19,6 +20,21 @@ class User(AbstractUser):
     )
 
     user_type = models.PositiveSmallIntegerField(null=True, blank=True, choices=USER_TYPE_CHOICES)
+
+    objects = UserManager()
+
+    class Meta:
+        verbose_name = "user"
+        verbose_name_plural = "users"
+        ordering = ["username"]
+
+    def __str__(self):
+        return self.get_short_name()
+
+    def get_short_name(self):
+        "Returns the short name for the user."
+        return self.username
+
 
 
 # class Profile(models.Model):

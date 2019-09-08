@@ -107,3 +107,9 @@ class FloorListSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuildingFloor
         fields = ('id', 'short_name', 'floor_num')
+
+
+class CampusFloorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BuildingFloor
+        fields = ('floor_num', 'short_name')

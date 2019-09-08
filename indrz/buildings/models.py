@@ -155,7 +155,6 @@ class OrganizationInfoBase(BuildingAddressBase):
     geom = gis_models.PointField(verbose_name=_("Building centroid for small scale maps"), db_column='geom',
                              blank=True, null=True, srid=3857, spatial_index=False)
 
-    objects = gis_models.GeoManager()
 
     class Meta:
         abstract = True
@@ -189,14 +188,14 @@ class Campus(gis_models.Model):
     campus_name = gis_models.CharField(verbose_name=_("Campus name"), max_length=128, null=True, blank=True)
     description = gis_models.CharField(verbose_name=_("Building description"), max_length=256, null=True, blank=True)
 
-    fk_organization = gis_models.ForeignKey(Organization)
+    fk_organization = gis_models.ForeignKey(Organization, on_delete=gis_models.CASCADE)
 
 
     # GeoDjango-specific: a geometry field (MultiPolygonField), and
     # overriding the default manager with a GeoManager instance.
     geom = gis_models.MultiPolygonField(verbose_name=_("Campus area of one or more buildings"),
                                                  db_column='geom', blank=True, null=True, srid=3857, spatial_index=True)
-    objects = gis_models.GeoManager()
+
 
     def __str__(self):
         return str(self.campus_name) or ''
@@ -216,8 +215,8 @@ class Building(OrganizationInfoBase):
     native_epsg = gis_models.IntegerField(verbose_name=_("EPSG code original data"), null=True, blank=True)
     detail_description = gis_models.CharField(verbose_name=_("Building description"), max_length=256, null=True, blank=True)
 
-    fk_organization = gis_models.ForeignKey(Organization)
-    fk_campus = gis_models.ForeignKey(Campus, null=True, blank=True, related_name='buildings')
+    fk_organization = gis_models.ForeignKey(Organization, on_delete=gis_models.CASCADE)
+    fk_campus = gis_models.ForeignKey(Campus, null=True, blank=True, related_name='buildings', on_delete=gis_models.CASCADE)
 
     # GeoDjango-specific: a geometry field (MultiPolygonField), and
     # overriding the default manager with a GeoManager instance.
@@ -240,10 +239,10 @@ class BuildingFloor(gis_models.Model):
     floor_height = gis_models.DecimalField(verbose_name=_("height of floor"), max_digits=5, decimal_places=2, null=True, blank=True)
 
 
-    fk_building = gis_models.ForeignKey(Building)
+    fk_building = gis_models.ForeignKey(Building, on_delete=gis_models.CASCADE)
 
     multi_poly = gis_models.MultiPolygonField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
-    objects = gis_models.GeoManager()
+
 
     class Meta:
         ordering = ['floor_num']
@@ -265,11 +264,10 @@ class FloorSpaceBase(gis_models.Model):
     floor_num = gis_models.IntegerField(verbose_name=_("floor number"),null=True, blank=True)
 
     multi_poly = gis_models.MultiPolygonField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
-    objects = gis_models.GeoManager()
 
-    fk_access_type = gis_models.ForeignKey(LtAccessType, null=True, blank=True)
-    fk_building_floor = gis_models.ForeignKey(BuildingFloor)
-    fk_building = gis_models.ForeignKey(Building)
+    fk_access_type = gis_models.ForeignKey(LtAccessType, null=True, blank=True, on_delete=gis_models.CASCADE)
+    fk_building_floor = gis_models.ForeignKey(BuildingFloor, on_delete=gis_models.CASCADE)
+    fk_building = gis_models.ForeignKey(Building, on_delete=gis_models.CASCADE)
 
     class Meta:
         abstract = True
@@ -293,12 +291,12 @@ class BuildingFloorPlanLine(gis_models.Model):
     length = gis_models.DecimalField(verbose_name=_("gis calculated length"), max_digits=10, decimal_places=2, null=True, blank=True)
     floor_num = gis_models.IntegerField(verbose_name=_("floor number"),null=True, blank=True)
 
-    fk_line_type = gis_models.ForeignKey(LtPlanLineType, null=True, blank=True)
-    fk_building_floor = gis_models.ForeignKey(BuildingFloor, null=True, blank=True)
-    fk_building = gis_models.ForeignKey(Building)
+    fk_line_type = gis_models.ForeignKey(LtPlanLineType, on_delete=gis_models.CASCADE, null=True, blank=True)
+    fk_building_floor = gis_models.ForeignKey(BuildingFloor, on_delete=gis_models.CASCADE, null=True, blank=True)
+    fk_building = gis_models.ForeignKey(Building, on_delete=gis_models.CASCADE)
 
     multi_linestring = gis_models.MultiLineStringField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
-    objects = gis_models.GeoManager()
+
 
     class meta:
         ordering = ['short_name']
@@ -329,7 +327,7 @@ class BuildingFloorSpace(FloorSpaceBase):
     room_code = gis_models.CharField(verbose_name=_("Room code"), max_length=150, null=True, blank=True)
     capacity = gis_models.IntegerField(verbose_name=_("Total number of occupants allowed in this space"), null=True, blank=True)
 
-    space_type = gis_models.ForeignKey(LtSpaceType, null=True, blank=True)
+    space_type = gis_models.ForeignKey(LtSpaceType, on_delete=gis_models.CASCADE, null=True, blank=True)
 
     tag = gis_models.TextField(verbose_name=_("Tag values csv"), null=True, blank=True)
 

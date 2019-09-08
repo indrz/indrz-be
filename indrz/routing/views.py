@@ -20,10 +20,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from geojson import loads, Feature, FeatureCollection, Point, MultiPoint
 from rest_framework.views import APIView
+from rest_framework.parsers import JSONParser
+from rest_framework.response import Response
+
+
 
 from poi_manager.models import Poi
 
-from homepage.search_aau import search_any
+from api.search_aau import search_any
 from poi_manager.serializers import PoiSerializer
 from buildings.models import BuildingFloorSpace
 
@@ -94,9 +98,7 @@ def find_closest_network_node(x_coord, y_coord, floor):
         logger.debug("query is none check tolerance value of 200")
         return False
 
-from rest_framework.parsers import JSONParser
-from rest_framework.response import Response
-from rest_framework.views import APIView
+
 
 class ExampleView(APIView):
     """

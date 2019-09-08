@@ -62,10 +62,10 @@ class NetworklinesBase(gis_models.Model):
     network_type = gis_models.IntegerField(verbose_name=_("Type of network path type"), choices=ROUTE_TYPE, null=True, blank=True)
     access_type = gis_models.CharField(verbose_name=_("Routing access type"),  max_length=150, choices=ACCESS_TYPE, null=True, blank=True)
 
-    fk_building = gis_models.ForeignKey(Building, null=True, blank=True)
+    fk_building = gis_models.ForeignKey(Building, on_delete=gis_models.CASCADE, null=True, blank=True)
 
     geom = gis_models.MultiLineStringField(srid=3857, dim=3, spatial_index=True, null=True, blank=True)
-    objects = gis_models.GeoManager()
+
 
     class Meta:
         abstract = True

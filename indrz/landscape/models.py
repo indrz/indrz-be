@@ -168,12 +168,11 @@ class LandscapeArea(gis_models.Model):
     description = gis_models.TextField(verbose_name=_("Description"),
         db_column='description', help_text=_("Brief description"), null=True, blank=True)
 
-    fk_surface_type = gis_models.ForeignKey(LtSurfaceType, null=True, blank=True)
-    fk_campus = gis_models.ForeignKey(Campus)
+    fk_surface_type = gis_models.ForeignKey(LtSurfaceType , on_delete=gis_models.CASCADE, null=True, blank=True)
+    fk_campus = gis_models.ForeignKey(Campus, on_delete=gis_models.CASCADE)
 
     geom_mpoly = gis_models.MultiPolygonField(verbose_name=_("Geometry multi-polygon outside facility areas"), db_column='geom',
                              blank=True, null=True, srid=3857, spatial_index=True)
-    objects = gis_models.GeoManager()
 
 
     def __str__(self):
@@ -194,12 +193,11 @@ class LandscapeAmenityLine(gis_models.Model):
         db_column='description', help_text=_(u"Brief description"), null=True, blank=True)
 
 
-    fk_amenity_type = gis_models.ForeignKey(LtAmenityType, null=True, blank=True)
-    fk_campus = gis_models.ForeignKey(Campus)
+    fk_amenity_type = gis_models.ForeignKey(LtAmenityType, on_delete=gis_models.CASCADE, null=True, blank=True)
+    fk_campus = gis_models.ForeignKey(Campus, on_delete=gis_models.CASCADE)
 
     geom_mline = gis_models.MultiLineStringField(verbose_name=_("Geometry multi-linestrings outside area lines"),
                                                  db_column='geom', blank=True, null=True, srid=3857, spatial_index=True)
-    objects = gis_models.GeoManager()
 
 
     def __str__(self):
@@ -212,12 +210,11 @@ class PavementMarkLines(gis_models.Model):
     the roadway by marking the center of the road, lanes of travel, edges of pavement, etc.
     """
 
-    fk_mark_type = gis_models.ForeignKey(LtPavementMarkingType, null=True, blank=True)
-    fk_condition = gis_models.ForeignKey(LtCondition, null=True, blank=True)
+    fk_mark_type = gis_models.ForeignKey(LtPavementMarkingType, on_delete=gis_models.CASCADE, null=True, blank=True)
+    fk_condition = gis_models.ForeignKey(LtCondition, on_delete=gis_models.CASCADE, null=True, blank=True)
 
     geom_mline = gis_models.MultiLineStringField(verbose_name=_("Geometry multi-linestrings pavement lines"),
                                                  db_column='geom', blank=True, null=True, srid=3857, spatial_index=True)
-    objects = gis_models.GeoManager()
 
     def __str__(self):
         return str(self.fk_mark_type) or ''

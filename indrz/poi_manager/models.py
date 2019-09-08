@@ -99,7 +99,7 @@ def poi_icon_delete(sender, instance, **kwargs):
 class PoiCategory(MPTTModel):
     cat_name = models.CharField(verbose_name=_('Category name'),max_length=255, null=True, blank=True)
     icon_css_name = models.CharField(verbose_name=_("Icon CSS name"), max_length=255, null=True, blank=True)
-    fk_poi_icon = models.ForeignKey(PoiIcon,null=True, blank=True)
+    fk_poi_icon = models.ForeignKey(PoiIcon, on_delete=models.CASCADE, null=True, blank=True)
     description = models.CharField(verbose_name=_("description"), max_length=255, null=True, blank=True)
 
     force_mid_point = models.NullBooleanField(verbose_name=_("Force route to this location"), null=True, blank=True)
@@ -110,7 +110,7 @@ class PoiCategory(MPTTModel):
 
     tags = TaggableManager(blank=True)
     parent = TreeForeignKey('self',
-                        related_name='children',
+                        related_name='children', on_delete = models.CASCADE,
                         db_index=True,
                         blank=True,
                         null=True,
@@ -134,14 +134,13 @@ class Poi(models.Model):
     # icon_class = models.CharField(max_length=255, blank=True, null=True)
     # connect to APP Buildings to enable floors for each POI per level ie floor
 
-    fk_building_floor = models.ForeignKey(BuildingFloor, null=True, blank=True)
-    fk_building = models.ForeignKey(Building, null=True, blank=True)
-    fk_campus = models.ForeignKey(Campus)
+    fk_building_floor = models.ForeignKey(BuildingFloor, on_delete=models.CASCADE, null=True, blank=True)
+    fk_building = models.ForeignKey(Building, on_delete=models.CASCADE, null=True, blank=True)
+    fk_campus = models.ForeignKey(Campus, on_delete=models.CASCADE)
 
-    fk_poi_category = models.ForeignKey(PoiCategory)
+    fk_poi_category = models.ForeignKey(PoiCategory, on_delete=models.CASCADE)
 
     geom = gis_model.MultiPointField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
-    objects = gis_model.GeoManager()
 
     # tags = TaggableManager(blank=True)
     poi_tags = ArrayField(models.CharField(max_length=50, blank=True), blank=True, null=True)
