@@ -151,7 +151,6 @@ def read_campus_csv_list(campus, re_import=False):
 
         print(sql)
 
-
         cur.execute(sql)
         conn.commit()
 
@@ -164,93 +163,107 @@ def read_campus_csv_list(campus, re_import=False):
 
 
 
-def determine_code(campus, floor):
+def determine_code(campus, floors):
+    """
+
+    :param campus:  name of the campus
+    :param floors: list of floor names
+    :return: import done
+    """
 
     # sql_space = f"""SELECT id, geom FROM campuses.indrz_spaces_{floor}; """
 
-    sql_space = f""" SELECT DISTINCT s.id, s.tags, ST_asewkt(s.geom)
-                    FROM campuses.indrz_spaces_{floor} as s
-                    JOIN campuses.indrz_imported_roomcodes as p
-                    ON ST_Intersects(s.geom, p.geom)
-                    WHERE p.floor_name = '{floor}';"""
+    for floor in floors:
 
-    sql_pts = f"""SELECT p.id, p.campus, p.floor_name, p.room_external_id, p.room_code, p.room_text, p.geom, p.room_description
-                    FROM campuses.indrz_imported_roomcodes as p
-                    JOIN campuses.indrz_spaces_{floor} as s
-                    ON ST_Intersects(s.geom, p.geom)
-                    WHERE p.floor_name = '{floor}';"""
-                    # AND p.room_external_id != 'nan';"""
+        sql_space = f""" SELECT DISTINCT s.id, s.tags, ST_asewkt(s.geom)
+                        FROM campuses.indrz_spaces_{floor.lower()} as s
+                        JOIN campuses.indrz_imported_roomcodes as p
+                        ON ST_Intersects(s.geom, p.geom)
+                        WHERE p.floor_name = '{floor}';"""
 
-    cur.execute(sql_space)
-    spaces = cur.fetchall()
+        sql_pts = f"""SELECT p.id, p.campus, p.floor_name, p.room_external_id, p.room_code, p.room_text, p.geom, p.room_description
+                        FROM campuses.indrz_imported_roomcodes as p
+                        JOIN campuses.indrz_spaces_{floor.lower()} as s
+                        ON ST_Intersects(s.geom, p.geom)
+                        WHERE p.floor_name = '{floor}';"""
+                        # AND p.room_external_id != 'nan';"""
 
-    p = cur.execute(sql_pts)
-    points = cur.fetchall()
+        cur.execute(sql_space)
+        spaces = cur.fetchall()
 
-    print("spaces len ", len(spaces))
-    print("points len ", len(points))
+        p = cur.execute(sql_pts)
+        points = cur.fetchall()
 
-    # for point in points:
-    #     print(point)
+        print("spaces len ", len(spaces))
+        print("points len ", len(points))
 
-    pts_in = []
-    pts_with_id = []
-    total_spaces_udated = []
+        # for point in points:
+        #     print(point)
 
-    # list of spaces with 1 or more points inside
-    for space in spaces:
-        space_geom = GEOSGeometry(space[2])
-        space_id = space[0]
+        pts_in = []
+        pts_with_id = []
+        total_spaces_udated = []
 
-        done = False
+        # list of spaces with 1 or more points inside
+        for space in spaces:
+            space_geom = GEOSGeometry(space[2])
+            space_id = space[0]
 
-        for point in points:
-            pt_geom = GEOSGeometry(point[6])
+            done = False
 
-            if pt_geom.within(space_geom):
-                # print("your are in ", point)
+            for point in points:
+                pt_geom = GEOSGeometry(point[6])
 
-                ext_id = point[3]
-                room_des = point[7]
-                room_code = point[4]
+                if pt_geom.within(space_geom):
+                    # print("your are in ", point)
 
-                # prio 1 if not nan take value and move on
-                if ext_id != 'nan':
+                    ext_id = point[3]
+                    room_des = point[7]
+                    room_code = point[4]
 
-                    pts_with_id.append(point)
-                    update_sql = f"""UPDATE campuses.indrz_spaces_{floor.lower()} 
-                                    SET room_external_id = '{ext_id}', room_description = '{room_des}' 
-                                    WHERE id = {space_id};"""
-                    print(update_sql)
+                    # prio 1 if not nan take value and move on
+                    if ext_id != 'nan':
 
-                    cur.execute(update_sql)
-                    conn.commit()
-
-                    total_spaces_udated.append(space_id)
-
-                    done = True
-                    break
-                elif is_roomcode(room_code) and room_code != 'nan':
-                    update_sql = f"""UPDATE campuses.indrz_spaces_{floor.lower()} SET room_external_id = '{room_code}'
+                        pts_with_id.append(point)
+                        update_sql = f"""UPDATE campuses.indrz_spaces_{floor.lower()} 
+                                        SET room_external_id = '{ext_id}', room_description = '{room_des}' 
                                         WHERE id = {space_id};"""
-                    print(update_sql)
+                        # print(update_sql)
 
-                    cur.execute(update_sql)
-                    conn.commit()
-                    done = True
+                        cur.execute(update_sql)
+                        conn.commit()
 
-                    total_spaces_udated.append(space_id)
-                    break
+                        total_spaces_udated.append(space_id)
 
-                pts_in.append(point)
-        if done:
-            continue
+                        done = True
+                        break
+                    elif is_roomcode(room_code) and room_code != 'nan':
+                        update_sql = f"""UPDATE campuses.indrz_spaces_{floor.lower()} SET room_external_id = '{room_code}'
+                                            WHERE id = {space_id};"""
+                        # print(update_sql)
 
-    print("total updated is ", len(total_spaces_udated), total_spaces_udated)
+                        cur.execute(update_sql)
+                        conn.commit()
+                        done = True
+
+                        total_spaces_udated.append(space_id)
+                        break
+
+                    pts_in.append(point)
+            if done:
+                continue
+
+        print("total updated is ", len(total_spaces_udated), total_spaces_udated)
 
 
+karlsplatz_floors = ['01', '02', '03', '04', '05', 'DG', 'EG', 'U1', 'U2', 'Z1', 'Z2', 'Z3', 'Z4', 'ZD', 'ZE', 'ZU'] #  count:  16
+getreidemarkt_floors = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', 'DG', 'EG', 'U1', 'U2', 'Z4', 'Z5', 'ZE', 'ZU'] #  count:  19
+gusshaus_floors = ['01', '02', '03', '04', '05', '06', '07', 'DG', 'EG', 'SO', 'U1', 'U2', 'Z2', 'ZE'] #  count:  14
+freihaus_floors = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', 'DG', 'EG', 'U1', 'U2', 'U3', 'U4', 'ZE', 'ZU']#  count:  20
+arsenal_floors = ['01', '02', '03', 'EG', 'U1', 'U2', 'ZE']#   count:  7
 
-determine_code('Arsenal', 'U2')
+
+determine_code('Arsenal', arsenal_floors)
 conn.close()
 
     # priority 1 CASE 1
