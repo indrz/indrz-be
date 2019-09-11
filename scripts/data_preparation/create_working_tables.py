@@ -1,7 +1,16 @@
 import psycopg2
 import os
+from dotenv import load_dotenv
+load_dotenv()
+from dotenv import load_dotenv
+load_dotenv()
 
-con_string = "dbname=" + os.getenv('DB_NAME') + " user=" + os.getenv('DB_USER') + " host=" + os.getenv('DB_HOST') + " password=" + os.getenv('DB_PASSWORD')
+db_user = os.getenv('DB_USER')
+db_name = os.getenv('DB_NAME')
+db_host = os.getenv('DB_HOST')
+db_pass = os.getenv('DB_PASSWORD')
+
+con_string = f"dbname={db_name} user={db_user} host={db_host} password={db_pass}"
 
 conn = psycopg2.connect(con_string)
 cur = conn.cursor()
@@ -197,7 +206,7 @@ def create_spaces_table(floor, campus="campuses"):
     # cur.execute(sql_col)
     conn.commit()
 
-    
+
 
 
 def create_lines_table(floor, campus="campuses", drop=False):
@@ -237,6 +246,48 @@ def create_lines_table(floor, campus="campuses", drop=False):
     conn.commit()
 
 
+def create_roomcode_points_table():
+
+    # ['Name', 'Position X', 'Position Y', 'RAUMBEZEICHNUNG', 'RAUMNUMMER', 'Value', 'FLÄCHE', 'FLÄCHENART'],
+    sql_create = """CREATE TABLE campuses.indrz_imported_roomcodes
+    (
+        id serial,
+        campus character varying(150), -- the name of campus
+        floor_num integer,
+        cad_layer_name character varying(150),
+        room_description character varying(150),
+        room_external_id character varying(150),
+        room_number character varying(150),
+        room_number_sign character varying(150),
+        room_code character varying(150),
+        room_text character varying(150),
+        tags text[],
+        geom geometry(Point,31259),
+        PRIMARY KEY (id)
+    )
+    WITH (
+        OIDS = FALSE
+    )"""
+
+    sql_del = "delete from campuses.indrz_imported_roomcodes where 1 = 1;"
+    sql_drop = "DROP TABLE IF EXISTS campuses.indrz_imported_roomcodes CASCADE"
+
+    sql_alter = "ALTER TABLE campuses.indrz_imported_roomcodes ADD COLUMN tags text[];"
+    sql_col = "ALTER TABLE campuses.indrz_imported_roomcodes DROP COLUMN tag CASCADE;"
+
+
+
+    # cur.execute(sql_drop)
+    cur.execute(sql_create)
+    # cur.execute(sql_col)
+    conn.commit()
+
+
+# create_roomcode_points_table()
+
+
+
+
 def create_empty_tables(campus="campuses", lines=False, spaces=False, labels=False, routing=False):
     for floor in unique_floor_names:
         if lines:
@@ -248,4 +299,4 @@ def create_empty_tables(campus="campuses", lines=False, spaces=False, labels=Fal
         if routing:
             create_routing_tables(floor)
 
-create_empty_tables(campus="routing", routing=True)
+# create_empty_tables(campus="routing", routing=True)
