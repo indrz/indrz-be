@@ -26,7 +26,7 @@ cur = conn.cursor()
 # print(GEOSGeometry('POINT (0 0)', srid=4326))
 # geo_pt = Point(row['Position X'], row['Position Y'], srid=31259)
 
-def get_dxf_fullpath(campus, dxf_file_name):
+def get_csv_fullpath(campus, dxf_file_name):
     dxf_dir_path = Path('c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/' + campus)
 
     dxf_file_full_path = Path.joinpath(dxf_dir_path, dxf_file_name)
@@ -88,26 +88,16 @@ def get_floor_name(room_n, room_c, room_v):
     return floor_name, trak_code
 
 
-def read_campus_csv_list(campus, re_import=False):
+def step1_import_csv_roomcodes(campus):
     csv_file_name = campus.lower() + "_roomcodes.csv"
 
-    csv_filepath = get_dxf_fullpath('Arsenal', csv_file_name)
+    csv_filepath = get_csv_fullpath(campus, csv_file_name)
 
     # df = pd.read_csv(csv_filepath, names=["Name","Position X","Position Y","RAUMBEZEICHNUNG","RAUMNUMMER","Value", "Layer", "RAUMCODE", "RAUMNR"], delimiter=",")
 
     df = pd.read_csv(csv_filepath, delimiter=",", error_bad_lines=False)
 
-
     print(df.columns)
-
-    if re_import:
-        print("now removing old points in db")
-        dxf_layer_name = ""
-        sql_delete_s = F"DELETE FROM campuses.indrz_imported_roomcodes CASCADE WHERE tags[1] = '{dxf_layer_name}'"
-        print(sql_delete_s)
-        cur.execute(sql_delete_s)
-        conn.commit()
-
 
     print(df.count)
     # remove all rows where x coord is null
@@ -149,7 +139,6 @@ def read_campus_csv_list(campus, re_import=False):
                     VALUES ('{campus}', '{cad_layer}', '{floor_name}','{room_des}',
                           '{room_n}', '{room_nr}', '{room_c}', '{room_v}', {geom_sql})"""
 
-        print(sql)
 
         cur.execute(sql)
         conn.commit()
@@ -159,16 +148,20 @@ def read_campus_csv_list(campus, re_import=False):
 
 
 
-# read_campus_csv_list('Arsenal')
+# step1_import_csv_roomcodes('Arsenal') # done 11.09.2019
+# step1_import_csv_roomcodes('Gusshaus')# done on 11.09.2019
+# step1_import_csv_roomcodes('Freihaus')# done on 11.09.2019
+# step1_import_csv_roomcodes('Getreidemarkt')
+# step1_import_csv_roomcodes('Karlsplatz')
 
 
 
-def determine_code(campus, floors):
+def step2_assign_codes_to_spaces(campus, floors):
     """
 
     :param campus:  name of the campus
     :param floors: list of floor names
-    :return: import done
+    :return: import donet
     """
 
     # sql_space = f"""SELECT id, geom FROM campuses.indrz_spaces_{floor}; """
@@ -220,6 +213,7 @@ def determine_code(campus, floors):
                     ext_id = point[3]
                     room_des = point[7]
                     room_code = point[4]
+                    room_text = point[5]
 
                     # prio 1 if not nan take value and move on
                     if ext_id != 'nan':
@@ -248,6 +242,17 @@ def determine_code(campus, floors):
 
                         total_spaces_udated.append(space_id)
                         break
+                    elif is_roomcode(room_text) and room_text != 'nan':
+                        update_sql = f"""UPDATE campuses.indrz_spaces_{floor.lower()} SET room_external_id = '{room_text}'
+                                            WHERE id = {space_id};"""
+                        # print(update_sql)
+
+                        cur.execute(update_sql)
+                        conn.commit()
+                        done = True
+
+                        total_spaces_udated.append(space_id)
+                        break
 
                     pts_in.append(point)
             if done:
@@ -263,7 +268,11 @@ freihaus_floors = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '
 arsenal_floors = ['01', '02', '03', 'EG', 'U1', 'U2', 'ZE']#   count:  7
 
 
-determine_code('Arsenal', arsenal_floors)
+# step2_assign_codes_to_spaces('Arsenal', arsenal_floors) # done on 11.09.2019
+# step2_assign_codes_to_spaces('Gusshaus', gusshaus_floors) # done on 11.09.2019
+# step2_assign_codes_to_spaces('Freihaus', freihaus_floors) # done on 11.09.2019
+# step2_assign_codes_to_spaces('Getreidemarkt', getreidemarkt_floors)
+# step2_assign_codes_to_spaces('Karlsplatz', karlsplatz_floors)
 conn.close()
 
     # priority 1 CASE 1

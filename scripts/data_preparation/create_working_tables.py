@@ -248,12 +248,13 @@ def create_lines_table(floor, campus="campuses", drop=False):
 
 def create_roomcode_points_table():
 
-    # ['Name', 'Position X', 'Position Y', 'RAUMBEZEICHNUNG', 'RAUMNUMMER', 'Value', 'FLÄCHE', 'FLÄCHENART'],
+    # ['Name', 'Position X', 'Position Y', 'RAUMBEZEICHNUNG', 'RAUMNUMMER', 'Value', "Layer", "RAUMCODE", "RAUMNR"],
     sql_create = """CREATE TABLE campuses.indrz_imported_roomcodes
     (
         id serial,
         campus character varying(150), -- the name of campus
         floor_num integer,
+        floor_name character varying(150),
         cad_layer_name character varying(150),
         room_description character varying(150),
         room_external_id character varying(150),
@@ -277,13 +278,13 @@ def create_roomcode_points_table():
 
 
 
-    # cur.execute(sql_drop)
+    cur.execute(sql_drop)
     cur.execute(sql_create)
     # cur.execute(sql_col)
     conn.commit()
 
 
-# create_roomcode_points_table()
+create_roomcode_points_table()
 
 
 
