@@ -71,7 +71,7 @@ def floor_map():
             value = "Zwischengeschoß"
         else:
             value = "Obergeschoß"
-        
+
         d = dict(value, f)
         unique_floor_name_map.append(d)
 
@@ -97,10 +97,10 @@ def get_floor_int(name):
     if floor in floor_names_z:
         # zwischen stock
         floor = floor[1] + 1000
-    
+
     if floor in floor_names_int:
         floor = int(floor)
-    
+
     if floor in floor_names_u:
         # underground
         floor = int(floor[1]) * -1
@@ -117,7 +117,7 @@ def get_floor_int(name):
 #Ausweichquartier ['WA', 'WB', 'WC', 'WD']
 
 def read_campus_csv_list():
-    df = pd.read_csv('gebauede-tu-juli-2019.csv', names=["CAMPUS","TRAKT","TRAKTBEZEICHNUNG","ADRESSE","PLZ","ORT","GESCHOSS"], delimiter=";")
+    df = pd.read_csv('gebauede-tu-juli-2019.csv',header=None, names=["CAMPUS","TRAKT","TRAKTBEZEICHNUNG","ADRESSE","PLZ","ORT","GESCHOSS"], delimiter=";")
     # print(df.groupby('TRAKT').groups)
 
 
@@ -146,7 +146,7 @@ def read_campus_csv_list():
                     trak = c.groupby('TRAKT')
                     trakts = [name for name, group in trak]
                     print("TRACKTS ", trakts, " count: ", len(trakts))
-        
+
                     gp_floors = c.groupby('GESCHOSS')
                     floors = [name for name, group in gp_floors]
                     print(f"FLOORS on {campus} campus ", floors, " count: ", len(floors))
@@ -171,7 +171,7 @@ def get_dxf_fullpath(campus, dxf_file_name):
     return dxf_file_full_path
 
 
-def get_dxf_files(campus_name, floor=None):
+def get_dxf_files(campus_name, floor=None, only_dxf_names=False):
 
     dxf_dir_path = Path('c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/' + campus_name + '/dxf')
     dxf_list = os.listdir(dxf_dir_path)
@@ -182,6 +182,9 @@ def get_dxf_files(campus_name, floor=None):
     #print(len(dxf_files))
 
     dxf_file_paths = []
+
+    if only_dxf_names:
+        return dxf_files
 
     for dxf in dxf_files:
         p = Path.joinpath(dxf_dir_path, dxf)
@@ -214,8 +217,8 @@ def dxf2postgis(dxf_file, campus_name):
     table_name = str(dxf_file.stem)
 
     subprocess.run([
-        "ogr2ogr", "-a_srs", "EPSG:31259", "-oo", "DXF_FEATURE_LIMIT_PER_BLOCK=-1", 
-        "-nlt", "PROMOTE_TO_MULTI", "-oo", "DXF_INLINE_BLOCKS=FALSE", "-oo", "DXF_MERGE_BLOCK_GEOMETRIES=False", 
+        "ogr2ogr", "-a_srs", "EPSG:31259", "-oo", "DXF_FEATURE_LIMIT_PER_BLOCK=-1",
+        "-nlt", "PROMOTE_TO_MULTI", "-oo", "DXF_INLINE_BLOCKS=FALSE", "-oo", "DXF_MERGE_BLOCK_GEOMETRIES=False",
         "-lco", f"SCHEMA={campus_name.lower()}", "-skipfailures", "-f", "PostgreSQL", ogr_db_con, "-nln", table_name, str(dxf_file)])
 
 
@@ -257,7 +260,7 @@ def step3_insert_spaces_into_floor_tables(campus):
     # it will generte empty tables to insert into
 
     table_names = get_dxf_files(campus)
-   
+
     for table in table_names:
         floor = table.stem.split('_')[-3]
         dest_table_name = f"indrz_spaces_{floor}"
@@ -342,23 +345,13 @@ def insert_missing_cadlines(campus, table):
     conn.commit()
 
 
-def insert_campuses(campus, lines=False, spaces=False):
 
-    table_names = get_dxf_files(campus)
-
-    for table in table_names:
-        insert_campuses_all(campus, table, lines=True, spaces=True)
-        #insert_missing_cadlines(campus, table)
-
-# insert_campuses("Getreidemarkt", lines=True, spaces=True)
-# insert_campuses("Gusshaus", lines=True, spaces=True)
-# insert_campuses("Gusshaus", lines=True, spaces=True)
 
 
 def import_dxf(campus, dxf_files, re_import=False):
 
     for dxf_file_name in dxf_files:
-        
+
         dxf_file = get_dxf_fullpath(campus, dxf_file_name)
 
         floor = dxf_file.stem.split('_')[-3]
@@ -369,10 +362,12 @@ def import_dxf(campus, dxf_files, re_import=False):
             cur.execute(sql_drop)
             conn.commit()
 
+            print("now removing old lines in db")
             sql_delete = F"DELETE FROM campuses.indrz_lines_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
             cur.execute(sql_delete)
             conn.commit()
 
+            print("now removing old spaces in db")
             sql_delete_s = F"DELETE FROM campuses.indrz_spaces_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
             print(sql_delete_s)
             cur.execute(sql_delete_s)
@@ -381,11 +376,34 @@ def import_dxf(campus, dxf_files, re_import=False):
         print(f"now running ogr to import dxf {dxf_file.stem}")
         dxf2postgis(dxf_file, campus)
 
-        print(f"now inserting to lines and spaces table {dxf_file.stem}")
+        print(f"now inserting to lines and spaces into db  table called {dxf_file.stem}")
         insert_campuses_all(campus, dxf_file, lines=True, spaces=True)
 
 # drop_cad_table_reimport('Freihaus', ['DD_EG_IP_092018.dxf',])
 # import_dxf('Gusshaus', [])
+
+
+# import_dxf('Getreidemarkt', ['BI_05_IP_042019.dxf',], re_import=True)
+# import_dxf('Gusshaus', ['HK_EG_IP_082018.dxf',], re_import=True)
+
+
+# import_dxf('Gusshaus', ['HK_EG_IP_082018.dxf',])
+
+
+def insert_all_dxf_files(campus):
+
+    table_names = get_dxf_files(campus,floor=None, only_dxf_names=True)
+
+    import_dxf(campus, table_names, re_import=True)
+
+# insert_all_dxf_files('Karlsplatz')
+# insert_all_dxf_files('Arsenal')
+
+# insert_all_dxf_files("Getreidemarkt", lines=True, spaces=True)
+
+# insert_all_dxf_files("Gusshaus", lines=True, spaces=True)
+# insert_all_dxf_files("Gusshaus", lines=True, spaces=True)
+
 
 new_dxf_gusshaus = ['FA_FB_01_IP_042019.dxf',
                     'FA_FB_02_IP_042019.dxf',
