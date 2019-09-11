@@ -2,7 +2,7 @@
 ### JetBrains template
 
 *.iml
-indrz/indrz/.env
+indrz/settings/.env
 
 ## Directory-based project format:
 .idea/

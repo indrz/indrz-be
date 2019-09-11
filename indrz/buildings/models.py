@@ -115,21 +115,21 @@ class BuildingAddressBase(gis_models.Model):
     physical base address information of a building
     """
     street = gis_models.CharField(verbose_name=_("Street"), max_length=256,
-                              blank=True, null=True, db_column='street')
+                              blank=True, null=True)
     house_number = gis_models.CharField(verbose_name=_("Building or house number"), max_length=10,
-                              blank=True, null=True, db_column='house_num')
+                              blank=True, null=True)
     postal_code = gis_models.CharField(verbose_name=_("Postal code"), max_length=8,
-                                   blank=True, null=True, db_column='postal_code')
+                                   blank=True, null=True)
     municipality = gis_models.CharField(verbose_name=_("Municipality"),
                                     blank=True, null=True,
-                                    max_length=256, db_column='municipality')
+                                    max_length=256)
     city = gis_models.CharField(verbose_name=_("City"),
                                     blank=True, null=True,
-                                    max_length=256, db_column='city')
+                                    max_length=256)
 
     country = gis_models.CharField(verbose_name=_("Country"),
                                     blank=True, null=True,
-                                    max_length=256, db_column='country')
+                                    max_length=256)
     class Meta:
         abstract = True
         ordering = ['city']
@@ -139,22 +139,19 @@ class BuildingAddressBase(gis_models.Model):
 
 
 class OrganizationInfoBase(BuildingAddressBase):
-    name = gis_models.CharField(verbose_name=_("Name"), max_length=256, db_column='name', null=True, blank=True)
-    description = gis_models.TextField(verbose_name=_("Description"), db_column='description',
+    name = gis_models.CharField(verbose_name=_("Name"), max_length=256, null=True, blank=True)
+    description = gis_models.TextField(verbose_name=_("Description"),
                                    help_text=_("Brief description"), null=True, blank=True)
     phone = gis_models.CharField(verbose_name=_("Phone"), max_length=32,
-                             blank=True, null=True, db_column='telephone')
-    email = gis_models.EmailField(verbose_name=_("Email"), max_length=256, db_column='email',
+                             blank=True, null=True)
+    email = gis_models.EmailField(verbose_name=_("Email"), max_length=256,
                               blank=True, null=True)
-    website = gis_models.URLField(verbose_name=_("Website"), max_length=256, db_column='website',
-                              blank=True, null=True)
+    website = gis_models.URLField(verbose_name=_("Website"), max_length=256, blank=True, null=True)
     # photo = gis_models.FileField(verbose_name=_(u"Photo"), upload_to=settings.UPLOAD_DIR,
     #                          db_column='photo', max_length=512, blank=True, null=True)
 
-
-    geom = gis_models.PointField(verbose_name=_("Building centroid for small scale maps"), db_column='geom',
+    geom = gis_models.PointField(verbose_name=_("Building centroid for small scale maps"),
                              blank=True, null=True, srid=3857, spatial_index=False)
-
 
     class Meta:
         abstract = True
@@ -174,11 +171,6 @@ class Organization(OrganizationInfoBase):
     num_buildings = gis_models.IntegerField(verbose_name=_("Number of buildings"), null=True, blank=True)
 
 
-    # GeoDjango-specific: a geometry field (MultiPolygonField), and
-    # overriding the default manager with a GeoManager instance.
-    #mpoint = gis_models.PointField(srid=4326)
-    #objects = gis_models.GeoManager()
-
 
 class Campus(gis_models.Model):
     """
@@ -190,11 +182,8 @@ class Campus(gis_models.Model):
 
     fk_organization = gis_models.ForeignKey(Organization, on_delete=gis_models.CASCADE)
 
-
-    # GeoDjango-specific: a geometry field (MultiPolygonField), and
-    # overriding the default manager with a GeoManager instance.
     geom = gis_models.MultiPolygonField(verbose_name=_("Campus area of one or more buildings"),
-                                                 db_column='geom', blank=True, null=True, srid=3857, spatial_index=True)
+                                                 blank=True, null=True, srid=3857, spatial_index=True)
 
 
     def __str__(self):
@@ -218,10 +207,7 @@ class Building(OrganizationInfoBase):
     fk_organization = gis_models.ForeignKey(Organization, on_delete=gis_models.CASCADE)
     fk_campus = gis_models.ForeignKey(Campus, null=True, blank=True, related_name='buildings', on_delete=gis_models.CASCADE)
 
-    # GeoDjango-specific: a geometry field (MultiPolygonField), and
-    # overriding the default manager with a GeoManager instance.
-    #mpoly = gis_models.MultiPolygonField(srid=4326)
-    #objects = gis_models.GeoManager()
+
 
 @python_2_unicode_compatible
 class BuildingFloor(gis_models.Model):
@@ -241,7 +227,7 @@ class BuildingFloor(gis_models.Model):
 
     fk_building = gis_models.ForeignKey(Building, on_delete=gis_models.CASCADE)
 
-    multi_poly = gis_models.MultiPolygonField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
+    geom = gis_models.MultiPolygonField(srid=3857, spatial_index=True, null=True, blank=True)
 
 
     class Meta:
@@ -263,7 +249,7 @@ class FloorSpaceBase(gis_models.Model):
     perimeter = gis_models.DecimalField(verbose_name=_("gis calculated perimeter"), max_digits=10, decimal_places=2, null=True, blank=True)
     floor_num = gis_models.IntegerField(verbose_name=_("floor number"),null=True, blank=True)
 
-    multi_poly = gis_models.MultiPolygonField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
+    geom = gis_models.MultiPolygonField(srid=3857, spatial_index=True, null=True, blank=True)
 
     fk_access_type = gis_models.ForeignKey(LtAccessType, null=True, blank=True, on_delete=gis_models.CASCADE)
     fk_building_floor = gis_models.ForeignKey(BuildingFloor, on_delete=gis_models.CASCADE)
@@ -295,7 +281,7 @@ class BuildingFloorPlanLine(gis_models.Model):
     fk_building_floor = gis_models.ForeignKey(BuildingFloor, on_delete=gis_models.CASCADE, null=True, blank=True)
     fk_building = gis_models.ForeignKey(Building, on_delete=gis_models.CASCADE)
 
-    multi_linestring = gis_models.MultiLineStringField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
+    geom = gis_models.MultiLineStringField(srid=3857, spatial_index=True, null=True, blank=True)
 
 
     class meta:

@@ -1,10 +1,9 @@
 from rest_framework import serializers
 
-from poi_manager.models import Poi, PoiCategory
+from .models import Poi, PoiCategory
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 class PoiSerializer(GeoFeatureModelSerializer):
-
 
     class Meta:
         model = Poi

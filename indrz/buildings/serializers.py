@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from buildings.models import Campus, Building, BuildingFloorSpace, LtSpaceType, BuildingFloor
+from .models import Campus, Building, BuildingFloorSpace, LtSpaceType, BuildingFloor
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 
@@ -87,8 +87,6 @@ class BuildingSerializerDetails(serializers.ModelSerializer):
     class Meta:
         model = Building
         fields = ('id', 'building_name', 'num_floors', 'buildingfloor_set')
-
-
 
 
 class SpaceSerializer(GeoFeatureModelSerializer):
