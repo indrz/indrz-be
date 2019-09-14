@@ -63,7 +63,7 @@ ROOT_URLCONF = 'indrz.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), ],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR,  'homepage/templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'debug': True,
@@ -101,11 +101,11 @@ DATABASES = {
                 'options': '-c search_path=django,public'
             },
         # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DB_NAME'),  # DB name
-        'USER': os.getenv('DB_USER'),  # DB user name
-        'PASSWORD': os.getenv('DB_PASS'),  # DB user password
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'NAME': os.getenv('POSTGRES_DB'),  # DB name
+        'USER': os.getenv('POSTGRES_USER'),  # DB user name
+        'PASSWORD': os.getenv('POSTGRES_PASS'),  # DB user password
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT'),
     }
 }
 
@@ -167,18 +167,13 @@ STATICFILES_FINDERS = (
     #'compressor.finders.CompressorFinder',
 )
 
-# STATICFILES_DIRS = [
-#    os.path.join(BASE_DIR, STATIC_FOLDER),
-#     os.path.join(BASE_DIR, 'static'),
-#     os.path.join(BASE_DIR, 'static/admin'),
-#
-# ]
-#
-# # finds all static folders in all apps
-# STATICFILES_FINDERS = (
-#     'django.contrib.staticfiles.finders.FileSystemFinder',
-#     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-# )
+STATICFILES_DIRS = [
+   os.path.join(BASE_DIR, STATIC_FOLDER),
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static/admin'),
+    os.path.join(BASE_DIR, 'static/legacy'),
+
+]
 
 
 UPLOAD_POI_DIR = MEDIA_ROOT + '/poi-icons/'
@@ -204,15 +199,23 @@ REST_FRAMEWORK = {
        'rest_framework.renderers.JSONRenderer',
        'rest_framework.renderers.BrowsableAPIRenderer',
     ],
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'rest_framework.authentication.TokenAuthentication',
-    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated', )
 }
 
 
 sentry_sdk.init(os.getenv('SENTRY_URL'), integrations=[DjangoIntegration()])
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:8000"
+]
+
 
 LOGFILE_DIR = os.getenv('LOGFILE_DIR')
 
@@ -284,18 +287,18 @@ if os.path.isdir(LOGFILE_DIR):
     logging.config.dictConfig(LOGGING)
 
 
-if DEBUG:
-    # django-debug-toolbar
-    # ------------------------------------------------------------------------------
-
-    MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-    INSTALLED_APPS += ('debug_toolbar',)
-    INTERNAL_IPS = ['127.0.0.1', '10.0.2.2', ]
-
-    DEBUG_TOOLBAR_CONFIG = {
-        'DISABLE_PANELS': [
-            'debug_toolbar.panels.redirects.RedirectsPanel',
-        ],
-        'SHOW_TEMPLATE_CONTEXT': True,
-    }
+# if DEBUG:
+#     # django-debug-toolbar
+#     # ------------------------------------------------------------------------------
+#
+#     MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+#     INSTALLED_APPS += ('debug_toolbar',)
+#     INTERNAL_IPS = ['127.0.0.1', '10.0.2.2', ]
+#
+#     DEBUG_TOOLBAR_CONFIG = {
+#         'DISABLE_PANELS': [
+#             'debug_toolbar.panels.redirects.RedirectsPanel',
+#         ],
+#         'SHOW_TEMPLATE_CONTEXT': True,
+#     }
 
