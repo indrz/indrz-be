@@ -143,18 +143,6 @@ def step1_import_csv_roomcodes(campus):
         cur.execute(sql)
         conn.commit()
 
-        # sql_clean = """DELETE FROM campuses.indrz_imported_roomcodes
-        #     WHERE  """
-
-
-
-# step1_import_csv_roomcodes('Arsenal') # done 11.09.2019
-# step1_import_csv_roomcodes('Gusshaus')# done on 11.09.2019
-# step1_import_csv_roomcodes('Freihaus')# done on 11.09.2019
-# step1_import_csv_roomcodes('Getreidemarkt')
-# step1_import_csv_roomcodes('Karlsplatz')
-
-
 
 def step2_assign_codes_to_spaces(campus, floors):
     """
@@ -258,7 +246,7 @@ def step2_assign_codes_to_spaces(campus, floors):
             if done:
                 continue
 
-        print("total updated is ", len(total_spaces_udated), total_spaces_udated)
+        print("total updated is ", len(total_spaces_udated))
 
 
 karlsplatz_floors = ['01', '02', '03', '04', '05', 'DG', 'EG', 'U1', 'U2', 'Z1', 'Z2', 'Z3', 'Z4', 'ZD', 'ZE', 'ZU'] #  count:  16
@@ -268,11 +256,21 @@ freihaus_floors = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '
 arsenal_floors = ['01', '02', '03', 'EG', 'U1', 'U2', 'ZE']#   count:  7
 
 
+# step1_import_csv_roomcodes('Arsenal') # done 11.09.2019
 # step2_assign_codes_to_spaces('Arsenal', arsenal_floors) # done on 11.09.2019
+
+# step1_import_csv_roomcodes('Gusshaus')# done on 11.09.2019
 # step2_assign_codes_to_spaces('Gusshaus', gusshaus_floors) # done on 11.09.2019
+
+# step1_import_csv_roomcodes('Freihaus')# done on 11.09.2019
 # step2_assign_codes_to_spaces('Freihaus', freihaus_floors) # done on 11.09.2019
-# step2_assign_codes_to_spaces('Getreidemarkt', getreidemarkt_floors)
+
+# step1_import_csv_roomcodes('Getreidemarkt') # done on 12.09.2019
+# step2_assign_codes_to_spaces('Getreidemarkt', getreidemarkt_floors) # done on 12.09.2019
+
+# step1_import_csv_roomcodes('Karlsplatz')
 # step2_assign_codes_to_spaces('Karlsplatz', karlsplatz_floors)
+
 conn.close()
 
     # priority 1 CASE 1
