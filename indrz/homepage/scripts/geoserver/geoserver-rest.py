@@ -12,28 +12,44 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with th
 # is program.  If not, see <http://www.gnu.org/licenses/>.
-
+import psycopg2
 import requests
 import json
+import os
 
-from settings.secret_settings import geoserver_auth
+from dotenv import load_dotenv
+load_dotenv()
 
-url_base = "https://campusplan.aau.at/geoserver/rest/"
+db_user = os.getenv('DB_USER')
+db_name = os.getenv('DB_NAME')
+db_host = os.getenv('DB_HOST')
+db_pass = os.getenv('DB_PASSWORD')
+GEOSERVER_USER = os.getenv('GEOSERVER_USER')
+GEOSERVER_PASS = os.getenv('GEOSERVER_PASS')
 
-headers = {
-    'Content-type': 'text/xml',
-}
+# con_string = f"dbname={db_name} user={db_user} host={db_host} password={db_pass}"
+# conn = psycopg2.connect(con_string)
+# cur = conn.cursor()
 
-base_geoserver_url = "https://campusplan.aau.at/geoserver"
+
+
+URL_BASE = "https://www.indrz.com/geoserver/rest"
+headers = {'Content-type': 'text/xml', }
+
 
 def create_workspace(name):
+    s = requests.Session()
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
     data = '<workspace><name>' + name + '</name></workspace>'
 
-    requests.post(base_geoserver_url + '/rest/workspaces', auth=geoserver_auth, headers=headers, data=data)
+    s.post(URL_BASE + '/rest/workspaces', headers=headers, data=data)
 
 
 def get_workspaces():
-    r = requests.get(base_geoserver_url + '/rest/workspaces.json', auth=geoserver_auth, headers=headers)
+    s = requests.Session()
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
+    print(URL_BASE)
+    r = s.get(URL_BASE + '/workspaces')
 
     res = json.loads(r.text)
 
@@ -45,12 +61,18 @@ def get_workspaces():
     print(r.text)
 
 
+get_workspaces()
+
+
 def get_layers():
     """
     A layer is a published feature
     :return:
     """
-    r = requests.get(base_geoserver_url + '/rest/layers.json', auth=geoserver_auth, headers=headers)
+    s = requests.Session()
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
+
+    r = s.get(URL_BASE + '/rest/layers.json', headers=headers)
 
     res = json.loads(r.text)
     print(r.text)
@@ -66,20 +88,24 @@ def get_imports():
     A layer is a published feature
     :return:
     """
-    r = requests.get(base_geoserver_url + '/rest/imports', auth=geoserver_auth, headers=headers)
+    s = requests.Session()
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
+    r = s.get(URL_BASE + '/rest/imports', headers=headers)
 
     print(r.text)
 
 
 def update_geoserver_layer(layer_name):
-    #     PUT / geoserver / rest / workspaces / < workspace > / datastores / < data_store > / featuretypes / < layer_name >
-    #
-    #     < featureType >
-    #     < enabled > true < / enabled >
-    #     < advertised > false < / advertised >
-    #
-    # < / featureType >
+    pass
+
+# PUT / geoserver / rest / workspaces / < workspace > / datastores / < data_store > / featuretypes / < layer_name >
+#
+#     < featureType >
+#     < enabled > true < / enabled >
+#     < advertised > false < / advertised >
+#
+# < / featureType >
 
 
 def create_layer(new_feature_name):
@@ -125,7 +151,7 @@ def create_layer(new_feature_name):
                 
                     """
 
-    native_srs =    """
+    native_srs = """
       <nativeCRS class="projected">PROJCS[&quot;WGS 84 / Pseudo-Mercator&quot;,
       GEOGCS[&quot;WGS 84&quot;,
         DATUM[&quot;World Geodetic System 1984&quot;,
@@ -149,8 +175,13 @@ def create_layer(new_feature_name):
       AUTHORITY[&quot;EPSG&quot;,&quot;3857&quot;]]</nativeCRS>
 
     """
+
+    s = requests.Session()
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
+
     data = "<featureType><name>" + new_feature_name + "</name>" + srs_3857 + "<srs>EPSG:3857</srs><projectionPolicy>FORCE_DECLARED</projectionPolicy><enabled>true</enabled><advertised>false</advertised></featureType>"
-    r = requests.post(url_base + 'workspaces/indrz/datastores/indrz-aau/featuretypes', auth=geoserver_auth, headers=headers, data=data)
+    r = s.post(URL_BASE + 'workspaces/indrz/datastores/indrz-aau/featuretypes',
+                      headers=headers, data=data)
     # print(r.raise_for_status())
     print(r.content)
     print(r.reason)
@@ -158,7 +189,7 @@ def create_layer(new_feature_name):
     print(r.text)
 
 
-def assign_style_to_layer(floor,layer, sld_name):
+def assign_style_to_layer(floor, layer, sld_name):
     """DOES NOT WORK AT ALL"""
     style_data = """<?xml version="1.0" encoding="UTF-8"?>
                     <layer>
@@ -170,8 +201,11 @@ def assign_style_to_layer(floor,layer, sld_name):
                     
                     </layer>""".format(floor, layer, sld_name)
 
+    s = requests.Session()
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
-    r = requests.put(url_base + 'layers/{0}{1}'.format(floor, layer), auth=geoserver_auth, headers=headers, data=style_data)
+    r = s.put(URL_BASE + 'layers/{0}{1}'.format(floor, layer), headers=headers,
+                     data=style_data)
     print(r.content)
     print(r.reason)
     print(r.status_code)
@@ -179,10 +213,10 @@ def assign_style_to_layer(floor,layer, sld_name):
     # print(r.raise_for_status())
 
 
-levels_abrev = ('e01_', 'e02_', 'e03_')
-grp_names= ("e01", "e02", "e03")
-layers = ('carto_lines', 'floor_footprint', 'space_polys')
-sld_styles = ("indrz-spaces", "indrz-cartolines", "indrz-building-footprint", "space-anno")
+# levels_abrev = ('e01_', 'e02_', 'e03_')
+# grp_names= ("e01", "e02", "e03")
+# layers = ('carto_lines', 'floor_footprint', 'space_polys')
+# sld_styles = ("indrz-spaces", "indrz-cartolines", "indrz-building-footprint", "space-anno")
 
 
 def create_groups(grp_name):
@@ -211,9 +245,14 @@ def create_groups(grp_name):
 
                     </layerGroup>""".format(grp_name)
 
-    print(url_base + "workspaces/indrz/layergroups")
-    r = requests.post(url_base + "workspaces/indrz/layergroups", auth=geoserver_auth, headers=headers, data=post_data)
-    # r = requests.get(url_base + "workspaces/indrz/layergroups", geoserver_auth=geoserver_auth, headers=headers)
+
+    s = requests.Session()
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
+
+
+    print(URL_BASE + "workspaces/indrz/layergroups")
+    r = s.post(URL_BASE + "workspaces/indrz/layergroups", headers=headers, data=post_data)
+    # r = s.get(url_base + "workspaces/indrz/layergroups", geoserver_auth=geoserver_auth, headers=headers)
     print(r.content)
     print(r.reason)
     print(r.status_code)
@@ -227,6 +266,21 @@ def create_groups(grp_name):
 #
 # run_create_groups()
 
+def create_style(name, filename):
+    s = requests.Session()
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
+
+    data = {
+        "style": {
+            "name": "indrz_spaces",
+            "filename": "indrz_spaces.sld"
+        }
+    }
+    headers = {'content-type': 'application/vnd.ogc.sld+xml'}
+    style_url = URL_BASE + "/styles"
+    xmlfile = open('trb-1996-219.xml', 'rb')
+
+    s.post(style_url, data=data, files=xmlfile, headers=headers)
 
 
 def run_assign_stlye():
@@ -234,13 +288,13 @@ def run_assign_stlye():
     for floor in levels_abrev:
         assign_style_to_layer(floor, "space_polys", 'indrz:indrz-spaces')
 
+
 # run_assign_stlye()
 
 def run_create_layers():
-
     for floor in levels_abrev:
         for layer in layers:
-            create_layer("{0}{1}".format(floor,layer))
+            create_layer("{0}{1}".format(floor, layer))
 
 # get_workspaces()
 # get_layers()

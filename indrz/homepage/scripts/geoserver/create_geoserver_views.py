@@ -1,7 +1,5 @@
-
 import psycopg2
 
-from settings.secret_settings import db_old_name, db_old_user, db_old_pwd, db_pwd, db_user, db_prod_user, db_prod_pwd, db_prod_name
 
 con_old_local_db = psycopg2.connect(host='localhost', user=db_old_user, port='5432', password=db_old_pwd, database=db_old_name)
 cur_old_local_db = con_old_local_db.cursor()
