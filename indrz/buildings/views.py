@@ -7,6 +7,7 @@ import geojson
 from django.contrib.gis.geos import GEOSGeometry
 from django.http import HttpResponse
 from geojson import Feature, FeatureCollection, Point
+from rest_framework import viewsets
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -21,25 +22,19 @@ from buildings.serializers import (CampusSerializer,
                                    BuildingFloorGeomSerializer,
                                    SpaceSerializer,
                                    BuildingFloor,
-FloorSerializer
-
+                                   FloorSerializer
 
                                    )
 
 logger = logging.getLogger(__name__)
 
 
-@api_view(['GET', ])
-def campus_list(request, format=None):
+class CampusViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    List of campuses belonging to an organization
-
+    A simple ViewSet for viewing accounts.
     """
-
-    if request.method == 'GET':
-        campus = Campus.objects.all()
-        serializer = CampusSerializer(campus, many=True)
-        return Response(serializer.data)
+    queryset = Campus.objects.all()
+    serializer_class = CampusSerializer
 
 
 @api_view(['GET', ])
@@ -57,7 +52,6 @@ def campus_locations(request, format=None):
         if campuses:
 
             for campus in campuses:
-
                 atts = {'id': campus['id'], 'campus_name': campus['campus_name']}
 
                 geo = GEOSGeometry(campus['geom']).centroid
@@ -129,8 +123,8 @@ def campus_floor_spaces(request, campus_id, floor_num, format=None):
     :return: all spaces in all buildings for a specified floor number
     """
     if request.method == 'GET':
-
-        spaces_ids = BuildingFloorSpace.objects.filter(fk_building__fk_campus= campus_id).filter(fk_building_floor__floor_num = floor_num)
+        spaces_ids = BuildingFloorSpace.objects.filter(fk_building__fk_campus=campus_id).filter(
+            fk_building_floor__floor_num=floor_num)
 
         serializer = BuildingFloorSpaceSerializer(spaces_ids, many=True)
 
@@ -200,7 +194,6 @@ def get_spaces_on_floor(request, floor_id, format=None):
     List all spaces on the provided building and floor
     """
     if request.method == 'GET':
-
         space_ids = BuildingFloorSpace.objects.filter(fk_building_floor=floor_id)
 
         serializer = BuildingFloorSpaceSerializer(space_ids, many=True)
@@ -222,7 +215,6 @@ def get_building_floor_spaces(request, building_id, floor_id, format=None):
 
         serializer = BuildingFloorSpaceSerializer(spaces_on_floor, many=True, context={'request': request})
         return Response(serializer.data)
-
 
 
 @api_view(['GET'])
@@ -275,7 +267,8 @@ def get_space_by_name(request, building_id, floor_id, space_name, format=None):
     Return the GeoJSON of a single space passing your local space name
     """
     if request.method == 'GET':
-        floor_space_info = BuildingFloorSpace.objects.filter(short_name=space_name, fk_building_id=building_id, fk_building_floor=floor_id)
+        floor_space_info = BuildingFloorSpace.objects.filter(short_name=space_name, fk_building_id=building_id,
+                                                             fk_building_floor=floor_id)
         serializer = SpaceSerializer(floor_space_info, many=True)
         return Response(serializer.data)
 
