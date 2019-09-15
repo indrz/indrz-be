@@ -6,23 +6,22 @@ import logging
 import requests
 import json
 
-try:
-    from settings.secret_settings import geoserver_pwd, geoserver_user
-except ImportError:
-    try:
-        from secret_settings import geoserver_pwd, geoserver_user
-    except ImportError:
-        pass
-else:
-    pass
+from dotenv import load_dotenv
+load_dotenv()
 
+db_user = os.getenv('DB_USER')
+db_name = os.getenv('DB_NAME')
+db_host = os.getenv('DB_HOST')
+db_pass = os.getenv('DB_PASSWORD')
+GEOSERVER_USER = os.getenv('GEOSERVER_USER')
+GEOSERVER_PASS = os.getenv('GEOSERVER_PASS')
 
 logging.basicConfig(filename='/opt/roomlog.log', level=logging.INFO, format='%(asctime)s %(message)s')
 logging.info('seed_geowebcache was called')
 
-geoserver_userpass = geoserver_user + ":" + geoserver_pwd
+GEOSERVER_USERpass = GEOSERVER_USER + ":" + GEOSERVER_PASS
 
-geoserver_url = "https://campus.wu.ac.at/geoserver"
+geoserver_url = "https://www.indrz.com/geoserver"
 
 # reload_url = "http://localhost:8080/geoserver/rest/reload"
 reload_url = geoserver_url + "/rest/reload"
@@ -35,16 +34,16 @@ def get_seed_status(s):
     """
     s = session object
     """
-    # call_api = "curl -u " + geoserver_userpass + " -XPOST http://localhost:8080/geoserver/rest/reload"
+    # call_api = "curl -u " + GEOSERVER_USERpass + " -XPOST http://localhost:8080/geoserver/rest/reload"
     status_seed = s.get(url=seed_layers)
     return status_seed.json()
 
 
 def get_layer_groups():
     s = requests.Session()
-    s.auth = (geoserver_user, geoserver_pwd)
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
-    # call_api = "curl -u " + geoserver_userpass + " -XPOST http://localhost:8080/geoserver/rest/reload"
+    # call_api = "curl -u " + GEOSERVER_USERpass + " -XPOST http://localhost:8080/geoserver/rest/reload"
     reload_geoserver = s.get(url=layer_groups)
     print(reload_geoserver.status_code)
     resp = json.loads(reload_geoserver.text)
@@ -59,9 +58,9 @@ def get_layer_groups():
 
 def get_layers():
     s = requests.Session()
-    s.auth = (geoserver_user, geoserver_pwd)
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
-    # call_api = "curl -u " + geoserver_userpass + " -XPOST http://localhost:8080/geoserver/rest/reload"
+    # call_api = "curl -u " + GEOSERVER_USERpass + " -XPOST http://localhost:8080/geoserver/rest/reload"
     reload_geoserver = s.get(url=layers_url)
     print(reload_geoserver.status_code)
     resp = json.loads(reload_geoserver.text)
@@ -76,9 +75,9 @@ def get_layers():
 
 def reload_geoserver():
     s = requests.Session()
-    s.auth = (geoserver_user, geoserver_pwd)
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
-    # call_api = "curl -u " + geoserver_userpass + " -XPOST http://localhost:8080/geoserver/rest/reload"
+    # call_api = "curl -u " + GEOSERVER_USERpass + " -XPOST http://localhost:8080/geoserver/rest/reload"
     reload_geoserver = s.post(url=reload_url)
     print(reload_geoserver.status_code)
     print(reload_geoserver.text)
@@ -96,7 +95,7 @@ def seed_geowebcache():
     layers = ["indrz:ug01", "indrz:e00", "indrz:e01", "indrz:e02", "indrz:e03", "indrz:e04", "indrz:e05", "indrz:e06"]
     # layers = ["indrz:e06"]
     s = requests.Session()
-    s.auth = (geoserver_user, geoserver_pwd)
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
     # This script RESEED tiles meaning removes and creates in one go in the GWC cache
 
@@ -127,11 +126,11 @@ def seed_geowebcache():
 
 # seed_geowebcache()
 
-# call_api = "curl -u " + geoserver_userpass + " -XPOST http://localhost:8080/geoserver/rest/reload"
+# call_api = "curl -u " + GEOSERVER_USERpass + " -XPOST http://localhost:8080/geoserver/rest/reload"
 # http://gis.wu.ac.at:8080/geoserver/gwc/rest/seed/wuwien:og04
 # Geoserver layers to perform Link with fix zoom level to all PC roomspreseeding operation on
 
-# curlstring = "curl -u " + geoserver_userpass + " -XPOST -H 'Content-type: text/xml' -d \"<seedRequest><name>" + \
+# curlstring = "curl -u " + GEOSERVER_USERpass + " -XPOST -H 'Content-type: text/xml' -d \"<seedRequest><name>" + \
 #              layer + "</name>" + \
 #              "<srs><number>900913</number></srs>" + \
 #              "<zoomStart>" + zoom_start + "</zoomStart>" + \
@@ -150,7 +149,7 @@ def seed_geowebcache():
 # seed_geowebcache()
 
 # curl call to get status of reseed
-# print "now status quick: " + str(os.system("curl -u " + geoserver_userpass + " -v -XGET " + "\"" + geoserver_url + layer + ".json" + '\"'))
+# print "now status quick: " + str(os.system("curl -u " + GEOSERVER_USERpass + " -v -XGET " + "\"" + geoserver_url + layer + ".json" + '\"'))
 # curl -u <user>:<password> -v -XGET http://localhost:8080/geoserver/gwc/rest/seed/wuwien:og06.json
 
 # def addLayer2Geoserver(layer_name, workspaces, datastores):
@@ -174,14 +173,14 @@ def seed_geowebcache():
 
 # This script removes tiles from the GWC cache
 # for layer in layers:
-#  curlstring="curl -u " + geoserver_userpass + " -XPOST -H 'Content-type: text/xml' -d '" + \
+#  curlstring="curl -u " + GEOSERVER_USERpass + " -XPOST -H 'Content-type: text/xml' -d '" + \
 #             layer + "900913" + zoom_start + "" + zoom_stop + "image/pngtruncate2' " + geoserver_url + "/geoserver/gwc/rest/seed/" + layer + ".xml"
 #  os.system(curlstring)
 #  print "truncated " + layer
 
 # This script is used to preseed gwc layers
 # for layer in layers:
-#  curlstring="curl -u " + geoserver_userpass + " -XPOST -H 'Content-type: text/xml' -d '" + layer + "900913" + zoom_start + "" + zoom_stop + "image/pngseed2' " + geoserver_url + "/geoserver/gwc/rest/seed/" + layer + ".xml"
+#  curlstring="curl -u " + GEOSERVER_USERpass + " -XPOST -H 'Content-type: text/xml' -d '" + layer + "900913" + zoom_start + "" + zoom_stop + "image/pngseed2' " + geoserver_url + "/geoserver/gwc/rest/seed/" + layer + ".xml"
 #  os.system(curlstring)
 #  print "seeded " + layer
 

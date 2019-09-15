@@ -1,9 +1,13 @@
 from __future__ import unicode_literals
-from django.utils.encoding import python_2_unicode_compatible
 
+import json
+import geojson
 from django.contrib.gis.db import models as gis_models
-from django.utils.translation import  ugettext_lazy as _
+from django.contrib.gis.gdal import OGRGeometry
+from django.utils.encoding import python_2_unicode_compatible
+from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
+
 
 class BaseLookupDomain(gis_models.Model):
     code = gis_models.CharField(verbose_name=_("code value"), max_length=150, null=True, blank=True)
@@ -185,6 +189,13 @@ class Campus(gis_models.Model):
     geom = gis_models.MultiPolygonField(verbose_name=_("Campus area of one or more buildings"),
                                                  blank=True, null=True, srid=3857, spatial_index=True)
 
+    @property
+    def centroid(self):
+        #TODO this is a hack work around
+        # code should simply be one liner but it returns ogr error no idea why ! it works in django 1.11
+        # json.loads(self.geom.centroid.json)
+        g = OGRGeometry(self.geom.centroid.wkt)
+        return json.loads(g.json)
 
     def __str__(self):
         return str(self.campus_name) or ''
