@@ -64,8 +64,6 @@ def get_floor_float(name):
     return floor*1.0
 
 
-
-
 def part1(schema, floors):
 
     for id, floor in enumerate(floors):
