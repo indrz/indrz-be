@@ -77,35 +77,9 @@ def floor_map():
 
     return floor_map
 
-floor_names_odd = ['ZD', 'ZE', 'ZU','DG', 'EG', 'SO']
-floor_names_u = ['U1', 'U2', 'U3', 'U4']
-floor_names_z = ['Z1', 'Z2', 'Z3', 'Z4', 'Z5']
-floor_names_int = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 
 
-def get_floor_int(name):
-    if not name:
-        return name
-    floor = name.stem.split("_")[-3]
 
-    if floor in floor_names_odd:
-        if floor == "EG":
-            floor = 0
-        else:
-            floor = 9999
-
-    if floor in floor_names_z:
-        # zwischen stock
-        floor = floor[1] + 1000
-
-    if floor in floor_names_int:
-        floor = int(floor)
-
-    if floor in floor_names_u:
-        # underground
-        floor = int(floor[1]) * -1
-
-    return floor
 
 
 # TRAKTS

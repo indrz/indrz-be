@@ -14,11 +14,11 @@ class NetworklinesBase(gis_models.Model):
     OUTDOORWAY = 4
     RAMP = 5
     ZEBRA = 6
-    STAIRWAY_NO_CHANGE = 101
-    RAMP_NO_CHANGE = 102
-    ELEVATOR_NO_CHANGE = 103
-    ESCALATOR_NO_CHANGE = 104
-    PRIVATE = 900
+    STAIRWAY_NO_CHANGE = 11
+    RAMP_NO_CHANGE = 12
+    ELEVATOR_NO_CHANGE = 13
+    ESCALATOR_NO_CHANGE = 14
+    PRIVATE = 90
 
     ROUTE_TYPE = (
         (INDOORWAY, _("Indoor way")),
