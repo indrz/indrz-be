@@ -156,9 +156,6 @@ STATIC_ROOT = os.getenv('STATIC_ROOT')
 MEDIA_URL = os.getenv("MEDIA_URL")
 MEDIA_ROOT = os.getenv('MEDIA_ROOT')
 
-STATICFILES_DIRS = [
-   os.path.join(BASE_DIR, STATIC_FOLDER),
-]
 
 # finds all static folders in all apps
 STATICFILES_FINDERS = (
