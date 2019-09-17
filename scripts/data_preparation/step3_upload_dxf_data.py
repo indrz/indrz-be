@@ -5,7 +5,7 @@ from pathlib import Path, PurePath
 import subprocess
 import psycopg2
 
-from .utils import unique_floor_names, con_string, ogr_db_con
+from utils import unique_floor_names, con_string, ogr_db_con
 
 conn = psycopg2.connect(con_string)
 cur = conn.cursor()
@@ -77,52 +77,7 @@ def floor_map():
 #Arsenal ['MA', 'MB', 'MC', 'MD', 'MG', 'MH', 'MI', 'OA', 'OB', 'OC', 'OY', 'OZ']
 #Ausweichquartier ['WA', 'WB', 'WC', 'WD']
 
-def read_campus_csv_list():
-    df = pd.read_csv('gebauede-tu-juli-2019.csv',header=None, names=["CAMPUS","TRAKT","TRAKTBEZEICHNUNG","ADRESSE","PLZ","ORT","GESCHOSS"], delimiter=";")
-    # print(df.groupby('TRAKT').groups)
 
-
-    grouped_campus = df.groupby('CAMPUS')
-    grouped_trakt = df.groupby('TRAKT')
-    grouped_adresse = df.groupby('ADRESSE')
-    grouped_floors = df.groupby('GESCHOSS')
-
-    campuses = [name for name, group in grouped_campus]
-    print(campuses)
-    trakts = [name for name, group in grouped_trakt]
-    adresse = [name for name, group in grouped_adresse]
-    floors = [name for name, group in grouped_floors]
-
-    print("floors", len(floors), floors)
-    print("campuses", len(campuses))
-    print("trakts", len(trakts))
-    print("adresse", len(adresse))
-
-
-    for campus in campuses:
-            if campus != 'CAMPUS':
-                    c = df[df['CAMPUS'].str.contains(campus)]
-                    print(campus, len(c))
-
-                    trak = c.groupby('TRAKT')
-                    trakts = [name for name, group in trak]
-                    print("TRACKTS ", trakts, " count: ", len(trakts))
-
-                    gp_floors = c.groupby('GESCHOSS')
-                    floors = [name for name, group in gp_floors]
-                    print(f"FLOORS on {campus} campus ", floors, " count: ", len(floors))
-
-                    address = c.groupby('ADRESSE')
-                    adresses = [name for name, group in address]
-                    print("adresses ", " count : ", len(adresses), " adresses ", adresses)
-
-                    for a in adresses:
-                            t =df[df['ADRESSE'].str.contains(a)]
-                            x = t.groupby('TRAKT')
-                            tt = [name for name, group in x]
-                            print("address ", a, " tracks at this address ", tt)
-
-# read_campus_csv_list()
 
 def get_dxf_fullpath(campus, dxf_file_name):
     dxf_dir_path = Path('c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/' + campus + '/dxf')
