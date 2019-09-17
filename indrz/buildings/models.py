@@ -214,6 +214,7 @@ class Building(OrganizationInfoBase):
     operation_hrs = gis_models.CharField(verbose_name=_("Operational hours"), max_length=60, null=True, blank=True)
     native_epsg = gis_models.IntegerField(verbose_name=_("EPSG code original data"), null=True, blank=True)
     detail_description = gis_models.CharField(verbose_name=_("Building description"), max_length=256, null=True, blank=True)
+    wings = gis_models.CharField(verbose_name=_('Wing'), max_length=800, null=True, blank=True)
 
     fk_organization = gis_models.ForeignKey(Organization, on_delete=gis_models.CASCADE)
     fk_campus = gis_models.ForeignKey(Campus, null=True, blank=True, related_name='buildings', on_delete=gis_models.CASCADE)
