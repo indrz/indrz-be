@@ -233,7 +233,7 @@ class BuildingFloor(gis_models.Model):
     vertical_order = gis_models.IntegerField(verbose_name=_("Floor order value"), null=True, blank=True)
     base_elevation = gis_models.IntegerField(verbose_name=_("Elevation value of floor in meters"), null=True, blank=True)
 
-    floor_num = gis_models.IntegerField(verbose_name=_("floor number"),null=True, blank=True)
+    floor_num = gis_models.FloatField(verbose_name=_("floor number"),null=True, blank=True)
     floor_height = gis_models.DecimalField(verbose_name=_("height of floor"), max_digits=5, decimal_places=2, null=True, blank=True)
 
 
