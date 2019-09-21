@@ -12,12 +12,10 @@ from pathlib import Path
 from utils import con_string, con_dj_string, unique_floor_names
 
 
-print(con_string)
 conn = psycopg2.connect(con_string)
 cur = conn.cursor()
 
 
-print(con_dj_string)
 conn_dj = psycopg2.connect(con_dj_string)
 cur_dj = conn_dj.cursor()
 
@@ -26,9 +24,6 @@ campuses = ['Karlsplatz', 'Getreidemarkt', 'Gusshaus', 'Freihaus', 'Arsenal', 'A
 csv_campuses = ['A_KARLSPLATZ', 'B_GETREIDEMARKT', 'C_GUSSHAUS', 'D_FREIHAUS', 'O_ARSENAL', 'W_AUSWEICHQUARTIER']
 
 campuses_dict = dict(zip(campuses, csv_campuses))
-
-print("WHHHAAAT ", campuses_dict['Karlsplatz'])
-
 
 
 
@@ -267,52 +262,134 @@ def create_building():
             conn_dj.commit()
 
 
-
 def create_floor():
 
-    sql_foor = """SELECT id, name, fk_campus_id, description from django.buildings_building;"""
-    cur_dj.execute(sql_foor)
-    buildings = cur_dj.fetchall()
+    for floor in unique_floor_names:
+        floor_float = get_floor_float(floor)
+        building_id = 1
+        floor_name = floor
 
-    for building in buildings:
-        s_name = building[1]
-        building_id = building[0]
+        sql_insert = f"""INSERT INTO django.buildings_buildingfloor (short_name, long_name, floor_num, geom, fk_building_id) 
+                                    SELECT '{floor}', short_name,{floor_float}, st_setsrid(st_transform(geom,3857), 3857),
+                                     {building_id} 
+                                     FROM campuses.indrz_umriss_eg""";
 
-        building_floors = json.loads(building[3])
-
-        for floor in building_floors:
-            floor_float = get_floor_float(floor)
-
-            sql_get_umriss = f"""select short_name, st_asewkt(geom) from campuses.indrz_umriss_eg where short_name = '{s_name}';"""
-            # print(sql_get)
-            cur.execute(sql_get_umriss)
-            umrisse = cur.fetchall()
-
-            s = f"""select short_name, {floor_float}, st_setsrid(st_transform(geom,3857),3857), {building_id} from campuses.indrz_umriss_eg where short_name = '{s_name}'"""
-            cur.execute(s)
-            umrisse = cur.fetchall()
-
-            for umriss in umrisse:
-
-                sql = f"""INSERT INTO django.buildings_buildingfloor (short_name, floor_num, geom, fk_building_id) values ('{umriss[0]}', {floor_float},
-                              '{umriss[2]}', {building_id}) ;"""
-                print(sql)
-                cur_dj.execute(sql)
-                conn_dj.commit()
+        cur_dj.execute(sql_insert)
+        conn_dj.commit()
 
 
-    pass
+def update_values():
+    for floor in unique_floor_names:
 
+        fake_tag = "{xx_" + floor +"_xx_xxx, xx_xxx}"
+        empty_array = "'{}'"
 
-create_org()
-create_campus()
-create_building()
-create_floor()
+        sql = f"""update campuses.indrz_spaces_{floor} set tags = '{fake_tag}'  where tags isnull or tags = {empty_array};"""
+        cur_dj.execute(sql)
+        conn_dj.commit()
+        print(sql)
+
 
 def create_space():
-    pass
 
-def create_cartolines():
-    pass
+    for floor in unique_floor_names:
+        floor_id = 27055
+        floor_name = floor
+
+        sql_insert = f"""INSERT INTO django.buildings_buildingfloorspace (room_external_id, room_description, floor_num,
+                                    long_name, short_name, tag, geom, fk_building_floor_id, space_type_id)
+                                    SELECT room_external_id, room_description, floor_num, long_name, short_name,
+                                     tags, st_setsrid(st_transform(geom,3857), 3857), {floor_id}, space_type_id 
+                                     FROM campuses.indrz_spaces_{floor_name}
+                                    
+                     """
+        print(f"now on floor {floor}")
+        cur_dj.execute(sql_insert)
+        conn_dj.commit()
+
+
+def populate_space_attributes():
+
+
+    s = f"""update django.buildings_buildingfloorspace set short_name = substring(room_external_id,4,2) where floor_num ISNULL;"""
+    cur_dj.execute(s)
+    conn_dj.commit()
+
+    sel = """SELECT short_name, tag, id, room_external_id from django.buildings_buildingfloorspace """
+    cur_dj.execute(sel)
+    spaces = cur_dj.fetchall()
+
+    print("the space is ", spaces)
+    for space in spaces:
+        id = space[2]
+        if space[1] and space[1] != '{}':
+            floor_name = space[1].split('_')[-4]
+            floor_float = get_floor_float(floor_name)
+
+            print(floor_name, floor_float)
+            sql_update = f"""update django.buildings_buildingfloorspace set floor_num = {floor_float}, long_name = '{floor_name}'
+            WHERE floor_num ISNULL AND id = {id};"""
+            cur_dj.execute(sql_update)
+            conn_dj.commit()
+
+        elif space[3] and space[3] != '':
+            floor_name = space[3].split(' ')[1]
+            floor_float = get_floor_float(floor_name)
+
+            sql_update = f"""update django.buildings_buildingfloorspace set floor_num = {floor_float}, long_name = '{floor_name}'
+            WHERE floor_num ISNULL AND id = {id};"""
+            cur_dj.execute(sql_update)
+            conn_dj.commit()
+
+            print("done space ", space)
+
+    sql_update_roomcode = f"""
+         update django.buildings_buildingfloorspace set room_code = replace(room_external_id, ' ', '') WHERE 1=1;
+         update django.buildings_buildingfloorspace set short_name = room_external_id WHERE 1=1;
+         delete from django.buildings_buildingfloorspace where geom ISNULL;
+     """
+    cur_dj.execute(sql_update_roomcode)
+    conn_dj.commit()
+
+
+
+def load_cartolines():
+    for floor in unique_floor_names:
+        floor_id = 27055
+        floor_name = floor
+        floor_float = get_floor_float(floor_name)
+
+        sql_insert = f"""INSERT INTO django.buildings_buildingfloorplanline (floor_name, short_name, long_name, floor_num,
+                                     geom, fk_building_floor_id)
+                                    SELECT '{floor}', tags, long_name, {floor_float}, st_setsrid(st_transform(geom,3857), 3857), {floor_id} 
+                                     FROM campuses.indrz_lines_{floor_name}
+
+                     """
+        print(f"now on floor {floor}")
+        cur_dj.execute(sql_insert)
+        conn_dj.commit()
+
+        sql_remove_empty = f"""
+             delete from django.buildings_buildingfloorplanline where geom ISNULL;
+         """
+        cur_dj.execute(sql_remove_empty)
+        conn_dj.commit()
+
+
+
+if __name__ == "__main__":
+    # NOTE TO SELF
+    # NONE of these command delete data only insert
+    # execute only if run as a script
+    # create_org()
+    # create_campus()
+    # create_building()
+    # create_floor()
+    # update_values()
+    # create_space()
+    # populate_space_attributes()
+    # load_cartolines()
+
+
 
 

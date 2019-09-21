@@ -24,32 +24,42 @@ db_port = "5432"
 db_owner = "tutest"
 db_superuser = "postgres"
 db_schema = "django"
-
-# con_string = f"dbname={db_name} user={db_user} host={db_host} password={db_pass}"
-
-
-print("now creating user")
-subprocess.call(["createuser", "--host", db_host, "--port", db_port, "-U", db_superuser, f"{db_owner}"])
-
-print("now creating db")
-subprocess.call(["createdb", "--host", db_host, "--port", db_port, "-U", db_superuser, "-O", f"{db_owner}", db_name])
+db_schemas = "django,campuses,geodata,public"
 
 
-sql_schema = f"""CREATE SCHEMA {db_schema} AUTHORIZATION {db_owner};"""
+
+# print("now creating user")
+# subprocess.call(["createuser", "--host", db_host, "--port", db_port, "-U", db_superuser, f"{db_owner}"])
+#
+# print("now creating db")
+# subprocess.call(["createdb", "--host", db_host, "--port", db_port, "-U", db_superuser, "-O", f"{db_owner}", db_name])
+#
+#
+sql_schema_django = f"""CREATE SCHEMA django AUTHORIZATION {db_owner};"""
+sql_schema_geodata = f"""CREATE SCHEMA geodata AUTHORIZATION {db_owner};"""
 sql_extension = "CREATE EXTENSION postgis;"
-sql_alter = f"""ALTER ROLE {db_owner} SET search_path TO {db_schema}, public;"""
+sql_alter = f"""ALTER ROLE {db_owner} SET search_path TO {db_schemas};"""
+#
+# print("now creating schema")
+# subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", db_name, "-c", f"{sql_schema_django}"])
+# subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", db_name, "-c", f"{sql_schema_geodata}"])
+#
+# print("now creating extension")
+# subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", db_name, "-c", f"{sql_extension}"])
+#
+# print("now changing user search_path")
+# subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", db_name, "-c", f"{sql_alter}"])
 
-print("now creating schema")
-subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", db_name, "-c", f"{sql_schema}"])
+backup_filename = "campuses.backup"
+restore_dbname = "tutest"
 
-print("now creating extension")
-subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", db_name, "-c", f"{sql_extension}"])
+schema_name = "campuses"
+# subprocess.call(
+#     ["pg_dump", "--host", db_host, "--port", db_port, "-U", db_superuser, "--no-owner", "-n", f"{schema_name}", "--format", "c", "--verbose", "--file", f"{backup_filename}", "indrztudata"])
 
-print("now changing user search_path")
-subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", db_name, "-c", f"{sql_alter}"])
-
-
-
+subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", f"{restore_dbname}", "-c", f"CREATE SCHEMA {schema_name} AUTHORIZATION {db_user};"])
+subprocess.call(
+    ["pg_restore", "--host", db_host, "--port", db_port, "-U", "postgres", "--role=tutest", "--dbname", f"{restore_dbname}", "-n", f"{schema_name}", "--format", "c", "--verbose", f"{backup_filename}"])
 
 
 def create_init_db(create_role=False):
