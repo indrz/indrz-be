@@ -1,11 +1,11 @@
-var hostUrl = "https://campusplan.aau.at/";
+var hostUrl = "http://localhost:8000/";
 var req_locale = "en";
-var baseApiUrl = hostUrl + req_locale + '/indrz/api/v1/';
+var baseApiUrl = hostUrl + 'api/v1/';
 var baseApiRoutingUrl = baseApiUrl + 'directions/';
 var baseApiSearchUrl = baseApiUrl + 'search';
 var baseUrlWms = hostUrl + '/geoserver/indrz/wms';
 var baseGeoserverUrl = "https://campusplan.aau.at/geoserver/";
-var indrzApiToken = "Token 3d673589ecc8128d7a16286c5f20bdbb5f768381";
+var indrzApiToken = "Token 5202a4d7382dfc54d0f0c4cf9a1b9ba65245ffb1";
 
 var zoom_level = "16";
 var campus_id = "(1,)";
@@ -114,7 +114,7 @@ var searchValues = new Bloodhound({
     //   }
     // },
     remote: {
-        url: hostUrl + req_locale + '/autocomplete/',
+        url: hostUrl + 'autocomplete/',
         prepare: function (query, settings) {
             settings.url = settings.url + query + "?format=json"
             settings.headers = {

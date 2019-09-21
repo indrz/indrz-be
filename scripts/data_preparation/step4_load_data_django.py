@@ -352,7 +352,6 @@ def populate_space_attributes():
     conn_dj.commit()
 
 
-
 def load_cartolines():
     for floor in unique_floor_names:
         floor_id = 27055

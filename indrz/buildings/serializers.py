@@ -3,6 +3,12 @@ from .models import Campus, Building, BuildingFloorSpace, LtSpaceType, BuildingF
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 
+class FloornewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BuildingFloor
+        fields = ('id', 'short_name', 'floor_num', 'fk_building')
+
 class CampusSerializer(serializers.ModelSerializer):
 
     class Meta:

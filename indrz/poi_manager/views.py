@@ -83,7 +83,7 @@ def poi_root_nodes(request, campus_id, format=None):
 
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated, ))
-def poi_json_tree(request, campus_id, format=None):
+def poi_json_tree(request, format=None):
 
     lang_code = request.LANGUAGE_CODE
 
@@ -116,7 +116,7 @@ def poi_json_tree(request, campus_id, format=None):
 
 
 @api_view(['GET', ])
-def get_poi_by_category(request, campus_id, category_name, format=None):
+def get_poi_by_category(request, category_name, format=None):
     if request.method == 'GET':
         try:
             cats = PoiCategory.objects.filter(enabled=True).get(cat_name__contains=category_name)
@@ -132,14 +132,14 @@ def get_poi_by_category(request, campus_id, category_name, format=None):
 
 
 @api_view(['GET', ])
-def get_poi_by_cat_id(request, campus_id, cat_id, format=None):
+def get_poi_by_cat_id(request, cat_id, format=None):
     """
     Get all poi features for children and grandchildren of incomping parent cateogry id
-    :param request: 
-    :param campus_id: id of campus as integer 
-    :param cat_id: 
-    :param format: 
-    :return: 
+    :param request:
+    :param campus_id: id of campus as integer
+    :param cat_id:
+    :param format:
+    :return:
     """
     if request.method == 'GET':
 

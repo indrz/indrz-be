@@ -404,7 +404,7 @@ function generateResultLinks(att, searchString, f_center, className, floor, fid,
 
 function searchIndrz(campusId, searchString, zoomLevel) {
 
-    var searchUrl = hostUrl + req_locale + '/search/' + searchString + '?format=json';
+    var searchUrl = hostUrl + 'search/' + searchString + '?format=json';
 
     if (searchLayer) {
         map.removeLayer(searchLayer);

@@ -332,4 +332,4 @@ class BuildingFloorSpace(FloorSpaceBase):
 
     @property
     def centerGeometry(self):
-        return self.multi_poly.centroid
+        return self.geom.centroid
