@@ -287,6 +287,7 @@ class BuildingFloorPlanLine(gis_models.Model):
     # floor_number = gis_models.IntegerField(verbose_name=_(u"floor number"),null=True, blank=True)
     length = gis_models.DecimalField(verbose_name=_("gis calculated length"), max_digits=10, decimal_places=2, null=True, blank=True)
     floor_num = gis_models.FloatField(verbose_name=_("floor number"),null=True, blank=True)
+    floor_name = gis_models.CharField(verbose_name=_("floor name"), max_length=200,null=True, blank=True)
 
     fk_line_type = gis_models.ForeignKey(LtPlanLineType, on_delete=gis_models.CASCADE, null=True, blank=True)
     fk_building_floor = gis_models.ForeignKey(BuildingFloor, on_delete=gis_models.CASCADE, null=True, blank=True)
