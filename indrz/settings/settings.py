@@ -97,9 +97,9 @@ DATABASES = {
     'default': {
         # Postgresql with PostGIS
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'OPTIONS': {
-                'options': '-c search_path=django,public'
-            },
+        # 'OPTIONS': {
+        #         'options': '-c search_path=django,public'
+        #     },
         # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.getenv('POSTGRES_DB'),  # DB name
         'USER': os.getenv('POSTGRES_USER'),  # DB user name

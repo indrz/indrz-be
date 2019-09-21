@@ -11,6 +11,7 @@ from pathlib import Path
 
 from utils import con_string, con_dj_string, unique_floor_names
 
+
 print(con_string)
 conn = psycopg2.connect(con_string)
 cur = conn.cursor()
@@ -30,7 +31,51 @@ print("WHHHAAAT ", campuses_dict['Karlsplatz'])
 
 
 
-print(campuses_dict)
+
+def get_floor_float(name):
+    """
+    assuming input name is like "DA_EG_03_2019.dxf"
+    :param name: dxf file name like "DA_EG_03_2019.dxf"
+    :return: float value of floor
+    """
+
+    floor_names_odd = ['ZD', 'ZE', 'ZU', 'DG', 'EG', 'SO']
+    floor_names_u = ['U1', 'U2', 'U3', 'U4']
+    floor_names_z = ['Z1', 'Z2', 'Z3', 'Z4', 'Z5']
+    floor_names_int = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+
+    if not name:
+        return name
+    # floor = name.split("_")[-3]
+
+    floor = name
+
+    if floor in floor_names_odd:
+        if floor == "EG":
+            floor = 0.0
+        elif floor == "SO":
+            floor = -0.5
+        elif floor == "ZE":
+            floor = 0.5
+        elif floor == "ZU":
+            floor = -1.5
+        else:
+            floor = 9999.0
+    elif floor in floor_names_z:
+        # zwischen stock
+        floor = float(floor[1])*1.0 + 0.5
+
+    elif floor in floor_names_int:
+        floor = float(floor)*1.0
+
+    elif floor in floor_names_u:
+        # underground
+        floor = float(floor[1]) * -1.0
+    else:
+        floor = 9999.0
+
+
+    return floor*1.0
 
 
 def read_all_spaces_csv():
@@ -169,7 +214,7 @@ def create_org():
     cur_dj.execute(sql_org)
     conn_dj.commit()
 
-# create_org()
+
 
 def create_campus():
 
@@ -182,8 +227,6 @@ def create_campus():
         cur_dj.execute(sql_campus)
         conn_dj.commit()
 
-
-# create_campus()
 
 def create_building():
 
@@ -212,12 +255,12 @@ def create_building():
             traks = building['trakts']
             floors = building['floors']
             b_num_floors = len(building['floors'])
+            name = traks[0][0].upper()
 
             # print(adress, traks, floors, b_num_floors)
 
-
-            sql_building = f"""INSERT INTO django.buildings_building (street, num_floors, description, fk_organization_id, fk_campus_id)
-                        VALUES ('{adress}', {b_num_floors}, '{json.dumps(traks)}', {org_id}, {campus_id});"""
+            sql_building = f"""INSERT INTO django.buildings_building (name, street, num_floors, description, fk_organization_id, fk_campus_id, wings)
+                        VALUES ('{name}', '{adress}', {b_num_floors}, '{json.dumps(floors)}', {org_id}, {campus_id}, '{json.dumps(traks)}');"""
 
             print(sql_building)
             cur_dj.execute(sql_building)
@@ -225,13 +268,46 @@ def create_building():
 
 
 
-# create_building()
-
 def create_floor():
-    sql_foor = f""" SELECT id, fk_campus_id from django.buildings_building;"""
-    cur_dj.execute(sql_floor)
-    campuses = cur_dj.fetchall()
+
+    sql_foor = """SELECT id, name, fk_campus_id, description from django.buildings_building;"""
+    cur_dj.execute(sql_foor)
+    buildings = cur_dj.fetchall()
+
+    for building in buildings:
+        s_name = building[1]
+        building_id = building[0]
+
+        building_floors = json.loads(building[3])
+
+        for floor in building_floors:
+            floor_float = get_floor_float(floor)
+
+            sql_get_umriss = f"""select short_name, st_asewkt(geom) from campuses.indrz_umriss_eg where short_name = '{s_name}';"""
+            # print(sql_get)
+            cur.execute(sql_get_umriss)
+            umrisse = cur.fetchall()
+
+            s = f"""select short_name, {floor_float}, st_setsrid(st_transform(geom,3857),3857), {building_id} from campuses.indrz_umriss_eg where short_name = '{s_name}'"""
+            cur.execute(s)
+            umrisse = cur.fetchall()
+
+            for umriss in umrisse:
+
+                sql = f"""INSERT INTO django.buildings_buildingfloor (short_name, floor_num, geom, fk_building_id) values ('{umriss[0]}', {floor_float},
+                              '{umriss[2]}', {building_id}) ;"""
+                print(sql)
+                cur_dj.execute(sql)
+                conn_dj.commit()
+
+
     pass
+
+
+create_org()
+create_campus()
+create_building()
+create_floor()
 
 def create_space():
     pass
