@@ -259,13 +259,12 @@ class FloorSpaceBase(gis_models.Model):
     long_name = gis_models.CharField(verbose_name=_("long name"), max_length=150, null=True, blank=True)
     area = gis_models.DecimalField(verbose_name=_("gis calculated area"), max_digits=10, decimal_places=2, null=True, blank=True)
     perimeter = gis_models.DecimalField(verbose_name=_("gis calculated perimeter"), max_digits=10, decimal_places=2, null=True, blank=True)
-    floor_num = gis_models.IntegerField(verbose_name=_("floor number"),null=True, blank=True)
+    floor_num = gis_models.FloatField(verbose_name=_("floor number"),null=True, blank=True)
 
     geom = gis_models.MultiPolygonField(srid=3857, spatial_index=True, null=True, blank=True)
 
     fk_access_type = gis_models.ForeignKey(LtAccessType, null=True, blank=True, on_delete=gis_models.CASCADE)
     fk_building_floor = gis_models.ForeignKey(BuildingFloor, on_delete=gis_models.CASCADE)
-    fk_building = gis_models.ForeignKey(Building, on_delete=gis_models.CASCADE)
 
     class Meta:
         abstract = True
@@ -287,11 +286,10 @@ class BuildingFloorPlanLine(gis_models.Model):
     long_name = gis_models.CharField(verbose_name=_("long name"), max_length=150, null=True, blank=True)
     # floor_number = gis_models.IntegerField(verbose_name=_(u"floor number"),null=True, blank=True)
     length = gis_models.DecimalField(verbose_name=_("gis calculated length"), max_digits=10, decimal_places=2, null=True, blank=True)
-    floor_num = gis_models.IntegerField(verbose_name=_("floor number"),null=True, blank=True)
+    floor_num = gis_models.FloatField(verbose_name=_("floor number"),null=True, blank=True)
 
     fk_line_type = gis_models.ForeignKey(LtPlanLineType, on_delete=gis_models.CASCADE, null=True, blank=True)
     fk_building_floor = gis_models.ForeignKey(BuildingFloor, on_delete=gis_models.CASCADE, null=True, blank=True)
-    fk_building = gis_models.ForeignKey(Building, on_delete=gis_models.CASCADE)
 
     geom = gis_models.MultiLineStringField(srid=3857, spatial_index=True, null=True, blank=True)
 
