@@ -46,7 +46,7 @@ class BuildingFloorGeomSerializer(GeoFeatureModelSerializer):
         fields = ('id', 'short_name', 'floor_num', 'fk_building')
 
 
-class FloorSerializer(serializers.ModelSerializer):
+class FloorSerializerOld(serializers.ModelSerializer):
     buildingfloorspace_set = BuildingFloorSpaceSerializer(many=True, read_only=True)
 
     class Meta:
@@ -54,9 +54,15 @@ class FloorSerializer(serializers.ModelSerializer):
         fields = ('id', 'short_name', 'floor_num', 'fk_building', 'buildingfloorspace_set')
 
 
+class FloorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BuildingFloor
+        fields = ('id', 'short_name', 'floor_num', 'fk_building')
+
+
 class BuildingSerializer(serializers.ModelSerializer):
 
-    buildingfloor_set = FloorSerializer(many=True, read_only=True)
+    buildingfloor_set = FloorSerializerOld(many=True, read_only=True)
 
     class Meta:
         model = Building
@@ -81,7 +87,7 @@ class FloorSerializerDetails(serializers.ModelSerializer):
 
 class BuildingSerializerDetails(serializers.ModelSerializer):
 
-    buildingfloor_set = FloorSerializer(many=True, read_only=True)
+    buildingfloor_set = FloorSerializerOld(many=True, read_only=True)
 
     class Meta:
         model = Building
