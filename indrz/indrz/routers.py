@@ -1,7 +1,7 @@
 from rest_framework import routers
 from django.urls import include, path
 
-from buildings.views import CampusViewSet
+from buildings.viewsets import CampusViewSet, FloorViewSet
 from users.views import UserViewSet
 
 router = routers.DefaultRouter()
@@ -9,6 +9,7 @@ router = routers.DefaultRouter()
 
 router.register(r"users", UserViewSet, base_name="users")
 router.register(r'campus', CampusViewSet)
+router.register(r'floor', FloorViewSet, base_name='floors')
 
 
 # # CAMPUS AND BUILDINGS API URLS
