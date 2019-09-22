@@ -3,10 +3,15 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-db_user = os.getenv('DB_USER')
-db_name = os.getenv('DB_NAME')
-db_host = os.getenv('DB_HOST')
-db_pass = os.getenv('DB_PASSWORD')
+# db_user = os.getenv('DB_USER')
+# db_name = os.getenv('DB_NAME')
+# db_host = os.getenv('DB_HOST')
+# db_pass = os.getenv('DB_PASSWORD')
+
+db_user = os.getenv('DB_DJ_USER')
+db_name = os.getenv('DB_DJ_NAME')
+db_host = os.getenv('DB_DJ_HOST')
+db_pass = os.getenv('DB_DJ_PASSWORD')
 
 con_string = f"dbname={db_name} user={db_user} host={db_host} password={db_pass}"
 
