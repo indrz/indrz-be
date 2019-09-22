@@ -97,9 +97,9 @@ DATABASES = {
     'default': {
         # Postgresql with PostGIS
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'OPTIONS': {
-                'options': '-c search_path=django,public'
-            },
+        # 'OPTIONS': {
+        #         'options': '-c search_path=django,public'
+        #     },
         # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.getenv('POSTGRES_DB'),  # DB name
         'USER': os.getenv('POSTGRES_USER'),  # DB user name
@@ -156,9 +156,6 @@ STATIC_ROOT = os.getenv('STATIC_ROOT')
 MEDIA_URL = os.getenv("MEDIA_URL")
 MEDIA_ROOT = os.getenv('MEDIA_ROOT')
 
-STATICFILES_DIRS = [
-   os.path.join(BASE_DIR, STATIC_FOLDER),
-]
 
 # finds all static folders in all apps
 STATICFILES_FINDERS = (

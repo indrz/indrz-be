@@ -1,5 +1,5 @@
-var xStart = 1822283.80;
-var yStart = 6139924.90;
+xStart = 1822252.75;
+yStart = 6139984.70;
 
 
 var view = new ol.View({

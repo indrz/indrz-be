@@ -13,7 +13,7 @@ $(document).ready(function () {
 
     function getTree(langCode) {
 
-            indrzApiCall(hostUrl +  langCode + "/indrz/api/v1/campus/1/poi/jstree/?format=json").done(function (json) {
+            indrzApiCall(baseApiUrl +  "poi/jstree/?format=json").done(function (json) {
 
                 $('#indrzPoiTree').treeview({
                     levels: 2,

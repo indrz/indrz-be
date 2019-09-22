@@ -1,23 +1,14 @@
 import psycopg2
 import os
-from dotenv import load_dotenv
-load_dotenv()
-from dotenv import load_dotenv
-load_dotenv()
+from .utils import unique_floor_names, con_string
 
-db_user = os.getenv('DB_USER')
-db_name = os.getenv('DB_NAME')
-db_host = os.getenv('DB_HOST')
-db_pass = os.getenv('DB_PASSWORD')
-
-con_string = f"dbname={db_name} user={db_user} host={db_host} password={db_pass}"
 
 conn = psycopg2.connect(con_string)
 cur = conn.cursor()
 # cur.execute("select * from information_schema.tables where table_name=%s", ('mytable',))
 # bool(cur.rowcount)
 
-unique_floor_names = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', 'DG', 'EG', 'SO', 'U1', 'U2', 'U3', 'U4', 'Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'ZD', 'ZE', 'ZU']
+
 
 
 sql_campus = """CREATE TABLE geodata.buildings_campus
@@ -246,7 +237,20 @@ def create_lines_table(floor, campus="campuses", drop=False):
     conn.commit()
 
 
-def create_roomcode_points_table():
+def step1_create_empty_tables(campus="campuses", lines=False, spaces=False, labels=False, routing=False):
+    for floor in unique_floor_names:
+        if lines:
+            create_lines_table(floor, campus)
+        if spaces:
+            create_spaces_table(floor, campus)
+        if labels:
+            create_label_table(floor, campus)
+        if routing:
+            create_routing_tables(floor)
+
+# create_empty_tables(campus="routing", routing=True)
+
+def step2_create_roomcode_points_table():
 
     # ['Name', 'Position X', 'Position Y', 'RAUMBEZEICHNUNG', 'RAUMNUMMER', 'Value', "Layer", "RAUMCODE", "RAUMNR"],
     sql_create = """CREATE TABLE campuses.indrz_imported_roomcodes
@@ -283,21 +287,3 @@ def create_roomcode_points_table():
     # cur.execute(sql_col)
     conn.commit()
 
-
-create_roomcode_points_table()
-
-
-
-
-def create_empty_tables(campus="campuses", lines=False, spaces=False, labels=False, routing=False):
-    for floor in unique_floor_names:
-        if lines:
-            create_lines_table(floor, campus)
-        if spaces:
-            create_spaces_table(floor, campus)
-        if labels:
-            create_label_table(floor, campus)
-        if routing:
-            create_routing_tables(floor)
-
-# create_empty_tables(campus="routing", routing=True)

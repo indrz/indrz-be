@@ -304,12 +304,34 @@ var wmsE00, wmsE01, wmsE02, wmsE03;
 // wmsE02 = createWmtsLayerIndrz('e02', 'indrz:e02', '2', 'false', 3);
 // wmsE03 = createWmtsLayerIndrz('e03', 'indrz:e03', '3', 'false', 3);
 
-wmsE00 = createWmsLayer('e00', 'indrz:e00', '0', 'true', 3);
-wmsE01 = createWmsLayer('e01', 'indrz:e01', '1', 'false', 3);
+// wmsE00 = createWmsLayer('e00', 'indrz:e00', '0', 'true', 3);
+// wmsE01 = createWmsLayer('e01', 'indrz:e01', '1', 'false', 3);
 wmsE02 = createWmsLayer('e02', 'indrz:e02', '2', 'false', 3);
 wmsE03 = createWmsLayer('e03', 'indrz:e03', '3', 'false', 3);
 
+var wmsE01 =  new ol.layer.VectorTile({
+            source: new ol.source.VectorTile({
+              attributions: '© <a href="http    s://www.indrz.com/">indrz.com</a> ' +
+              '© <a href="https://www.indrz.com">' +
+              'indrz.com</a>',
+              format: new ol.format.MVT(),
+              tileGrid: ol.tilegrid.createXYZ({maxZoom: 23}),
+              tilePixelRatio: 16,
+              url:'http://localhost:9090/maps/floor_01/{z}/{x}/{y}.vector.pbf?debug=true'
+            })
+          });
 
+var wmsE00 = new ol.layer.VectorTile({
+            source: new ol.source.VectorTile({
+              attributions: '© <a href="http    s://www.indrz.com/">indrz.com</a> ' +
+              '© <a href="https://www.indrz.com">' +
+              'indrz.com</a>',
+              format: new ol.format.MVT(),
+              tileGrid: ol.tilegrid.createXYZ({maxZoom: 23}),
+              tilePixelRatio: 16,
+              url:'http://localhost:9090/maps/floor_01/{z}/{x}/{y}.vector.pbf?debug=true'
+            })
+          })
 
 var wmsfloorLayerGroup = new ol.layer.Group({layers: [wmsE00, wmsE01, wmsE02, wmsE03], name: "wms floor maps"});
 var poiLayerGroup = new ol.layer.Group({layers: [], id:99999, name: "poi group"});
@@ -326,10 +348,10 @@ var OsmBackLayer = new ol.layer.Tile({
 });
 
 
-indrzApiCall( baseApiUrl + "campus/1/floors/" )
+indrzApiCall( baseApiUrl + "floor/" )
     .then(function (response) {
-        floors_info = response;
-
+        floors_info = response.results;
+        console.log("response is ", response)
         for (var i = 0; i < floors_info.length; ++i) {
             floor_layers.push(floors_info[i]);
             // appendFloorNav(floors_info[i].short_name, [i]);

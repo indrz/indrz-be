@@ -5,21 +5,11 @@ from pathlib import Path, PurePath
 import subprocess
 import psycopg2
 
-from dotenv import load_dotenv
-load_dotenv()
-
-db_user = os.getenv('DB_USER')
-db_name = os.getenv('DB_NAME')
-db_host = os.getenv('DB_HOST')
-db_pass = os.getenv('DB_PASSWORD')
-
-con_string = f"dbname={db_name} user={db_user} host={db_host} password={db_pass}"
-ogr_db_con = f"PG: host={db_host} user={db_user} dbname={db_name} password={db_pass}"
-
-
+from utils import unique_floor_names, con_string, ogr_db_con
 
 conn = psycopg2.connect(con_string)
 cur = conn.cursor()
+
 linefeatures = [
 {'layer': 'E_S29', 'type': 'sink'},
 {'layer': 'O_F49', 'type': 'window'},
@@ -52,9 +42,6 @@ cad_missing = tuple(cad_missing_stairs_elevators)
 
 # TODO add S__27  missing from lines DE-U1
 
-
-unique_floor_names = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', 'DG', 'EG', 'SO', 'U1', 'U2', 'U3', 'U4', 'Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'ZD', 'ZE', 'ZU']
-
 def floor_map():
     unique_floor_name_map = []
     for f in unique_floor_names:
@@ -77,35 +64,9 @@ def floor_map():
 
     return floor_map
 
-floor_names_odd = ['ZD', 'ZE', 'ZU','DG', 'EG', 'SO']
-floor_names_u = ['U1', 'U2', 'U3', 'U4']
-floor_names_z = ['Z1', 'Z2', 'Z3', 'Z4', 'Z5']
-floor_names_int = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 
 
-def get_floor_int(name):
-    if not name:
-        return name
-    floor = name.stem.split("_")[-3]
 
-    if floor in floor_names_odd:
-        if floor == "EG":
-            floor = 0
-        else:
-            floor = 9999
-
-    if floor in floor_names_z:
-        # zwischen stock
-        floor = floor[1] + 1000
-
-    if floor in floor_names_int:
-        floor = int(floor)
-
-    if floor in floor_names_u:
-        # underground
-        floor = int(floor[1]) * -1
-
-    return floor
 
 
 # TRAKTS
@@ -116,52 +77,7 @@ def get_floor_int(name):
 #Arsenal ['MA', 'MB', 'MC', 'MD', 'MG', 'MH', 'MI', 'OA', 'OB', 'OC', 'OY', 'OZ']
 #Ausweichquartier ['WA', 'WB', 'WC', 'WD']
 
-def read_campus_csv_list():
-    df = pd.read_csv('gebauede-tu-juli-2019.csv',header=None, names=["CAMPUS","TRAKT","TRAKTBEZEICHNUNG","ADRESSE","PLZ","ORT","GESCHOSS"], delimiter=";")
-    # print(df.groupby('TRAKT').groups)
 
-
-    grouped_campus = df.groupby('CAMPUS')
-    grouped_trakt = df.groupby('TRAKT')
-    grouped_adresse = df.groupby('ADRESSE')
-    grouped_floors = df.groupby('GESCHOSS')
-
-    campuses = [name for name, group in grouped_campus]
-    print(campuses)
-    trakts = [name for name, group in grouped_trakt]
-    adresse = [name for name, group in grouped_adresse]
-    floors = [name for name, group in grouped_floors]
-
-    print("floors", len(floors), floors)
-    print("campuses", len(campuses))
-    print("trakts", len(trakts))
-    print("adresse", len(adresse))
-
-
-    for campus in campuses:
-            if campus != 'CAMPUS':
-                    c = df[df['CAMPUS'].str.contains(campus)]
-                    print(campus, len(c))
-
-                    trak = c.groupby('TRAKT')
-                    trakts = [name for name, group in trak]
-                    print("TRACKTS ", trakts, " count: ", len(trakts))
-
-                    gp_floors = c.groupby('GESCHOSS')
-                    floors = [name for name, group in gp_floors]
-                    print(f"FLOORS on {campus} campus ", floors, " count: ", len(floors))
-
-                    address = c.groupby('ADRESSE')
-                    adresses = [name for name, group in address]
-                    print("adresses ", " count : ", len(adresses), " adresses ", adresses)
-
-                    for a in adresses:
-                            t =df[df['ADRESSE'].str.contains(a)]
-                            x = t.groupby('TRAKT')
-                            tt = [name for name, group in x]
-                            print("address ", a, " tracks at this address ", tt)
-
-# read_campus_csv_list()
 
 def get_dxf_fullpath(campus, dxf_file_name):
     dxf_dir_path = Path('c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/' + campus + '/dxf')

@@ -3,13 +3,17 @@ from django.urls import include, path
 
 from buildings.viewsets import CampusViewSet, FloorViewSet
 from users.views import UserViewSet
+from poi_manager.viewsets import PoiCategoryViewSet
 
 router = routers.DefaultRouter()
 
 
 router.register(r"users", UserViewSet, base_name="users")
-router.register(r'campus', CampusViewSet)
 router.register(r'floor', FloorViewSet, base_name='floors')
+router.register(r'campus', CampusViewSet, basename='campus')
+router.register(r'poi', PoiCategoryViewSet, basename='poi')
+
+
 
 
 # # CAMPUS AND BUILDINGS API URLS

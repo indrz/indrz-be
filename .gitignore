@@ -28,4 +28,4 @@ indrz/logs
 
 *.cache
 *.coverage
-/indrz/homepage/scripts/geoserver/roomlog.log
+/scripts/geoserver/roomlog.log

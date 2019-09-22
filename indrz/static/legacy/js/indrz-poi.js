@@ -632,7 +632,7 @@ function showSinglePoi(poiId, zlevel) {
 
     //http://localhost:8000/indrz/api/v1/campus/1/poi/251/
 
-    var poiUrl = baseApiUrl + "campus/1/poi/" + poiId + '/?format=json';
+    var poiUrl = baseApiUrl + "poi/" + poiId + '/?format=json';
 
 
     // create the poi because it does not exist

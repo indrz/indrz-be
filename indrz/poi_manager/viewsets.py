@@ -1,6 +1,12 @@
-from mptt.templatetags.mptt_tags import cache_tree_children
+import collections
 
-from indrz.poi_manager.models import PoiCategory
+from mptt.templatetags.mptt_tags import cache_tree_children
+from rest_framework import viewsets
+from rest_framework.exceptions import APIException
+
+from poi_manager.models import PoiCategory, Poi
+from poi_manager.serializers import PoiSerializer
+from rest_framework.response import Response
 
 
 def poi_json_tree(request, campus_id, format=None):
@@ -33,3 +39,27 @@ def poi_json_tree(request, campus_id, format=None):
         dicts.append(recursive_node_to_dict(n))
 
     return Response(dicts)
+
+
+
+class PoiCategoryViewSet(viewsets.ViewSet):
+    """
+    A simple ViewSet for viewing accounts.
+    """
+
+    def retrieve(self, request, category_name, pk=None):
+        print(request.data)
+        try:
+            cats = PoiCategory.objects.filter(enabled=True).get(cat_name__contains=category_name)
+            if cats:
+
+                queryset = Poi.objects.filter(fk_poi_category=cats.id).filter(enabled=True)
+                if queryset:
+                    serializer_class = PoiSerializer(queryset, many=True)
+
+        except Exception as e:
+            raise APIException(detail=e)
+
+        pass
+
+

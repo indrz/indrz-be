@@ -17,7 +17,7 @@ from django.db import connection
 
 from poi_manager.models import Poi
 
-from api.aau_campus_api import AAICampusAPI, aau_api_res_source
+from api.tu_campus_api import TuCampusAPI, api_res_source
 
 logr = logging.getLogger(__name__)
 
@@ -203,23 +203,23 @@ from rest_framework import permissions
 def search_any(request, q, format=None):
     permission_classes = (permissions.IsAuthenticated, )
 
-    lang_code = request.LANGUAGE_CODE
+    lang_code = "en"
     searchString = q
 
-    res_aau_api = AAICampusAPI().search(q)
+    res_aau_api = TuCampusAPI().search(q)
 
     # print("res_aau_api ", res_aau_api)
     # res_aau_api = False
 
     if res_aau_api:
 
-        src = aau_api_res_source(res_aau_api)
+        src = api_res_source(res_aau_api)
 
         if src == 'staff':
             f = res_aau_api.staff
 
-        elif src == 'rooms':
-            f = res_aau_api.rooms
+        # elif src == 'rooms':
+        #     f = res_aau_api.rooms
 
         elif src == 'organizations':
             f = res_aau_api.organizations
@@ -233,7 +233,7 @@ def search_any(request, q, format=None):
 
         for space in spaces:
 
-            geom = json.loads(space.multi_poly.geojson)
+            geom = json.loads(space.geom.geojson)
 
             name = ""
 
@@ -244,7 +244,7 @@ def search_any(request, q, format=None):
                     props.update(code)
 
             space_center_geom = json.loads(space.centerGeometry.geojson)
-            props.update({"spaceid": space.pk, "building": space.fk_building.building_name,
+            props.update({"spaceid": space.pk, "building": space.fk_building_floor.fk_building.building_name,
                           "floor_num": str(space.floor_num), "centerGeometry": space_center_geom})
 
             feature = Feature(geometry=geom, properties=props)
@@ -261,12 +261,12 @@ def search_any(request, q, format=None):
     # =================================================================================================================================
     # external data api lookup finished, if entries present --> return them, else do a lookup in our local data.
     else:
-        poi_data = searchPoi(lang_code, searchString, "search")
+        # poi_data = searchPoi(lang_code, searchString, "search")
         spaces_data = searchSpaces(lang_code, searchString, "search")
 
-        if poi_data:
-            return Response(poi_data, status=status.HTTP_200_OK)
-        elif spaces_data:
+        # if poi_data:
+        #     return Response(poi_data, status=status.HTTP_200_OK)
+        if spaces_data:
             return Response(spaces_data, status=status.HTTP_200_OK)
         else:
             return Response({"error": "no data found in localdb"}, status=status.HTTP_404_NOT_FOUND)
@@ -321,51 +321,52 @@ def searchPoi(lang_code, search_text, mode):
     build_name = ""
     icon_path = ""
 
-    for poi in pois:
-        if hasattr(poi.fk_building, 'building_name'):
-            build_name = poi.fk_building.building_name
-        if hasattr(poi.fk_poi_category.fk_poi_icon, 'poi_icon'):
-            icon_path = str(poi.fk_poi_category.fk_poi_icon.poi_icon)
+    if pois:
+        for poi in pois:
+            if hasattr(poi.fk_building, 'building_name'):
+                build_name = poi.fk_building.building_name
+            if hasattr(poi.fk_poi_category.fk_poi_icon, 'poi_icon'):
+                icon_path = str(poi.fk_poi_category.fk_poi_icon.poi_icon)
 
-        center_geom = json.loads(poi.geom.geojson)
+            center_geom = json.loads(poi.geom.geojson)
 
-        if lang_code == "de":
-            poi_data = {"label": poi.name_de, "name": poi.name_de, "name_de": poi.name_de, "type": "", "external_id": "",
-                     "centerGeometry": center_geom,
-                     "floor_num": poi.floor_num,
-                     "building": build_name, "aks_nummer": "",
-                     "roomcode": "",
-                     "parent": poi.fk_poi_category.cat_name_de,
-                        "fk_poi_category": {'id': poi.fk_poi_category_id, 'cat_name': poi.fk_poi_category.cat_name_de},
-                    "icon": icon_path,
-                        "poi_link_unique": "/?poi-id=" + str(poi.id) + "&floor=" + str(poi.floor_num),
-                        "poi_link_category": "/?poi-cat-id=" + str(poi.fk_poi_category_id),
-                     "src": "poi db", "poi_id": poi.id}
+            if lang_code == "de":
+                poi_data = {"label": poi.name_de, "name": poi.name_de, "name_de": poi.name_de, "type": "", "external_id": "",
+                         "centerGeometry": center_geom,
+                         "floor_num": poi.floor_num,
+                         "building": build_name, "aks_nummer": "",
+                         "roomcode": "",
+                         "parent": poi.fk_poi_category.cat_name_de,
+                            "fk_poi_category": {'id': poi.fk_poi_category_id, 'cat_name': poi.fk_poi_category.cat_name_de},
+                        "icon": icon_path,
+                            "poi_link_unique": "/?poi-id=" + str(poi.id) + "&floor=" + str(poi.floor_num),
+                            "poi_link_category": "/?poi-cat-id=" + str(poi.fk_poi_category_id),
+                         "src": "poi db", "poi_id": poi.id}
 
-            if mode == "search":
-                new_feature_geojson = Feature(geometry=center_geom, properties=poi_data)
-                poi_list.append(new_feature_geojson)
-            elif mode == "autocomplete":
-                poi_list.append(poi_data)
+                if mode == "search":
+                    new_feature_geojson = Feature(geometry=center_geom, properties=poi_data)
+                    poi_list.append(new_feature_geojson)
+                elif mode == "autocomplete":
+                    poi_list.append(poi_data)
 
-        else:
-            poi_data = {"label": poi.name, "name": poi.name, "name_de": poi.name_de, "type": "", "external_id": "",
-                     "centerGeometry": center_geom,
-                     "floor_num": poi.floor_num,
-                     "building": build_name, "aks_nummer": "",
-                     "roomcode": "",
-                     "parent": poi.fk_poi_category.cat_name,
-                     "fk_poi_category": {'id': poi.fk_poi_category_id, 'cat_name': poi.fk_poi_category.cat_name_en},
-                        "poi_link_unique": "/?poi-id=" + str(poi.id) + "&floor=" + str(poi.floor_num),
-                        "poi_link_category": "/?poi-cat-id=" + str(poi.fk_poi_category_id),
-                     "icon": icon_path,
-                     "src": "poi db", "poi_id": poi.id}
+            else:
+                poi_data = {"label": poi.name, "name": poi.name, "name_de": poi.name_de, "type": "", "external_id": "",
+                         "centerGeometry": center_geom,
+                         "floor_num": poi.floor_num,
+                         "building": build_name, "aks_nummer": "",
+                         "roomcode": "",
+                         "parent": poi.fk_poi_category.cat_name,
+                         "fk_poi_category": {'id': poi.fk_poi_category_id, 'cat_name': poi.fk_poi_category.cat_name_en},
+                            "poi_link_unique": "/?poi-id=" + str(poi.id) + "&floor=" + str(poi.floor_num),
+                            "poi_link_category": "/?poi-cat-id=" + str(poi.fk_poi_category_id),
+                         "icon": icon_path,
+                         "src": "poi db", "poi_id": poi.id}
 
-            if mode == "search":
-                new_feature_geojson = Feature(geometry=center_geom, properties=poi_data)
-                poi_list.append(new_feature_geojson)
-            elif mode == "autocomplete":
-                poi_list.append(poi_data)
+                if mode == "search":
+                    new_feature_geojson = Feature(geometry=center_geom, properties=poi_data)
+                    poi_list.append(new_feature_geojson)
+                elif mode == "autocomplete":
+                    poi_list.append(poi_data)
 
     spaces_list = [{"name": _(space.room_code), "name_" + lang_code: _(space.room_code), "id": space.id} for
                    space in
@@ -395,13 +396,13 @@ class searchAutoComplete(APIView):
 
     def get(self, request, search_text, format=None):
 
-        lang_code = request.LANGUAGE_CODE
+        lang_code = "en"
 
-        res_aau_api = AAICampusAPI().search(search_text)
+        res_api = TuCampusAPI().search(search_text)
 
 
-        if res_aau_api:
-            for x in res_aau_api:
+        if res_api:
+            for x in res_api:
                 if x:
                     return Response(x)
 
@@ -410,18 +411,18 @@ class searchAutoComplete(APIView):
             # ===========================================================================
             # local Postgresql search_index_v data
 
-            poi_results = searchPoi(lang_code, search_text, "autocomplete")
+            # poi_results = searchPoi(lang_code, search_text, "autocomplete")
             spaces_data = searchSpaces(lang_code, search_text, 'autocomplete')
 
-            if poi_results:
-                return Response(poi_results, status=status.HTTP_200_OK)
-            elif spaces_data:
+            # if poi_results:
+            #     return Response(poi_results, status=status.HTTP_200_OK)
+            if spaces_data:
                 return Response(spaces_data, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "sorry nothing found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-class AauApi(APIView):
+class TuApi(APIView):
     """
     A view that can accept POST requests with JSON content.
     """
@@ -429,6 +430,6 @@ class AauApi(APIView):
 
     def get(self, request, q, format=None):
 
-        x = AAICampusAPI().search(q)
+        x = TuCampusAPI().search(q)
         return Response({'response': x, })
 

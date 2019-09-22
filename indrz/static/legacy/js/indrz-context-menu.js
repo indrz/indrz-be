@@ -9,37 +9,37 @@ var indrz_contextmenu_items = [
   {
     text: 'Route FROM here',
     classname: 'bold',
-    icon: '/static/img/contextmenu-start-marker.png',
+    icon: 'static/legacy/img/contextmenu-start-marker.png',
     callback: setStartCoord
   },
       {
     text: 'Route TO here',
     classname: 'bold',
-    icon: '/static/img/contextmenu-end-marker.png',
+    icon: 'static/legacy/img/contextmenu-end-marker.png',
     callback: setEndCoord
   },
       {
     text: 'Clear Route',
     classname: 'bold',
-    icon: '/static/img/contextmenu-clear-marker.png',
+    icon: 'static/legacy/img/contextmenu-clear-marker.png',
     callback: contextClearRoute
   },
 
   {
     text: 'Center map here',
     classname: 'bold',
-    icon: "/static/img/contextmenu-center-map.png",
+    icon: "static/legacy/img/contextmenu-center-map.png",
     callback: center
   },
   {
     text: 'Add a Marker',
-    icon: "/static/img/contextmenu-add-marker.png",
+    icon: "static/legacy/img/contextmenu-add-marker.png",
     callback: marker
   },
           {
     text: 'Remove Markers',
     classname: 'bold',
-    icon: '/static/img/contextmenu-remove-markers.png',
+    icon: 'static/legacy/img/contextmenu-remove-markers.png',
     callback: removeAllContextMarkers
   }
 
