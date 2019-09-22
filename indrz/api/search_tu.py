@@ -19,64 +19,9 @@ from poi_manager.models import Poi
 
 from api.tu_campus_api import TuCampusAPI, api_res_source
 
+
 logr = logging.getLogger(__name__)
 
-
-
-
-
-# search for what is close to a given coordinate and return a list of strings and coordinates
-# - coordinates must contain Lon, Lat and Layer
-# @jsonrpc_method('searchCoordinatesPOI(q=dict) -> dict', validate=True)
-
-@api_view(['GET'])
-def search_coordinates_on_poi(request, q, format=None):
-    if q.keys().index('coordinates') < 0:
-        raise Exception("Couldn't find coordinates in Parameter q")
-    coordinates = q['coordinates']
-    lon = float(coordinates['lon'])
-    lat = float(coordinates['lat'])
-    layer = int(coordinates['layer'])
-
-    distance_bound = 1  # 5 meters
-
-    # build geom string - this should be safe from any sql injection as lon and lat are both floats
-    geom = "ST_SetSrid(ST_GeomFromText('POINT(" + str(lon) + " " + str(lat) + ")'),900913)"
-
-    sql = "SELECT search_string, text_type, external_id, ST_asgeojson(geom) as geom, \
-    ST_asgeojson(ST_PointOnSurface(geom)) as center, \
-    ST_Distance(geom," + geom + ") as dist, layer, external_ref_name, aks_nummer, building \
-    FROM geodata.search_index_v \
-    WHERE text_type='poi' \
-    AND layer=%(layer)s \
-    AND ST_Distance(geom," + geom + ") < %(distance_bound)s \
-    ORDER BY priority DESC, ST_Distance(geom," + geom + ") \
-    ASC LIMIT 30"
-
-    rows = []
-
-    from django.db import connection
-
-    cursor = connection.cursor()
-    cursor.execute(sql,
-                   {"layer": layer, "distance_bound": distance_bound})
-    dbRows = cursor.fetchall()
-    for row in dbRows:
-        external_ref_name = row[7]
-        # query to bach api
-        external_data = bach_calls.bach_get_room_by_pk_big(external_ref_name)
-        obj = {"name_de": row[0], "name_en": row[0], "type": row[1], "external_id": row[2], "geometry": row[3],
-               "centerGeometry": row[4], "dist": row[5], "layer": int(row[6]), "aks_nummer": row[8], "building": row[9],
-               "externalRefName": external_ref_name,
-               "externalData": external_data,
-               }
-        rows.append(obj)
-
-    searchString = str(lon) + "," + str(lat) + "," + str(layer)
-
-    retVal = {"searchString": searchString, "searchResult": rows, "length": len(dbRows)}
-
-    return Response(retVal)
 
 
 def repNoneWithEmpty(string):
@@ -142,58 +87,6 @@ def getAssignedEntrance(request, aks, layer, format=None):
     # search for strings and return a list of strings and coordinates
 
 
-def has_front_office(orgid):
-    """
-
-    :param data:
-    :return:
-    """
-
-    from django.db import connection
-    cursor = connection.cursor()
-
-    if orgid != None and orgid != "":
-        organization_details = bach_calls.bach_get_organization_details(orgid)
-        if organization_details != None and len(organization_details) > 0:
-            org_info = {"location": organization_details["location"],
-                        "name": organization_details["label"],
-                        "geom": None}
-
-            query_geo = """SELECT  layer as floor, st_asgeojson(st_PointOnSurface(geom)) AS center
-              FROM geodata.search_index_v
-              WHERE external_id = \'{0}\'""".format(organization_details["location"])
-
-            cursor.execute(query_geo)
-            geos = cursor.fetchone()
-
-            foo = ast.literal_eval(geos[1])
-            floor_level = (geos[0])
-
-            org_info.update({'geom': foo, 'floor_num': floor_level})
-
-            return org_info
-    else:
-        return None
-
-def setNameLabel(somethin):
-    # bach_key_priority = {"roomname_de":1, "label":2, "fancyname_de":3, "category_de": 4}
-
-    name_key = None
-
-    if "roomname_de" in somethin:
-        name_key = somethin['roomname_de']
-    elif "label" in somethin:
-        name_key = somethin['label']
-    elif "fancyname_de" in somethin:
-        name_key = somethin['fancyname_de']
-    elif "category_de" in somethin:
-        name_key = somethin['category_de']
-    elif "roomcode" in somethin:
-        name_key = somethin['roomcode']
-    else:
-        name_key = None
-
-    return name_key
 
 from rest_framework import permissions
 
@@ -227,7 +120,18 @@ def search_any(request, q, format=None):
         else:
             f = [{"error": "nothing found with: " + q, "cat": src}]
 
-        roomcodes = [val['roomcode'] for val in f]
+
+
+        all_api_results = []
+        if res_aau_api.organizations:
+            all_api_results.extend(res_aau_api.organizations)
+        if res_aau_api.staff:
+            all_api_results.extend(res_aau_api.staff)
+
+
+        roomcodes = list(set(val['roomcode'] for val in all_api_results))
+        print(roomcodes)
+
         spaces = BuildingFloorSpace.objects.filter(room_code__in=roomcodes)
         features = []
 
@@ -285,16 +189,16 @@ def searchSpaces(lang_code, search_text, mode):
 
             s_data = {"label": sd.room_code, "name": sd.room_code, "name_de": sd.room_code, "type": "space",
                       "external_id": sd.room_external_id,
-                      "centerGeometry": json.loads(sd.multi_poly.centroid.geojson),
+                      "centerGeometry": json.loads(sd.geom.centroid.geojson),
                       "floor_num": sd.floor_num,
-                      "building": sd.fk_building.name,
+                      "building": sd.fk_building_floor.fk_building.name,
                       "roomcode": sd.room_code,
                       "parent": "",
                       "fk_poi_category": {'id': "", 'cat_name': ""},
                       "icon": "",
                       "src": "indrz spaces", "poi_id": ""}
 
-            s_feature = Feature(geometry=json.loads(sd.multi_poly.geojson), properties=s_data)
+            s_feature = Feature(geometry=json.loads(sd.geom.geojson), properties=s_data)
             ac_data.append(s_data)
             s_features.append(s_feature)
         fc = FeatureCollection(s_features)
@@ -400,11 +304,23 @@ class searchAutoComplete(APIView):
 
         res_api = TuCampusAPI().search(search_text)
 
+        print("in AUTOCOMPLETE ", res_api)
+
 
         if res_api:
-            for x in res_api:
-                if x:
-                    return Response(x)
+            all_api_results = []
+            if res_api.organizations:
+                all_api_results.extend(res_api.organizations)
+            if res_api.staff:
+                all_api_results.extend(res_api.staff)
+
+
+
+            if all_api_results:
+                return Response(all_api_results)
+            # for x in res_api:
+            #     if x:
+            #         return Response(x)
 
             # return Response(res_aau_api)
         else:
