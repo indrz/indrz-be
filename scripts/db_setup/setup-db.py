@@ -54,12 +54,22 @@ backup_filename = "campuses.backup"
 restore_dbname = "tutest"
 
 schema_name = "campuses"
-# subprocess.call(
-#     ["pg_dump", "--host", db_host, "--port", db_port, "-U", db_superuser, "--no-owner", "-n", f"{schema_name}", "--format", "c", "--verbose", "--file", f"{backup_filename}", "indrztudata"])
 
-subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", f"{restore_dbname}", "-c", f"CREATE SCHEMA {schema_name} AUTHORIZATION {db_user};"])
-subprocess.call(
-    ["pg_restore", "--host", db_host, "--port", db_port, "-U", "postgres", "--role=tutest", "--dbname", f"{restore_dbname}", "-n", f"{schema_name}", "--format", "c", "--verbose", f"{backup_filename}"])
+schemas_back = ['karlsplatz', 'freihaus', 'getreidemarkt', 'arsenal', 'gusshaus','routing']
+
+def dump_schemas():
+    for schema in schemas_back:
+        print(f"now dumping schema {schema}")
+        subprocess.call(
+            ["pg_dump", "--host", db_host, "--port", db_port, "-U", db_superuser, "--no-owner", "-n", f"{schema}", "--format", "c", "--verbose", "--file", f"{schema}-20190922-2308.backup", "indrztudata"])
+
+def restore_schema():
+    for schema in schemas_back:
+        print(f"now creating schema {schema}")
+        subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", f"{restore_dbname}", "-c", f"CREATE SCHEMA {schema} AUTHORIZATION {db_user};"])
+        print(f"now restoring schema {schema}")
+        subprocess.call(
+            ["pg_restore", "--host", db_host, "--port", db_port, "-U", "postgres", "--role=tutest", "--dbname", f"{restore_dbname}", "-n", f"{schema}", "--format", "c", "--verbose", f"{schema}-20190922-2308.backup"])
 
 
 def create_init_db(create_role=False):
@@ -133,6 +143,10 @@ def restore_db():
     restore_file = r"c:\02_DEV\01_projects\02_indrz\gitlab_wu\scripts\indrz-wu-server.backup"
     pg_restore = r"c:\Program Files\PostgreSQL\9.5\bin\pg_restore.exe"
     subprocess.call([pg_restore, '-h', dbhost, "-p", dbport, "-U", db_user, "--dbname", db_name, "--verbose", restore_file])
+
+if __name__ == '__main__':
+    # dump_schemas()
+    # restor'e_schema()
 
 
 # create_init_db()

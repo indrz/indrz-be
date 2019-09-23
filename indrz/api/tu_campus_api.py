@@ -23,13 +23,14 @@ class TuCampusAPI:
 
     # Orgeinheiten - Nummer
     # ORGUNIT_NUM = '/api/orgunit/v22/number/E193-02?persons=true'
-    ORGUNIT_NUM = '/orgunit/v22/number'
+    ORGUNIT_NUM = '/orgunit/v22/number/'
 
     # Liefert alle aktiven Organisationseinheiten der TU-Wien
     ORG_ALL = '/orgunit/v22/organigramm'
 
     # Ergebnis der Suchanfrage von Orgeinheiten
-    ORG_SEARCH = '/orgunit/v22/osuche/?q='
+    # ?q=
+    ORG_SEARCH = '/orgunit/v22/osuche/'
 
     # Detaildaten einer Person auf Basis der TISS-ID
     PERSON_ID = '/person/v22/id/139234'
@@ -45,39 +46,37 @@ class TuCampusAPI:
     # PERSON_SEARCH = '/api/person/v22/psuche/?q=somename'
     PERSON_SEARCH = '/person/v22/psuche/'
 
+    def gen_res(self, result, source, r_code):
+        name = result['first_name'] + " " + result['last_name']
+        res = {'name': name, 'roomcode': r_code, "src": source}
+        return res
 
-    def filter_no_roomkey(self, data, source):
-
-        newres = []
-
-        for result in data:
-            # source person search
-            if 'employee' in result:
-                if result['employee']:
-                    for d in result['employee']:
-                        if 'room' in d:
-                            if d['room']['room_code']:
-                                name = result['first_name'] + " " + result['last_name']
-                                res = {'name': name, 'roomcode': d['room']['room_code'], "src": source}
-                                newres.append(res)
-                            else:
-                                continue
-            # source organization search
-            if 'employees' in result:
-                for employee in result['employees']:
-                    if 'function' in employee:
-                        if employee['function'] == 'Sekretariat':
-                            if 'room_code' in employee:
-                                r_code = employee['room_code']
-                                name = result['first_name'] + " " + result['last_name']
-                                res = {'name': name, 'roomcode': r_code, "src": source}
-                                newres.append(res)
-                            else:
-                                continue
-        if newres:
-            return newres
-        else:
-            return []
+    # def filter_no_roomkey(self, data, source):
+    #
+    #     newres = []
+    #
+    #     for result in data:
+    #         # source person search
+    #
+    #         if source == "external person api":
+    #             if 'employee' in result:
+    #                 if result['employee']:
+    #                     for employee in result['employee']:
+    #                         if 'room' in employee:
+    #                             if employee['room']['room_code']:
+    #                                 r_code = employee['room']['room_code']
+    #                                 newres.append(self.gen_res(result,source, r_code))
+    #                                 print("in persons ", len(newres))
+    #         if source == "external organization api":
+    #             r_code = result['room_code']
+    #             newres.append(self.gen_res(result, source, r_code))
+    #             print("in orgs len ", len(newres))
+    #
+    #     print("FINAL len results is ", len(newres))
+    #     if newres:
+    #         return newres
+    #     else:
+    #         return []
 
     def build_url(self, path, query_data=None):
         """
@@ -102,17 +101,38 @@ class TuCampusAPI:
         """
 
         person_search = "q=" + name
-        print("final url persons ", self.build_url(self.PERSON_SEARCH, person_search))
         res = requests.get(self.build_url(self.PERSON_SEARCH, person_search))
+        source = "external person api"
 
-        print("rest ", res.status_code, res.content)
         if res.status_code == 200:
-
-            print(res.json())
 
             res_json = res.json()
 
-            people_with_rooms_assigned = self.filter_no_roomkey(res_json['results'], source="external person api")
+            people_with_rooms_assigned = []
+
+            for result in res_json['results']:
+                if 'employee' in result:
+                    if result['employee']:
+                        if len(result['employee']) > 1:
+                            employee = result['employee'][0]
+                            # take first room person has because this person is assigned more than one room
+                            if 'room' in employee:
+                                if employee['room']['room_code']:
+                                    r_code = employee['room']['room_code']
+                                    name_concat = result['first_name'] + " " + result['last_name']
+                                    f_res = {'name': name_concat, 'roomcode': r_code, "src": source}
+                                    people_with_rooms_assigned.append(f_res)
+                        if len(result['employee']) == 1:
+                            employee = result['employee']
+                            if 'room' in employee:
+                                if employee['room']['room_code']:
+                                    r_code = employee['room']['room_code']
+                                    name_concat = result['first_name'] + " " + result['last_name']
+                                    f_res = {'name': name_concat, 'roomcode': r_code, "src": source}
+                                    people_with_rooms_assigned.append(f_res)
+
+            # people_with_rooms_assigned = self.filter_no_roomkey(res_json['results'], source="external person api")
+
             if people_with_rooms_assigned:
                 return people_with_rooms_assigned
             else:
@@ -122,76 +142,6 @@ class TuCampusAPI:
             return None
             # return {"error": "no data found", "method": "search_staff"}
 
-    # def search_staff_unmodified(self, name):
-    #     """
-    #     Searches for staff by name
-    #     :param name:
-    #     :return: list of dicts
-    #     """
-    #     data = {
-    #         'name': name
-    #     }
-    #
-    #     res = requests.get(self.build_url(self.STAFF_SEARCH_PATH, data))
-    #
-    #     if res.status_code == 200:
-    #         return res.json()
-    #     else:
-    #         return None
-            # return {"error": "no data found", "method": "search_staff"}
-
-
-    # def search_rooms(self, *, room_id=None, room_number=None, description=None,
-    #                  ou=None):
-    #     """
-    #     Searches for rooms by either room ID
-    #     or room number
-    #     or description
-    #     or organization
-    #
-    #     Arguments are mutually exclusive
-    #     :param room_id:
-    #     :param room_number:
-    #     :param description:
-    #     :param ou:
-    #     :return: list of dicts
-    #     """
-    #
-    #     if room_id:
-    #         url = '%s/%s' % (self.ROOMS_SEARCH_PATH, room_id)
-    #         return requests.get(self.build_url(url)).json()
-    #
-    #     for key, value in (('roomnumber', room_number),
-    #                        ('description', description),
-    #                        ('ou', ou)):
-    #         if value:
-    #             data[key] = value
-    #
-    #     res = requests.get(self.build_url(self.ROOMS_SEARCH_PATH))
-    #
-    #     if res.status_code == 200:
-    #
-    #         fa = self.filter_no_roomkey(res.json(), source="external rooms api")
-    #
-    #         if fa:
-    #             return fa
-    #         else:
-    #             return None
-    #     else:
-    #         return None
-    #         # return {"error": "no data found", "method": "search_rooms"}
-    #
-    # def search_rooms_simple(self, name):
-    #     """
-    #     Simplified version of self.search_rooms() for usage in
-    #     ThreadPoolExecutor.
-    #
-    #     Accepts single argument `name` that is passed as `description` argument
-    #     to self.search_rooms()
-    #     :param name:
-    #     :return: list of dicts
-    #     """
-    #     return self.search_rooms(description=name)
 
     def search_organizations(self, name):
         """
@@ -201,7 +151,10 @@ class TuCampusAPI:
         """
         # ORG_SEARCH = '/api/orgunit/v22/osuche/?q='
 
-        res = requests.get(self.build_url(self.ORG_SEARCH, name))
+        se = "q=" + name
+        source = "external organization api"
+
+        res = requests.get(self.build_url(self.ORG_SEARCH, se))
 
         if res.status_code == 200:
 
@@ -213,31 +166,37 @@ class TuCampusAPI:
                     if 'code' in result:
                         codes.append(result['code'])
 
+            org_sekretariate_roomcodes = {'results': []}
 
-            org_sekretariate_roomcodes = []
+
+            newres = []
             for code in codes:
-                final = code + "?persons=true"
-                org_data = requests.get(self.build_url(self.ORGUNIT_NUM, final))
+                # https://tiss.tuwien.ac.at/api/orgunit/v22/number/E020/?persons=true
+                org_resp = requests.get(self.build_url(self.ORGUNIT_NUM + code, "persons=true"))
+                org_data = org_resp.json()
 
-                jj = json.loads(org_data.json())
-
-                if 'employees' in jj:
-                    for employee in jj['employees']:
+                if 'employees' in org_data:
+                    for employee in org_data['employees']:
                         if 'function' in employee:
                             if employee['function'] == 'Sekretariat':
                                 if 'room_code' in employee:
                                     r_code = employee['room_code']
-                                    org_sekretariate_roomcodes.append(r_code)
+                                    # name = employee['first_name'] + " " + employee['last_name']
+                                    # res = {'name': name, 'roomcode': r_code, "src": 'external organization api'}
+                                    # org_sekretariate_roomcodes['results'].append(employee)
+
+                                    name_concat = employee['first_name'] + " " + employee['last_name']
+                                    f_res = {'name': name_concat, 'roomcode': r_code, "src": source}
+                                    # people_with_rooms_assigned.append(f_res)
+
+                                    newres.append(f_res)
+                                    print("in orgs len ", len(newres))
 
 
+            # fa = self.filter_no_roomkey(org_sekretariate_roomcodes['results'], source="external organization api")
 
-                # ORGUNIT_NUM = '/api/orgunit/v22/number/E193-02?persons=true'
-
-
-            fa = self.filter_no_roomkey(r['results'], source="external organization api")
-
-            if fa:
-                return fa
+            if newres:
+                return newres
             else:
                 return None
         else:
@@ -259,13 +218,10 @@ class TuCampusAPI:
 
         aau_api_search = SearchResult(*[future.result() for future in futures])
 
-
-
         if any(aau_api_search):
             return aau_api_search
         else:
             return None
-
 
 
 def api_res_source(x):
