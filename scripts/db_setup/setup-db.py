@@ -16,12 +16,22 @@ import os
 # db_port = os.getenv('POSTGRES_PORT')
 
 
-db_host = "localhost"
-db_user = "tutest"
-db_pass = "air"
-db_name = "tutest"
-db_port = "5432"
-db_owner = "tutest"
+# db_host = "localhost"
+# db_user = "tutest"
+# db_pass = "air"
+# db_name = "tutest"
+# db_port = "5432"
+# db_owner = "tutest"
+# db_superuser = "postgres"
+# db_schema = "django"
+# db_schemas = "django,campuses,geodata,public"
+
+db_host = "indrz.com"
+db_user = "tu"
+db_pass = "J2j9S%HGJsxy"
+db_name = "indrztu"
+db_port = "5433"
+db_owner = "tu"
 db_superuser = "postgres"
 db_schema = "django"
 db_schemas = "django,campuses,geodata,public"
@@ -31,10 +41,11 @@ db_schemas = "django,campuses,geodata,public"
 # print("now creating user")
 # subprocess.call(["createuser", "--host", db_host, "--port", db_port, "-U", db_superuser, f"{db_owner}"])
 #
-# print("now creating db")
-# subprocess.call(["createdb", "--host", db_host, "--port", db_port, "-U", db_superuser, "-O", f"{db_owner}", db_name])
-#
-#
+
+def create_db():
+    # print("now creating db")
+    subprocess.call(["createdb", "--host", db_host, "--port", db_port, "-U", db_superuser, "-O", f"{db_owner}", db_name])
+
 sql_schema_django = f"""CREATE SCHEMA django AUTHORIZATION {db_owner};"""
 sql_schema_geodata = f"""CREATE SCHEMA geodata AUTHORIZATION {db_owner};"""
 sql_extension = "CREATE EXTENSION postgis;"
@@ -145,19 +156,4 @@ def restore_db():
     subprocess.call([pg_restore, '-h', dbhost, "-p", dbport, "-U", db_user, "--dbname", db_name, "--verbose", restore_file])
 
 if __name__ == '__main__':
-    # dump_schemas()
-    # restor'e_schema()
-
-
-# create_init_db()
-# setup_db()
-
-# backup_db()
-
-
-# dropdb()
-# create_init_db()
-# setup_db()
-
-# restore_db()
-
+    create_db()

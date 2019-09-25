@@ -6,6 +6,18 @@ from utils import con_string, con_dj_string, unique_floor_names
 conn_dj = psycopg2.connect(con_dj_string)
 cur_dj = conn_dj.cursor()
 
+def drop_all_views():
+    view_names = ['cartolines', 'spaces', 'anno', 'footprint']
+    for view_name in view_names:
+        for floor_name in unique_floor_names:
+
+            q =  f"""
+            DROP VIEW IF EXISTS geodata.{view_name}_{floor_name};
+            """
+            cur_dj.execute(q)
+            conn_dj.commit()
+
+
 def create_cartolines_view():
 
     for floor_name in unique_floor_names:
@@ -66,7 +78,7 @@ def create_floor_footprint_view():
         q_footprint = f"""
             DROP VIEW IF EXISTS geodata.footprint_{floor_name};
             CREATE OR REPLACE VIEW geodata.footprint_{floor_name} AS
-            SELECT long_name AS building_name, geom
+            SELECT id, long_name AS building_name, geom
             FROM django.buildings_buildingfloor
             WHERE floor_num = {floor_float};
         """
@@ -77,7 +89,8 @@ def create_floor_footprint_view():
 if __name__ == "__main__":
     # NOTE TO SELF
     # NONE of these command delete data only insert
-    # create_cartolines_view()
-    # create_spaces_view()
+    drop_all_views()
+    create_cartolines_view()
+    create_spaces_view()
     create_floor_footprint_view()
 
