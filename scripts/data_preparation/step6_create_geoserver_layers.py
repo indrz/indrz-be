@@ -574,7 +574,7 @@ def create_groups(grp_name):
 
 
     print(URL_BASE + "workspaces/indrz/layergroups")
-    r = s.post(URL_BASE + "workspaces/indrz/layergroups", headers=headers, data=post_data)
+    r = s.post(URL_BASE + "workspaces/indrz/layergroups", headers=headers_xml, data=post_data)
     # r = s.get(url_base + "workspaces/indrz/layergroups", geoserver_auth=geoserver_auth, headers=headers)
     print(r.content)
     print(r.reason)
@@ -588,6 +588,35 @@ def generate_groups(floor_name,):
 
     group_names = ['footprint', 'spaces', 'cartolines', 'anno']
 
+    post_data = """<?xml version="1.0" encoding="UTF-8"?>
+                    <layerGroup>
+                      <name>floor_{0}</name>
+                      <title>floor_{0}</title>
+                        <workspace>
+                            <name>indrztu</name>
+                        </workspace>
+                      <publishables>
+                        <published type="layer"><name>indrztu:footprint_{0}</name></published>
+                        <published type="layer"><name>indrztu:spaces_{0}</name></published>
+                        <published type="layer"><name>indrztu:anno_{0}</name></published>
+                        <published type="layer"><name>indrztu:cartolines_{0}</name></published>
+                      </publishables>
+                       <bounds>
+                        <minx>1820700.70162944</minx>
+                        <maxx>1827407.17522951</maxx>
+                        <miny>6136643.55439912</miny>
+                        <maxy>6141440.05205234</maxy>
+                        <crs class="projected">EPSG:3857</crs>
+                      </bounds>
+                      <attribution>
+                        <logoWidth>0</logoWidth>
+                        <logoHeight>0</logoHeight>
+                      </attribution>
+
+                    </layerGroup>""".format(floor_name)
+
+    print(post_data)
+
     b = {"layerGroup": {
         "name": f"indrztu:floor_{floor_name}",
         "mode": "SINGLE",
@@ -598,18 +627,26 @@ def generate_groups(floor_name,):
         },
         "publishables": {
             "published": [
-                { "name": f"footprint_{floor_name}","link": "string"},
-                { "name": f"spaces_{floor_name}","link": "string"},
-                { "name": f"cartolines_{floor_name}","link": "string"},
-                {"name": f"anno_{floor_name}", "link": "string"}
+                {"type":"layer", "name": f"indrztu:footprint_{floor_name}"},
+                { "type":"layer", "name": f"indrztu:spaces_{floor_name}"},
+                {"type":"layer",  "name": f"indrztu:cartolines_{floor_name}"},
+                {"type":"layer", "name": f"indrztu:anno_{floor_name}",}
             ]
+        },
+        "bounds": {
+            "minx": 1820700.70162944,
+            "maxx": 1827407.17522951,
+            "miny": 6136643.55439912,
+            "maxy": 6141440.05205234,
+            "crs": "EPSG:3857"
         }
     }
     }
 
+    r = s.post(URL_BASE + "/layergroups", headers=headers_xml, data=post_data)
 
-    r = s.post(URL_BASE + "/workspaces/indrztu/layergroups", headers=headers_json, data=json.dumps(b))
-    # r = s.get(url_base + "workspaces/indrz/layergroups", geoserver_auth=geoserver_auth, headers=headers)
+    # r = s.post(URL_BASE + "/layergroups", headers=headers_json, data=json.dumps(b))
+
     print(r.content)
     print(r.reason)
     print(r.status_code)
@@ -667,4 +704,4 @@ def generate_layers():
 
 if __name__ == '__main__':
     # generate_layers()
-    generate_groups("eg")
+    generate_groups("01")
