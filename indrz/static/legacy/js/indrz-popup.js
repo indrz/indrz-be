@@ -566,13 +566,13 @@ function open_popup(properties, coordinate, feature, offsetArray) {
         objCenterCoords = properties.centerGeometry.coordinates;
     }
     var titlePopup = "";
-    var titleBuildingName = gettext('Building: ');
-    var titleFloorNumber = gettext('Floor Number: ');
-    var titleRoomcode = gettext('Room Number: ');
-    var titleRoomCat = gettext('Category: ');
-    var titleFrontOffice = gettext('Front Office: ');
-    var titleNearestEntrance = gettext('Entrance: ');
-    var titleHomepage = gettext('Homepage: ');
+    var titleBuildingName = 'Building: ';
+    var titleFloorNumber = 'Floor Number: ';
+    var titleRoomcode = 'Room Number: ';
+    var titleRoomCat = 'Category: ';
+    var titleFrontOffice = 'Front Office: ' ;
+    var titleNearestEntrance = 'Entrance: ';
+    var titleHomepage = 'Homepage: ';
 
     //var name;
 

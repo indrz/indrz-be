@@ -274,7 +274,7 @@ function createTileXyz(name, layer, floor, is_visible, zIndex) {
 function createWmsLayer(layerName, geoserverLayer, floorNumber, isVisible, zIndexValue) {
     var newWmsLayer = new ol.layer.Image({
         source: new ol.source.ImageWMS({
-            url: baseGeoserverUrl + "indrz/wms",
+            url: baseGeoserverUrl + "/wms",
             params: {'LAYERS': geoserverLayer, 'TILED': true},
             serverType: 'geoserver',
             crossOrigin: ''
@@ -304,34 +304,12 @@ var wmsE00, wmsE01, wmsE02, wmsE03;
 // wmsE02 = createWmtsLayerIndrz('e02', 'indrz:e02', '2', 'false', 3);
 // wmsE03 = createWmtsLayerIndrz('e03', 'indrz:e03', '3', 'false', 3);
 
-// wmsE00 = createWmsLayer('e00', 'indrz:e00', '0', 'true', 3);
-// wmsE01 = createWmsLayer('e01', 'indrz:e01', '1', 'false', 3);
-wmsE02 = createWmsLayer('e02', 'indrz:e02', '2', 'false', 3);
-wmsE03 = createWmsLayer('e03', 'indrz:e03', '3', 'false', 3);
+wmsE00 = createWmsLayer('floor_eg', 'indrztu:floor_eg', '0', 'true', 3);
+wmsE01 = createWmsLayer('floor_01', 'indrztu:floor_01', '1', 'false', 3);
+wmsE02 = createWmsLayer('floor_02', 'indrztu:floor_02', '2', 'false', 3);
+wmsE03 = createWmsLayer('floor_03', 'indrztu:floor_03', '3', 'false', 3);
 
-var wmsE01 =  new ol.layer.VectorTile({
-            source: new ol.source.VectorTile({
-              attributions: '© <a href="http    s://www.indrz.com/">indrz.com</a> ' +
-              '© <a href="https://www.indrz.com">' +
-              'indrz.com</a>',
-              format: new ol.format.MVT(),
-              tileGrid: ol.tilegrid.createXYZ({maxZoom: 23}),
-              tilePixelRatio: 16,
-              url:'http://localhost:9090/maps/floor_01/{z}/{x}/{y}.vector.pbf?debug=true'
-            })
-          });
 
-var wmsE00 = new ol.layer.VectorTile({
-            source: new ol.source.VectorTile({
-              attributions: '© <a href="http    s://www.indrz.com/">indrz.com</a> ' +
-              '© <a href="https://www.indrz.com">' +
-              'indrz.com</a>',
-              format: new ol.format.MVT(),
-              tileGrid: ol.tilegrid.createXYZ({maxZoom: 23}),
-              tilePixelRatio: 16,
-              url:'http://localhost:9090/maps/floor_01/{z}/{x}/{y}.vector.pbf?debug=true'
-            })
-          })
 
 var wmsfloorLayerGroup = new ol.layer.Group({layers: [wmsE00, wmsE01, wmsE02, wmsE03], name: "wms floor maps"});
 var poiLayerGroup = new ol.layer.Group({layers: [], id:99999, name: "poi group"});

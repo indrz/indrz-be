@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'taggit',
     'mptt',
     'rosetta',
+    'corsheaders',
 
     ##### our local indrz apps
     'api',
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -184,7 +186,7 @@ ROSETTA_UWSGI_AUTO_RELOAD = False
 # ROSETTA_STORAGE_CLASS = 'rosetta.storage.SessionRosettaStorage'
 
 
-INDRZ_API_TOKEN = os.getenv('INDRZ_API_TOKEN')
+INDRZ_API_TOKEN = "Token 42519ebe7bada4d7a151c76832b94614ea5b198d"
 IP_STARTSWITH = "137.208."
 LOCALHOST_URL = os.getenv('LOCALHOST_URL') #'"https://campusplan.aau.at/"  # http://campus.wu.ac.at
 
@@ -205,6 +207,7 @@ REST_FRAMEWORK = {
 
 
 sentry_sdk.init(os.getenv('SENTRY_URL'), integrations=[DjangoIntegration()])
+
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",

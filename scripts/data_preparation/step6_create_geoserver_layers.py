@@ -512,13 +512,13 @@ def assign_style_to_layer(floor_name, type):
             "path": "string",
             "type": "VECTOR",
             "defaultStyle": {
-                "name": "indrz-anno"
+                "name": "indrz-space-anno"
             },
             "styles": {
                 "@class": "linked-hash-set",
                 "style": [
                     {
-                        "name": "indrztu:indrz-anno"
+                        "name": "indrztu:indrz-space-anno"
                     }
                 ]
             }
@@ -704,4 +704,9 @@ def generate_layers():
 
 if __name__ == '__main__':
     # generate_layers()
-    generate_groups("01")
+
+    for floor_name in unique_floor_names:
+        time.sleep(3)
+        generate_groups(floor_name.lower())
+    # assign_style_to_layer(floor_name.lower(), 'anno')
+

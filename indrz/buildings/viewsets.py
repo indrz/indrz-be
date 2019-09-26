@@ -16,7 +16,7 @@ class FloorViewSet(viewsets.ReadOnlyModelViewSet):
     """
     A simple ViewSet for viewing accounts.
     """
-    queryset = BuildingFloor.objects.order_by('floor_num').distinct('floor_num')
+    queryset = BuildingFloor.objects.order_by('-floor_num').distinct('floor_num')
     serializer_class = FloornewSerializer
 
 
