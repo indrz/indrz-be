@@ -28,6 +28,36 @@ ogr_db_con = f"PG: host={db_host} user={db_user} dbname={db_name} password={db_p
 
 unique_floor_names = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', 'DG', 'EG', 'SO', 'U1', 'U2', 'U3', 'U4', 'Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'ZD', 'ZE', 'ZU']
 
+# TRAKTS
+#Karlsplatz ['AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AK', 'AP', 'AQ', 'AS', 'AT', 'EA', 'EB', 'EC']
+#Getreidemarkt ['BA', 'BB', 'BC', 'BD', 'BE', 'BG', 'BH', 'BI', 'BK', 'BL', 'BZ', 'PF', 'QA']
+#Gusshaus ['CA', 'CB', 'CC', 'CD', 'CE', 'CF', 'CG', 'CH', 'CI', 'FA', 'FB', 'FC', 'GA', 'HA', 'HB', 'HC', 'HD', 'HE', 'HF', 'HG', 'HH', 'HI', 'HK', 'HL']
+#Freihaus ['DA', 'DB', 'DC', 'DD', 'DE', 'DF', 'ZA', 'ZB', 'ZC', 'ZD']
+#Arsenal ['MA', 'MB', 'MC', 'MD', 'MG', 'MH', 'MI', 'OA', 'OB', 'OC', 'OY', 'OZ']
+#Ausweichquartier ['WA', 'WB', 'WC', 'WD']
+
+def floor_map():
+    unique_floor_name_map = []
+    for f in unique_floor_names:
+        value = ""
+        if f == "DG":
+            value = "Dachgeschoß"
+        elif f == "EG":
+            value = "Erdgeschoß"
+        elif f == "SO":
+            value = "Souterrain"
+        elif f.startswith("U"):
+            value = "Untergeschoß"
+        elif f.startswith("Z"):
+            value = "Zwischengeschoß"
+        else:
+            value = "Obergeschoß"
+
+        d = dict(value, f)
+        unique_floor_name_map.append(d)
+
+    return floor_map
+
 
 def get_floor_float(name):
     """

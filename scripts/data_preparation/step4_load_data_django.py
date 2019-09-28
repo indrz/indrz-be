@@ -25,6 +25,15 @@ csv_campuses = ['A_KARLSPLATZ', 'B_GETREIDEMARKT', 'C_GUSSHAUS', 'D_FREIHAUS', '
 
 campuses_dict = dict(zip(campuses, csv_campuses))
 
+def drop_all_dj_tables():
+
+    table_names = ['buildings_buildingfloorspace', 'building_buildingfloorplanline', 'building_buildingfloor',
+                   'building_building', 'building_campus', 'building_organization']
+
+    for table_name in table_names:
+        s = f"""DROP TABLE django.{table_name};"""
+        cur_dj.execute(s)
+        conn_dj.commit()
 
 
 def get_floor_float(name):
@@ -72,17 +81,6 @@ def get_floor_float(name):
 
     return floor*1.0
 
-
-def read_all_spaces_csv():
-    campus_data = {}
-
-    df = pd.read_csv('AlleRNrnBez12092019.csv', delimiter=";")
-
-    f = df.to_dict()
-
-    for x in f:
-        print(x)
-        break
 
 # read_all_spaces_csv()
 
@@ -293,7 +291,7 @@ def update_values():
 def create_space():
 
     for floor in unique_floor_names:
-        floor_id = 27055
+        floor_id = 1
         floor_name = floor
 
         sql_insert = f"""INSERT INTO django.buildings_buildingfloorspace (room_external_id, room_description, floor_num,
@@ -354,7 +352,7 @@ def populate_space_attributes():
 
 def load_cartolines():
     for floor in unique_floor_names:
-        floor_id = 27055
+        floor_id = 1
         floor_name = floor
         floor_float = get_floor_float(floor_name)
 
@@ -385,11 +383,10 @@ if __name__ == "__main__":
     # create_building()
     # create_floor()
     # update_values()
-    # create_space()
-    # populate_space_attributes()
-    # load_cartolines()
-    pass
-
+    create_space()
+    populate_space_attributes()
+    load_cartolines()
+    print("done")
 
 
 

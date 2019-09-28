@@ -42,43 +42,6 @@ cad_missing = tuple(cad_missing_stairs_elevators)
 
 # TODO add S__27  missing from lines DE-U1
 
-def floor_map():
-    unique_floor_name_map = []
-    for f in unique_floor_names:
-        value = ""
-        if f == "DG":
-            value = "Dachgeschoß"
-        elif f == "EG":
-            value = "Erdgeschoß"
-        elif f == "SO":
-            value = "Souterrain"
-        elif f.startswith("U"):
-            value = "Untergeschoß"
-        elif f.startswith("Z"):
-            value = "Zwischengeschoß"
-        else:
-            value = "Obergeschoß"
-
-        d = dict(value, f)
-        unique_floor_name_map.append(d)
-
-    return floor_map
-
-
-
-
-
-
-# TRAKTS
-#Karlsplatz ['AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AK', 'AP', 'AQ', 'AS', 'AT', 'EA', 'EB', 'EC']
-#Getreidemarkt ['BA', 'BB', 'BC', 'BD', 'BE', 'BG', 'BH', 'BI', 'BK', 'BL', 'BZ', 'PF', 'QA']
-#Gusshaus ['CA', 'CB', 'CC', 'CD', 'CE', 'CF', 'CG', 'CH', 'CI', 'FA', 'FB', 'FC', 'GA', 'HA', 'HB', 'HC', 'HD', 'HE', 'HF', 'HG', 'HH', 'HI', 'HK', 'HL']
-#Freihaus ['DA', 'DB', 'DC', 'DD', 'DE', 'DF', 'ZA', 'ZB', 'ZC', 'ZD']
-#Arsenal ['MA', 'MB', 'MC', 'MD', 'MG', 'MH', 'MI', 'OA', 'OB', 'OC', 'OY', 'OZ']
-#Ausweichquartier ['WA', 'WB', 'WC', 'WD']
-
-
-
 def get_dxf_fullpath(campus, dxf_file_name):
     dxf_dir_path = Path('c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/' + campus + '/dxf')
 
@@ -147,10 +110,7 @@ def step1_import_all_dxf_to_working(campus):
 
 
 # RUN STEP 1 for ALL dxf files OR run import_dxf() to import specific list of dxf files
-# step1_import_all_dxf_to_working("Getreidemarkt")
-# step1_import_all_dxf_to_working("Gusshaus")
-# step1_import_all_dxf_to_working("Freihaus")
-# step1_import_all_dxf_to_working("Karlsplatz")  # 22.09.2019 22:44 done
+
 
 def step2_insert_lines_into_floor_tables(campus):
     # assume all tables already exist if not
@@ -171,9 +131,6 @@ def step2_insert_lines_into_floor_tables(campus):
         cur.execute(sql)
         conn.commit()
 
-
-# step2_insert_lines_into_floor_tables("getreidemarkt")
-# step2_insert_lines_into_floor_tables("Gusshaus")
 
 def step3_insert_spaces_into_floor_tables(campus):
     # assume all tables already exist if not
@@ -196,13 +153,11 @@ def step3_insert_spaces_into_floor_tables(campus):
         cur.execute(sql)
         conn.commit()
 
-#step3_insert_spaces_into_floor_tables('Getreidemarkt')
-#step3_insert_spaces_into_floor_tables('Gusshaus')
 
 def insert_missing_cad_layer(campus, trak, cad_layer_name, remove=False,insert=False):
     """ select data from a specific cad layer and insert into our db """
 
-    table_names = get_dxf_files("Getreidemarkt")
+    table_names = get_dxf_files(campus)
 
     for table in table_names:
         sql = ""
@@ -225,7 +180,7 @@ def insert_missing_cad_layer(campus, trak, cad_layer_name, remove=False,insert=F
 
             cur.execute(sql)
             conn.commit()
-# insert_missing_cad_layer("Getreidemarkt", "bb", 'M_U29, M_Z29_NEU', remove=True)
+
 
 def insert_campuses_all(campus, table, lines=False, spaces=False):
     floor = table.stem.split('_')[-3]
@@ -292,41 +247,16 @@ def import_dxf(campus, dxf_files, re_import=False):
             conn.commit()
 
         print(f"now running ogr to import dxf {dxf_file.stem}")
-        # dxf2postgis(dxf_file, campus)
+        dxf2postgis(dxf_file, campus)
 
         print(f"now inserting to lines and spaces into db  table called {dxf_file.stem}")
         insert_campuses_all(campus, dxf_file, lines=True, spaces=True)
 
-# drop_cad_table_reimport('Freihaus', ['DD_EG_IP_092018.dxf',])
-# import_dxf('Gusshaus', [])
-
-
-# import_dxf('Getreidemarkt', ['BI_05_IP_042019.dxf',], re_import=True)
-# import_dxf('Gusshaus', ['HK_EG_IP_082018.dxf',], re_import=True)
-# import_dxf('Gusshaus', ['HK_EG_IP_082018.dxf',])
-newdxf = ['AA_AB_AC_AD_AE_AF_AG_AI_01_IP_112018.dxf',
-'AA_AB_AC_AD_AE_AF_AG_AI_02_IP_112018.dxf',
-'AA_AB_AC_AD_AE_AF_AG_AI_03_IP_112018.dxf',
-'AA_AB_AC_AD_AE_AF_AG_AI_04_IP_112018.dxf',
-'AA_AB_AC_AD_AE_AF_AG_AI_DG_IP_112018.dxf',
-'AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf',
-'AA_AB_AC_AD_AE_AF_AG_AI_U1_IP_112018.dxf']
-
-import_dxf('Karlsplatz', newdxf) # ran this on 22.09.2019  22:54
 
 def insert_all_dxf_files(campus):
-
-    table_names = get_dxf_files(campus,floor=None, only_dxf_names=True)
+    table_names = get_dxf_files(campus, floor=None, only_dxf_names=True)
 
     import_dxf(campus, table_names, re_import=True)
-
-# insert_all_dxf_files('Karlsplatz')
-# insert_all_dxf_files('Arsenal')
-
-# insert_all_dxf_files("Getreidemarkt", lines=True, spaces=True)
-
-# insert_all_dxf_files("Gusshaus", lines=True, spaces=True)
-# insert_all_dxf_files("Gusshaus", lines=True, spaces=True)
 
 
 new_dxf_gusshaus = ['FA_FB_01_IP_042019.dxf',
@@ -349,11 +279,55 @@ ch_new = ['CH_U1_IP_092018.dxf',
           'CH_EG_IP_092018.dxf',
           'CH_01_IP_092018.dxf']
 
+new_karlsp_dxf = ['AA_AB_AC_AD_AE_AF_AG_AI_01_IP_112018.dxf',
+                  'AA_AB_AC_AD_AE_AF_AG_AI_02_IP_112018.dxf',
+                  'AA_AB_AC_AD_AE_AF_AG_AI_03_IP_112018.dxf',
+                  'AA_AB_AC_AD_AE_AF_AG_AI_04_IP_112018.dxf',
+                  'AA_AB_AC_AD_AE_AF_AG_AI_DG_IP_112018.dxf',
+                  'AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf',
+                  'AA_AB_AC_AD_AE_AF_AG_AI_U1_IP_112018.dxf']
+
 #import_dxf('Gusshaus', ch_new, re_import=True)
 
+if __name__ == '__main__':
+    # step1_import_all_dxf_to_working("Getreidemarkt")
+    # step1_import_all_dxf_to_working("Gusshaus")
+    # step1_import_all_dxf_to_working("Freihaus")
+    # step1_import_all_dxf_to_working("Karlsplatz")  # 22.09.2019 22:44 done
+
+    # step2_insert_lines_into_floor_tables("getreidemarkt")
+    # step2_insert_lines_into_floor_tables("Gusshaus")
+    # step2_insert_lines_into_floor_tables("Gusshaus")
+
+    # step3_insert_spaces_into_floor_tables('Getreidemarkt')
+    # step3_insert_spaces_into_floor_tables('Gusshaus')
+    # step3_insert_spaces_into_floor_tables('Gusshaus')
+
+    # insert_missing_cad_layer("Getreidemarkt", "bb", 'M_U29, M_Z29_NEU', remove=True)
+
+    # import_dxf('Gusshaus', ['HK_EG_IP_082018.dxf',])
+    # import_dxf('Getreidemarkt', ['PF_EG_IP_042019.dxf',], re_import=True)
+
+    import_dxf('Getreidemarkt', ['BZ_02_IP_042019.dxf'])
+
+    # drop_cad_table_reimport('Freihaus', ['DD_EG_IP_092018.dxf',])
+
+    # import_dxf('Gusshaus', [])
+    # import_dxf('Getreidemarkt', ['BI_05_IP_042019.dxf',], re_import=True)
+    # import_dxf('Gusshaus', ['HK_EG_IP_082018.dxf',], re_import=True)
+    # import_dxf('Gusshaus', ['HK_EG_IP_082018.dxf',])
+    # import_dxf('Karlsplatz', new_karlsp_dxf)  # ran this on 22.09.2019  22:54
+
+    # insert_all_dxf_files('Karlsplatz')
+    # insert_all_dxf_files('Arsenal')
+    # insert_all_dxf_files("Getreidemarkt", lines=True, spaces=True)
+    # insert_all_dxf_files("Gusshaus", lines=True, spaces=True)
+    # insert_all_dxf_files("Gusshaus", lines=True, spaces=True)
 
 
-conn.close()
+
+
+    conn.close()
 
 
 # 2019.08.27 22:04

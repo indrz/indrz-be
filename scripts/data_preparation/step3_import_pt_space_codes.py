@@ -4,11 +4,10 @@ from django.contrib.gis.gdal import DataSource, SpatialReference
 from django.contrib.gis.geos import Point
 from django.contrib.gis.geos import GEOSGeometry, LineString, Point, Polygon
 
-
 import psycopg2
 from pathlib import Path
 
-from .utils import unique_floor_names, con_string
+from utils import unique_floor_names, con_string
 
 conn = psycopg2.connect(con_string)
 cur = conn.cursor()
@@ -151,7 +150,7 @@ def step2_assign_codes_to_spaces(campus, floors):
                         ON ST_Intersects(s.geom, p.geom)
                         WHERE p.floor_name = '{floor}';"""
 
-        sql_pts = f"""SELECT p.id, p.campus, p.floor_name, p.room_external_id, p.room_code, p.room_text, p.geom, p.room_description
+        sql_pts = f"""SELECT p.id, p.campus, p.floor_name, p.room_external_id, p.room_code, p.room_text, p.geom, p.room_description, p.cad_layer_name
                         FROM campuses.indrz_imported_roomcodes as p
                         JOIN campuses.indrz_spaces_{floor.lower()} as s
                         ON ST_Intersects(s.geom, p.geom)
@@ -191,9 +190,10 @@ def step2_assign_codes_to_spaces(campus, floors):
                     room_des = point[7]
                     room_code = point[4]
                     room_text = point[5]
+                    cad_layer_name = point[8]
 
                     # prio 1 if not nan take value and move on
-                    if ext_id != 'nan':
+                    if ext_id != 'nan' and is_roomcode(ext_id):
 
                         pts_with_id.append(point)
                         update_sql = f"""UPDATE campuses.indrz_spaces_{floor.lower()} 
@@ -208,9 +208,10 @@ def step2_assign_codes_to_spaces(campus, floors):
 
                         done = True
                         break
-                    elif is_roomcode(room_code) and room_code != 'nan':
-                        update_sql = f"""UPDATE campuses.indrz_spaces_{floor.lower()} SET room_external_id = '{room_code}'
-                                            WHERE id = {space_id};"""
+                    elif is_roomcode(room_code) and ext_id == 'nan' and cad_layer_name != 'GUT_RAUMSTEMPEL':
+                        update_sql = f"""UPDATE campuses.indrz_spaces_{floor.lower()}
+                                         SET room_external_id = '{room_code}', room_description = '{room_des}'
+                                         WHERE id = {space_id};"""
                         # print(update_sql)
 
                         cur.execute(update_sql)
@@ -219,17 +220,18 @@ def step2_assign_codes_to_spaces(campus, floors):
 
                         total_spaces_udated.append(space_id)
                         break
-                    elif is_roomcode(room_text) and room_text != 'nan':
-                        update_sql = f"""UPDATE campuses.indrz_spaces_{floor.lower()} SET room_external_id = '{room_text}'
-                                            WHERE id = {space_id};"""
-                        # print(update_sql)
-
-                        cur.execute(update_sql)
-                        conn.commit()
-                        done = True
-
-                        total_spaces_udated.append(space_id)
-                        break
+                    # elif is_roomcode(room_text) and room_text != 'nan' and cad_layer_name != 'GUT_RAUMSTEMPEL':
+                    #     update_sql = f"""UPDATE campuses.indrz_spaces_{floor.lower()}
+                    #                      SET room_external_id = '{room_text}', room_description = '{room_des}'
+                    #                      WHERE id = {space_id};"""
+                    #     # print(update_sql)
+                    #
+                    #     cur.execute(update_sql)
+                    #     conn.commit()
+                    #     done = True
+                    #
+                    #     total_spaces_udated.append(space_id)
+                    #     break
 
                     pts_in.append(point)
             if done:
@@ -245,22 +247,24 @@ freihaus_floors = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '
 arsenal_floors = ['01', '02', '03', 'EG', 'U1', 'U2', 'ZE']#   count:  7
 
 
-# step1_import_csv_roomcodes('Arsenal') # done 11.09.2019
-# step2_assign_codes_to_spaces('Arsenal', arsenal_floors) # done on 11.09.2019
+if __name__ == '__main__':
 
-# step1_import_csv_roomcodes('Gusshaus')# done on 11.09.2019
-# step2_assign_codes_to_spaces('Gusshaus', gusshaus_floors) # done on 11.09.2019
+    # step1_import_csv_roomcodes('Arsenal') # done 11.09.2019
+    # step2_assign_codes_to_spaces('Arsenal', arsenal_floors) # done on 11.09.2019
 
-# step1_import_csv_roomcodes('Freihaus')# done on 11.09.2019
-# step2_assign_codes_to_spaces('Freihaus', freihaus_floors) # done on 11.09.2019
+    # step1_import_csv_roomcodes('Gusshaus')# done on 11.09.2019
+    # step2_assign_codes_to_spaces('Gusshaus', gusshaus_floors) # done on 11.09.2019
 
-# step1_import_csv_roomcodes('Getreidemarkt') # done on 12.09.2019
-# step2_assign_codes_to_spaces('Getreidemarkt', getreidemarkt_floors) # done on 12.09.2019
+    # step1_import_csv_roomcodes('Freihaus')# done on 11.09.2019
+    # step2_assign_codes_to_spaces('Freihaus', freihaus_floors) # done on 11.09.2019
 
-# step1_import_csv_roomcodes('Karlsplatz')
-# step2_assign_codes_to_spaces('Karlsplatz', karlsplatz_floors)
+    # step1_import_csv_roomcodes('Getreidemarkt') # done on 12.09.2019
+    # step2_assign_codes_to_spaces('Getreidemarkt', getreidemarkt_floors) # done on 12.09.2019
 
-conn.close()
+    # step1_import_csv_roomcodes('Karlsplatz')  # done 23.09.2019 08:36 imported
+    step2_assign_codes_to_spaces('Karlsplatz', karlsplatz_floors)  # done 23.09.2019 08:36 imported
+
+    conn.close()
 
     # priority 1 CASE 1
     # POINT is INSIDE a SPACE Polygon

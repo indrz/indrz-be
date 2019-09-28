@@ -4,8 +4,8 @@ var baseApiUrl = hostUrl + 'api/v1/';
 var baseApiRoutingUrl = baseApiUrl + 'directions/';
 var baseApiSearchUrl = baseApiUrl + 'search';
 var baseUrlWms = hostUrl + '/geoserver/indrz/wms';
-var baseGeoserverUrl = "https://campusplan.aau.at/geoserver/";
-var indrzApiToken = "Token 5202a4d7382dfc54d0f0c4cf9a1b9ba65245ffb1";
+var baseGeoserverUrl = "https://www.indrz.com/geoserver/";
+var indrzApiToken = "Token 42519ebe7bada4d7a151c76832b94614ea5b198d";
 
 var zoom_level = "16";
 var campus_id = "(1,)";
