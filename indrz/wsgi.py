@@ -10,6 +10,9 @@ https://docs.djangoproject.com/en/1.8/howto/deployment/wsgi/
 import os
 import sys
 import site
+from dotenv import load_dotenv
+
+load_dotenv("/opt/git_repos/indrz-tu/indrz/settings/.env")
 
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings.settings'
