@@ -9,7 +9,7 @@ load_dotenv()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', 'tu.indrz.com', 'indrz.com']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
@@ -99,9 +99,9 @@ DATABASES = {
     'default': {
         # Postgresql with PostGIS
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        # 'OPTIONS': {
-        #         'options': '-c search_path=django,public'
-        #     },
+        'OPTIONS': {
+                'options': '-c search_path=django,public'
+            },
         # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.getenv('POSTGRES_DB'),  # DB name
         'USER': os.getenv('POSTGRES_USER'),  # DB user name
@@ -186,7 +186,7 @@ ROSETTA_UWSGI_AUTO_RELOAD = False
 # ROSETTA_STORAGE_CLASS = 'rosetta.storage.SessionRosettaStorage'
 
 
-INDRZ_API_TOKEN = "Token 42519ebe7bada4d7a151c76832b94614ea5b198d"
+INDRZ_API_TOKEN = os.getenv('INDRZ_API_TOKEN')
 IP_STARTSWITH = "137.208."
 LOCALHOST_URL = os.getenv('LOCALHOST_URL') #'"https://campusplan.aau.at/"  # http://campus.wu.ac.at
 
