@@ -1,6 +1,6 @@
-var hostUrl = window.location.origin;
+var hostUrl = "https://tu.indrz.com";
 var req_locale = "en";
-var baseApiUrl = hostUrl + 'api/v1/';
+var baseApiUrl = hostUrl + '/api/v1/';
 var baseApiRoutingUrl = baseApiUrl + 'directions/';
 var baseApiSearchUrl = baseApiUrl + 'search';
 var baseUrlWms = hostUrl + '/geoserver/indrz/wms';
