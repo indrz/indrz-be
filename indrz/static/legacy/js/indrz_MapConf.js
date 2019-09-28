@@ -1,4 +1,4 @@
-var hostUrl = "http://localhost:8000/";
+var hostUrl = window.location.origin;
 var req_locale = "en";
 var baseApiUrl = hostUrl + 'api/v1/';
 var baseApiRoutingUrl = baseApiUrl + 'directions/';
