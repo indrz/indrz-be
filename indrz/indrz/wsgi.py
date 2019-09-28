@@ -1,16 +1,19 @@
 """
-WSGI config for killthis project.
+WSGI config for indrz project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
 For more information on this file, see
-https://docs.djangoproject.com/en/2.2/howto/deployment/wsgi/
+https://docs.djangoproject.com/en/1.8/howto/deployment/wsgi/
 """
 
 import os
+import sys
+import site
+
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings.settings'
+
 
 from django.core.wsgi import get_wsgi_application
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'indrz.settings')
-
 application = get_wsgi_application()
