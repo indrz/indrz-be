@@ -2,15 +2,16 @@ import os
 
 import psycopg2
 from dotenv import load_dotenv
+
 load_dotenv()
 
+db_user = os.getenv('POSTGRES_USER')
+db_name = os.getenv('POSTGRES_DB')
+db_host = os.getenv('POSTGRES_HOST')
+db_pass = os.getenv('POSTGRES_PASS')
+db_port = os.getenv('POSTGRES_PORT')
 
-db_user = os.getenv('DB_USER')
-db_name = os.getenv('DB_NAME')
-db_host = os.getenv('DB_HOST')
-db_pass = os.getenv('DB_PASSWORD')
-
-con_string = f"dbname={db_name} user={db_user} host={db_host} password={db_pass}"
+con_string = f"dbname={db_name} user={db_user} host={db_host} port={db_port} password={db_pass}"
 
 conn = psycopg2.connect(con_string)
 cur = conn.cursor()
@@ -18,7 +19,8 @@ cur = conn.cursor()
 schema = "geodata"
 
 floors = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', 'DG', 'EG', 'SO',
-                      'U1', 'U2', 'U3', 'U4', 'Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'ZD', 'ZE', 'ZU']
+          'U1', 'U2', 'U3', 'U4', 'Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'ZD', 'ZE', 'ZU']
+
 
 def get_floor_float(name):
     """
@@ -49,10 +51,10 @@ def get_floor_float(name):
             floor = 9999.0
     elif floor in floor_names_z:
         # zwischen stock
-        floor = float(floor[1])*1.0 + 0.5
+        floor = float(floor[1]) * 1.0 + 0.5
 
     elif floor in floor_names_int:
-        floor = float(floor)*1.0
+        floor = float(floor) * 1.0
 
     elif floor in floor_names_u:
         # underground
@@ -60,21 +62,22 @@ def get_floor_float(name):
     else:
         floor = 9999.0
 
-
-    return floor*1.0
+    return floor * 1.0
 
 
 def part1(schema, floors):
+    merged_network_lines = "geodata.networklines_3857"
 
-    for id, floor in enumerate(floors):
+    for floor in floors:
+        floor = floor.lower()
 
         temp_name = f"""xx_{floor}_xx_xx"""
         floor_float = get_floor_float(temp_name)
 
         temp_net_table = f"""{schema}.temp_networklines_{floor}"""
-        src_networklines = f"""django.networklines_{floor}"""
+        src_networklines = f"""routing.routing_networklines_{floor}"""
         sql_setup = f"""
-        -- if not, go ahead and update
+        -- if not, go ahead and updateindrztu
         -- make sure tables dont exist
         
         drop table if exists {temp_net_table};
@@ -99,31 +102,51 @@ def part1(schema, floors):
         UPDATE {temp_net_table} SET id=id+{floor_float} + 100000.0;
         
         """
-        print(sql_setup)
-        # cur.execute(sql_setup)
-        # conn.commit()
+        print("GENERATING TEMP temp_networklines")
+        # print(sql_setup)
+        cur.execute(sql_setup)
+        conn.commit()
 
-
-    merged_network_lines = "geodata.networklines_3857"
-
-    t1 = """DROP TABLE IF EXISTS geodata.networklines_3857;"""
+    t1 = f"""DROP TABLE IF EXISTS {merged_network_lines};
+    
+    
+            CREATE TABLE {merged_network_lines}
+                (
+                    id serial PRIMARY KEY,
+                    geom geometry,
+                    length numeric(10,2),
+                    network_type integer,
+                    cost double precision,
+                    reverse_cost double precision,
+                    floor numeric
+                )
+                WITH (
+                    OIDS = FALSE
+                )
+                TABLESPACE pg_default;
+                
+                ALTER TABLE {merged_network_lines}
+                    OWNER to tu;
+    """
     print(t1)
-    # cur.execute(t1)
-    # conn.commit()
+    cur.execute(t1)
+    conn.commit()
 
     for idx, floor in enumerate(floors):
-        src_networklines = f"""django.networklines_{floor}"""
+        floor = floor.lower()
+        src_networklines = f"""{schema}.temp_networklines_{floor}"""
 
         temp_name = f"""xx_{floor}_xx_xx"""
         floor_float = get_floor_float(temp_name)
 
-        insert_sql_network = f"""SELECT * INTO geodata.networklines_3857 FROM (SELECT id, geom length, network_type,
-         length*e0.cost as cost, reverse_cost::DOUBLE PRECISION,
-           {floor_float} as floor FROM {src_networklines} as e0);"""
+        insert_sql_network = f"""INSERT INTO {merged_network_lines} (geom, length, network_type, 
+                                                cost, reverse_cost, floor)
+                            SELECT geom, length, network_type, length*e0.cost as cost, 
+                            reverse_cost::DOUBLE PRECISION, {floor_float} as floor FROM {src_networklines} as e0;"""
 
-        print(insert_sql_network)
-        # cur.execute(insert_sql_network)
-        # conn.commit()
+        print(f"inserting data into {merged_network_lines}")
+        cur.execute(insert_sql_network)
+        conn.commit()
 
     merge_it = f"""
         
@@ -143,7 +166,7 @@ def part1(schema, floors):
           (floor);
         
         -- create populate geometry view with info
-        SELECT Populate_Geometry_Columns('geodata.networklines_3857'::regclass);
+        SELECT Populate_Geometry_Columns('{merged_network_lines}'::regclass);
         
         -- update stairs, ramps and elevators to match with the next layer
         UPDATE {merged_network_lines} SET geom=ST_AddPoint(geom,
@@ -158,32 +181,36 @@ def part1(schema, floors):
         ALTER TABLE {merged_network_lines} add column source integer;
         ALTER TABLE {merged_network_lines} add column target integer;"""
 
-    print(merge_it)
-    # cur.execute(merge_it)
-    # conn.commit()
+    print("UDPATING merged networklines attributes source features")
+    cur.execute(merge_it)
+    conn.commit()
 
 
+    print("REMOVING TEMP tables")
     for id, floor in enumerate(floors):
+        floor = floor.lower()
         temp_net_table = f"""DROP TABLE IF EXISTS {schema}.temp_networklines_{floor}"""
 
-        print(temp_net_table)
-        # cur.execute(temp_net_table)
-        # conn.commit()
+
+        cur.execute(temp_net_table)
+        conn.commit()
 
     last_work_sql = f"""
         -- remove route nodes vertices table if exists
-        DROP TABLE IF EXISTS geodata.networklines_3857_vertices_pgr;
+        DROP TABLE IF EXISTS {merged_network_lines}_vertices_pgr;
         -- building routing network vertices (fills source and target columns in those new tables)
         SELECT public.pgr_createtopology3dIndrz('{merged_network_lines}', 0.0001, 'geom', 'id', 'source', 'target', 'true', true);
     
         DELETE FROM {merged_network_lines} WHERE cost ISNULL;
-        --ALTER TABLE geodata.networklines_3857_vertices_pgr OWNER TO "indrz-wu";
+        ALTER TABLE {merged_network_lines}_vertices_pgr OWNER TO "tu";
     
         """
 
-    print(last_work_sql)
-    # cur.execute(last_work_sql)
-    # conn.commit()
+    print("creating topo 3d")
+    cur.execute(last_work_sql)
+    conn.commit()
 
 
-part1("geodata",floors)
+if __name__ == '__main__':
+    part1("geodata", floors)
+    conn.close()

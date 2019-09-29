@@ -39,4 +39,4 @@ $BODY$
   LANGUAGE plpgsql VOLATILE STRICT
   COST 100;
 ALTER FUNCTION public._pgr_pointtoid3dIndrz(geometry, double precision, text, integer)
-  OWNER TO postgres;
+  OWNER TO tu;
