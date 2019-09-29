@@ -27,7 +27,7 @@ from rest_framework.response import Response
 
 from poi_manager.models import Poi
 
-from api.search_aau import search_any
+from api.search_tu import search_any
 from poi_manager.serializers import PoiSerializer
 from buildings.models import BuildingFloorSpace
 
@@ -581,7 +581,7 @@ class RoutePoiToPoi(APIView):
 
                 start_node_id = find_closest_network_node(qs_start.geom.coords[0][0], qs_start.geom.coords[0][1],
                                                           qs_start.floor_num)
-                
+
                 qs_end = Poi.objects.get(pk=end_poi)
                 end_node_id = find_closest_network_node(qs_end.geom.coords[0][0], qs_end.geom.coords[0][1], qs_end.floor_num)
 

@@ -1,11 +1,11 @@
-var hostUrl = "https://tu.indrz.com";
+var hostUrl = window.location.origin;
 var req_locale = "en";
 var baseApiUrl = hostUrl + '/api/v1/';
 var baseApiRoutingUrl = baseApiUrl + 'directions/';
 var baseApiSearchUrl = baseApiUrl + 'search';
 var baseUrlWms = hostUrl + '/geoserver/indrz/wms';
 var baseGeoserverUrl = "https://www.indrz.com/geoserver/";
-var indrzApiToken = "Token 42519ebe7bada4d7a151c76832b94614ea5b198d";
+var indrzApiToken = "Token fd9db49ad7e5431bcb6de4ea58c03e48ea1c5dbc";
 
 var zoom_level = "16";
 var campus_id = "(1,)";

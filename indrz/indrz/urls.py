@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import include, path
+from api.search_tu import search_any, searchAutoComplete
 
 from .routers import router
 
@@ -11,7 +12,10 @@ from .routers import router
 
 urlpatterns = [
     url(r'^api/v1/', include(router.urls)),
-    url(r'^admin/', admin.site.urls),
+    url(r'^api/v1/autocomplete/(?P<search_text>.+)', searchAutoComplete.as_view(), name='search_autocomplete'),
+    url(r'^api/v1/search/(?P<q>.+)', search_any, name='search'),
+    url(r'^api/v1/directions/', include(('routing.urls', 'directions'), namespace='directions')),
+    url(r'^api/v1/admin/', admin.site.urls),
     path('api/v1/api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
     path('', include(('homepage.urls', 'homepage'), namespace='homepage'))
 ]
