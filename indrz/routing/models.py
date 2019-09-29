@@ -8,16 +8,19 @@ class NetworklinesBase(gis_models.Model):
     Routing network lines used in routing services
     """
     INDOORWAY = 0
+
     STAIRWAY = 1
     ELEVATOR = 2
-    ESCALATOR = 3
+    RAMP = 3
+
     OUTDOORWAY = 4
-    RAMP = 5
+    ESCALATOR = 5
     ZEBRA = 6
+
     STAIRWAY_NO_CHANGE = 11
-    RAMP_NO_CHANGE = 12
-    ELEVATOR_NO_CHANGE = 13
-    ESCALATOR_NO_CHANGE = 14
+    RAMP_NO_CHANGE = 33
+    ELEVATOR_NO_CHANGE = 22
+    ESCALATOR_NO_CHANGE = 55
     PRIVATE = 90
 
     ROUTE_TYPE = (
