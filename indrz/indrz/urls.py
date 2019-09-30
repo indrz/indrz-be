@@ -10,13 +10,19 @@ from .routers import router
 # Default
 ##############################################
 
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='INDRZ API')
+
+
 urlpatterns = [
+    path('api/v1/api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
+    url(r'^api/v1/docs/$', schema_view),
     url(r'^api/v1/autocomplete/(?P<search_text>.+)', searchAutoComplete.as_view(), name='search_autocomplete'),
     url(r'^api/v1/search/(?P<q>.+)', search_any, name='search'),
     url(r'^api/v1/directions/', include(('routing.urls', 'directions'), namespace='directions')),
     url(r'^api/v1/admin/', admin.site.urls),
     url(r'^api/v1/', include(router.urls)),
-    path('api/v1/api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
     path('', include(('homepage.urls', 'homepage'), namespace='homepage'))
 ]
 

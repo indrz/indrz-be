@@ -2,6 +2,7 @@ import psycopg2
 from utils import unique_floor_names, get_floor_float
 from utils import con_string, con_dj_string, unique_floor_names
 
+con_dj_string = "dbname=indrztu user=tu host=indrz.com port=5433 password=J2j9S%HGJsxy"
 
 conn_dj = psycopg2.connect(con_dj_string)
 cur_dj = conn_dj.cursor()
@@ -93,4 +94,5 @@ if __name__ == "__main__":
     create_cartolines_view()
     create_spaces_view()
     create_floor_footprint_view()
+    conn_dj.close()
 
