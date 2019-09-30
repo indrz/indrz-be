@@ -6,154 +6,100 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 import subprocess
 import os
+from datetime import datetime
 
 
 
-# db_host = os.getenv('POSTGRES_HOST')
-# db_user = os.getenv('POSTGRES_USER')
-# db_pass = os.getenv('POSTGRES_PASS')
-# db_name = os.getenv('POSTGRES_DB')
-# db_port = os.getenv('POSTGRES_PORT')
-
-
-# db_host = "localhost"
-# db_user = "tutest"
-# db_pass = "air"
-# db_name = "tutest"
-# db_port = "5432"
-# db_owner = "tutest"
-# db_superuser = "postgres"
-# db_schema = "django"
-# db_schemas = "django,campuses,geodata,public"
-
-db_host = "indrz.com"
-db_user = "tu"
-db_pass = "J2j9S%HGJsxy"
-db_name = "indrztu"
-db_port = "5433"
-db_owner = "tu"
-db_superuser = "postgres"
-db_schema = "django"
-db_schemas = "django,campuses,geodata,public"
+db_host = os.getenv('POSTGRES_HOST')
+db_user = os.getenv('POSTGRES_USER')
+db_pass = os.getenv('POSTGRES_PASS')
+db_name = os.getenv('POSTGRES_DB')
+db_port = os.getenv('POSTGRES_PORT')
 
 
 
-# print("now creating user")
-# subprocess.call(["createuser", "--host", db_host, "--port", db_port, "-U", db_superuser, f"{db_owner}"])
+
+# db_schema_live = "django"
+# db_schemas_live = "django,campuses,geodata,public"
+
+
 #
+# sql_schema_django = f"""CREATE SCHEMA django AUTHORIZATION {db_owner};"""
+# sql_schema_geodata = f"""CREATE SCHEMA geodata AUTHORIZATION {db_owner};"""
 
-def create_db():
-    # print("now creating db")
-    subprocess.call(["createdb", "--host", db_host, "--port", db_port, "-U", db_superuser, "-O", f"{db_owner}", db_name])
 
-sql_schema_django = f"""CREATE SCHEMA django AUTHORIZATION {db_owner};"""
-sql_schema_geodata = f"""CREATE SCHEMA geodata AUTHORIZATION {db_owner};"""
-sql_extension = "CREATE EXTENSION postgis;"
-sql_alter = f"""ALTER ROLE {db_owner} SET search_path TO {db_schemas};"""
+
+
+# backup_filename = "campuses.backup"
+# restore_dbname = "tutest"
 #
-# print("now creating schema")
-# subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", db_name, "-c", f"{sql_schema_django}"])
-# subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", db_name, "-c", f"{sql_schema_geodata}"])
+# schema_name = "campuses"
 #
-# print("now creating extension")
-# subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", db_name, "-c", f"{sql_extension}"])
+# # schemas_back = ['karlsplatz', 'freihaus', 'getreidemarkt', 'arsenal', 'gusshaus','routing']
+# schemas_back = ['routing']
 #
-# print("now changing user search_path")
-# subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", db_name, "-c", f"{sql_alter}"])
+# now = datetime.now()
+# # now.strftime("%Y-%m-%d %H:%M:%S")
+# date = now.strftime("%Y%m%d-%H%M")
 
-backup_filename = "campuses.backup"
-restore_dbname = "tutest"
+def step0_first_time():
 
-schema_name = "campuses"
+    print("now creating user")
+    subprocess.call(["createuser", "--host", db_host_live, "--port", db_port_live, "-U", db_superuser_live, f"{db_owner_live}"])
 
-schemas_back = ['karlsplatz', 'freihaus', 'getreidemarkt', 'arsenal', 'gusshaus','routing']
+    sql_alter = f"""ALTER ROLE {db_owner_live} SET search_path TO django,geodata,public;"""
+    subprocess.call(["psql", "--host", db_host_live, "--port", db_port_live, "-U", db_superuser_live, "-d",
+                     db_name_live, "-c", f"{sql_alter}"])
 
-def dump_schemas():
-    for schema in schemas_back:
+
+def step1_dump_schemas(db_name, schema_list):
+    for schema in schema_list:
         print(f"now dumping schema {schema}")
         subprocess.call(
-            ["pg_dump", "--host", db_host, "--port", db_port, "-U", db_superuser, "--no-owner", "-n", f"{schema}", "--format", "c", "--verbose", "--file", f"{schema}-20190922-2308.backup", "indrztudata"])
-
-def restore_schema():
-    for schema in schemas_back:
-        print(f"now creating schema {schema}")
-        subprocess.call(["psql", "--host", db_host, "--port", db_port, "-U", db_superuser, "-d", f"{restore_dbname}", "-c", f"CREATE SCHEMA {schema} AUTHORIZATION {db_user};"])
-        print(f"now restoring schema {schema}")
-        subprocess.call(
-            ["pg_restore", "--host", db_host, "--port", db_port, "-U", "postgres", "--role=tutest", "--dbname", f"{restore_dbname}", "-n", f"{schema}", "--format", "c", "--verbose", f"{schema}-20190922-2308.backup"])
+            ["pg_dump", "--host", db_host, "--port", db_port, "-U", db_superuser, "--no-owner", "-n", f"{schema}",
+             "--format", "c", "--verbose", "--file", f"{schema}-dump.backup", db_name])
 
 
-def create_init_db(create_role=False):
-    """
-    create the initial role to own the db
-    create the new db as the db super user assign owner to new role
-    :return: new db with new owner
-    """
-    con = connect(dbname='postgres', user=db_user, host=db_host, port=db_port, password=db_pass)
-    con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-    cur = con.cursor()
+def step2_drop_create_db(db_name_live):
 
-    if create_role:
-        cur.execute('CREATE ROLE \"{0}\" LOGIN ENCRYPTED PASSWORD \'{1}\''.format(db_user, db_pass))
-        print("creating role")
+    print(f"now droping db {db_name_live}")
+    subprocess.call(["dropdb", "--host", db_host_live, "--port", db_port_live, "-U", db_superuser_live, db_name_live])
 
-    cur.execute('''CREATE DATABASE \"{0}\" WITH OWNER = \'{1}\'
-                    ENCODING = \'UTF8\' TEMPLATE=template0 CONNECTION LIMIT = -1;'''.format(db_name, db_user))
-    print("creating database")
-    cur.close()
-    con.close()
+    print(f"now creating db {db_name_live}")
+    subprocess.call(["createdb", "--host", db_host_live, "--port", db_port_live, "-U", db_superuser_live, "-O", f"{db_owner_live}", db_name_live])
+
+    print("now creating postgis")
+    sql_extension_postgis = "CREATE EXTENSION postgis;"
+    subprocess.call(["psql", "--host", db_host_live, "--port", db_port_live, "-U", db_superuser_live, "-d", db_name_live, "-c", f"{sql_extension_postgis}"])
+
+    print("now creating pgrouting")
+    sql_extension_pgrouting = "CREATE EXTENSION pgrouting;"
+    subprocess.call(["psql", "--host", db_host_live, "--port", db_port_live, "-U", db_superuser_live, "-d", db_name_live, "-c", f"{sql_extension_pgrouting}"])
 
 
-def setup_db():
-    """
-    create new db schemas, set role search path to use schemas automatically
-    add extensions postgis and pgrouting to new db
-    :return: new db schemas and extensions for indrz
-    """
-    # connect to new database and setup schemas and search path and extensions
-    con2 = connect(dbname=db_name, user=db_superuser, host=dbhost, port=dbport, password=db_superuser_pwd)
+def step3_drop_create_restore_schema(schema_list):
+    for schema in schema_list:
+        print(f"now dropping schema {schema}")
+        print("CALL IS ", ["psql", "--host", db_host_live, "--port", db_port_live, "-U", db_superuser_live, "-d", f"{db_name_live}", "-c", f"DROP SCHEMA IF EXiSTS {schema} CASCADE;"])
+        subprocess.call(["psql", "--host", db_host_live, "--port", db_port_live, "-U", db_superuser_live, "-d", f"{db_name_live}", "-c", f"DROP SCHEMA IF EXiSTS {schema} CASCADE;"])
 
-    sql1 = 'CREATE SCHEMA django AUTHORIZATION \"{0}\"'.format(db_user)
-    sql2 = 'CREATE SCHEMA geodata AUTHORIZATION \"{0}\"'.format(db_user)
-    cur2 = con2.cursor()
-    cur2.execute(sql1)
-    print("creating schema django")
-    cur2.execute(sql2)
-    print("creating schema geodata")
+        print(f"now creating schema {schema}, CALL IS ", ["psql", "--host", db_host_live, "--port", db_port_live, "-U", db_superuser_live, "-d", f"{db_name_live}", "-c", f"CREATE SCHEMA {schema} AUTHORIZATION {db_user_live};"])
+        subprocess.call(["psql", "--host", db_host_live, "--port", db_port_live, "-U", db_superuser_live, "-d", f"{db_name_live}", "-c", f"CREATE SCHEMA {schema} AUTHORIZATION {db_user_live};"])
 
-    cur2.execute('ALTER ROLE \"{0}\" SET search_path = django, geodata, public'.format(db_user))
-
-    print("updating role to use new schemas")
-    cur2.execute('CREATE EXTENSION postgis SCHEMA public VERSION "2.2.2"')
-    print("creating extension postgis")
-    cur2.execute('CREATE EXTENSION pgrouting SCHEMA public VERSION "2.2.0";')
-    print("creating extension pgrouting")
-    con2.commit()
-    cur2.close()
-    con2.close()
+        print(f"now restoring schema {schema}, CALL IS ", ["pg_restore", "--host", db_host_live, "--port", db_port_live, "-U", "postgres", f"--role={db_owner_live}", "--dbname", f"{db_name_live}", "-n", f"{schema}", "--format", "c", "--verbose", f"{schema}-dump.backup"] )
+        subprocess.call(["pg_restore", "--host", db_host_live, "--port", db_port_live, "-U", "postgres", f"--role={db_owner_live}", "--dbname", f"{db_name_live}", "-n", f"{schema}", "--format", "c", "--verbose", f"{schema}-dump.backup"])
 
 
-def backup_db():
+def step4_recreate_geoserver_views():
+    pass
 
-    outfile=r"c:\02_DEV\01_projects\02_indrz\gitlab_wu\scripts\campusgis-old.backup"
-
-    # Windows users can uncomment these two lines if needed
-    pg_dump = r"c:\Program Files\PostgreSQL\9.5\bin\pg_dump.exe"
-
-    # view what geometry types are available in our OSM file
-    subprocess.call([pg_dump, "--host", dbhost, "--port", dbport, "--username", db_user, "--format", "c", "--verbose", "--file", outfile, db_name])
-
-
-def dropdb():
-    # pg_restore = r"c:\Program Files\PostgreSQL\9.5\bin\pg_restore.exe"
-    dropdb = r"c:\Program Files\PostgreSQL\9.5\bin\dropdb.exe"
-    subprocess.call([dropdb, '-h', dbhost, "-p", dbport, "-U", db_superuser, db_name])
-
-
-def restore_db():
-    restore_file = r"c:\02_DEV\01_projects\02_indrz\gitlab_wu\scripts\indrz-wu-server.backup"
-    pg_restore = r"c:\Program Files\PostgreSQL\9.5\bin\pg_restore.exe"
-    subprocess.call([pg_restore, '-h', dbhost, "-p", dbport, "-U", db_user, "--dbname", db_name, "--verbose", restore_file])
 
 if __name__ == '__main__':
-    create_db()
+    step1_dump_schemas('tutest', ['django', 'routing'])
+    # step2_drop_create_db('indrztu')
+    step3_drop_create_restore_schema(['django','routing'])
+    # step4_recreate_geoserver_views()
+    # create_db()
+    # dump_schemas()
+    # restore_schema('routing-20190927-0837.backup')
+
