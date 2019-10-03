@@ -12,6 +12,7 @@ django-taggit==1.1.0
 django-cors-headers==3.1.0
 djangorestframework_gis==0.14
 djangorestframework==3.10.3
+django-rest-swagger==2.2.0
 coreapi
 
 

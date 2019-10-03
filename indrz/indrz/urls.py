@@ -3,12 +3,15 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import include, path
 from api.search_tu import search_any, searchAutoComplete
+from rest_framework_swagger.views import get_swagger_view
 
 from .routers import router
 
 ##############################################
 # Default
 ##############################################
+schema_view = get_swagger_view(title='INDRZ API')
+
 
 urlpatterns = [
     url(r'^api/v1/autocomplete/(?P<search_text>.+)', searchAutoComplete.as_view(), name='search_autocomplete'),
@@ -17,6 +20,7 @@ urlpatterns = [
     url(r'^api/v1/admin/', admin.site.urls),
     url(r'^api/v1/', include(router.urls)),
     path('api/v1/api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
+    path('api/v1/docs/', schema_view, name='docs'),
     path('', include(('homepage.urls', 'homepage'), namespace='homepage'))
 ]
 
