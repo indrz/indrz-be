@@ -15,6 +15,8 @@ from django.utils.translation import ugettext as _
 from geojson import Feature, FeatureCollection
 from django.db import connection
 
+from django.contrib.gis.gdal import OGRGeometry
+
 from poi_manager.models import Poi
 
 from api.tu_campus_api import TuCampusAPI, api_res_source
@@ -137,7 +139,9 @@ def search_any(request, q, format=None):
 
         for space in spaces:
 
-            geom = json.loads(space.geom.geojson)
+            g = OGRGeometry(space.geom.wkt)
+
+            geom = json.loads(g.geojson)
 
             name = ""
 
@@ -147,9 +151,9 @@ def search_any(request, q, format=None):
                 if code['roomcode'] == space.room_code:
                     props.update(code)
 
-            space_center_geom = json.loads(space.centerGeometry.geojson)
+            # space_center_geom = json.loads(space.centerGeometry.geojson)
             props.update({"spaceid": space.pk, "building": space.fk_building_floor.fk_building.building_name,
-                          "floor_num": str(space.floor_num), "centerGeometry": space_center_geom})
+                          "floor_num": str(space.floor_num), "floor_name":str(space.long_name), "centerGeometry": "space_center_geom"})
 
             feature = Feature(geometry=geom, properties=props)
             features.append(feature)
