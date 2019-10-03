@@ -3,13 +3,15 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 
+from utils import get_floor_float
+
 load_dotenv()
 
-db_user = os.getenv('POSTGRES_USER')
-db_name = os.getenv('POSTGRES_DB')
-db_host = os.getenv('POSTGRES_HOST')
-db_pass = os.getenv('POSTGRES_PASS')
-db_port = os.getenv('POSTGRES_PORT')
+db_user = os.getenv('POSTGRES_USER_LIVE')
+db_name = os.getenv('POSTGRES_DB_LIVE')
+db_host = os.getenv('POSTGRES_HOST_LIVE')
+db_pass = os.getenv('POSTGRES_PASS_LIVE')
+db_port = os.getenv('POSTGRES_PORT_LIVE')
 
 con_string = f"dbname={db_name} user={db_user} host={db_host} port={db_port} password={db_pass}"
 
@@ -18,61 +20,19 @@ cur = conn.cursor()
 
 schema = "geodata"
 
-floors = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', 'DG', 'EG', 'SO',
-          'U1', 'U2', 'U3', 'U4', 'Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'ZD', 'ZE', 'ZU']
+floors = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', 'DG', 'EG', 'SO','U1', 'U2', 'U3', 'U4', 'Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'ZD', 'ZE', 'ZU']
 
-
-def get_floor_float(name):
-    """
-    assuming input name is like "DA_EG_03_2019.dxf"
-    :param name: dxf file name like "DA_EG_03_2019.dxf"
-    :return: float value of floor
-    """
-
-    floor_names_odd = ['ZD', 'ZE', 'ZU', 'DG', 'EG', 'SO']
-    floor_names_u = ['U1', 'U2', 'U3', 'U4']
-    floor_names_z = ['Z1', 'Z2', 'Z3', 'Z4', 'Z5']
-    floor_names_int = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
-
-    if not name:
-        return name
-    floor = name.split("_")[-3]
-
-    if floor in floor_names_odd:
-        if floor == "EG":
-            floor = 0.0
-        elif floor == "SO":
-            floor = -0.5
-        elif floor == "ZE":
-            floor = 0.5
-        elif floor == "ZU":
-            floor = -1.5
-        else:
-            floor = 9999.0
-    elif floor in floor_names_z:
-        # zwischen stock
-        floor = float(floor[1]) * 1.0 + 0.5
-
-    elif floor in floor_names_int:
-        floor = float(floor) * 1.0
-
-    elif floor in floor_names_u:
-        # underground
-        floor = float(floor[1]) * -1.0
-    else:
-        floor = 9999.0
-
-    return floor * 1.0
 
 
 def part1(schema, floors):
     merged_network_lines = "geodata.networklines_3857"
 
     for floor in floors:
+        floor_float = get_floor_float(floor)
         floor = floor.lower()
 
-        temp_name = f"""xx_{floor}_xx_xx"""
-        floor_float = get_floor_float(temp_name)
+        # temp_name = f"""xx_{floor}_xx_xx"""
+
 
         temp_net_table = f"""{schema}.temp_networklines_{floor}"""
         src_networklines = f"""routing.routing_networklines_{floor}"""
@@ -108,8 +68,6 @@ def part1(schema, floors):
         conn.commit()
 
     t1 = f"""DROP TABLE IF EXISTS {merged_network_lines};
-    
-    
             CREATE TABLE {merged_network_lines}
                 (
                     id serial PRIMARY KEY,
@@ -118,7 +76,7 @@ def part1(schema, floors):
                     network_type integer,
                     cost double precision,
                     reverse_cost double precision,
-                    floor numeric
+                    floor double precision
                 )
                 WITH (
                     OIDS = FALSE
@@ -132,12 +90,14 @@ def part1(schema, floors):
     cur.execute(t1)
     conn.commit()
 
-    for idx, floor in enumerate(floors):
+    for floor in floors:
+
+        floor_float = get_floor_float(floor)
+        print(f"FLOOOOOR IS     {floor} the {floor_float}")
         floor = floor.lower()
         src_networklines = f"""{schema}.temp_networklines_{floor}"""
 
-        temp_name = f"""xx_{floor}_xx_xx"""
-        floor_float = get_floor_float(temp_name)
+        print(f"FLOOR FLOAT IS {floor_float}")
 
         insert_sql_network = f"""INSERT INTO {merged_network_lines} (geom, length, network_type, 
                                                 cost, reverse_cost, floor)

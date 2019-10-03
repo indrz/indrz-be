@@ -332,6 +332,13 @@ def create_layer(new_feature_name, type):
                 <binding>org.locationtech.jts.geom.MultiPolygon</binding>
                 <length>0</length>
             </attribute>
+             <attribute>
+                <name>id</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
                     <attribute>
                 <name>room_code</name>
                 <minOccurs>0</minOccurs>
@@ -372,6 +379,13 @@ def create_layer(new_feature_name, type):
                 <binding>org.locationtech.jts.geom.MultiPolygon</binding>
                 <length>0</length>
             </attribute>
+              <attribute>
+                <name>id</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
                     <attribute>
                 <name>building_name</name>
                 <minOccurs>0</minOccurs>
@@ -389,6 +403,13 @@ def create_layer(new_feature_name, type):
                 <maxOccurs>1</maxOccurs>
                 <nillable>true</nillable>
                 <binding>org.locationtech.jts.geom.MultiPolygon</binding>
+                <length>0</length>
+            </attribute>
+                         <attribute>
+                <name>id</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
                 <length>0</length>
             </attribute>
                     <attribute>
