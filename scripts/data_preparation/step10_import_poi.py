@@ -1,0 +1,66 @@
+import psycopg2
+from utils import con_string, get_floor_float, unique_floor_names
+
+conn = psycopg2.connect(con_string)
+cur = conn.cursor()
+
+
+def create_poi():
+
+    key_names = [{'name':'STIEG', 'cat-id':33}, {'name': 'MENS', 'cat-id':33}, {'name': 'WC', 'cat-id':53},
+                 {'name':'LIFT', 'cat-id':33}, {'name':'SEMIN', 'cat-id':33}, {'name':'LABO', 'cat-id':33},
+                 {'name':'BIBL', 'cat-id':33},{'name': 'SEK', 'cat-id':33}, {'name':'FEST', 'cat-id':33},
+                 {'name':'DEKAN', 'cat-id':33}, {'name':'HILF', 'cat-id':33}, {'name':'FEUER', 'cat-id':33},
+                 {'name':'SAMMEL','cat-id':33}]
+
+    for search_text in key_names:
+
+        name = search_text['name']
+        cat_id = search_text['cat-id']
+
+        print(f"now running {search_text}")
+
+        for floor_name in unique_floor_names:
+
+            floor_float = get_floor_float(floor_name)
+
+            sel_space = f"""INSERT INTO django.poi_manager_poi (name, description, floor_num, fk_campus_id, fk_poi_category_id, geom)
+                SELECT room_description, room_code, {floor_float}, 1, {cat_id}, ST_Multi(ST_PointOnSurface(ST_Transform(geom, 3857))) 
+                FROM campuses.indrz_spaces_{floor_name.lower()} 
+                WHERE upper(room_description) like '%{name.upper()}%'
+                AND st_isvalid(geom);"""
+
+            cur.execute(sel_space)
+            res = conn.commit()
+
+
+def update_space_type_id():
+    search_text_list = ['STIEG', 'MENS', 'WC', 'LIFT', 'SEMIN', 'LABO', 'BIBL', 'SEK', 'FEST', 'DEKAN', 'HILF', 'FEUER',
+                        'SAMMEL']
+
+    space_map = [{'name':"stieg", "code":79}, {'name':"wc", "code":91}, {'name':"office", "code":63}]
+
+    for space in space_map:
+        like_name = space['name'].upper()
+        s = f"""UPDATE django.buildings_buildingfloorspace set space_type_id = {space['code']} 
+                WHERE upper(room_description) like '%{like_name}%' """
+
+    s = """
+    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%STIEG%';
+    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%MENS%'; --mensa
+    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%WC%';
+    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%LIFT%';
+    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%SEMIN%'; --seminarraum
+    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%LABO%'; --labor
+    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%BIBL%'; --biblio
+    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%SEK%'; --sektretariat
+    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%FEST%';--festsaal
+    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%DEKAN%'; --dekan
+    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%HILF%'; --erste hilfe
+    select distinct (room_description) from campuses.indrz_spaces_eg where upper(room_description) like '%FEUER%';
+    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%SAMMEL%';"""
+
+
+if __name__ == '__main__':
+
+    create_poi()
