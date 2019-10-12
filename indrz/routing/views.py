@@ -44,7 +44,7 @@ def get_room_centroid_node(space_id):
     '''
 
     qs = BuildingFloorSpace.objects.filter(pk=space_id)
-    center_geom = qs[0].multi_poly.centroid
+    center_geom = qs[0].geom.centroid
 
     x_coord = float(center_geom.x)
     y_coord = float(center_geom.y)
@@ -1169,6 +1169,7 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
                                                                nodes=route_node_array,
                                                                start_node=start_node_id, end_node=end_node_id)
 
+    print(routing_query)
     # run our shortest path query
     if start_node_id or end_node_id:
         if start_node_id != end_node_id:
