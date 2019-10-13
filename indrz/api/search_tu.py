@@ -152,7 +152,7 @@ def search_any(request, q, format=None):
                     props.update(code)
 
             # space_center_geom = json.loads(space.centerGeometry.geojson)
-            props.update({"spaceid": space.pk, "building": space.fk_building_floor.fk_building.building_name,
+            props.update({"spaceid": space.pk, "building": space.fk_building_floor.fk_building.building_name, "space_id":space.id,
                           "floor_num": str(space.floor_num), "floor_name":str(space.long_name), "centerGeometry": "space_center_geom"})
 
             feature = Feature(geometry=geom, properties=props)
@@ -197,6 +197,7 @@ def searchSpaces(lang_code, search_text, mode):
                       "floor_num": sd.floor_num,
                       "building": sd.fk_building_floor.fk_building.name,
                       "roomcode": sd.room_code,
+                      "space_id": sd.id,
                       "parent": "",
                       "fk_poi_category": {'id': "", 'cat_name': ""},
                       "icon": "",
@@ -276,7 +277,7 @@ def searchPoi(lang_code, search_text, mode):
                 elif mode == "autocomplete":
                     poi_list.append(poi_data)
 
-    spaces_list = [{"name": _(space.room_code), "name_" + lang_code: _(space.room_code), "id": space.id} for
+    spaces_list = [{"name": _(space.room_code), "name_" + lang_code: _(space.room_code), "id": space.id, "space_id": space.id} for
                    space in
                    BuildingFloorSpace.objects.filter(room_code__isnull=False).filter(room_code__icontains=search_text)]
 
