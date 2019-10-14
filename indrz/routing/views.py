@@ -1104,7 +1104,7 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
 
     cur = connection.cursor()
 
-    base_route_q = """SELECT id, source, target, cost, reverse_cost FROM geodata.networklines_3857"""
+    base_route_q = """SELECT id, source, target, cost, reverse_cost, floor_name FROM geodata.networklines_3857"""
 
 
 
@@ -1115,7 +1115,7 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
         # default type is "0"
         barrierfree_q = "WHERE 1=1"
 
-    route_query = "SELECT id, source, target, cost, reverse_cost FROM geodata.networklines_3857"
+    route_query = "SELECT id, source, target, cost, reverse_cost, floor_name FROM geodata.networklines_3857"
 
     route_node_array = [start_node_id, end_node_id]
 
