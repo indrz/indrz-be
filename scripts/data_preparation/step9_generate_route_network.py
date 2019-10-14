@@ -20,8 +20,17 @@ cur = conn.cursor()
 
 schema = "geodata"
 
-floors = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', 'DG', 'EG', 'SO','U1', 'U2', 'U3', 'U4', 'Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'ZD', 'ZE', 'ZU']
+floors = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', 'DG', 'EG', 'SO','U1', 'U2', 'U3',
+          'U4', 'Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'ZD', 'ZE', 'ZU']
 
+def hotfix(floors):
+    for floor in floors:
+        s = f"""ALTER TABLE routing.routing_networklines_{floor.lower()} ADD COLUMN floor_name character varying;"""
+        cur.execute(s)
+        conn.commit()
+        up = f"""UPDATE routing.routing_networklines_{floor.lower()} SET floor_name='{floor.lower()}';"""
+        cur.execute(up)
+        conn.commit()
 
 
 def part1(schema, floors):
@@ -45,7 +54,7 @@ def part1(schema, floors):
         -- convert to 3d coordinates with EPSG:3857
         
         SELECT id, ST_Force3D(ST_Transform(ST_Force2D(st_geometryN(geom, 1)),3857)) AS geom,
-          network_type, cost::FLOAT, 0.0 AS reverse_cost, length, 0 AS source, 0 AS target
+          network_type, cost::FLOAT, 0.0 AS reverse_cost, length, 0 AS source, 0 AS target, floor_name
           INTO {temp_net_table}
           FROM {src_networklines};
         
@@ -60,6 +69,9 @@ def part1(schema, floors):
         
         -- update unique ids id accordingly
         UPDATE {temp_net_table} SET id=id+{floor_float} + 100000.0;
+        
+        -- update floor-name
+        UPDATE {temp_net_table} SET floor_name='{floor}';
         
         """
         print("GENERATING TEMP temp_networklines")
@@ -76,7 +88,8 @@ def part1(schema, floors):
                     network_type integer,
                     cost double precision,
                     reverse_cost double precision,
-                    floor double precision
+                    floor double precision,
+                    floor_name character varying
                 )
                 WITH (
                     OIDS = FALSE
@@ -100,9 +113,9 @@ def part1(schema, floors):
         print(f"FLOOR FLOAT IS {floor_float}")
 
         insert_sql_network = f"""INSERT INTO {merged_network_lines} (geom, length, network_type, 
-                                                cost, reverse_cost, floor)
+                                                cost, reverse_cost, floor, floor_name)
                             SELECT geom, length, network_type, length*e0.cost as cost, 
-                            reverse_cost::DOUBLE PRECISION, {floor_float} as floor FROM {src_networklines} as e0;"""
+                            reverse_cost::DOUBLE PRECISION, {floor_float} as floor, floor_name FROM {src_networklines} as e0;"""
 
         print(f"inserting data into {merged_network_lines}")
         cur.execute(insert_sql_network)
@@ -172,5 +185,6 @@ def part1(schema, floors):
 
 
 if __name__ == '__main__':
+    # hotfix(floors)
     part1("geodata", floors)
     conn.close()
