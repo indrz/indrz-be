@@ -1149,7 +1149,7 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
     routing_query = """
         SELECT seq, id, node, edge,
             ST_Length(st_transform(geom,4326), TRUE ) AS cost, agg_cost, floor, network_type,
-            ST_AsGeoJSON(geom) AS geoj
+            ST_AsGeoJSON(geom) AS geoj, floor_name
         FROM pgr_dijkstra( '{sql_query} {type}',{start_node}, {end_node}) AS dij_route
 
           JOIN geodata.networklines_3857 AS input_network
@@ -1161,7 +1161,7 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
         routing_query = """
             SELECT seq, id, node, edge,
                 ST_Length(st_transform(geom,4326), TRUE ) AS cost, agg_cost, floor, network_type,
-                ST_AsGeoJSON(geom) AS geoj
+                ST_AsGeoJSON(geom) AS geoj, floor_name
             FROM pgr_dijkstraVia( '{normal} {type}', ARRAY{nodes}) AS dij_route
 
               JOIN geodata.networklines_3857 AS input_network
@@ -1201,10 +1201,12 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
             seg_node_id = segment[2]
             seq_sequence = segment[0]
             geojs = segment[8]  # geojson coordinates
+            floor_name = segment[9]
             # geojs = big_test[0]
             geojs_geom = loads(geojs, object_pairs_hook=OrderedDict)  # load string to geom
             geojs_feat = Feature(geometry=geojs_geom,
                                  properties={'floor': layer_level,
+                                             'floor_name': floor_name,
                                              'segment_length': seg_length,
                                              'network_type': seg_type,
                                              'seg_node_id': seg_node_id,
