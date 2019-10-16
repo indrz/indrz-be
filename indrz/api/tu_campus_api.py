@@ -151,56 +151,58 @@ class TuCampusAPI:
         """
         # ORG_SEARCH = '/api/orgunit/v22/osuche/?q='
 
-        se = "q=" + name
-        source = "external organization api"
+        return None
 
-        res = requests.get(self.build_url(self.ORG_SEARCH, se))
-
-        if res.status_code == 200:
-
-            r = res.json()
-
-            codes = []
-            if r['results']:
-                for result in r['results']:
-                    if 'code' in result:
-                        codes.append(result['code'])
-
-            org_sekretariate_roomcodes = {'results': []}
-
-
-            newres = []
-            for code in codes:
-                # https://tiss.tuwien.ac.at/api/orgunit/v22/number/E020/?persons=true
-                org_resp = requests.get(self.build_url(self.ORGUNIT_NUM + code, "persons=true"))
-                org_data = org_resp.json()
-
-                if 'employees' in org_data:
-                    for employee in org_data['employees']:
-                        if 'function' in employee:
-                            if employee['function'] == 'Sekretariat':
-                                if 'room_code' in employee:
-                                    r_code = employee['room_code']
-                                    # name = employee['first_name'] + " " + employee['last_name']
-                                    # res = {'name': name, 'roomcode': r_code, "src": 'external organization api'}
-                                    # org_sekretariate_roomcodes['results'].append(employee)
-
-                                    name_concat = employee['first_name'] + " " + employee['last_name']
-                                    f_res = {'name': name_concat, 'roomcode': r_code, "src": source}
-                                    # people_with_rooms_assigned.append(f_res)
-
-                                    newres.append(f_res)
-                                    print("in orgs len ", len(newres))
-
-
-            # fa = self.filter_no_roomkey(org_sekretariate_roomcodes['results'], source="external organization api")
-
-            if newres:
-                return newres
-            else:
-                return None
-        else:
-            return None
+        # se = "q=" + name
+        # source = "external organization api"
+        #
+        # res = requests.get(self.build_url(self.ORG_SEARCH, se))
+        #
+        # if res.status_code == 200:
+        #
+        #     r = res.json()
+        #
+        #     codes = []
+        #     if r['results']:
+        #         for result in r['results']:
+        #             if 'code' in result:
+        #                 codes.append(result['code'])
+        #
+        #     org_sekretariate_roomcodes = {'results': []}
+        #
+        #
+        #     newres = []
+        #     for code in codes:
+        #         # https://tiss.tuwien.ac.at/api/orgunit/v22/number/E020/?persons=true
+        #         org_resp = requests.get(self.build_url(self.ORGUNIT_NUM + code, "persons=true"))
+        #         org_data = org_resp.json()
+        #
+        #         if 'employees' in org_data:
+        #             for employee in org_data['employees']:
+        #                 if 'function' in employee:
+        #                     if employee['function'] == 'Sekretariat':
+        #                         if 'room_code' in employee:
+        #                             r_code = employee['room_code']
+        #                             # name = employee['first_name'] + " " + employee['last_name']
+        #                             # res = {'name': name, 'roomcode': r_code, "src": 'external organization api'}
+        #                             # org_sekretariate_roomcodes['results'].append(employee)
+        #
+        #                             name_concat = employee['first_name'] + " " + employee['last_name']
+        #                             f_res = {'name': name_concat, 'roomcode': r_code, "src": source}
+        #                             # people_with_rooms_assigned.append(f_res)
+        #
+        #                             newres.append(f_res)
+        #                             print("in orgs len ", len(newres))
+        #
+        #
+        #     # fa = self.filter_no_roomkey(org_sekretariate_roomcodes['results'], source="external organization api")
+        #
+        #     if newres:
+        #         return newres
+        #     else:
+        #         return None
+        # else:
+        #     return None
             # return {"error": "no data found", "method": "search_organizations"}
 
 
