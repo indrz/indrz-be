@@ -86,6 +86,19 @@ def create_floor_footprint_view():
         cur_dj.execute(q_footprint)
         conn_dj.commit()
 
+def create_routing_view():
+    for floor_name in unique_floor_names:
+        floor_float = get_floor_float(floor_name)
+
+        q_route = f"""
+            DROP VIEW IF EXISTS geodata.route_{floor_name};
+            CREATE OR REPLACE VIEW geodata.route_{floor_name} AS
+            SELECT id, floor_name, source, target, network_type, geom
+            FROM geodata.networklines_3857
+            WHERE floor_num = {floor_float};
+        """
+        cur_dj.execute(q_route)
+        conn_dj.commit()
 
 if __name__ == "__main__":
     # NOTE TO SELF
@@ -94,5 +107,6 @@ if __name__ == "__main__":
     create_cartolines_view()
     create_spaces_view()
     create_floor_footprint_view()
+    create_routing_view()
     conn_dj.close()
 
