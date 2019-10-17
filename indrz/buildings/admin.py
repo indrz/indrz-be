@@ -17,6 +17,7 @@ class LtSpaceTypeAdmin(admin.ModelAdmin):
 class BuildingFloorSpaceAdmin(gis_admin.OSMGeoAdmin):
     list_display = ('short_name', 'room_external_id', 'room_number', 'fk_building_floor', 'floor_num', 'space_type', 'id')
     search_fields = ('short_name', 'room_external_id', 'room_number',)
+    list_filter = ('fk_building_floor__fk_building__fk_campus__campus_name', 'floor_num', 'fk_building_floor__short_name')
 
 
 class BuildingFloorAdmin(gis_admin.OSMGeoAdmin):
@@ -25,8 +26,9 @@ class BuildingFloorAdmin(gis_admin.OSMGeoAdmin):
 
 
 class BuildingAdmin(gis_admin.OSMGeoAdmin):
-    list_display = ('name', 'building_name',  'fk_campus', 'fk_organization', 'id')
-    search_fields = ('building_name', 'fk_campus')
+    list_display = ('name', 'building_name', 'wings','street', 'description', 'fk_campus', 'fk_organization', 'id')
+    search_fields = ('building_name', 'street', 'description', 'wings')
+    list_filter = ('fk_campus__campus_name',)
 
 
 admin.site.register(LtAccessType)
