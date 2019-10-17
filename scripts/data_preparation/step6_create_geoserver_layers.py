@@ -231,6 +231,30 @@ def update_geoserver_layer(layer_name):
 #
 # < / featureType >
 
+def delete_layer(type):
+    types = ['spaces', 'anno', 'cartolines', 'footprint']
+
+    if type not in types:
+        print(f"sorry your type must equal one of the following {types}")
+        return False
+    s = requests.Session()
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
+
+    for floor_name in unique_floor_names:
+        feature_name = f'{type}_{floor_name.lower()}'
+        # create_layer(feature_name, type)
+        time.sleep(4)
+
+        print("now deleting:, ", feature_name)
+
+        r = s.delete(URL_BASE + '/workspaces/indrztu/datastores/ds-indrz-tu/featuretypes/' + feature_name, headers=headers_json)
+        # print(r.raise_for_status())
+        print(r.content)
+        print(r.reason)
+        print(r.status_code)
+        print(r.text)
+
+
 
 def create_layer(new_feature_name, type):
     """
@@ -713,7 +737,7 @@ def run_create_layers():
 
 def generate_layers():
     types = ['footprint', 'spaces', 'cartolines', 'anno']
-    type = "anno"
+    type = "spaces"
 
     for floor_name in unique_floor_names:
     # get_workspaces()
@@ -725,6 +749,7 @@ def generate_layers():
 
 if __name__ == '__main__':
     # generate_layers()
+    # delete_layer('spaces')
 
     for floor_name in unique_floor_names:
         time.sleep(3)

@@ -7,13 +7,24 @@ load_dotenv()
 # db_name = os.getenv('DB_NAME')
 # db_host = os.getenv('DB_HOST')
 # db_pass = os.getenv('DB_PASSWORD')
+# db_port = os.getenv('DB_PORT')
+
+# db_user = os.getenv('POSTGRES_USER_LIVE')
+# db_name = os.getenv('POSTGRES_DB_LIVE')
+# db_host = os.getenv('POSTGRES_HOST_LIVE')
+# db_pass = os.getenv('POSTGRES_PASS_LIVE')
+# db_port = os.getenv('POSTGRES_PORT_LIVE')
 
 db_user = os.getenv('DB_DJ_USER')
 db_name = os.getenv('DB_DJ_NAME')
 db_host = os.getenv('DB_DJ_HOST')
 db_pass = os.getenv('DB_DJ_PASSWORD')
+db_port = os.getenv('DB_DJ_PORT')
 
-con_string = f"dbname={db_name} user={db_user} host={db_host} password={db_pass}"
+
+con_string = f"dbname={db_name} user={db_user} host={db_host} password={db_pass} port={db_port}"
+con_string_indrzlive = f"dbname={db_name} user={db_user} host={db_host} password={db_pass} port={db_port}"
+con_string_tutest = f"dbname={db_name} user={db_user} host={db_host} password={db_pass} port={db_port}"
 
 
 db_dj_user = os.getenv('DB_DJ_USER')

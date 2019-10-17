@@ -7,6 +7,12 @@ from utils import get_floor_float
 
 load_dotenv()
 
+# db_user = os.getenv('DB_DJ_USER')
+# db_name = os.getenv('DB_DJ_NAME')
+# db_host = os.getenv('DB_DJ_HOST')
+# db_pass = os.getenv('DB_DJ_PASSWORD')
+# db_port = os.getenv('DB_DJ_PORT')
+
 db_user = os.getenv('POSTGRES_USER_LIVE')
 db_name = os.getenv('POSTGRES_DB_LIVE')
 db_host = os.getenv('POSTGRES_HOST_LIVE')
@@ -28,7 +34,10 @@ def hotfix(floors):
         s = f"""ALTER TABLE routing.routing_networklines_{floor.lower()} ADD COLUMN floor_name character varying;"""
         cur.execute(s)
         conn.commit()
-        up = f"""UPDATE routing.routing_networklines_{floor.lower()} SET floor_name='{floor.lower()}';"""
+        floor_float = get_floor_float(floor)
+        up = f"""UPDATE routing.routing_networklines_{floor.lower()} SET floor_name='{floor.lower()}';
+                 UPDATE routing.routing_networklines_{floor.lower()} SET floor_num={floor_float};
+              """
         cur.execute(up)
         conn.commit()
 
@@ -74,7 +83,7 @@ def part1(schema, floors):
         UPDATE {temp_net_table} SET floor_name='{floor}';
         
         """
-        print("GENERATING TEMP temp_networklines")
+        print("GENERATING TEMP temp_networklines,", floor)
         # print(sql_setup)
         cur.execute(sql_setup)
         conn.commit()

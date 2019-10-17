@@ -4,7 +4,6 @@ from pathlib import Path, PurePath
 
 import subprocess
 import psycopg2
-
 from utils import unique_floor_names, con_string, ogr_db_con
 
 conn = psycopg2.connect(con_string)
@@ -308,7 +307,7 @@ if __name__ == '__main__':
     # import_dxf('Gusshaus', ['HK_EG_IP_082018.dxf',])
     # import_dxf('Getreidemarkt', ['PF_EG_IP_042019.dxf',], re_import=True)
 
-    import_dxf('Getreidemarkt', ['BZ_02_IP_042019.dxf'])
+    import_dxf('Getreidemarkt', ['BZ_02_IP_042019.dxf'],re_import=True)
 
     # drop_cad_table_reimport('Freihaus', ['DD_EG_IP_092018.dxf',])
 

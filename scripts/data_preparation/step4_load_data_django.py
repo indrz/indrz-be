@@ -25,15 +25,15 @@ csv_campuses = ['A_KARLSPLATZ', 'B_GETREIDEMARKT', 'C_GUSSHAUS', 'D_FREIHAUS', '
 
 campuses_dict = dict(zip(campuses, csv_campuses))
 
-def drop_all_dj_tables():
-
-    table_names = ['buildings_buildingfloorspace', 'building_buildingfloorplanline', 'building_buildingfloor',
-                   'building_building', 'building_campus', 'building_organization']
-
-    for table_name in table_names:
-        s = f"""DROP TABLE django.{table_name};"""
-        cur_dj.execute(s)
-        conn_dj.commit()
+# def drop_all_dj_tables():
+#
+#     table_names = ['buildings_buildingfloorspace', 'building_buildingfloorplanline', 'building_buildingfloor',
+#                    'building_building', 'building_campus', 'building_organization']
+#
+#     for table_name in table_names:
+#         s = f"""DROP TABLE django.{table_name};"""
+#         cur_dj.execute(s)
+#         conn_dj.commit()
 
 
 def get_floor_float(name):
@@ -288,9 +288,9 @@ def update_values():
         print(sql)
 
 
-def create_space():
+def create_space(floors):
 
-    for floor in unique_floor_names:
+    for floor in floors:
         floor_id = 1
         floor_name = floor
 
@@ -299,7 +299,6 @@ def create_space():
                                     SELECT room_external_id, room_description, floor_num, long_name, short_name,
                                      tags, st_setsrid(st_transform(geom,3857), 3857), {floor_id}, space_type_id 
                                      FROM campuses.indrz_spaces_{floor_name}
-                                    
                      """
         print(f"now on floor {floor}")
         cur_dj.execute(sql_insert)
@@ -382,10 +381,10 @@ if __name__ == "__main__":
     # create_campus()
     # create_building()
     # create_floor()
-    # update_values()
-    create_space()
+    update_values()
+    create_space(unique_floor_names)
     populate_space_attributes()
-    load_cartolines()
+    # load_cartolines()
     print("done")
 
 

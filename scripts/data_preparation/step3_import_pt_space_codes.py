@@ -262,7 +262,10 @@ if __name__ == '__main__':
     # step2_assign_codes_to_spaces('Getreidemarkt', getreidemarkt_floors) # done on 12.09.2019
 
     # step1_import_csv_roomcodes('Karlsplatz')  # done 23.09.2019 08:36 imported
-    step2_assign_codes_to_spaces('Karlsplatz', karlsplatz_floors)  # done 23.09.2019 08:36 imported
+    # step2_assign_codes_to_spaces('Karlsplatz', karlsplatz_floors)  # done 23.09.2019 08:36 imported
+
+    # step1_import_csv_roomcodes('Getreidemarkt')
+    # step2_assign_codes_to_spaces('Getreidemarkt', ['02'])  # done 23.09.2019 08:36 imported
 
     conn.close()
 
