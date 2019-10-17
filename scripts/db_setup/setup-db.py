@@ -17,7 +17,23 @@ db_name = os.getenv('POSTGRES_DB')
 db_port = os.getenv('POSTGRES_PORT')
 
 
+# db_schemas = "django,campuses,geodata,public"
 
+db_host_live = os.getenv('POSTGRES_HOST')
+db_user_live = os.getenv('POSTGRES_HOST')
+db_pass_live = os.getenv('POSTGRES_HOST')
+db_name_live = os.getenv('POSTGRES_HOST')
+db_port_live = os.getenv('POSTGRES_HOST')
+db_owner_live = os.getenv('POSTGRES_HOST')
+db_superuser_live = os.getenv('POSTGRES_HOST')
+
+# db_host_live = "indrz.com"
+# db_user_live = "tu"
+# db_pass_live = "J2j9S%HGJsxy"
+# db_name_live = "indrztu"
+# db_port_live = "5433"
+# db_owner_live = "tu"
+# db_superuser_live = "postgres"
 
 # db_schema_live = "django"
 # db_schemas_live = "django,campuses,geodata,public"
@@ -95,9 +111,9 @@ def step4_recreate_geoserver_views():
 
 
 if __name__ == '__main__':
-    step1_dump_schemas('tutest', ['django', 'routing'])
+    step1_dump_schemas('tutest', ['django',])
     # step2_drop_create_db('indrztu')
-    step3_drop_create_restore_schema(['django','routing'])
+    # step3_drop_create_restore_schema(['django','routing'])
     # step4_recreate_geoserver_views()
     # create_db()
     # dump_schemas()
