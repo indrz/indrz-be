@@ -15,6 +15,7 @@ from rest_framework_swagger.views import get_swagger_view
 
 schema_view = get_swagger_view(title='INDRZ API')
 
+admin.site.site_header = 'INDRZ Manager'
 
 urlpatterns = [
     path('api/v1/api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
