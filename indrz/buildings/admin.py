@@ -16,7 +16,7 @@ class LtSpaceTypeAdmin(admin.ModelAdmin):
 
 class BuildingFloorSpaceAdmin(gis_admin.OSMGeoAdmin):
     list_display = ('short_name', 'room_external_id', 'room_number', 'fk_building_floor', 'floor_num', 'space_type', 'id')
-    search_fields = ('short_name', 'fk_building')
+    search_fields = ('short_name', 'room_external_id', 'room_number',)
 
 
 class BuildingFloorAdmin(gis_admin.OSMGeoAdmin):
