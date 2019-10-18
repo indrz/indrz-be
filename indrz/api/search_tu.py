@@ -195,6 +195,7 @@ def searchSpaces(lang_code, search_text, mode):
                       "external_id": sd.room_external_id,
                       "centerGeometry": json.loads(sd.geom.centroid.geojson),
                       "floor_num": sd.floor_num,
+                      "floor_name": sd.floor_name,
                       "building": sd.fk_building_floor.fk_building.name,
                       "roomcode": sd.room_code,
                       "space_id": sd.id,
@@ -240,17 +241,20 @@ def searchPoi(lang_code, search_text, mode):
             center_geom = json.loads(poi.geom.geojson)
 
             if lang_code == "de":
-                poi_data = {"label": poi.name_de, "name": poi.name_de, "name_de": poi.name_de, "type": "", "external_id": "",
-                         "centerGeometry": center_geom,
-                         "floor_num": poi.floor_num,
-                         "building": build_name, "aks_nummer": "",
-                         "roomcode": "",
-                         "parent": poi.fk_poi_category.cat_name_de,
-                            "fk_poi_category": {'id': poi.fk_poi_category_id, 'cat_name': poi.fk_poi_category.cat_name_de},
-                        "icon": icon_path,
+                poi_data = {"label": poi.name_de, "name": poi.name_de, "name_de": poi.name_de, "type": "",
+                            "external_id": "",
+                            "centerGeometry": center_geom,
+                            "floor_num": poi.floor_num,
+                            "floor_name": poi.floor_name,
+                            "building": build_name, "aks_nummer": "",
+                            "roomcode": "",
+                            "parent": poi.fk_poi_category.cat_name_de,
+                            "fk_poi_category": {'id': poi.fk_poi_category_id,
+                                                'cat_name': poi.fk_poi_category.cat_name_de},
+                            "icon": icon_path,
                             "poi_link_unique": "/?poi-id=" + str(poi.id) + "&floor=" + str(poi.floor_num),
                             "poi_link_category": "/?poi-cat-id=" + str(poi.fk_poi_category_id),
-                         "src": "poi db", "poi_id": poi.id}
+                            "src": "poi db", "poi_id": poi.id}
 
                 if mode == "search":
                     new_feature_geojson = Feature(geometry=center_geom, properties=poi_data)
