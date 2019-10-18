@@ -234,6 +234,7 @@ class BuildingFloor(gis_models.Model):
     base_elevation = gis_models.IntegerField(verbose_name=_("Elevation value of floor in meters"), null=True, blank=True)
 
     floor_num = gis_models.FloatField(verbose_name=_("floor number"),null=True, blank=True)
+    floor_name = gis_models.CharField(verbose_name=_("floor name"), max_length=200,null=True, blank=True)
     floor_height = gis_models.DecimalField(verbose_name=_("height of floor"), max_digits=5, decimal_places=2, null=True, blank=True)
 
 
@@ -260,7 +261,7 @@ class FloorSpaceBase(gis_models.Model):
     area = gis_models.DecimalField(verbose_name=_("gis calculated area"), max_digits=10, decimal_places=2, null=True, blank=True)
     perimeter = gis_models.DecimalField(verbose_name=_("gis calculated perimeter"), max_digits=10, decimal_places=2, null=True, blank=True)
     floor_num = gis_models.FloatField(verbose_name=_("floor number"),null=True, blank=True)
-
+    floor_name = gis_models.CharField(verbose_name=_("floor name"), max_length=200,null=True, blank=True)
     geom = gis_models.MultiPolygonField(srid=3857, spatial_index=True, null=True, blank=True)
 
     fk_access_type = gis_models.ForeignKey(LtAccessType, null=True, blank=True, on_delete=gis_models.CASCADE)
