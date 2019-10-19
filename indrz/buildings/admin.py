@@ -5,6 +5,8 @@ from buildings.models import LtAccessType, LtSpaceType, LtCondition
 from buildings.models import  Organization, Campus, Building
 from buildings.models import  BuildingFloor, BuildingFloorSpace, InteriorFloorSection
 
+from buildings.models import Wing
+
 admin.site.register(Organization, gis_admin.OSMGeoAdmin)
 admin.site.register(Campus, gis_admin.OSMGeoAdmin)
 admin.site.register(InteriorFloorSection, gis_admin.OSMGeoAdmin)
@@ -30,6 +32,10 @@ class BuildingAdmin(gis_admin.OSMGeoAdmin):
     search_fields = ('building_name', 'street', 'description', 'wings')
     list_filter = ('fk_campus__campus_name',)
 
+class WingAdmin(gis_admin.OSMGeoAdmin):
+    list_display = ('name', 'abbreviation', 'id')
+    search_fields = ('name','abbreviation',)
+
 
 admin.site.register(LtAccessType)
 admin.site.register(LtSpaceType, LtSpaceTypeAdmin)
@@ -38,3 +44,4 @@ admin.site.register(LtCondition)
 admin.site.register(Building, BuildingAdmin )
 admin.site.register(BuildingFloor, BuildingFloorAdmin )
 admin.site.register(BuildingFloorSpace, BuildingFloorSpaceAdmin)
+admin.site.register(Wing, WingAdmin )

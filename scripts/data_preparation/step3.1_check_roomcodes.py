@@ -3,9 +3,9 @@ import pandas as pd
 import psycopg2
 from pathlib import Path
 
-from utils import unique_floor_names, con_string
+from utils import unique_floor_names, con_string, con_dj_string
 
-conn = psycopg2.connect(con_string)
+conn = psycopg2.connect(con_dj_string)
 cur = conn.cursor()
 
 

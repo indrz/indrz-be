@@ -1,8 +1,10 @@
 import psycopg2
-from utils import con_string, get_floor_float, unique_floor_names
+from utils import con_string, get_floor_float, unique_floor_names, con_dj_string
 
-conn = psycopg2.connect(con_string)
+conn = psycopg2.connect(con_dj_string)
 cur = conn.cursor()
+
+
 
 
 def create_poi():
@@ -35,32 +37,47 @@ def create_poi():
 
 
 def update_space_type_id():
+
+    # assign all spaces a default value of 94
+    # this enables geoserver to at least render roomcodes correctly
+    ss = "update django.buildings_buildingfloorspace set space_type_id = 94 where space_type_id ISNULL"
+    cur.execute(ss)
+    conn.commit()
+
+
     search_text_list = ['STIEG', 'MENS', 'WC', 'LIFT', 'SEMIN', 'LABO', 'BIBL', 'SEK', 'FEST', 'DEKAN', 'HILF', 'FEUER',
                         'SAMMEL']
 
-    space_map = [{'name':"stieg", "code":79}, {'name':"wc", "code":91}, {'name':"office", "code":63}]
+    space_map = [{'name':"stieg", "code":79}, {'name':"WC", "code":91}, {'name':"BÜRO", "code":63},
+                 {'name':"gang", "code":44},{'name':"aula", "code":4},{'name':"LIFT", "code":33},
+                 {'name':"AUFZU", "code":33},{'name':"WC HER", "code":104},{'name':"WC DAM", "code":105},
+                 {'name':"SEKR", "code":103}]
 
     for space in space_map:
         like_name = space['name'].upper()
         s = f"""UPDATE django.buildings_buildingfloorspace set space_type_id = {space['code']} 
                 WHERE upper(room_description) like '%{like_name}%' """
 
-    s = """
-    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%STIEG%';
-    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%MENS%'; --mensa
-    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%WC%';
-    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%LIFT%';
-    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%SEMIN%'; --seminarraum
-    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%LABO%'; --labor
-    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%BIBL%'; --biblio
-    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%SEK%'; --sektretariat
-    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%FEST%';--festsaal
-    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%DEKAN%'; --dekan
-    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%HILF%'; --erste hilfe
-    select distinct (room_description) from campuses.indrz_spaces_eg where upper(room_description) like '%FEUER%';
-    select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%SAMMEL%';"""
+        cur.execute(s)
+        conn.commit()
+
+    # s = """
+    # select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%STIEG%';
+    # select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%MENS%'; --mensa
+    # select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%WC%';
+    # select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%LIFT%';
+    # select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%SEMIN%'; --seminarraum
+    # select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%LABO%'; --labor
+    # select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%BIBL%'; --biblio
+    # select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%SEK%'; --sektretariat
+    # select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%FEST%';--festsaal
+    # select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%DEKAN%'; --dekan
+    # select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%HILF%'; --erste hilfe
+    # select distinct (room_description) from campuses.indrz_spaces_eg where upper(room_description) like '%FEUER%';
+    # select distinct (room_description) from campuses.indrz_spaces_01 where upper(room_description) like '%SAMMEL%';"""
+
 
 
 if __name__ == '__main__':
-
-    create_poi()
+    update_space_type_id()
+    # create_poi()
