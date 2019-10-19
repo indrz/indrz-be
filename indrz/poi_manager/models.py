@@ -127,7 +127,7 @@ class Poi(models.Model):
      Points of Interest in and around buildings
     """
     name = models.CharField(max_length=255)
-    floor_num = models.IntegerField(verbose_name=_("floor number"), null=True, blank=True)
+    floor_num = models.FloatField(verbose_name=_("floor number"),null=True, blank=True)
     floor_name = models.CharField(verbose_name=_("floor name"), max_length=200,null=True, blank=True)
     description = models.CharField(verbose_name=_("description"), max_length=255, null=True, blank=True)
     enabled = models.NullBooleanField(verbose_name=_("Activated and enabled"), null=True, blank=True)
