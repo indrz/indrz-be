@@ -78,6 +78,42 @@ def update_space_type_id():
 
 
 
+def find_name(floor_num):
+    floor_name = ""
+
+    for floor in unique_floor_map:
+        if floor['number'] == floor_num:
+            floor_name = floor['name']
+            break
+
+    if floor_name != "":
+        return floor_name
+    else:
+        return None
+
+
+def update_floor_name():
+    sel = """SELECT floor_num from django.buildings_buildingfloorspace;"""
+    cur.execute(sel)
+
+    # rows = cur.fetchall()
+    # for row in rows:
+    #     floor_num = row[0]
+    #     floor_name = find_name(floor_num)
+
+    for floor_num in unique_floor_map:
+        floor_name = find_name(floor_num['number'])
+        s = f"""UPDATE django.buildings_buildingfloorspace set floor_name = '{floor_name}' where floor_num = {floor_num['number']};"""
+        cur.execute(s)
+        conn.commit()
+
+    for floor_num in unique_floor_map:
+        floor_name = find_name(floor_num['number'])
+        s = f"""UPDATE django.poi_manager_poi set floor_name = '{floor_name}' where floor_num = {floor_num['number']};"""
+        cur.execute(s)
+        conn.commit()
+
+
 if __name__ == '__main__':
     update_space_type_id()
     # create_poi()
