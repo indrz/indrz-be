@@ -423,39 +423,41 @@ def create_route_from_coords(request, start_coord, start_floor, end_coord, end_f
                                                 y_end_coord,
                                                 end_floor_num)
 
-
         if rev_val == "true":
             # reverse the route
             geojs_fc = run_route(end_node_id, start_node_id, route_type_val, None, coord_data)
         else:
             geojs_fc = run_route(start_node_id, end_node_id, route_type_val, None, coord_data)
 
-        start_coords = {'coordinates':[[x_start_coord, y_start_coord]], 'type': 'MultiPoint'}
-        end_coords = {'coordinates': [[x_end_coord, y_end_coord]], 'type': 'MultiPoint'}
-
-        start_name = str(x_start_coord) + "," + str(y_start_coord) + "," + str(start_floor_num)
-        end_name = str(x_end_coord) + "," + str(y_end_coord) + "," + str(end_floor_num)
-
-
-        geojs_fc['route_info']['start_name'] = start_name
-        geojs_fc['route_info']['mid_name'] = ""
-        geojs_fc['route_info']['end_name'] = end_name
-
-
-        if rev_val == "false":
-
-            marks = create_route_markers(start_coords, end_coords, start_floor_num, end_floor_num, start_name, end_name)
+        if "error" in geojs_fc:
+            return Response({"error": geojs_fc}, status=status.HTTP_404_NOT_FOUND)
         else:
-            marks = create_route_markers(end_coords, start_coords, start_floor_num, end_floor_num, start_name, end_name)
+            start_coords = {'coordinates': [[x_start_coord, y_start_coord]], 'type': 'MultiPoint'}
+            end_coords = {'coordinates': [[x_end_coord, y_end_coord]], 'type': 'MultiPoint'}
 
-        geojs_fc['route_info']['route_markers'] = marks
+            start_name = str(x_start_coord) + "," + str(y_start_coord) + "," + str(start_floor_num)
+            end_name = str(x_end_coord) + "," + str(y_end_coord) + "," + str(end_floor_num)
 
-        try:
-            return Response(geojs_fc)
-        except:
-            logger.error("error exporting to json model: " + str(geojs_fc))
-            logger.error(traceback.format_exc())
-            return Response({'error': 'either no JSON or no key params in your JSON'})
+            geojs_fc['route_info']['start_name'] = start_name
+            geojs_fc['route_info']['mid_name'] = ""
+            geojs_fc['route_info']['end_name'] = end_name
+
+            if rev_val == "false":
+
+                marks = create_route_markers(start_coords, end_coords, start_floor_num, end_floor_num, start_name,
+                                             end_name)
+            else:
+                marks = create_route_markers(end_coords, start_coords, start_floor_num, end_floor_num, start_name,
+                                             end_name)
+
+            geojs_fc['route_info']['route_markers'] = marks
+
+            try:
+                return Response(geojs_fc)
+            except:
+                logger.error("error exporting to json model: " + str(geojs_fc))
+                logger.error(traceback.format_exc())
+                return Response({'error': 'either no JSON or no key params in your JSON'})
     else:
         return HttpResponseNotFound('<h1>Sorry not a GET or POST request</h1>')
 
@@ -505,7 +507,10 @@ def calc_distance_walktime(rows):
 
     route_info = {"route_info": {"route_length": length_format, "walk_time": walk_time}}
 
-    return route_info
+    if route_length == 0:
+        return {"error":"route has length of zero"}
+    else:
+        return route_info
 
 
 def merge_2_routes(route_part1, route_part2):
@@ -555,9 +560,11 @@ def force_route_mid_point(request, **kwargs):
     route_start_to_mid_point = run_route(start_node_id, mid_node_id, 1)
     route_mid_to_end_point = run_route(mid_node_id, end_node_id, 1)
 
-    route_out_merge = merge_2_routes(route_start_to_mid_point, route_mid_to_end_point)
-
-    return Response({'type': 'FeatureCollection', 'features': route_out_merge})
+    if "error" in route_start_to_mid_point or "error" in route_mid_to_end_point:
+        return Response({"error": "no route"}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        route_out_merge = merge_2_routes(route_start_to_mid_point, route_mid_to_end_point)
+        return Response({'type': 'FeatureCollection', 'features': route_out_merge})
 
 
 class RoutePoiToPoi(APIView):
@@ -587,38 +594,41 @@ class RoutePoiToPoi(APIView):
 
                 geojs_fc = run_route(start_node_id, end_node_id, "1")
 
-                serializer_s = PoiSerializer(qs_start)
-                serializer_e = PoiSerializer(qs_end)
-
-                geojs_fc['route_info']['start_name'] = qs_start.name
-                geojs_fc['route_info']['end_name'] = qs_end.name
-
-                geojs_fc['route_info']['start'] = serializer_s.data
-                geojs_fc['route_info']['end'] = serializer_e.data
-                geojs_fc['route_info']['mid_name'] = ""
-
-                start_coords = {'coordinates': [[qs_start.geom.coords[0][0], qs_start.geom.coords[0][1]]], 'type': 'MultiPoint' }
-
-                start_name = qs_start.name
-                end_name = qs_end.name
-                poi_floor = qs_end.floor_num
-                poi_geom = {'coordinates': [qs_end.geom.coords[0]], 'type': 'MultiPoint'}
-
-                rev_val = "false"
-
-                if rev_val == "false":
-                    marks = create_route_markers(start_coords, poi_geom, qs_start.floor_num, poi_floor, start_name,
-                                                 end_name)
+                if "error" in geojs_fc:
+                    return Response(geojs_fc, status=status.HTTP_404_NOT_FOUND)
                 else:
-                    marks = create_route_markers(poi_geom, start_coords, poi_floor, qs_start.floor_num, end_name,
-                                                 start_name)
+                    serializer_s = PoiSerializer(qs_start)
+                    serializer_e = PoiSerializer(qs_end)
 
-                geojs_fc['route_info']['route_markers'] = marks
+                    geojs_fc['route_info']['start_name'] = qs_start.name
+                    geojs_fc['route_info']['end_name'] = qs_end.name
 
+                    geojs_fc['route_info']['start'] = serializer_s.data
+                    geojs_fc['route_info']['end'] = serializer_e.data
+                    geojs_fc['route_info']['mid_name'] = ""
 
-                return Response(geojs_fc, status=status.HTTP_200_OK)
+                    start_coords = {'coordinates': [[qs_start.geom.coords[0][0], qs_start.geom.coords[0][1]]],
+                                    'type': 'MultiPoint'}
+
+                    start_name = qs_start.name
+                    end_name = qs_end.name
+                    poi_floor = qs_end.floor_num
+                    poi_geom = {'coordinates': [qs_end.geom.coords[0]], 'type': 'MultiPoint'}
+
+                    rev_val = "false"
+
+                    if rev_val == "false":
+                        marks = create_route_markers(start_coords, poi_geom, qs_start.floor_num, poi_floor, start_name,
+                                                     end_name)
+                    else:
+                        marks = create_route_markers(poi_geom, start_coords, poi_floor, qs_start.floor_num, end_name,
+                                                     start_name)
+
+                    geojs_fc['route_info']['route_markers'] = marks
+
+                    return Response(geojs_fc, status=status.HTTP_200_OK)
         else:
-            return Response({"error":"nothin"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error":"poi does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def find_closest_poi(coordinates, floor, poi_cat_id, lang_code):
@@ -781,25 +791,27 @@ class RoutePoiToXyz(APIView):
             else:
                 geojs_fc = run_route(start_node_id, end_node_id, "1")
 
+            if "error" in geojs_fc:
+                Response(geojs_fc, status=status.HTTP_404_NOT_FOUND)
+            else:
+                serializer_s = PoiSerializer(qs_start)
 
-            serializer_s = PoiSerializer(qs_start)
+                pt = Point((x_end_coord, y_end_coord))
 
-            pt = Point((x_end_coord, y_end_coord))
+                end_geojs_feat = Feature(geometry=pt,
+                                     properties={'floor': z_end_floor, 'coordinates': xyz_str}
+                                     )
 
-            end_geojs_feat = Feature(geometry=pt,
-                                 properties={'floor': z_end_floor, 'coordinates': xyz_str}
-                                 )
+                geojs_fc['route_info']['start_name'] = qs_start.name
+                geojs_fc['route_info']['end_name'] = xyz_str
 
-            geojs_fc['route_info']['start_name'] = qs_start.name
-            geojs_fc['route_info']['end_name'] = xyz_str
+                geojs_fc['route_info']['start'] = serializer_s.data
+                geojs_fc['route_info']['end'] = end_geojs_feat
+                geojs_fc['route_info']['mid_name'] = ""
 
-            geojs_fc['route_info']['start'] = serializer_s.data
-            geojs_fc['route_info']['end'] = end_geojs_feat
-            geojs_fc['route_info']['mid_name'] = ""
-
-            return Response(geojs_fc, status=status.HTTP_200_OK)
+                return Response(geojs_fc, status=status.HTTP_200_OK)
         else:
-            return Response({"error": "nothin"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "no poi its None"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', ])
@@ -873,27 +885,30 @@ def route_to_nearest_poi(request, start_xy, floor, poi_cat_id, reversed):
         else:
             geojs_fc = run_route(startid, node_id_closest_poi, "1")
 
-        geojs_fc['route_info']['start_name'] = ""
-        geojs_fc['route_info']['mid_name'] = ""
-        geojs_fc['route_info']['poi_info'] = poi_data
-
-        start_coords = {'coordinates': [x_start_coord, y_start_coord], 'type': 'Point'}
-
-        start_name = ""
-        end_name = poi_data['name']
-        poi_floor = poi_data['floor']
-        poi_geom = poi_data['geometry']
-
-        if rev_val == "false":
-            marks = create_route_markers(start_coords, poi_geom, start_floor_num, poi_floor, start_name, end_name)
+        if "error" in geojs_fc:
+            return Response({"error": geojs_fc}, status=status.HTTP_404_NOT_FOUND)
         else:
-            marks = create_route_markers(poi_geom, start_coords, poi_floor, start_floor_num, end_name, start_name)
+            geojs_fc['route_info']['start_name'] = ""
+            geojs_fc['route_info']['mid_name'] = ""
+            geojs_fc['route_info']['poi_info'] = poi_data
 
-        geojs_fc['route_info']['route_markers'] = marks
+            start_coords = {'coordinates': [x_start_coord, y_start_coord], 'type': 'Point'}
 
-        # geojs_fc.update({'route_info':[{'destination':closest_poi},{'start': 'work in progress'},{"name": end_name}]})
+            start_name = ""
+            end_name = poi_data['name']
+            poi_floor = poi_data['floor']
+            poi_geom = poi_data['geometry']
 
-        return Response(geojs_fc)
+            if rev_val == "false":
+                marks = create_route_markers(start_coords, poi_geom, start_floor_num, poi_floor, start_name, end_name)
+            else:
+                marks = create_route_markers(poi_geom, start_coords, poi_floor, start_floor_num, end_name, start_name)
+
+            geojs_fc['route_info']['route_markers'] = marks
+
+            # geojs_fc.update({'route_info':[{'destination':closest_poi},{'start': 'work in progress'},{"name": end_name}]})
+
+            return Response(geojs_fc)
     else:
         return Response({"error": "no Pois with that poi_cat_id found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -1182,15 +1197,15 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
 
     # get entire query results to work with
     route_simple = cur.fetchall()
+    route_info = calc_distance_walktime(route_simple)
+    route_result = []
 
-    if(coord_data):
-        route_result = split_route(route_simple, start_node_id, end_node_id, coord_data)
-        route_info = calc_distance_walktime(route_simple)
+    if "error" in route_info:
+        return {"error": "no route", "reason": "route has a length of zero"}
     else:
-        route_info = calc_distance_walktime(route_simple)
 
-        # empty list to hold each segment for our GeoJSON output
-        route_result = []
+        if (coord_data):
+            route_result = split_route(route_simple, start_node_id, end_node_id, coord_data)
 
         # loop over each segment in the result route segments
         # create the list of our new GeoJSON
@@ -1214,11 +1229,10 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
                                  )
             route_result.append(geojs_feat)
 
-
-    # using the geojson module to create our GeoJSON Feature Collection
-    geojs_fc = FeatureCollection(route_result)
-    geojs_fc.update(route_info)
-    return geojs_fc
+        # using the geojson module to create our GeoJSON Feature Collection
+        geojs_fc = FeatureCollection(route_result)
+        geojs_fc.update(route_info)
+        return geojs_fc
 
 
 @api_view(['GET', 'POST'])
@@ -1248,15 +1262,20 @@ def create_route_from_id(request, start_room_id, end_room_id, route_type):
 
         res = run_route(start_node_id, end_node_id, route_type)
 
-        res['route_info']['start_name'] = start_qs.room_code
-        res['route_info']['end_name'] = end_qs.room_code
+        if "error" in res:
+            print({"error":res})
+            return Response({"error": res}, status=status.HTTP_404_NOT_FOUND)
+        else:
 
-        try:
-            return Response(res)
-        except:
-            logger.error("error exporting to json model: " + str(res))
-            logger.error(traceback.format_exc())
-            return Response({'error': 'either no JSON or no key params in your JSON'})
+            res['route_info']['start_name'] = start_qs.room_code
+            res['route_info']['end_name'] = end_qs.room_code
+
+            try:
+                return Response(res)
+            except:
+                logger.error("error exporting to json model: " + str(res))
+                logger.error(traceback.format_exc())
+                return Response({'error': 'either no JSON or no key params in your JSON'})
     else:
         return HttpResponseNotFound('<h1>Sorry not a GET or POST request</h1>')
 
@@ -1290,18 +1309,16 @@ def route_space_id_and_poi_id(request, space_id, poi_id, route_type, reversed_di
 
         if reversed_direction:
             res = run_route(end_node_id, start_node_id, route_type)
-
-            if res:
-                return Response(res)
+            if "error" in res:
+                return Response({"error": res}, status=status.HTTP_404_NOT_FOUND)
             else:
-                return Response({'error': 'either no JSON or no key params in your JSON'}, status=status.HTTP_404_NOT_FOUND)
+                return Response(res)
         else:
             res = run_route(start_node_id, end_node_id, "0")
-            if res:
-                return Response(res)
+            if "error" in res:
+                return Response({"error": res}, status=status.HTTP_404_NOT_FOUND)
             else:
-                return Response({'error': 'either no JSON or no key params in your JSON'}, status=status.HTTP_404_NOT_FOUND)
-
+                return Response(res)
     else:
         return Response({'error': 'either no JSON or no key params in your JSON'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -1462,20 +1479,22 @@ def create_route_from_search(request, start_term, end_term, route_type):
                     # res = run_route(start_node_id, end_node_id, route_type_val, mid_node_id=mid_id, coord_data=coord_data)
                     res = run_route(start_node_id, end_node_id, route_type_val, mid_node_id=mid_id)
 
-                    res['route_info']['start_name'] = start_room
-                    res['route_info']['mid_name'] = mid_name
-                    res['route_info']['end_name'] = end_room
+                    if "error" in res:
+                        return Response({"error": res}, status=status.HTTP_404_NOT_FOUND)
+                    else:
+                        res['route_info']['start_name'] = start_room
+                        res['route_info']['mid_name'] = mid_name
+                        res['route_info']['end_name'] = end_room
+                        res['route_info']['route_markers'] = route_markers_geojs
 
-                    res['route_info']['route_markers'] = route_markers_geojs
-
-                    try:
-                        return Response(res)
-                    except:
-                        logger.error("error exporting to json model: " + str(res))
-                        logger.error(traceback.format_exc())
-                        return Response({'error': 'either no JSON or no key params in your JSON'}, status=status.HTTP_404_NOT_FOUND)
+                        try:
+                            return Response(res)
+                        except:
+                            logger.error("error exporting to json model: " + str(res))
+                            logger.error(traceback.format_exc())
+                            return Response({'error': 'either no JSON or no key params in your JSON'}, status=status.HTTP_404_NOT_FOUND)
                 else:
-                    return Response({'error': 'no data found'}, status=status.HTTP_404_NOT_FOUND)
+                    return Response({'error': 'no center geometry'}, status=status.HTTP_404_NOT_FOUND)
         else:
             logger.error(traceback.format_exc())
             logger.debug("what is wrong")
