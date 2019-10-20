@@ -27,13 +27,13 @@ con_string_indrzlive = f"dbname={db_name} user={db_user} host={db_host} password
 con_string_tutest = f"dbname={db_name} user={db_user} host={db_host} password={db_pass} port={db_port}"
 
 
-db_dj_user = os.getenv('DB_DJ_USER')
-db_dj_name = os.getenv('DB_DJ_NAME')
-db_dj_host = os.getenv('DB_DJ_HOST')
-db_dj_pass = os.getenv('DB_DJ_PASSWORD')
-db_dj_port = os.getenv('DB_DJ_PORT')
+db_dj_user = os.getenv('POSTGRES_USER')
+db_dj_name = os.getenv('POSTGRES_DB')
+db_dj_host = os.getenv('POSTGRES_HOST')
+db_dj_pass = os.getenv('POSTGRES_PASS')
+db_dj_port = os.getenv('POSTGRES_PORT')
 
-con_dj_string = f"dbname={db_dj_name} user={db_dj_user} host={db_dj_host} password={db_dj_pass}"
+con_dj_string = f"dbname={db_dj_name} user={db_dj_user} host={db_dj_host} password={db_dj_pass} port={db_dj_port}"
 
 ogr_db_con = f"PG: host={db_host} user={db_user} dbname={db_name} password={db_pass}"
 

@@ -95,7 +95,7 @@ def create_routing_view():
             CREATE OR REPLACE VIEW geodata.route_{floor_name} AS
             SELECT id, floor_name, source, target, network_type, geom
             FROM geodata.networklines_3857
-            WHERE floor_num = {floor_float};
+            WHERE floor = {floor_float};
         """
         cur_dj.execute(q_route)
         conn_dj.commit()

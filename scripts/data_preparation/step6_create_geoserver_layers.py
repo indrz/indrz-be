@@ -643,8 +643,8 @@ def generate_groups(floor_name,):
                       <publishables>
                         <published type="layer"><name>indrztu:footprint_{0}</name></published>
                         <published type="layer"><name>indrztu:spaces_{0}</name></published>
-                        <published type="layer"><name>indrztu:anno_{0}</name></published>
                         <published type="layer"><name>indrztu:cartolines_{0}</name></published>
+                        <published type="layer"><name>indrztu:anno_{0}</name></published>
                       </publishables>
                        <bounds>
                         <minx>1820700.70162944</minx>
