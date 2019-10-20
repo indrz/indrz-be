@@ -85,16 +85,12 @@ def poi_root_nodes(request, campus_id, format=None):
 @permission_classes((IsAuthenticated, ))
 def poi_json_tree(request, format=None):
 
-    lang_code = request.LANGUAGE_CODE
-
     def recursive_node_to_dict(node):
         result = collections.OrderedDict()
         result['id'] = node.pk
-        if lang_code == "de":
-            name = node.cat_name_de
-        elif lang_code == "en":
-            name = node.cat_name_en
-        result['text'] = name
+        result['name'] = node.cat_name_en
+        result['name_en'] = node.cat_name_en
+        result['name_de'] = node.cat_name_de
         result['icon'] = node.icon_css_name
         result['selectedIcon'] = node.icon_css_name + "_active"
 
@@ -104,7 +100,7 @@ def poi_json_tree(request, format=None):
 
         children = [recursive_node_to_dict(c) for c in node.get_children()]
         if children:
-            result['nodes'] = children
+            result['children'] = children
         return result
 
     root_nodes = cache_tree_children(PoiCategory.objects.filter(enabled=True))
