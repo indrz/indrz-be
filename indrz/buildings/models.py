@@ -335,6 +335,9 @@ class BuildingFloorSpace(FloorSpaceBase):
     def centerGeometry(self):
         return self.geom.centroid
 
+    class Meta:
+        ordering = ['room_code']
+
 
 class Wing(gis_models.Model):
     """
