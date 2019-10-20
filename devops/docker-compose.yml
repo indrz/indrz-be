@@ -36,7 +36,6 @@ services:
         timeout: 10s
         retries: 3
 
-
    db-dbbackups:
      image: kartoza/pg-backup:11.0
      volumes:
