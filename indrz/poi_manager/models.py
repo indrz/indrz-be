@@ -148,5 +148,9 @@ class Poi(models.Model):
     name_en = models.CharField(max_length=255, null=True, blank=True)
     name_de = models.CharField(max_length=255, null=True, blank=True)
 
+    @property
+    def icon(self):
+        return self.fk_poi_category.fk_poi_icon.poi_icon.url
+
     def __str__(self):
         return str(self.name) or ''

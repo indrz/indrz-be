@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^api/v1/search/(?P<q>.+)', search_any, name='search'),
     url(r'^api/v1/directions/', include(('routing.urls', 'directions'), namespace='directions')),
     url(r'^api/v1/admin/', admin.site.urls),
+    url(r'^api/v1/poi/', include(('poi_manager.urls', 'poi'), namespace='poi')),
     url(r'^api/v1/', include(router.urls)),
     path('api/v1/api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
     path('', include(('homepage.urls', 'homepage'), namespace='homepage'))

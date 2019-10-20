@@ -9,17 +9,17 @@ load_dotenv()
 # db_pass = os.getenv('DB_PASSWORD')
 # db_port = os.getenv('DB_PORT')
 
-# db_user = os.getenv('POSTGRES_USER_LIVE')
-# db_name = os.getenv('POSTGRES_DB_LIVE')
-# db_host = os.getenv('POSTGRES_HOST_LIVE')
-# db_pass = os.getenv('POSTGRES_PASS_LIVE')
-# db_port = os.getenv('POSTGRES_PORT_LIVE')
+db_user = os.getenv('POSTGRES_USER_LIVE')
+db_name = os.getenv('POSTGRES_DB_LIVE')
+db_host = os.getenv('POSTGRES_HOST_LIVE')
+db_pass = os.getenv('POSTGRES_PASS_LIVE')
+db_port = os.getenv('POSTGRES_PORT_LIVE')
 
-db_user = os.getenv('DB_DJ_USER')
-db_name = os.getenv('DB_DJ_NAME')
-db_host = os.getenv('DB_DJ_HOST')
-db_pass = os.getenv('DB_DJ_PASSWORD')
-db_port = os.getenv('DB_DJ_PORT')
+# db_user = os.getenv('DB_DJ_USER')
+# db_name = os.getenv('DB_DJ_NAME')
+# db_host = os.getenv('DB_DJ_HOST')
+# db_pass = os.getenv('DB_DJ_PASSWORD')
+# db_port = os.getenv('DB_DJ_PORT')
 
 
 con_string = f"dbname={db_name} user={db_user} host={db_host} password={db_pass} port={db_port}"
@@ -38,6 +38,16 @@ con_dj_string = f"dbname={db_dj_name} user={db_dj_user} host={db_dj_host} passwo
 ogr_db_con = f"PG: host={db_host} user={db_user} dbname={db_name} password={db_pass}"
 
 unique_floor_names = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', 'DG', 'EG', 'SO', 'U1', 'U2', 'U3', 'U4', 'Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'ZD', 'ZE', 'ZU']
+unique_floor_map = [{'name': '01', 'number': 1.0}, {'name': '02', 'number': 2.0}, {'name': '03', 'number': 3.0},
+                      {'name': '04', 'number': 4.0}, {'name': '05', 'number': 5.0}, {'name': '06', 'number': 6.0},
+                      {'name': '07', 'number': 7.0}, {'name': '08', 'number': 8.0}, {'name': '09', 'number': 9.0},
+                      {'name': '10', 'number': 10.0}, {'name': '11', 'number': 11.0}, {'name': '12', 'number': 12.0},
+                      {'name': 'DG', 'number': 9999}, {'name': 'EG', 'number': 0.0}, {'name': 'SO', 'number': -0.5},
+                      {'name': 'U1', 'number': -1.0}, {'name': 'U2', 'number': -2.0}, {'name': 'U3', 'number': -3.0},
+                      {'name': 'U4', 'number': -4.0}, {'name': 'Z1', 'number': 1.5}, {'name': 'Z2', 'number': 2.5},
+                      {'name': 'Z3', 'number': 3.5}, {'name': 'Z4', 'number': 4.5}, {'name': 'Z5', 'number': 5.5},
+                      {'name': 'ZD', 'number': 9999}, {'name': 'ZE', 'number': 0.5}, {'name': 'ZU', 'number': -0.5}]
+
 
 # TRAKTS
 #Karlsplatz ['AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AK', 'AP', 'AQ', 'AS', 'AT', 'EA', 'EB', 'EC']
