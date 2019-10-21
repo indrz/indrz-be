@@ -1190,6 +1190,8 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
         if start_node_id != end_node_id:
             # cur.execute(routing_query, (start_node_id, end_node_id))
             cur.execute(routing_query)
+        else:
+            return {"error": "same ids", "reason": "start node is equal to end node"}
     else:
         logger.error("start or end node is None or is the same node " + str(start_node_id))
         return HttpResponseNotFound('<h1>Sorry NO start or end node'
