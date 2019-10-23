@@ -152,7 +152,7 @@ def search_any(request, q, format=None):
                     props.update(code)
 
             # space_center_geom = json.loads(space.centerGeometry.geojson)
-            props.update({"spaceid": space.pk, "building": space.fk_building_floor.fk_building.building_name, "space_id":space.id,
+            props.update({"space_id": space.pk, "building": space.fk_building_floor.fk_building.building_name,
                           "floor_num": str(space.floor_num), "floor_name":str(space.long_name), "centerGeometry": "space_center_geom"})
 
             feature = Feature(geometry=geom, properties=props)
