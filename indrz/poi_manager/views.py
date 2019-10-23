@@ -225,7 +225,7 @@ def poi_category_by_name(request, campus_id, category_name, format=None):
 
 
 @api_view(['GET', ])
-def poi_list(request, campus_id, format=None):
+def poi_list(request, format=None):
     try:
         poi_qs = Poi.objects.filter(enabled=True).order_by('fk_poi_category__icon_css_name')
         serializer = PoiSerializer(poi_qs, many=True)
