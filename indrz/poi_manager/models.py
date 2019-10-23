@@ -121,6 +121,10 @@ class PoiCategory(MPTTModel):
     def __str__(self):
         return str(self.cat_name) or ''
 
+    @property
+    def icon(self):
+        return self.fk_poi_icon.poi_icon.url
+
 
 class Poi(models.Model):
     """
