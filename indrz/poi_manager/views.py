@@ -30,9 +30,9 @@ def poi_bootstrap_tree(request, campus_id, format=None):
 
 
 @api_view(['GET', ])
-def get_poi_by_id(request, campus_id, poi_id, format=None):
+def get_poi_by_id(request, poi_id, format=None):
     try:
-        poi_qs = Poi.objects.filter(fk_campus=campus_id).filter(id=poi_id).filter(enabled=True)
+        poi_qs = Poi.objects.filter(id=poi_id).filter(enabled=True)
         serializer = PoiSerializer(poi_qs, many=True)
         return Response(serializer.data)
 
