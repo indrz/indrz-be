@@ -50,7 +50,7 @@ def get_room_centroid_node(space_id):
     x_coord = float(center_geom.x)
     y_coord = float(center_geom.y)
 
-    space_node_id = find_closest_network_node(x_coord, y_coord, qs[0].floor_num)
+    space_node_id = find_closest_network_node(x_coord, y_coord, qs.floor_num)
     try:
         return space_node_id
     except:
