@@ -43,7 +43,6 @@ def get_room_centroid_node(space_id):
     :return: Closest route node to submitted room number
     '''
 
-
     qs = BuildingFloorSpace.objects.get(pk=space_id)
     center_geom = qs.geom.centroid
 
