@@ -3,6 +3,7 @@ volumes:
    db-backups:
    geoserver-data:
    geo-db-data:
+   indrz-data:
 networks:
   indrz-tu:
 services:
@@ -65,11 +66,11 @@ services:
      restart: always
    # WEBAPP
    webapp:
-     build:
-       context: .
-       dockerfile: devops/docker/webapp/Dockerfile
+     image: indrz-tu:latest
+#     build:
+#       context: .
+#       dockerfile: devops/docker/webapp/Dockerfile
      hostname: webapp
-     image: indrz-tu/webapp:latest
      ports:
        - 8000:8000
      networks:
@@ -78,6 +79,7 @@ services:
        - db:
            condition: service_healthy
      volumes:
+       - /opt/data/indrz-data:/usr/src/app
        - /opt/data/media:/opt/data/media
        - /opt/data/static:/opt/data/static
        - /opt/logs:/usr/src/app/logs
