@@ -35,8 +35,8 @@ ENV LC_CTYPE="C.UTF-8"
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY ../../../indrz /usr/src/app/
-COPY ../../../indrz/requirements.txt requirements.txt
+# COPY indrz/ /usr/src/app/
+COPY indrz/requirements.txt requirements.txt
 
 # --ignore-pipfile, using Pipfile.lock file only
 # --skip-lock, ignore Pipfile.lock using only Pipfile
@@ -44,12 +44,11 @@ COPY ../../../indrz/requirements.txt requirements.txt
 # RUN set -ex && pipenv install --system --skip-lock
 RUN pip install -r requirements.txt
 
-COPY entrypoint.sh /entrypoint.sh
+COPY devops/docker/webapp/entrypoint.sh /entrypoint.sh
 RUN chmod a+x /entrypoint.sh
 ENTRYPOINT ["bash", "/entrypoint.sh"]
 
-
 EXPOSE 8000
 
-#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+#CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
