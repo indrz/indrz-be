@@ -99,6 +99,81 @@ python manage.py runserver
 lynx http://localhost:8000/api/v1/ 
 ```
 
+## DevOps 
+
+How to deploy and maintain application in all environments.
+
+### Run the application (on local or remote env)
+
+1. Create or copy project `.env` file in root folder.
+2. Create or copy containers `*.env` files in `devops/docker-env` folder:
+    1. `db.env`
+    2.  `db-backups.env`
+    3.  `geoserver.env`
+    4.  `indrz.env`
+3. Include SSL Certificates in `ssl/` folder
+4. Build all required Docker images
+    ```
+    make build
+    ```
+5. Run application
+    ```
+    make run
+    ```
+6. Collect static file
+    ```
+    make collectstatic
+    ```
+
+### Manage Postgres database
+
+```
+psql -h localhost -U POSTGRES_USER -p POSTGRES_EXT_PORT -l
+```
+
+### User Make command
+
+Commands help
+
+```
+make
+- or -
+make help
+```
+
+Collect Django static files
+```
+make collectstatic
+```
+
+Build Docker images
+
+```
+# Build Nginx image only
+make build-nginx
+
+# Build Indrz image only
+make build-indrz
+
+# Build all
+make build
+```
+
+Stop application 
+```
+make stop
+```
+
+Application releases deployment 
+```
+make deploy
+```
+
+Pull code from Git 
+```
+make pull
+```
+
 ## Building blocks Libraries we use
 
 * [Django](http://djangoproject.com) – Web Framework Backend

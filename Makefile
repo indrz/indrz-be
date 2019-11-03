@@ -27,6 +27,10 @@ collectstatic: ## Collect Django static files
 	docker exec -t indrz python manage.py collectstatic --clear --noinput
 	docker exec -t nginx cp -r /opt/data/static/dist/. $(WEB_FOLDER)/
 
+pull: ## Pull source code from Git
+
+deploy: pull collectstatic run ## Update and deploy Indrz application
+
 stop: ## Stop Indrz Docker project
 	docker-compose down
 
