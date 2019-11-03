@@ -36,6 +36,8 @@ services:
       - devops/docker-env/geoserver.env
     depends_on:
       - db
+    networks:
+      - indrz-tu
     healthcheck:
       test: curl --fail -s http://localhost:8080/ || exit 1
       interval: 1m30s
