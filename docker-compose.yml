@@ -26,7 +26,7 @@ services:
   geoserver:
     hostname: geoserver
     container_name: geoserver
-    image: kartoza/geoserver:2.16.0
+    image: kartoza/geoserver:2.15.0
     volumes:
       - ${PWD}/data/geoserver-data:/opt/data/geoserver/data_dir
     ports:
