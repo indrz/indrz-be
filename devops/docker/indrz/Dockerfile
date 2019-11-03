@@ -44,7 +44,7 @@ COPY indrz/requirements.txt requirements.txt
 # RUN set -ex && pipenv install --system --skip-lock
 RUN pip install -r requirements.txt
 
-COPY devops/docker/webapp/entrypoint.sh /entrypoint.sh
+COPY devops/docker/indrz/entrypoint.sh /entrypoint.sh
 RUN chmod a+x /entrypoint.sh
 ENTRYPOINT ["bash", "/entrypoint.sh"]
 
