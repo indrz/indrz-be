@@ -14,10 +14,10 @@ help: ## This help.
 
 build: build-nginx build-indrz ## Build Nginx and Indrz docker images
 
-build-nginx: ## Build Nginx Container
+build-nginx: ## Build Nginx Image
 	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) --build-arg WEB_FOLDER=$(WEB_FOLDER) nginx
 
-build-indrz: ## Build Indrz Container
+build-indrz: ## Build Indrz Image
 	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) indrz
 
 run: ## Run Indrz Docker project
@@ -28,6 +28,7 @@ collectstatic: ## Collect Django static files
 	docker exec -t nginx cp -r /opt/data/static/dist/. $(WEB_FOLDER)/
 
 pull: ## Pull source code from Git
+	git pull
 
 deploy: pull collectstatic run ## Update and deploy Indrz application
 
