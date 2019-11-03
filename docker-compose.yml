@@ -90,6 +90,7 @@ services:
     volumes:
       - ${PWD}/data/indrz/static:/opt/data/static
       - ${SSL_CERTIFICATES_PATH}:/etc/ssl
+      - ${PWD}/data/nginx/www:${WEB_FOLDER}
     ports:
       - 80:80
       - 443:443
