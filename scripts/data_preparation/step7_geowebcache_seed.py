@@ -86,9 +86,9 @@ def reload_geoserver():
 def seed_geowebcache():
     # This config file contains options for the gwc preseeding scripts
     # Zoom levels to create tiles for
-    zoom_start = "14"
+    zoom_start = "17"
     zoom_stop = "22"
-    number_threads = "14"  # threadCount=08  values 1 to 15 are recommended
+    number_threads = "17"  # threadCount=08  values 1 to 15 are recommended
     gwc_type = "reseed"  # type can be seed, reseed, truncate   all 3 are valid possibilities
     format_img = r"image/png"
 
@@ -124,7 +124,8 @@ def seed_geowebcache():
         logging.info('done reseeding ' + layer)
         # time.sleep(40)  # wait 40 seconds before sending next layer to re-seed
 
-# seed_geowebcache()
+if __name__ == '__main__':
+    seed_geowebcache()
 
 # call_api = "curl -u " + GEOSERVER_USERpass + " -XPOST http://localhost:8080/geoserver/rest/reload"
 # http://gis.wu.ac.at:8080/geoserver/gwc/rest/seed/wuwien:og04
