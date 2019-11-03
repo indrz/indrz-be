@@ -16,7 +16,7 @@ db_pass = os.getenv('DB_PASSWORD')
 GEOSERVER_USER = os.getenv('GEOSERVER_USER')
 GEOSERVER_PASS = os.getenv('GEOSERVER_PASS')
 
-logging.basicConfig(filename='/opt/roomlog.log', level=logging.INFO, format='%(asctime)s %(message)s')
+logging.basicConfig(filename='gwc_seed.log', level=logging.INFO, format='%(asctime)s %(message)s')
 logging.info('seed_geowebcache was called')
 
 GEOSERVER_USERpass = GEOSERVER_USER + ":" + GEOSERVER_PASS
@@ -28,6 +28,8 @@ reload_url = geoserver_url + "/rest/reload"
 layers_url = geoserver_url + "/rest/layers.json"
 layer_groups = geoserver_url + "/rest/workspaces/indrz/layergroups.json"
 seed_layers = geoserver_url + "/gwc/rest/seed.json"
+
+unique_floor_names = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', 'DG', 'EG', 'SO', 'U1', 'U2', 'U3', 'U4', 'Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'ZD', 'ZE', 'ZU']
 
 
 def get_seed_status(s):
@@ -86,28 +88,29 @@ def reload_geoserver():
 def seed_geowebcache():
     # This config file contains options for the gwc preseeding scripts
     # Zoom levels to create tiles for
-    zoom_start = "17"
-    zoom_stop = "22"
-    number_threads = "17"  # threadCount=08  values 1 to 15 are recommended
-    gwc_type = "reseed"  # type can be seed, reseed, truncate   all 3 are valid possibilities
-    format_img = r"image/png"
 
-    layers = ["indrz:ug01", "indrz:e00", "indrz:e01", "indrz:e02", "indrz:e03", "indrz:e04", "indrz:e05", "indrz:e06"]
-    # layers = ["indrz:e06"]
     s = requests.Session()
     s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
-    # This script RESEED tiles meaning removes and creates in one go in the GWC cache
 
-    for layer in layers:
+    zoom_start = "19"
+    zoom_stop = "22"
+    number_threads = "8"  # threadCount=08  values 1 to 15 are recommended
+    gwc_type = "reseed"  # type can be seed, reseed, truncate   all 3 are valid possibilities
+    format_img = r"image/jpg"
+
+    for floor in unique_floor_names:
+        layer = "indrztu:floor_" + floor.lower()
+
+
         seed_url = geoserver_url + "/gwc/rest/seed/{0}.json".format(layer)
 
         data_update = json.dumps({"seedRequest": {
             "name": layer,
             # "bounds":{"coords":{ "double":["-124.0","22.0","66.0","72.0"]}},
             "srs": {"number": 3857},
-            "zoomStart": 14,
-            "zoomStop": 23,
+            "zoomStart": 19,
+            "zoomStop": 22,
             "format": format_img,
             "type": "reseed",
             "threadCount": number_threads
@@ -116,16 +119,21 @@ def seed_geowebcache():
 
         seed_the_layer = s.post(url=seed_url, data=data_update)
 
+        print("now seeding, ", layer)
+
         x = get_seed_status(s)
         while len(x['long-array-array']) > 0:
             x = get_seed_status(s)
             # print("in while! len > 0 len is: ", len(x['long-array-array']), " and layer is: ", layer)
             time.sleep(15)
-        logging.info('done reseeding ' + layer)
+        # logging.info('done reseeding ' + layer)
         # time.sleep(40)  # wait 40 seconds before sending next layer to re-seed
+
 
 if __name__ == '__main__':
     seed_geowebcache()
+
+# seed_geowebcache()
 
 # call_api = "curl -u " + GEOSERVER_USERpass + " -XPOST http://localhost:8080/geoserver/rest/reload"
 # http://gis.wu.ac.at:8080/geoserver/gwc/rest/seed/wuwien:og04
