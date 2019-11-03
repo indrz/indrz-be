@@ -1,87 +1,101 @@
 version: '3'
-volumes:
-   db-backups:
-   geoserver-data:
-   geo-db-data:
+
 networks:
   indrz-tu:
+
 services:
-   db:
-      hostname: postgresql
-      image: kartoza/postgis:9.6-2.4
-      volumes:
-         - geo-db-data:/var/lib/postgresql
-      ports:
-        - 25434:5432
-      networks:
-        - indrz-tu
-      env_file:
+  db:
+    hostname: db
+    container_name: db
+    image: kartoza/postgis:9.6-2.4
+    volumes:
+      - ${PWD}/data/geo-db-data:/var/lib/postgresql
+    ports:
+      - ${POSTGRES_EXT_PORT}:5432
+    networks:
+      - indrz-tu
+    env_file:
       - devops/docker-env/db.env
-      restart: on-failure
-      healthcheck:
-        test: "exit 0"
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-   geoserver:
-      hostname: geoserver
-      image: kartoza/geoserver:2.15.0
-      volumes:
-        - geoserver-data:/opt/data/geoserver/data_dir
-      ports:
-        - "8600:8080"
-      restart: on-failure
-      env_file:
-        - devops/docker-env/geoserver.env
-      depends_on:
-        db:
-          condition: service_healthy
-      healthcheck:
-        test: curl --fail -s http://localhost:8080/ || exit 1
-        interval: 1m30s
-        timeout: 10s
-        retries: 3
+  geoserver:
+    hostname: geoserver
+    container_name: geoserver
+    image: kartoza/geoserver:2.15.0
+    volumes:
+      - ${PWD}/data/geoserver-data:/opt/data/geoserver/data_dir
+    ports:
+      - "8600:8080"
+    restart: on-failure
+    env_file:
+      - devops/docker-env/geoserver.env
+    depends_on:
+      - db
+    networks:
+      - indrz-tu
+    healthcheck:
+      test: curl --fail -s http://localhost:8080/ || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
 
-   db-dbbackups:
-     image: kartoza/pg-backup:11.0
-     volumes:
-       - db-backups:/opt/data/backups
-     env_file:
-       - devops/docker-env/db-backups.env
-     restart: on-failure
-     depends_on:
-       db:
-         condition: service_healthy
-     # NGINX
-   nginx:
-     hostname: nginx
-     image: indrz-tu/nginx:latest
-     volumes:
-       - /opt/data:/opt/data
-       - /etc/ssl:/etc/ssl
-     ports:
-       - 80:80
-       - 443:443
-     networks:
-       - indrz-tu
-     restart: always
-   # WEBAPP
-   webapp:
-     build:
-       context: .
-       dockerfile: devops/docker/webapp/Dockerfile
-     hostname: webapp
-     image: indrz-tu/webapp:latest
-     ports:
-       - 8000:8000
-     networks:
-       - indrz-tu
-     depends_on:
-       - db:
-           condition: service_healthy
-     volumes:
-       - /opt/data/media:/opt/data/media
-       - /opt/data/static:/opt/data/static
-       - /opt/logs:/usr/src/app/logs
+  db-backups:
+    hostname: db-backups
+    container_name: db-backups
+    image: kartoza/pg-backup:11.0
+    volumes:
+      - ${PWD}/data/db-backups:/opt/data/backups
+    env_file:
+      - devops/docker-env/db-backups.env
+    restart: always
+    depends_on:
+      - db
 
-     restart: always
-     env_file:
-       - .env
+# INDRZ Backend
+  indrz:
+    container_name: indrz
+    hostname: indrz
+    image: indrz-tu/indrz:latest
+    build:
+      context: .
+      dockerfile: devops/docker/indrz/Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - indrz-tu
+    depends_on:
+      - db
+    volumes:
+      - ${PWD}/indrz:/usr/src/app
+      - ${PWD}/data/indrz/media:/opt/data/media
+      - ${PWD}/data/indrz/static:/opt/data/static
+      - ${PWD}/data/indrz/logs:/usr/src/app/logs
+    restart: always
+    env_file:
+      - devops/docker-env/indrz.env
+
+# NGINX
+  nginx:
+    container_name: nginx
+    hostname: nginx
+    image: indrz-tu/nginx:latest
+    build:
+      context: .
+      dockerfile: devops/docker/nginx/Dockerfile
+    volumes:
+      - ${PWD}/data/indrz/static:/opt/data/static
+      - ${SSL_CERTIFICATES_PATH}:/etc/ssl
+      - ${PWD}/data/nginx/www:${WEB_FOLDER}
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - indrz-tu
+    restart: always
+    depends_on:
+      - indrz

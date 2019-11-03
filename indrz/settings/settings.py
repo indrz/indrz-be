@@ -9,7 +9,7 @@ load_dotenv()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', 'tu.indrz.com', 'indrz.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', 'tu.indrz.com', 'indrz.com', os.getenv('ALLOWED_HOSTS')]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
@@ -205,7 +205,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated', )
 }
-
 
 sentry_sdk.init(os.getenv('SENTRY_URL'), integrations=[DjangoIntegration()])
 

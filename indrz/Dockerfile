@@ -1,6 +1,7 @@
 FROM python:3.6-slim
 
 ENV PYTHONUNBUFFERED=1
+ENV GDAL_SKIP=DODS
 
 # Add unstable repo to allow us to access latest GDAL builds
 # Existing binutils causes a dependency conflict, correct version will be installed when GDAL gets intalled
@@ -24,10 +25,10 @@ ENV LC_CTYPE="C.UTF-8"
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
-COPY . /usr/src/app
+COPY indrz/ /usr/src/app
 
 # install dependencies
-COPY requirements.txt requirements.txt
+COPY requirements.txt /usr/src/app/requirements.txt
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
@@ -40,7 +41,7 @@ EXPOSE 8000
 #
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
-
+CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
 
 
 

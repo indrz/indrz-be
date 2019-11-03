@@ -20,7 +20,7 @@ import json
 import os
 
 from dotenv import load_dotenv
-load_dotenv(r"C:\Users\mdiener\Dev\pyspace\indrz-tu\scripts\data_preparation\.env")
+load_dotenv(".env")
 
 db_user = os.getenv('DB_USER')
 db_name = os.getenv('DB_NAME')
