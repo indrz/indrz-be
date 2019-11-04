@@ -10,6 +10,18 @@ import requests
 SearchResult = namedtuple('SearchResult', ['staff', 'organizations'])
 
 
+def find_keys(node, kv):
+    if isinstance(node, list):
+        for i in node:
+            for x in find_keys(i, kv):
+                yield x
+    elif isinstance(node, dict):
+        if kv in node:
+            yield node[kv]
+        for j in node.values():
+            for x in find_keys(j, kv):
+                yield x
+
 class TuCampusAPI:
     """
     Wrapper for AAU API
@@ -93,6 +105,8 @@ class TuCampusAPI:
         return url
 
 
+
+
     def search_staff(self, name):
         """
         Searches for staff by name
@@ -114,22 +128,22 @@ class TuCampusAPI:
                 if 'employee' in result:
                     if result['employee']:
                         if len(result['employee']) > 1:
-                            employee = result['employee'][0]
-                            # take first room person has because this person is assigned more than one room
-                            if 'room' in employee:
-                                if employee['room']['room_code']:
-                                    r_code = employee['room']['room_code']
-                                    name_concat = result['first_name'] + " " + result['last_name']
-                                    f_res = {'name': name_concat, 'roomcode': r_code, "src": source}
-                                    people_with_rooms_assigned.append(f_res)
-                        if len(result['employee']) == 1:
+
+                            room_codes = list(find_keys(result, 'room_code'))
+
                             employee = result['employee']
-                            if 'room' in employee:
-                                if employee['room']['room_code']:
-                                    r_code = employee['room']['room_code']
-                                    name_concat = result['first_name'] + " " + result['last_name']
-                                    f_res = {'name': name_concat, 'roomcode': r_code, "src": source}
-                                    people_with_rooms_assigned.append(f_res)
+                            # take first room person has because this person is assigned more than one room
+                            if len(room_codes) > 0:
+                                name_concat = result['first_name'] + " " + result['last_name']
+                                f_res = {'name': name_concat, 'roomcode': room_codes[0], "src": source}
+                                people_with_rooms_assigned.append(f_res)
+                        if len(result['employee']) == 1:
+                            room_codes = list(find_keys(result, 'room_code'))
+                            employee = result['employee']
+                            if len(room_codes) > 0:
+                                name_concat = result['first_name'] + " " + result['last_name']
+                                f_res = {'name': name_concat, 'roomcode': room_codes[0], "src": source}
+                                people_with_rooms_assigned.append(f_res)
 
             # people_with_rooms_assigned = self.filter_no_roomkey(res_json['results'], source="external person api")
 

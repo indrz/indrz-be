@@ -32,6 +32,7 @@ pull: ## Pull source code from Git
 	git pull
 
 deploy: pull collectstatic run ## Update and deploy Indrz application
+	docker restart indrz
 
 stop: ## Stop Indrz Docker project
 	docker-compose down
