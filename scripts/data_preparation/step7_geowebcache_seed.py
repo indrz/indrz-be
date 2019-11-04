@@ -98,7 +98,7 @@ def seed_geowebcache():
     zoom_stop = "23"
     number_threads = "8"  # threadCount=08  values 1 to 15 are recommended
     gwc_type = "reseed"  # type can be seed, reseed, truncate   all 3 are valid possibilities
-    format_img = r"image/jpg"
+    format_img = r"image/png"
 
     for floor in unique_floor_names:
         layer = "indrztu:floor_" + floor.lower()
