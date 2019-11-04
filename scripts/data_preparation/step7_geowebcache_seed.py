@@ -21,7 +21,8 @@ logging.info('seed_geowebcache was called')
 
 GEOSERVER_USERpass = GEOSERVER_USER + ":" + GEOSERVER_PASS
 
-geoserver_url = "https://www.indrz.com/geoserver"
+# geoserver_url = "https://www.indrz.com/geoserver"
+geoserver_url = "https://navigatur.tuwien.ac.at/geoserver"
 
 # reload_url = "http://localhost:8080/geoserver/rest/reload"
 reload_url = geoserver_url + "/rest/reload"
@@ -93,8 +94,8 @@ def seed_geowebcache():
     s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
 
-    zoom_start = "19"
-    zoom_stop = "22"
+    zoom_start = "15"
+    zoom_stop = "23"
     number_threads = "8"  # threadCount=08  values 1 to 15 are recommended
     gwc_type = "reseed"  # type can be seed, reseed, truncate   all 3 are valid possibilities
     format_img = r"image/jpg"
@@ -109,8 +110,8 @@ def seed_geowebcache():
             "name": layer,
             # "bounds":{"coords":{ "double":["-124.0","22.0","66.0","72.0"]}},
             "srs": {"number": 3857},
-            "zoomStart": 19,
-            "zoomStop": 22,
+            "zoomStart": 15,
+            "zoomStop": 23,
             "format": format_img,
             "type": "reseed",
             "threadCount": number_threads

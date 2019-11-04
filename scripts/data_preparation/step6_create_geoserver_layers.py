@@ -36,7 +36,8 @@ GEOSERVER_PASS = os.getenv('GEOSERVER_PASS')
 from utils import unique_floor_names
 
 
-URL_BASE = "https://www.indrz.com/geoserver/rest"
+# URL_BASE = "https://www.indrz.com/geoserver/rest"
+URL_BASE = "https://navigatur.tuwien.ac.at/geoserver/rest"
 headers_xml = {'Content-type': 'text/xml', }
 headers_json = {'Content-type': 'application/json', }
 
@@ -259,7 +260,11 @@ def create_layer(new_feature_name, type):
     :param type: one of the following "spaces", "anno", "cartolines", "footprint"
     :return:
     """
-    types = ['spaces', 'anno', 'cartolines', 'footprint', 'route']
+
+    s = requests.Session()
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
+
+    types = ['spaces', 'anno', 'cartolines', 'footprint']
 
     if type not in types:
         print(f"sorry your type must equal one of the following {types}")
@@ -334,11 +339,6 @@ def create_layer(new_feature_name, type):
 		<maxy>48.20148257557524</maxy>
 		<crs>EPSG:4326</crs>
 	</latLonBoundingBox>"""
-
-
-
-    s = requests.Session()
-    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
 
     atts = ""
@@ -645,7 +645,6 @@ def create_groups(grp_name):
                         <published type="layer"><name>indrz:{0}_floor_footprint</name></published>
                         <published type="layer"><name>indrz:{0}_space_polys</name></published>
                         <published type="layer"><name>indrz:{0}_carto_lines</name></published>
-                        <published type="layer"><name>indrz:{0}_route</name></published>
                         <published type="layer"><name>indrz:{0}_space_anno</name></published>
                       </publishables>
                        <bounds>
@@ -680,7 +679,7 @@ def generate_groups(floor_name,):
     s = requests.Session()
     s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
-    group_names = ['footprint', 'spaces', 'cartolines', 'anno', 'route']
+    group_names = ['footprint', 'spaces', 'cartolines', 'anno']
 
     post_data = """<?xml version="1.0" encoding="UTF-8"?>
                     <layerGroup>
@@ -692,7 +691,6 @@ def generate_groups(floor_name,):
                       <publishables>
                         <published type="layer"><name>indrztu:footprint_{0}</name></published>
                         <published type="layer"><name>indrztu:spaces_{0}</name></published>
-                        <published type="layer"><name>indrztu:route_{0}</name></published>
                         <published type="layer"><name>indrztu:cartolines_{0}</name></published>
                         <published type="layer"><name>indrztu:anno_{0}</name></published>
                       </publishables>
@@ -724,7 +722,6 @@ def generate_groups(floor_name,):
             "published": [
                 {"type":"layer", "name": f"indrztu:footprint_{floor_name}"},
                 { "type":"layer", "name": f"indrztu:spaces_{floor_name}"},
-                {"type": "layer", "name": f"indrztu:route_{floor_name}"},
                 {"type":"layer",  "name": f"indrztu:cartolines_{floor_name}"},
                 {"type":"layer", "name": f"indrztu:anno_{floor_name}",}
             ]
@@ -788,27 +785,28 @@ def run_create_layers():
 
 
 def generate_layers():
-    types = ['footprint', 'spaces', 'cartolines', 'anno', 'routes']
-    type = "route"
+    # types = ['footprint', 'spaces', 'cartolines', 'anno', 'routes']
+    types = ["cartolines", "anno"]
 
-    # for floor_name in unique_floor_names:
-    for floor_name in ['01',]:
-    # get_workspaces()
-    # get_layers()
-        create_layer(f'{type}_{floor_name.lower()}', type)
-        time.sleep(4)
-        print(f"now running floor {type} - {floor_name.lower()}")
-        assign_style_to_layer(floor_name.lower(), type)
+    for type in types:
+        for floor_name in unique_floor_names:
+            create_layer(f'{type}_{floor_name.lower()}', type)
+            time.sleep(4)
+            print(f"now running floor {type} - {floor_name.lower()}")
+            assign_style_to_layer(floor_name.lower(), type)
 
 
 if __name__ == '__main__':
     # generate_layers()
+    for floor_name in unique_floor_names:
+        time.sleep(3)
+        generate_groups(floor_name.lower())
+
+    # assign_style_to_layer(floor_name.lower(), 'anno')
     #delete_layer('route_01')
     # curl -X DELETE http://localhost:8080/geoserver/rest/workspaces/abc/datastores/gtu/featuretypes/tom -H  "accept: application/json" -H  "content-type: application/json"
     # delete_layer('spaces')
 
-    for floor_name in unique_floor_names:
-        time.sleep(3)
-        generate_groups(floor_name.lower())
-    # assign_style_to_layer(floor_name.lower(), 'anno')
+
+
 
