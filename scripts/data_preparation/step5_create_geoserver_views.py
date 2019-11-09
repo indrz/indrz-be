@@ -2,8 +2,6 @@ import psycopg2
 from utils import unique_floor_names, get_floor_float
 from utils import con_string, con_dj_string, unique_floor_names
 
-con_dj_string = "dbname=indrztu user=tu host=indrz.com port=5433 password=J2j9S%HGJsxy"
-
 conn_dj = psycopg2.connect(con_dj_string)
 cur_dj = conn_dj.cursor()
 
@@ -49,6 +47,8 @@ def create_spaces_view():
                    room_code,
                    room_description,
                    space_type_id,
+                   floor_num,
+                   floor_name,
                    geom
                 FROM django.buildings_buildingfloorspace
                 WHERE floor_num = {floor_float};
