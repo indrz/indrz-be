@@ -141,7 +141,7 @@ class Poi(models.Model):
 
     fk_building_floor = models.ForeignKey(BuildingFloor, on_delete=models.CASCADE, null=True, blank=True)
     fk_building = models.ForeignKey(Building, on_delete=models.CASCADE, null=True, blank=True)
-    fk_campus = models.ForeignKey(Campus, on_delete=models.CASCADE)
+    fk_campus = models.ForeignKey(Campus, on_delete=models.CASCADE, null=True, blank=True)
 
     fk_poi_category = models.ForeignKey(PoiCategory, on_delete=models.CASCADE)
 
