@@ -224,15 +224,15 @@ def poi_category_by_name(request, category_name, format=None):
         return Response({'error': 'no category found with the name : ' + category_name})
 
 
-@api_view(['GET', ])
-def poi_list(request, format=None):
-    try:
-        poi_qs = Poi.objects.filter(enabled=True).order_by('fk_poi_category__icon_css_name')
-        serializer = PoiSerializer(poi_qs, many=True)
-        return Response(serializer.data)
-
-    except Exception as e:
-        raise APIException(detail=e)
+# @api_view(['GET', ])
+# def poi_list(request, format=None):
+#     try:
+#         poi_qs = Poi.objects.filter(enabled=True).order_by('fk_poi_category__icon_css_name')
+#         serializer = PoiSerializer(poi_qs, many=True)
+#         return Response(serializer.data)
+#
+#     except Exception as e:
+#         raise APIException(detail=e)
 
 
 @api_view(['GET', ])
@@ -255,30 +255,6 @@ def search_poi_by_name(request, poi_name, format=None, **kwargs):
     else:
         return Response({'error': 'something went wrong no POI with that name found'})
 
-
-def add_category(request):
-    # A HTTP POST?
-    if request.method == 'POST':
-        form = PoiCategoryForm(request.POST)
-
-        # Have we been provided with a valid form?
-        if form.is_valid():
-            # Save the new category to the database.
-            form.save(commit=True)
-
-            # Now call the index() view.
-            # The user will be shown the homepage.
-            return poi_category_list(request)
-        else:
-            # The supplied form contained errors - just print them to the terminal.
-            print(form.errors)
-    else:
-        # If the request was not a POST, display the form to enter details.
-        form = PoiCategoryForm()
-
-    # Bad form (or form details), no form supplied...
-    # Render the form with error messages (if any).
-    return render(request, 'poi/add-poi-category.html', {'form': form})
 
 
 def add_poi(request, category_name_slug):

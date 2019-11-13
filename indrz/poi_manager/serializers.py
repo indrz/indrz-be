@@ -15,7 +15,7 @@ class PoiSerializer(GeoFeatureModelSerializer):
 class PoiCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = PoiCategory
-        fields = ('floor_num', 'short_name', 'icon')
+        fields = ('cat_name', 'cat_name_en', 'cat_name_de', 'icon', 'fk_poi_icon', 'enabled')
 
 
 class PoiSimpleSerializer(serializers.ModelSerializer):
