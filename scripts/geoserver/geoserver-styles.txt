@@ -1,0 +1,12 @@
+#006699    rgb(0, 102, 153);    Office, Sekretariate, Verwaltung etc. TU-blau
+#fff8cf    rgb(255, 248, 207);  aula
+#9d9d9d    WC, Sanitärräume, (dunkelgrau)
+#555555    walls mauern
+#f5e5ef    baustelle
+#f5d0a8    rgb(245, 208, 168);  Lernplätze, Student Area blass-orange
+#cd81a8    rgb(205, 129, 168);  Hörsaal +Seminar- (Lehrräume), Besprechungsräume purple hell
+#dfe8f7    rgb(223,232,247);    light blue
+#dfafca    rgb(223, 175, 202);  Labors, Zeichensäle purple blass
+#cd81a8    rgb(205, 129, 168);  Hörsaal +Seminar- (Lehrräume), Besprechungsräume purple hell
+
+
