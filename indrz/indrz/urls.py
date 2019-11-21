@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.urls import include, path
 from api.search_tu import search_any, searchAutoComplete
 from rest_framework_swagger.views import get_swagger_view
+from users.views import CustomAuthToken
 
 from .routers import router
 
@@ -26,8 +27,11 @@ urlpatterns = [
     url(r'^api/v1/admin/', admin.site.urls),
     url(r'^api/v1/poi/', include(('poi_manager.urls', 'poi'), namespace='poi')),
     url(r'^api/v1/', include(router.urls)),
-    path('api/v1/api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
     path('', include(('homepage.urls', 'homepage'), namespace='homepage'))
+]
+
+urlpatterns += [
+    url(r'^api/v1/api-token-auth/', CustomAuthToken.as_view())
 ]
 
 
