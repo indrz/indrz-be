@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[6],{580:function(n,t,e){"use strict";e.r(t);var l={layout:"admin"},o=e(33),component=Object(o.a)(l,function(){var n=this.$createElement;return(this._self._c||n)("div",[this._v("Dashboard")])},[],!1,null,null,null);t.default=component.exports}}]);
