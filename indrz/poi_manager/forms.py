@@ -15,8 +15,8 @@ class PoiCategoryForm(forms.ModelForm):
 class PoiForm(forms.ModelForm):
     name = forms.CharField(max_length=128, help_text="Please enter the title of the page.")
     floor_num = forms.IntegerField(initial=0, required=False)
-    fk_poi_category = TreeNodeChoiceField(queryset=PoiCategory.objects.all())
+    category = TreeNodeChoiceField(queryset=PoiCategory.objects.all())
 
     class Meta:
         model = Poi
-        fields = ('name', 'floor_num', 'fk_poi_category',)
+        fields = ('name', 'floor_num', 'category',)

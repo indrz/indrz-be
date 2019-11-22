@@ -200,7 +200,7 @@ def searchSpaces(lang_code, search_text, mode):
                       "roomcode": sd.room_code,
                       "space_id": sd.id,
                       "parent": "",
-                      "fk_poi_category": {'id': "", 'cat_name': ""},
+                      "category": {'id': "", 'cat_name': ""},
                       "icon": "",
                       "src": "indrz spaces", "poi_id": ""}
 
@@ -222,11 +222,11 @@ def searchPoi(lang_code, search_text, mode):
     poi_list = []
 
     pois = Poi.objects.filter(Q(name__icontains=search_text) | Q(poi_tags__icontains=search_text)
-                              | Q(fk_poi_category__cat_name__icontains=search_text)).filter(enabled=True)
+                              | Q(category__cat_name__icontains=search_text)).filter(enabled=True)
 
     if lang_code == "de":
         pois = Poi.objects.filter(Q(name_de__icontains=search_text) | Q(poi_tags__icontains=search_text)
-                                  | Q(fk_poi_category__cat_name_de__icontains=search_text)).filter(enabled=True)
+                                  | Q(category__cat_name_de__icontains=search_text)).filter(enabled=True)
 
     build_name = ""
     icon_path = ""
@@ -235,8 +235,8 @@ def searchPoi(lang_code, search_text, mode):
         for poi in pois:
             if hasattr(poi.fk_building, 'building_name'):
                 build_name = poi.fk_building.building_name
-            if hasattr(poi.fk_poi_category.fk_poi_icon, 'poi_icon'):
-                icon_path = str(poi.fk_poi_category.fk_poi_icon.poi_icon)
+            if hasattr(poi.category.fk_poi_icon, 'poi_icon'):
+                icon_path = str(poi.category.fk_poi_icon.poi_icon)
 
             center_geom = json.loads(poi.geom.geojson)
 
@@ -248,12 +248,12 @@ def searchPoi(lang_code, search_text, mode):
                             "floor_name": poi.floor_name,
                             "building": build_name, "aks_nummer": "",
                             "roomcode": "",
-                            "parent": poi.fk_poi_category.cat_name_de,
-                            "fk_poi_category": {'id': poi.fk_poi_category_id,
-                                                'cat_name': poi.fk_poi_category.cat_name_de},
+                            "parent": poi.category.cat_name_de,
+                            "category": {'id': poi.category_id,
+                                                'cat_name': poi.category.cat_name_de},
                             "icon": icon_path,
                             "poi_link_unique": "/?poi-id=" + str(poi.id) + "&floor=" + str(poi.floor_num),
-                            "poi_link_category": "/?poi-cat-id=" + str(poi.fk_poi_category_id),
+                            "poi_link_category": "/?poi-cat-id=" + str(poi.category_id),
                             "src": "poi db", "poi_id": poi.id}
 
                 if mode == "search":
@@ -268,10 +268,10 @@ def searchPoi(lang_code, search_text, mode):
                          "floor_num": poi.floor_num,
                          "building": build_name, "aks_nummer": "",
                          "roomcode": "",
-                         "parent": poi.fk_poi_category.cat_name,
-                         "fk_poi_category": {'id': poi.fk_poi_category_id, 'cat_name': poi.fk_poi_category.cat_name_en},
+                         "parent": poi.category.cat_name,
+                         "category": {'id': poi.category_id, 'cat_name': poi.category.cat_name_en},
                             "poi_link_unique": "/?poi-id=" + str(poi.id) + "&floor=" + str(poi.floor_num),
-                            "poi_link_category": "/?poi-cat-id=" + str(poi.fk_poi_category_id),
+                            "poi_link_category": "/?poi-cat-id=" + str(poi.category_id),
                          "icon": icon_path,
                          "src": "poi db", "poi_id": poi.id}
 

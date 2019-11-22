@@ -14,7 +14,7 @@ class PoiViewSet(viewsets.ModelViewSet):
     """
     queryset = Poi.objects.all()
     serializer_class = PoiSerializer
-    # search_fields = ('name',)  #  or  'fk_poi_category__cat_name'
+    # search_fields = ('name',)  #  or  'category__cat_name'
 
     # def get_queryset(self):
     #     return Poi.objects.filter(enabled=True)
@@ -92,7 +92,7 @@ def poi_json_tree(request, campus_id, format=None):
 #             cats = PoiCategory.objects.filter(enabled=True).get(cat_name__contains=category_name)
 #             if cats:
 #
-#                 queryset = Poi.objects.filter(fk_poi_category=cats.id).filter(enabled=True)
+#                 queryset = Poi.objects.filter(category=cats.id).filter(enabled=True)
 #                 if queryset:
 #                     serializer_class = PoiSerializer(queryset, many=True)
 #

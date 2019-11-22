@@ -645,7 +645,7 @@ def find_closest_poi(coordinates, floor, poi_cat_id, lang_code):
     cur = connection.cursor()
 
     # bus = pk 27  underground= 26
-    qs_nearest_poi = Poi.objects.filter(fk_poi_category=poi_cat_id_v)
+    qs_nearest_poi = Poi.objects.filter(category=poi_cat_id_v)
 
     if qs_nearest_poi:
         dest_nodes = []
@@ -657,12 +657,12 @@ def find_closest_poi(coordinates, floor, poi_cat_id, lang_code):
 
                 if lang_code == "de":
                     pois_found.append({"result_index": i, 'name': res.name_de, 'floor': res.floor_num, 'id': res.id,
-                                       'category': res.fk_poi_category.cat_name_de,
-                                       'cat_id': res.fk_poi_category.id,
+                                       'category': res.category.cat_name_de,
+                                       'cat_id': res.category.id,
                                        'network_node_id': network_node_id, 'geometry': loads(res.geom.geojson)})
                 else:
                     pois_found.append({"result_index": i, 'name': res.name, 'floor': res.floor_num, 'id': res.id,
-                                       'category': res.fk_poi_category.cat_name, 'cat_id': res.fk_poi_category.id,
+                                       'category': res.category.cat_name, 'cat_id': res.category.id,
                                        'network_node_id': network_node_id, 'geometry': loads(res.geom.geojson)})
 
                 dest_nodes.append(network_node_id)
@@ -830,7 +830,7 @@ def route_to_nearest_poi(request, start_xy, floor, poi_cat_id, reversed):
     cur = connection.cursor()
 
     # bus = pk 27  underground= 26
-    qs_nearest_poi = Poi.objects.filter(fk_poi_category=poi_cat_id_v)
+    qs_nearest_poi = Poi.objects.filter(category=poi_cat_id_v)
 
     if qs_nearest_poi:
         dest_nodes = []
@@ -842,11 +842,11 @@ def route_to_nearest_poi(request, start_xy, floor, poi_cat_id, reversed):
 
                 if lang_code == "de":
                     pois_found.append({"result_index": i, 'name': res.name_de, 'floor': res.floor_num, 'id': res.id,
-                                       'category': res.fk_poi_category.cat_name_de, 'cat_id': res.fk_poi_category.id,
+                                       'category': res.category.cat_name_de, 'cat_id': res.category.id,
                                        'network_node_id': network_node_id, 'geometry': loads(res.geom.geojson)})
                 else:
                     pois_found.append({"result_index": i, 'name': res.name, 'floor': res.floor_num, 'id': res.id,
-                                       'category': res.fk_poi_category.cat_name, 'cat_id': res.fk_poi_category.id,
+                                       'category': res.category.cat_name, 'cat_id': res.category.id,
                                        'network_node_id': network_node_id, 'geometry': loads(res.geom.geojson)})
 
                 dest_nodes.append(network_node_id)

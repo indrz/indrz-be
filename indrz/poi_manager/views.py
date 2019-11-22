@@ -119,7 +119,7 @@ def get_poi_by_category(request, category_name, format=None):
 
             if cats:
 
-                poi_qs = Poi.objects.filter(fk_poi_category=cats.id).filter(enabled=True)
+                poi_qs = Poi.objects.filter(category=cats.id).filter(enabled=True)
                 if poi_qs:
                     serializer = PoiSerializer(poi_qs, many=True)
                     return Response(serializer.data)
@@ -140,19 +140,19 @@ def get_poi_by_cat_id(request, cat_id, format=None):
     if request.method == 'GET':
 
         poicat_qs = PoiCategory.objects.filter(enabled=True).get(pk=cat_id).get_descendants()
-        # cat_children = PoiCategory.objects.add_related_count(poicat_qs,Poi,'fk_poi_category', 'cat_name')
+        # cat_children = PoiCategory.objects.add_related_count(poicat_qs,Poi,'category', 'cat_name')
 
         poi_ids = []
         for x in poicat_qs:
             poi_ids.append(x.id)
 
-        qs_objs = Poi.objects.filter(fk_poi_category_id__in=poi_ids).filter(enabled=True)
+        qs_objs = Poi.objects.filter(category_id__in=poi_ids).filter(enabled=True)
 
         if qs_objs:
             serializer = PoiSerializer(qs_objs, many=True)
             return Response(serializer.data)
         elif len(poi_ids)==0:
-            qs = Poi.objects.filter(fk_poi_category_id = cat_id).filter(enabled=True)
+            qs = Poi.objects.filter(category_id = cat_id).filter(enabled=True)
             serializer = PoiSerializer(qs, many=True)
             return Response(serializer.data)
         else:
@@ -175,10 +175,10 @@ def get_poi_by_cat_name(request, category_name, format=None):
 
                 cat_ids.append(cat.id)
 
-            poi_qs = Poi.objects.filter(fk_poi_category__in=cat_ids).filter(enabled=True)
+            poi_qs = Poi.objects.filter(category__in=cat_ids).filter(enabled=True)
 
         else:
-            poi_qs = Poi.objects.filter(fk_poi_category=cats[0].id).filter(enabled=True)
+            poi_qs = Poi.objects.filter(category=cats[0].id).filter(enabled=True)
     else:
         # return Response({'error': 'No Poi found with the given category name: ' + category_name} )
         return Response({'error': 'no category found with the given category name: ' + category_name})
@@ -227,7 +227,7 @@ def poi_category_by_name(request, category_name, format=None):
 # @api_view(['GET', ])
 # def poi_list(request, format=None):
 #     try:
-#         poi_qs = Poi.objects.filter(enabled=True).order_by('fk_poi_category__icon_css_name')
+#         poi_qs = Poi.objects.filter(enabled=True).order_by('category__icon_css_name')
 #         serializer = PoiSerializer(poi_qs, many=True)
 #         return Response(serializer.data)
 #
