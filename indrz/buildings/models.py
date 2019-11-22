@@ -329,7 +329,6 @@ class BuildingFloorSpace(FloorSpaceBase):
 
     tag = gis_models.TextField(verbose_name=_("Tag values csv"), null=True, blank=True)
 
-    tags = TaggableManager()
 
     @property
     def centerGeometry(self):
