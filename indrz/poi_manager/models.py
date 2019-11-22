@@ -130,31 +130,25 @@ class Poi(models.Model):
     """
      Points of Interest in and around buildings
     """
-    name = models.CharField(max_length=255)
-    floor_num = models.FloatField(verbose_name=_("floor number"),null=True, blank=True)
-    floor_name = models.CharField(verbose_name=_("floor name"), max_length=200,null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
+    name_en = models.CharField(max_length=255, null=True, blank=True)
+    name_de = models.CharField(max_length=255, null=True, blank=True)
+    floor_num = models.FloatField(verbose_name=_("floor number"), null=True, blank=True)
+    floor_name = models.CharField(verbose_name=_("floor name"), max_length=200, null=True, blank=True)
     description = models.CharField(verbose_name=_("description"), max_length=255, null=True, blank=True)
     enabled = models.NullBooleanField(verbose_name=_("Activated and enabled"), null=True, blank=True)
 
-    # icon_class = models.CharField(max_length=255, blank=True, null=True)
-    # connect to APP Buildings to enable floors for each POI per level ie floor
-
-    fk_building_floor = models.ForeignKey(BuildingFloor, on_delete=models.CASCADE, null=True, blank=True)
-    fk_building = models.ForeignKey(Building, on_delete=models.CASCADE, null=True, blank=True)
-    fk_campus = models.ForeignKey(Campus, on_delete=models.CASCADE, null=True, blank=True)
-
-    fk_poi_category = models.ForeignKey(PoiCategory, on_delete=models.CASCADE)
+    floor = models.ForeignKey(BuildingFloor, on_delete=models.DO_NOTHING, null=True, blank=True)
+    campus = models.ForeignKey(Campus, on_delete=models.DO_NOTHING, null=True, blank=True)
+    category = models.ForeignKey(PoiCategory, on_delete=models.CASCADE)
 
     geom = gis_model.MultiPointField(srid=3857, spatial_index=True, db_column='geom', null=True, blank=True)
 
-    # tags = TaggableManager(blank=True)
     poi_tags = ArrayField(models.CharField(max_length=50, blank=True), blank=True, null=True)
-    name_en = models.CharField(max_length=255, null=True, blank=True)
-    name_de = models.CharField(max_length=255, null=True, blank=True)
 
     @property
     def icon(self):
-        return self.fk_poi_category.fk_poi_icon.poi_icon.url
+        return self.category.fk_poi_icon.poi_icon.url
 
     def __str__(self):
         return str(self.name) or ''

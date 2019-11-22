@@ -5,9 +5,9 @@ from poi_manager.models import PoiCategory, Poi, PoiIcon
 
 
 class PoiAdmin(OSMGeoAdmin):
-    list_display = ('id', 'name', 'name_de', 'name_en', 'fk_poi_category', 'fk_building', 'fk_building_floor_id', 'enabled')
-    search_fields = ('name', 'fk_poi_category')
-    list_filter = ('fk_poi_category', 'fk_building')
+    list_display = ('id', 'name', 'name_de', 'name_en', 'category', 'enabled')
+    search_fields = ('name', 'category')
+    list_filter = ('category', )
     default_lat = 5879660.89
     default_lon = 1588005.35
     default_zoom = 16

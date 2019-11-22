@@ -8,8 +8,9 @@ class PoiSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Poi
         geo_field = 'geom'
-        depth = 1
-        fields = ('id', 'name_en', 'name_de', 'floor_num', 'floor_name', 'fk_poi_category', 'icon')
+        # depth = 1
+        fields = '__all__'
+        # fields = ('id', 'name', 'name_en', 'name_de', 'floor_num', 'floor_name', 'icon', )
 
 
 class PoiCategorySerializer(serializers.ModelSerializer):
@@ -22,4 +23,4 @@ class PoiSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Poi
         depth = 2
-        fields = ('id', 'name', 'name_de', 'floor_num', 'fk_poi_category')
+        fields = ('id', 'name', 'name_de', 'floor_num', 'category')

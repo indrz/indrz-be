@@ -3,7 +3,7 @@ import collections
 from mptt.templatetags.mptt_tags import cache_tree_children
 from poi_manager.models import PoiCategory, Poi
 from poi_manager.serializers import PoiSerializer, PoiCategorySerializer
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 
 
@@ -14,9 +14,25 @@ class PoiViewSet(viewsets.ModelViewSet):
     """
     queryset = Poi.objects.all()
     serializer_class = PoiSerializer
-    search_fields = ('name', 'fk_poi_category')  #  or  'fk_poi_category__cat_name'
-    def get_queryset(self):
-        return Poi.objects.filter(enabled=True)
+    # search_fields = ('name',)  #  or  'fk_poi_category__cat_name'
+
+    # def get_queryset(self):
+    #     return Poi.objects.filter(enabled=True)
+
+    def create(self, request, *args, **kwargs):
+        """
+        #checks if post request data is an array initializes serializer with many=True
+        else executes default CreateModelMixin.create function
+        """
+        is_many = isinstance(request.data, list)
+        if not is_many:
+            return super(PoiViewSet, self).create(request, *args, **kwargs)
+        else:
+            serializer = self.get_serializer(data=request.data, many=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     # permission_classes = [IsAccountAdminOrReadOnly]
 
 
