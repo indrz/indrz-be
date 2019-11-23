@@ -150,7 +150,10 @@ class Poi(models.Model):
 
     @property
     def icon(self):
-        return self.category.fk_poi_icon.poi_icon.url
+        if self.category.fk_poi_icon:
+            return self.category.fk_poi_icon.poi_icon.url
+        else:
+            return ""
 
     def __str__(self):
         return str(self.name) or ''
