@@ -123,8 +123,10 @@ class PoiCategory(MPTTModel):
 
     @property
     def icon(self):
-        return self.fk_poi_icon.poi_icon.url
-
+        if self.fk_poi_icon:
+            return self.fk_poi_icon.poi_icon.url
+        else:
+            return ""
 
 class Poi(models.Model):
     """
