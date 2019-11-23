@@ -16,7 +16,7 @@ poi_cat_q = """SELECT f.cat_name as foo FROM (
                     FROM django.poi_manager_poicategory) AS f"""
 
 poi_q = """SELECT x.foo as foo FROM (
-                    SELECT DISTINCT ON (name) name as foo, fk_poi_category_id
+                    SELECT DISTINCT ON (name) name as foo, category_id
                     FROM django.poi_manager_poi) AS x
             
             ORDER BY foo ASC ;"""

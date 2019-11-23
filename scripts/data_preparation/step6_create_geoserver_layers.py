@@ -366,22 +366,36 @@ def create_layer(new_feature_name, type):
                 <nillable>true</nillable>
                 <length>0</length>
             </attribute>
-                    <attribute>
+            <attribute>
                 <name>short_name</name>
                 <minOccurs>0</minOccurs>
                 <maxOccurs>1</maxOccurs>
                 <nillable>true</nillable>
                 <length>0</length>
             </attribute>
-                            <attribute>
+            <attribute>
                 <name>room_description</name>
                 <minOccurs>0</minOccurs>
                 <maxOccurs>1</maxOccurs>
                 <nillable>true</nillable>
                 <length>0</length>
             </attribute>
-                            <attribute>
+            <attribute>
                 <name>space_type_id</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
+            <attribute>
+                <name>floor_name</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
+            <attribute>
+                <name>floor_num</name>
                 <minOccurs>0</minOccurs>
                 <maxOccurs>1</maxOccurs>
                 <nillable>true</nillable>
@@ -785,8 +799,8 @@ def run_create_layers():
 
 
 def generate_layers():
-    # types = ['footprint', 'spaces', 'cartolines', 'anno', 'routes']
-    types = ["cartolines", "anno"]
+    types = ['footprint', 'spaces', 'cartolines', 'anno', ]
+    # types = ["cartolines", "anno", "routes"]
 
     for type in types:
         for floor_name in unique_floor_names:
