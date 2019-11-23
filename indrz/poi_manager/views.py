@@ -91,7 +91,7 @@ def poi_json_tree(request, format=None):
         result['name'] = node.cat_name_en
         result['name_en'] = node.cat_name_en
         result['name_de'] = node.cat_name_de
-        result['icon'] = node.icon
+        result['icon'] = node.fk_poi_icon.poi_icon.url
         result['selectedIcon'] = node.icon_css_name + "_active"
 
         if node.pk in (1,2,3,4,5):
