@@ -26,7 +26,10 @@ services:
   geoserver:
     hostname: geoserver
     container_name: geoserver
-    image: kartoza/geoserver:2.15.0
+    image: indrz-tu/geoserver:2.15.0
+    build:
+      context: .
+      dockerfile: devops/docker/geoserver/Dockerfile
     volumes:
       - ${PWD}/data/geoserver-data:/opt/geoserver/data_dir
     ports:

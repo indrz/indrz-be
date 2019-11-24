@@ -20,6 +20,9 @@ build-nginx: ## Build Nginx Image
 build-indrz: ## Build Indrz Image
 	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) indrz
 
+build-geoserver: ## Build Geoserver Image
+	docker-compose build geoserver
+
 run: ## Run Indrz Docker project
 	docker-compose -p $(PROJECT_NAME) up -d
 
