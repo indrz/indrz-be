@@ -7,8 +7,8 @@ from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 
 class PoiSerializer(GeoFeatureModelSerializer):
-    category_name = CharField(source='category.cat_name')
-    category_icon = CharField(source='category.icon')
+    category_name = CharField(source='category.cat_name', read_only=True)
+    category_icon = CharField(source='category.icon', read_only=True)
 
     class Meta:
         model = Poi
