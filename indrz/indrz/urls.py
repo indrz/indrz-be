@@ -43,10 +43,6 @@ if 'rosetta' in settings.INSTALLED_APPS:
 
 
 
-urlpatterns = [
-    # ... the rest of your URLconf goes here ...
-] + static(settings.MEDIA_URL, document_root="media")
-
 # from api import search
 # from buildings.views import get_spaces_on_floor, campus_list, campus_buildings_list, campus_buildings_short_list, \
 #     space_details, get_campus_info, campus_floor_spaces, campus_locations
