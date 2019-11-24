@@ -5,6 +5,7 @@ from django.urls import include, path
 from api.search_tu import search_any, searchAutoComplete
 from rest_framework_swagger.views import get_swagger_view
 from users.views import CustomAuthToken
+from django.conf.urls.static import static
 
 from .routers import router
 
@@ -40,6 +41,11 @@ if 'rosetta' in settings.INSTALLED_APPS:
         url(r'^translate/', include('rosetta.urls')),
     ]
 
+
+
+urlpatterns = [
+    # ... the rest of your URLconf goes here ...
+] + static(settings.MEDIA_URL, document_root="media")
 
 # from api import search
 # from buildings.views import get_spaces_on_floor, campus_list, campus_buildings_list, campus_buildings_short_list, \
