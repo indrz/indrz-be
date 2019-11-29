@@ -296,6 +296,8 @@ class BuildingFloorPlanLine(gis_models.Model):
 
     geom = gis_models.MultiLineStringField(srid=3857, spatial_index=True, null=True, blank=True)
 
+    tags = ArrayField(ArrayField(gis_models.CharField(max_length=150), blank=True, null=True), null=True, blank=True)
+
 
     class meta:
         ordering = ['short_name']
