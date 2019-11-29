@@ -4,6 +4,7 @@ import json
 import geojson
 from django.contrib.gis.db import models as gis_models
 from django.contrib.gis.gdal import OGRGeometry
+from django.contrib.postgres.fields import ArrayField
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
@@ -328,6 +329,7 @@ class BuildingFloorSpace(FloorSpaceBase):
     space_type = gis_models.ForeignKey(LtSpaceType, on_delete=gis_models.CASCADE, null=True, blank=True)
 
     tag = gis_models.TextField(verbose_name=_("Tag values csv"), null=True, blank=True)
+    tags = ArrayField(ArrayField(gis_models.CharField(max_length=150), blank=True, null=True), null=True, blank=True)
 
 
     @property
