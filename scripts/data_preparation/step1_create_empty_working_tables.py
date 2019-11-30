@@ -1,9 +1,9 @@
 import psycopg2
 import os
-from .utils import unique_floor_names, con_string
 
+from scripts.data_preparation.utils import con_string_localhost, unique_floor_names, con_string_navigatur
 
-conn = psycopg2.connect(con_string)
+conn = psycopg2.connect(con_string_localhost)
 cur = conn.cursor()
 # cur.execute("select * from information_schema.tables where table_name=%s", ('mytable',))
 # bool(cur.rowcount)
@@ -134,12 +134,16 @@ def create_label_table(floor, campus="campuses"):
         id serial,
         short_name character varying(150) COLLATE pg_catalog."default",
         long_name character varying(150) COLLATE pg_catalog."default",
-        floor_num integer,
+        floor_num float,
+        floor_name character varying,
+        room_code character varying,
+        room_external_id character varying,
         tags text[],
         geom geometry(MultiPoint,31259),
         fk_building_id integer,
         fk_building_floor_id integer,
         fk_line_type_id integer,
+        space_type_id integer,
         PRIMARY KEY (id)
     )
     WITH (
@@ -286,4 +290,6 @@ def step2_create_roomcode_points_table():
     cur.execute(sql_create)
     # cur.execute(sql_col)
     conn.commit()
+
+step1_create_empty_tables(labels=True)
 
