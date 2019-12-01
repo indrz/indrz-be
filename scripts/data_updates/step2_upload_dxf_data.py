@@ -102,9 +102,9 @@ def insert_spaces_cartolines(campus, table):
 
     print(f"inserting lines {table.stem}")
 
-    sql_lines = f"""INSERT INTO campuses.{dest_table_name_lines}( long_name, tags, geom) 
-                        SELECT layer, ARRAY['{table.stem}', layer], wkb_geometry 
-                        FROM {campus.lower()}.{table.stem} 
+    sql_lines = f"""INSERT INTO campuses.{dest_table_name_lines}( long_name, tags, geom)
+                        SELECT layer, ARRAY['{table.stem}', layer], wkb_geometry
+                        FROM {campus.lower()}.{table.stem}
                         WHERE ST_GeometryType(wkb_geometry)='ST_MultiLineString'
                         AND layer in {cad_layer_names}"""
     cur.execute(sql_lines)
@@ -113,9 +113,9 @@ def insert_spaces_cartolines(campus, table):
 
     print(f"inserting campuses spaces {table.stem}")
 
-    sql_spaces = f"""INSERT INTO campuses.{dest_table_name_spaces}(long_name, tags, geom) 
+    sql_spaces = f"""INSERT INTO campuses.{dest_table_name_spaces}(long_name, tags, geom)
                     SELECT layer, ARRAY['{table.stem}', layer], st_multi(st_buildarea(wkb_geometry))
-                FROM {campus.lower()}.{table.stem} 
+                FROM {campus.lower()}.{table.stem}
                 WHERE ST_NPoints(wkb_geometry) >= 4
                 AND layer in ('{cad_spaces_names}')"""
     cur.execute(sql_spaces)
@@ -125,8 +125,8 @@ def insert_spaces_cartolines(campus, table):
     print(f"inserting django cartolines {table.stem}")
     sql_insert_cartolines = f"""INSERT INTO django.buildings_buildingfloorplanline (floor_name, tags, long_name, floor_num,
                                  geom, fk_building_floor_id)
-                                SELECT '{floor}', tags, long_name, {floor_num}, st_setsrid(st_transform(st_makevalid(geom),3857), 3857), 1 
-                                 FROM campuses.{dest_table_name_lines} 
+                                SELECT '{floor}', tags, long_name, {floor_num}, st_setsrid(st_transform(st_makevalid(geom),3857), 3857), 1
+                                 FROM campuses.{dest_table_name_lines}
                                  WHERE split_part(tags[1], ',',1) = '{table.stem}'
 
                  """
@@ -173,18 +173,17 @@ def step1_import_csv_roomcodes(campus, dxf_files):
         # remove all rows where x coord is null
         df = df[df['Position X'].notnull()]
 
-        print(df.count)
+        # print(df.count)
         # remove all rows where x coord is invalid like 43.23
         df = df[df['Position X'] > 700000]
 
-        print(df.count)
+        # print(df.count)
 
         print("now removing old points   spaces in db")
         sql_delete_s = F"DELETE FROM campuses.indrz_labels_{floor_name.lower()} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
         print(sql_delete_s)
         cur.execute(sql_delete_s)
         conn.commit()
-
 
         for index, row in df.iterrows():
             cad_layer = row['Layer']
@@ -194,12 +193,9 @@ def step1_import_csv_roomcodes(campus, dxf_files):
             room_n = row['RAUMNUMMER']  # this is used as the roomcode but has spaces must remove all
             roomcode = str(room_n).replace(" ", "")
 
-
-
             geom_sql = f"st_multi(ST_SetSRID(ST_MakePoint({x}, {y}), 31259))"
 
             if roomcode != 'nan':
-                print("now inserting ", roomcode)
 
                 sql = f"""INSERT INTO campuses.indrz_labels_{floor_name.lower()} (short_name, long_name, floor_num, floor_name, room_code, tags, geom)
                             VALUES ('{room_n}', '{room_des}', {floor_num},'{floor_name}',
@@ -208,6 +204,16 @@ def step1_import_csv_roomcodes(campus, dxf_files):
 
                 cur.execute(sql)
                 conn.commit()
+
+        print("ASSIGNING roomcode and room description to spaces from csv points")
+
+        s = f"""Update django.buildings_buildingfloorspace AS s 
+                SET room_code = pt.room_code, room_description = pt.long_name
+                FROM campuses.indrz_labels_{floor_name.lower()} AS pt 
+                WHERE st_contains(s.geom, st_transform(pt.geom, 3857)) 
+                AND s.floor_name = '{floor_name}';"""
+        cur.execute(s)
+        conn.commit()
 
 
 def reimport_dxf(campus, dxf_files, re_import=False):
@@ -258,6 +264,6 @@ def reimport_dxf(campus, dxf_files, re_import=False):
 
 
 if __name__ == '__main__':
-    # reimport_dxf('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'], re_import=True)
+    reimport_dxf('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'], re_import=True)
     step1_import_csv_roomcodes('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'] )
     conn.close()
