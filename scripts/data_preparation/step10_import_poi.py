@@ -26,7 +26,7 @@ def create_poi():
 
             floor_float = get_floor_float(floor_name)
 
-            sel_space = f"""INSERT INTO django.poi_manager_poi (name, description, floor_num, fk_campus_id, fk_poi_category_id, geom)
+            sel_space = f"""INSERT INTO django.poi_manager_poi (name, description, floor_num, fk_campus_id, category_id, geom)
                 SELECT room_description, room_code, {floor_float}, 1, {cat_id}, ST_Multi(ST_PointOnSurface(ST_Transform(geom, 3857))) 
                 FROM campuses.indrz_spaces_{floor_name.lower()} 
                 WHERE upper(room_description) like '%{name.upper()}%'
@@ -57,6 +57,8 @@ def update_space_type_id():
         like_name = space['name'].upper()
         s = f"""UPDATE django.buildings_buildingfloorspace set space_type_id = {space['code']} 
                 WHERE upper(room_description) like '%{like_name}%' """
+
+        print(s)
 
         cur.execute(s)
         conn.commit()

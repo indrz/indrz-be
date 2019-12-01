@@ -4,9 +4,11 @@ from pathlib import Path, PurePath
 
 import subprocess
 import psycopg2
-from utils import unique_floor_names, con_string, ogr_db_con
 
-conn = psycopg2.connect(con_string)
+
+from scripts.data_updates.utils import con_string_localhost, unique_floor_names, con_string_navigatur, ogr_db_con, get_floor_float
+
+conn = psycopg2.connect(con_string_localhost)
 cur = conn.cursor()
 
 linefeatures = [
@@ -27,7 +29,23 @@ linefeatures = [
 {'layer': 'M_Z29', 'type':'inner-wall'},
 {'layer': 'A2-TUER-SYM050', 'type': 'door'},
 {'layer': 'O_T49', 'type': 'door'},
-{'layer': 'O_T29', 'type': 'door'}]
+{'layer': 'X_S_29', 'type': 'stair'},
+{'layer': 'X_S27', 'type': 'stair'},
+{'layer': 'X_O_F49', 'type': 'window'},
+{'layer': 'X_O_T49', 'type': 'miss'},
+{'layer': 'O_T29', 'type': 'miss'},
+{'layer': 'X_H_L27', 'type': 'miss'},
+{'layer': 'X_M_A29', 'type': 'miss'},
+{'layer': 'M_A28', 'type': 'miss'},
+{'layer': 'M_L28', 'type': 'miss'},
+{'layer': 'M_Z28', 'type': 'miss'},
+{'layer': 'X_M_Z29', 'type': 'miss'}]
+
+
+
+
+
+
 
 cad_layer_names = [x['layer'] for x in linefeatures]
 cad_layer_names = tuple(cad_layer_names)
@@ -42,7 +60,7 @@ cad_missing = tuple(cad_missing_stairs_elevators)
 # TODO add S__27  missing from lines DE-U1
 
 def get_dxf_fullpath(campus, dxf_file_name):
-    dxf_dir_path = Path('c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/' + campus + '/dxf')
+    dxf_dir_path = Path('c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/' + campus + '/dxf-update')
 
     dxf_file_full_path = Path.joinpath(dxf_dir_path, dxf_file_name)
 
@@ -51,7 +69,7 @@ def get_dxf_fullpath(campus, dxf_file_name):
 
 def get_dxf_files(campus_name, floor=None, only_dxf_names=False):
 
-    dxf_dir_path = Path('c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/' + campus_name + '/dxf')
+    dxf_dir_path = Path('c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/' + campus_name + '/dxf-update')
     dxf_list = os.listdir(dxf_dir_path)
     dxf_files = []
     for dxf in dxf_list:
@@ -94,12 +112,16 @@ def dxf2postgis(dxf_file, campus_name):
 
     table_name = str(dxf_file.stem)
 
-    print(f"now importing , {table_name}")
+    print(f"now importing , {table_name.lower()}")
 
     subprocess.run([
         "ogr2ogr", "-a_srs", "EPSG:31259", "-oo", "DXF_FEATURE_LIMIT_PER_BLOCK=-1",
         "-nlt", "PROMOTE_TO_MULTI", "-oo", "DXF_INLINE_BLOCKS=FALSE", "-oo", "DXF_MERGE_BLOCK_GEOMETRIES=False",
-        "-lco", f"SCHEMA={campus_name.lower()}", "-skipfailures", "-f", "PostgreSQL", ogr_db_con, "-nln", table_name, str(dxf_file)])
+        "-dsco", "DXF_FEATURE_LIMIT_PER_BLOCK=-1",
+        "-lco", f"SCHEMA={campus_name.lower()}", "-skipfailures", "-f", "PostgreSQL", ogr_db_con,
+        "-nln", table_name.lower(), str(dxf_file)])
+
+    print("DONE running ogr2ogr")
 
 
 def step1_import_all_dxf_to_working(campus):
@@ -180,29 +202,26 @@ def insert_missing_cad_layer(campus, trak, cad_layer_name, remove=False,insert=F
             cur.execute(sql)
             conn.commit()
 
+def create_cartolines(floor_name, dxf_filename):
 
-def insert_campuses_all(campus, table):
-    floor = table.stem.split('_')[-3]
+    floor_id = 1
 
+    floor_float = get_floor_float(floor_name)
 
-    print(f"inserting lines {table.stem}")
-    dest_table_name = f"indrz_lines_{floor}"
-    sql_lines = f"""INSERT INTO campuses.{dest_table_name}(long_name, tags, geom) SELECT layer, ARRAY['{table.stem}', layer], wkb_geometry 
-                FROM {campus.lower()}.{table.stem} 
-                WHERE ST_GeometryType(wkb_geometry)='ST_MultiLineString'
-                AND layer in {cad_layer_names}"""
-    cur.execute(sql_lines)
+    sql_insert = f"""INSERT INTO django.buildings_buildingfloorplanline (floor_name, short_name, long_name, floor_num,
+                                 geom, fk_building_floor_id)
+                                SELECT '{floor}', tags, long_name, {floor_float}, st_setsrid(st_transform(geom,3857), 3857), {floor_id} 
+                                 FROM campuses.indrz_lines_{floor_name}
+
+                 """
+    cur.execute(sql_insert)
     conn.commit()
 
 
-    print(f"inserting spaces {table.stem}")
-    dest_table_name = f"indrz_spaces_{floor}"
-    sql_spaces = f"""INSERT INTO campuses.{dest_table_name}(long_name, tags, geom) SELECT layer, ARRAY['{table.stem}', layer], st_multi(st_buildarea(wkb_geometry))
-                FROM {campus.lower()}.{table.stem} 
-                WHERE ST_NPoints(wkb_geometry) >= 4
-                AND ST_GeometryType(wkb_geometry)='ST_MultiLineString'
-                AND layer in ('{cad_spaces_names}')"""
-    cur.execute(sql_spaces)
+    sql_remove_empty = f"""
+         delete from django.buildings_buildingfloorplanline where geom ISNULL;
+     """
+    cur.execute(sql_remove_empty)
     conn.commit()
 
 
@@ -220,11 +239,87 @@ def insert_missing_cadlines(campus, table):
     conn.commit()
 
 
-def import_dxf(campus, dxf_files, re_import=False):
+def insert_miss_layers_carto(floor_name):
+    floor_float = get_floor_float(floor_name)
+
+    sql_lines = f"""INSERT INTO django.buildings_buildingfloorplanline (long_name, tags, floor_num, floor_name, geom) 
+                SELECT layer, ARRAY['{table.stem}', layer], {floor_float}, {floor_name}, wkb_geometry 
+                FROM {campus.lower()}.{table.stem} 
+                WHERE ST_GeometryType(wkb_geometry)='ST_MultiLineString'
+                AND layer in {cad_missing}"""
+    cur.execute(sql_lines)
+    conn.commit()
+
+
+def insert_spaces_cartolines(campus, table):
+    floor = table.stem.split('_')[-3]
+    floor_num = get_floor_float(floor)
+    dest_table_name_spaces = f"indrz_spaces_{floor}"
+    dest_table_name_lines = f"indrz_lines_{floor}"
+
+
+    print(f"inserting lines {table.stem}")
+
+    sql_lines = f"""INSERT INTO campuses.{dest_table_name_lines}( long_name, tags, geom) 
+                        SELECT layer, ARRAY['{table.stem}', layer], wkb_geometry 
+                        FROM {campus.lower()}.{table.stem} 
+                        WHERE ST_GeometryType(wkb_geometry)='ST_MultiLineString'
+                        AND layer in {cad_layer_names}"""
+    cur.execute(sql_lines)
+    conn.commit()
+
+
+    print(f"inserting campuses spaces {table.stem}")
+
+    sql_spaces = f"""INSERT INTO campuses.{dest_table_name_spaces}(long_name, tags, geom) SELECT layer, ARRAY['{table.stem}', layer], st_multi(st_buildarea(wkb_geometry))
+                FROM {campus.lower()}.{table.stem} 
+                WHERE ST_NPoints(wkb_geometry) >= 4
+                AND layer in ('{cad_spaces_names}')"""
+    cur.execute(sql_spaces)
+    conn.commit()
+
+    ###  INSERT CARTOLINES #######
+    print(f"inserting django cartolines {table.stem}")
+    sql_insert_cartolines = f"""INSERT INTO django.buildings_buildingfloorplanline (floor_name, tags, long_name, floor_num,
+                                 geom, fk_building_floor_id)
+                                SELECT '{floor}', tags, long_name, {floor_num}, st_setsrid(st_transform(st_makevalid(geom),3857), 3857), 1 
+                                 FROM campuses.{dest_table_name_lines} 
+                                 WHERE split_part(tags[1], ',',1) = '{table.stem}'
+
+                 """
+    cur.execute(sql_insert_cartolines)
+    conn.commit()
+
+    ###  INSERT SPACES #######
+
+    print(f"inserting django spaces {table.stem}")
+
+    sql_spaces = f"""INSERT INTO django.buildings_buildingfloorspace(long_name, tags, geom, floor_num, floor_name, fk_building_floor_id)
+                        SELECT layer, ARRAY['{table.stem}', layer], st_setsrid(st_multi(st_buildarea(st_transform(wkb_geometry, 3857))), 3857),
+                            {floor_num}, '{floor}', 1
+                FROM {campus.lower()}.{table.stem} 
+                WHERE ST_NPoints(wkb_geometry) >= 4
+                AND layer in ('{cad_spaces_names}')"""
+
+    # OLD QUERY was not importing all generated polys why ?  not sure
+    # sql_insert_spaces = f"""INSERT INTO django.buildings_buildingfloorspace (long_name, floor_num, floor_name, tags, geom,
+    #                             fk_building_floor_id )
+    #                         SELECT long_name, {floor_num}, '{floor}', tags, st_setsrid(st_transform(geom,3857), 3857), 1
+    #                         FROM campuses.{dest_table_name_spaces}
+    #                         WHERE split_part(tags[1], ',',1) = '{table.stem}'
+    #              """
+
+    cur.execute(sql_spaces)
+    conn.commit()
+
+
+def reimport_dxf(campus, dxf_files, re_import=False):
 
     for dxf_file_name in dxf_files:
 
         dxf_file = get_dxf_fullpath(campus, dxf_file_name)
+
+        print(dxf_file)
 
         floor = dxf_file.stem.split('_')[-3]
 
@@ -234,28 +329,45 @@ def import_dxf(campus, dxf_files, re_import=False):
             cur.execute(sql_drop)
             conn.commit()
 
-            print("now removing old lines in db")
+            print("now removing old campuses lines in db")
             sql_delete = F"DELETE FROM campuses.indrz_lines_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
             cur.execute(sql_delete)
             conn.commit()
 
-            print("now removing old spaces in db")
+            print("now removing old campuses spaces in db")
             sql_delete_s = F"DELETE FROM campuses.indrz_spaces_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
             print(sql_delete_s)
             cur.execute(sql_delete_s)
             conn.commit()
 
-        print(f"now running ogr to import dxf {dxf_file.stem}")
+            print("deleting spaces and cartolines in DJANGO schema")
+
+            print("now deleting DJANGO spaces in db")
+            sql_delete = F"DELETE FROM django.buildings_buildingfloorspace CASCADE WHERE split_part(tags[1], ',',1) = '{dxf_file.stem}'"
+            cur.execute(sql_delete)
+            conn.commit()
+
+            print("now deleting DJANGO cartolines in db")
+            sql_delete = F"DELETE FROM django.buildings_buildingfloorplanline CASCADE WHERE split_part(tags[1], ',',1) = '{dxf_file.stem}'"
+            cur.execute(sql_delete)
+            conn.commit()
+
+        print(f"now running ogr, creating table and importing dxf data {dxf_file.stem}")
         dxf2postgis(dxf_file, campus)
 
+        # print("DONE Generating table")
+        #
         print(f"now inserting to lines and spaces into db  table called {dxf_file.stem}")
-        insert_campuses_all(campus, dxf_file)
+        insert_spaces_cartolines(campus, dxf_file)
+
+
+
 
 
 def insert_all_dxf_files(campus):
     table_names = get_dxf_files(campus, floor=None, only_dxf_names=True)
 
-    import_dxf(campus, table_names, re_import=True)
+    reimport_dxf(campus, table_names, re_import=True)
 
 
 new_dxf_gusshaus = ['FA_FB_01_IP_042019.dxf',
@@ -289,6 +401,9 @@ new_karlsp_dxf = ['AA_AB_AC_AD_AE_AF_AG_AI_01_IP_112018.dxf',
 #import_dxf('Gusshaus', ch_new, re_import=True)
 
 if __name__ == '__main__':
+    reimport_dxf('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'], re_import=True)
+
+
     # step1_import_all_dxf_to_working("Getreidemarkt")
     # step1_import_all_dxf_to_working("Gusshaus")
     # step1_import_all_dxf_to_working("Freihaus")
@@ -307,7 +422,7 @@ if __name__ == '__main__':
     # import_dxf('Gusshaus', ['HK_EG_IP_082018.dxf',])
     # import_dxf('Getreidemarkt', ['PF_EG_IP_042019.dxf',], re_import=True)
 
-    import_dxf('Getreidemarkt', ['BZ_02_IP_042019.dxf'],re_import=True)
+    # import_dxf('Getreidemarkt', ['BZ_02_IP_042019.dxf'],re_import=True)
 
     # drop_cad_table_reimport('Freihaus', ['DD_EG_IP_092018.dxf',])
 
@@ -322,9 +437,6 @@ if __name__ == '__main__':
     # insert_all_dxf_files("Getreidemarkt", lines=True, spaces=True)
     # insert_all_dxf_files("Gusshaus", lines=True, spaces=True)
     # insert_all_dxf_files("Gusshaus", lines=True, spaces=True)
-
-
-
 
     conn.close()
 

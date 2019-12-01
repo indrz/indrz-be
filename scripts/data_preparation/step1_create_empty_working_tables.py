@@ -18,7 +18,7 @@ sql_campus = """CREATE TABLE geodata.buildings_campus
     description character varying(256) COLLATE pg_catalog."default",
     geom geometry(MultiPolygon,31259),
     fk_organization_id integer,
-    PRIMARY KEY (id),
+    PRIMARY KEY (id)
 )
 WITH (
     OIDS = FALSE
@@ -29,7 +29,7 @@ sql_building = """    CREATE TABLE geodata.buildings_building
     id serial,
     fk_campus_id integer,
     fk_organization_id integer
-    PRIMARY KEY (id),
+    PRIMARY KEY (id)
 
 )
 WITH (
