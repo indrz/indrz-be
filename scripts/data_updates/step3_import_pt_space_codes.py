@@ -1,4 +1,4 @@
- >import pandas as pd
+from scripts.data_updates.step2_upload_dxf_data import get_dxf_fullpath >import pandas as pd
 import os
 from django.contrib.gis.gdal import DataSource, SpatialReference
 from django.contrib.gis.geos import Point
@@ -18,12 +18,7 @@ cur = conn.cursor()
 # print(GEOSGeometry('POINT (0 0)', srid=4326))
 # geo_pt = Point(row['Position X'], row['Position Y'], srid=31259)
 
-def get_csv_fullpath(campus, dxf_file_name):
-    dxf_dir_path = Path('c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/' + campus)
 
-    dxf_file_full_path = Path.joinpath(dxf_dir_path, dxf_file_name)
-
-    return dxf_file_full_path
 
 
 
@@ -76,60 +71,7 @@ def get_floor_name(room_n, room_c, room_v):
     return floor_name, trak_code
 
 
-def step1_import_csv_roomcodes(campus):
-    csv_file_name = campus.lower() + "_roomcodes.csv"
 
-    csv_filepath = get_csv_fullpath(campus, csv_file_name)
-
-    # df = pd.read_csv(csv_filepath, names=["Name","Position X","Position Y","RAUMBEZEICHNUNG","RAUMNUMMER","Value", "Layer", "RAUMCODE", "RAUMNR"], delimiter=",")
-
-    df = pd.read_csv(csv_filepath, delimiter=",", error_bad_lines=False)
-
-    print(df.columns)
-
-    print(df.count)
-    # remove all rows where x coord is null
-    df = df[df['Position X'].notnull()]
-
-
-    print(df.count)
-    # remove all rows where x coord is invalid like 43.23
-    df = df[df['Position X'] > 700000]
-
-    print(df.count)
-
-    # get unique list of room descriptions
-
-    # v = ['WC', 'GANG', 'STG', 'STIEGE',  'AUFZUG', 'BÜRO']
-    # grouped_campus = df.groupby('RAUMBEZEICHNUNG')
-    # gc = [name for name, group in grouped_campus]
-    # print("unique raumbez ", len(gc))
-    # print(gc)
-
-    for index, row in df.iterrows():
-        cad_layer = row['Layer']
-        x = row['Position X']
-        y = row['Position Y']
-        room_des = row['RAUMBEZEICHNUNG']
-        room_n = row['RAUMNUMMER'] # this is used as the roomcode
-        room_c = row['RAUMCODE']
-        room_nr = row['RAUMNR']
-        room_v = row['Value']
-        floor_name = ""
-        track_code = ""
-
-        floor_name, trak_code = get_floor_name(room_n, room_c, room_v)
-
-        geom_sql = f"ST_SetSRID(ST_MakePoint({x}, {y}), 31259)"
-
-        sql = f"""INSERT INTO campuses.indrz_imported_roomcodes (campus, cad_layer_name, floor_name, room_description,
-                            room_external_id, room_number, room_code, room_text, geom)
-                    VALUES ('{campus}', '{cad_layer}', '{floor_name}','{room_des}',
-                          '{room_n}', '{room_nr}', '{room_c}', '{room_v}', {geom_sql})"""
-
-
-        cur.execute(sql)
-        conn.commit()
 
 
 def step2_assign_codes_to_spaces(campus, floors):
