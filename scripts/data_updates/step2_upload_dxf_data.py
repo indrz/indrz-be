@@ -53,14 +53,35 @@ cad_umriss_layers = tuple(cad_umriss)
 cad_missing_stairs_elevators = ['X_S_29', 'X_S27', 'X_O_F49', 'X_O_T49', 'X_H_L27', 'X_M_A29','X_M_Z29',]
 cad_missing = tuple(cad_missing_stairs_elevators)
 
-FILE_DIR = 'c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/'
+FILE_DIR = 'c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/campus-updates/'
 
 # TODO add S__27  missing from lines DE-U1
 
+def get_dxf_files(campus, floor=None, name_only=False):
 
+    dxf_dir_path = Path(FILE_DIR + campus)
+    dxf_list = os.listdir(dxf_dir_path)
+    dxf_files = []
+    for dxf in dxf_list:
+        if PurePath(dxf).suffix == ".dxf":
+                dxf_files.append(dxf)
+
+    if name_only:
+        return dxf_files
+
+    dxf_file_paths = []
+    for dxf in dxf_files:
+        p = Path.joinpath(dxf_dir_path, dxf)
+        if floor:
+            if p.stem.split('_')[1] == floor:
+                dxf_file_paths.append(p)
+        else:
+            dxf_file_paths.append(p)
+
+    return dxf_file_paths
 
 def get_dxf_fullpath(campus, dxf_file_name):
-    dxf_dir_path = Path(FILE_DIR + campus + '/dxf-update')
+    dxf_dir_path = Path(FILE_DIR + campus)
 
     dxf_file_full_path = Path.joinpath(dxf_dir_path, dxf_file_name)
 
@@ -76,7 +97,7 @@ def dxf2postgis(dxf_file, campus_name):
     subprocess.run([
         "ogr2ogr", "-a_srs", "EPSG:31259", "-oo", "DXF_FEATURE_LIMIT_PER_BLOCK=-1",
         "-nlt", "PROMOTE_TO_MULTI", "-oo", "DXF_INLINE_BLOCKS=FALSE", "-oo", "DXF_MERGE_BLOCK_GEOMETRIES=False",
-        "-dsco", "DXF_FEATURE_LIMIT_PER_BLOCK=-1",
+        "-lco", "OVERWRITE=YES",
         "-lco", f"SCHEMA={campus_name.lower()}", "-skipfailures", "-f", "PostgreSQL", ogr_db_con,
         "-nln", table_name.lower(), str(dxf_file)])
 
@@ -85,7 +106,7 @@ def dxf2postgis(dxf_file, campus_name):
 
 
 def get_csv_fullpath(campus, dxf_file_name):
-    dxf_dir_path = Path(FILE_DIR + campus + '/dxf-update')
+    dxf_dir_path = Path(FILE_DIR + campus )
 
     dxf_file_full_path = Path.joinpath(dxf_dir_path, dxf_file_name)
 
@@ -125,11 +146,15 @@ def insert_spaces_cartolines(campus, table):
     print(f"inserting django cartolines {table.stem}")
     sql_insert_cartolines = f"""INSERT INTO django.buildings_buildingfloorplanline (floor_name, tags, long_name, floor_num,
                                  geom, fk_building_floor_id)
-                                SELECT '{floor}', tags, long_name, {floor_num}, st_setsrid(st_transform(st_makevalid(geom),3857), 3857), 1
+                                SELECT '{floor}', tags, long_name, {floor_num}, st_setsrid(st_transform(geom,3857), 3857), 1
                                  FROM campuses.{dest_table_name_lines}
                                  WHERE split_part(tags[1], ',',1) = '{table.stem}'
+                                 AND ST_GeometryType(geom)='ST_MultiLineString'
 
                  """
+
+
+    print(sql_insert_cartolines)
     cur.execute(sql_insert_cartolines)
     conn.commit()
 
@@ -227,17 +252,17 @@ def reimport_dxf(campus, dxf_files, re_import=False):
         floor = dxf_file.stem.split('_')[-3]
 
         if re_import:
-            print(f"now droping table {dxf_file.stem}")
+            print(f"now droping table {campus.lower()}.{dxf_file.stem}")
             sql_drop = F"DROP TABLE IF EXISTS {campus.lower()}.{dxf_file.stem} CASCADE"
             cur.execute(sql_drop)
             conn.commit()
 
-            print("now removing old campuses lines in db")
+            print(f"now removing  campuses.indrz_lines_{floor} old campuses lines in db")
             sql_delete = F"DELETE FROM campuses.indrz_lines_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
             cur.execute(sql_delete)
             conn.commit()
 
-            print("now removing old campuses spaces in db")
+            print(f"now removing campuses.indrz_lines_{floor} old campuses spaces in db")
             sql_delete_s = F"DELETE FROM campuses.indrz_spaces_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
             print(sql_delete_s)
             cur.execute(sql_delete_s)
@@ -245,12 +270,12 @@ def reimport_dxf(campus, dxf_files, re_import=False):
 
             print("deleting spaces and cartolines in DJANGO schema")
 
-            print("now deleting DJANGO spaces in db")
+            print("now deleting django.buildings_buildingfloorspace  DJANGO spaces in db")
             sql_delete = F"DELETE FROM django.buildings_buildingfloorspace CASCADE WHERE split_part(tags[1], ',',1) = '{dxf_file.stem}'"
             cur.execute(sql_delete)
             conn.commit()
 
-            print("now deleting DJANGO cartolines in db")
+            print("now deleting django.buildings_buildingfloorplanline  DJANGO cartolines in db")
             sql_delete = F"DELETE FROM django.buildings_buildingfloorplanline CASCADE WHERE split_part(tags[1], ',',1) = '{dxf_file.stem}'"
             cur.execute(sql_delete)
             conn.commit()
@@ -264,6 +289,12 @@ def reimport_dxf(campus, dxf_files, re_import=False):
 
 
 if __name__ == '__main__':
-    reimport_dxf('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'], re_import=True)
-    step1_import_csv_roomcodes('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'] )
+    # reimport_dxf('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'], re_import=True)
+    # step1_import_csv_roomcodes('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'] )
+    reimport_dxf('Karlsplatz', get_dxf_files('Karlsplatz', name_only=True), re_import=True)
+    step1_import_csv_roomcodes('Karlsplatz', get_dxf_files('Karlsplatz', name_only=True))
+
+    print("DONE")
+    # print(get_dxf_files('Karlsplatz', name_only=True))
+    # print(len(get_dxf_files('Karlsplatz', name_only=True)))
     conn.close()
