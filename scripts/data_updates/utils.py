@@ -32,6 +32,7 @@ con_string_navigatur = f"dbname={db_name_navigatur} user={db_user_navigatur} hos
 con_string_localhost = f"dbname={db_name_local} user={db_user_local} host={db_host_local} password={db_pass_local} port={db_port_local}"
 con_dj_string = f"dbname={db_dj_name} user={db_dj_user} host={db_dj_host} password={db_dj_pass} port={db_dj_port}"
 ogr_db_con = f"PG: host={db_host_local} user={db_user_local} dbname={db_name_local} password={db_pass_local} port={db_port_local}"
+ogr_db_con_navigatur = f"PG: host={db_host_navigatur} user={db_user_navigatur} dbname={db_name_navigatur} password={db_pass_navigatur} port={db_port_navigatur}"
 
 
 db_dj_user = os.getenv('POSTGRES_USER')

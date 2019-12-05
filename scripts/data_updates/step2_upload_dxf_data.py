@@ -5,11 +5,11 @@ from pathlib import Path, PurePath
 import subprocess
 import psycopg2
 
+from .utils import unique_floor_names, get_floor_float
 
-from scripts.data_updates.utils import con_string_localhost, unique_floor_names, con_string_navigatur, \
-    ogr_db_con, get_floor_float
+from .indrz_secrets import con_string_navigatur, ogr_db_con_navigatur
 
-conn = psycopg2.connect(con_string_localhost)
+conn = psycopg2.connect(con_string_navigatur)
 cur = conn.cursor()
 
 linefeatures = [
@@ -40,8 +40,14 @@ linefeatures = [
 {'layer': 'M_A28', 'type': 'miss'},
 {'layer': 'M_L28', 'type': 'miss'},
 {'layer': 'M_Z28', 'type': 'miss'},
-{'layer': 'X_M_Z29', 'type': 'miss'}]
+{'layer': 'X_M_Z29', 'type': 'miss'},
+{'layer': 'E_X49', 'type': 'miss'}]
 
+new_missing_lines = [{'layer': 'M_A28', 'type': 'miss'},
+{'layer': 'M_L28', 'type': 'miss'},
+{'layer': 'M_Z28', 'type': 'miss'},
+{'layer': 'X_M_Z29', 'type': 'miss'},
+{'layer': 'E_X49', 'type': 'miss'}]
 
 cad_layer_names = [x['layer'] for x in linefeatures]
 cad_layer_names = tuple(cad_layer_names)
@@ -56,6 +62,27 @@ cad_missing = tuple(cad_missing_stairs_elevators)
 FILE_DIR = 'c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/campus-updates/'
 
 # TODO add S__27  missing from lines DE-U1
+
+
+def assign_space_type():
+
+    space_type_map = {"Büro": 63, "WC": 91, "wc h": 104, "wc d": 105, "wc wheel": 106, "stieg": 79, "aufz": 33,
+                      "sekret": 103, "ramp": 108, "aula": 4, "labor": 50, "lift": 79, "gang": 44}
+
+    for k, v in space_type_map.items():
+
+        sel_building_floor_id = f"""UPDATE django.buildings_buildingfloorspace set space_type_id = {v} 
+                                    WHERE upper(room_description) LIKE upper('%{k}%');
+                                     
+                                    UPDATE django.buildings_buildingfloorspace set space_type_id = 94
+                                    WHERE room_description ISNULL """
+
+
+
+        print(sel_building_floor_id)
+        cur.execute(sel_building_floor_id)
+        conn.commit()
+
 
 def get_dxf_files(campus, floor=None, name_only=False):
 
@@ -98,7 +125,7 @@ def dxf2postgis(dxf_file, campus_name):
         "ogr2ogr", "-a_srs", "EPSG:31259", "-oo", "DXF_FEATURE_LIMIT_PER_BLOCK=-1",
         "-nlt", "PROMOTE_TO_MULTI", "-oo", "DXF_INLINE_BLOCKS=FALSE", "-oo", "DXF_MERGE_BLOCK_GEOMETRIES=False",
         "-lco", "OVERWRITE=YES",
-        "-lco", f"SCHEMA={campus_name.lower()}", "-skipfailures", "-f", "PostgreSQL", ogr_db_con,
+        "-lco", f"SCHEMA={campus_name.lower()}", "-skipfailures", "-f", "PostgreSQL", ogr_db_con_navigatur,
         "-nln", table_name.lower(), str(dxf_file)])
 
     print("DONE running ogr2ogr")
@@ -291,8 +318,9 @@ def reimport_dxf(campus, dxf_files, re_import=False):
 if __name__ == '__main__':
     # reimport_dxf('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'], re_import=True)
     # step1_import_csv_roomcodes('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'] )
-    reimport_dxf('Karlsplatz', get_dxf_files('Karlsplatz', name_only=True), re_import=True)
-    step1_import_csv_roomcodes('Karlsplatz', get_dxf_files('Karlsplatz', name_only=True))
+    # reimport_dxf('Karlsplatz', get_dxf_files('Karlsplatz', name_only=True), re_import=True)
+    # step1_import_csv_roomcodes('Karlsplatz', get_dxf_files('Karlsplatz', name_only=True))
+    assign_space_type()
 
     print("DONE")
     # print(get_dxf_files('Karlsplatz', name_only=True))
