@@ -50,7 +50,7 @@ class PoiIcon(models.Model):
     """
     name = models.CharField(verbose_name=_('Name of map icon'),max_length=255)
 
-    poi_icon = models.ImageField(verbose_name=_('Poi icon image'), upload_to='poi_icons', max_length=512)
+    poi_icon = models.ImageField(verbose_name=_('Poi icon image'), upload_to='poi-icons', max_length=512)
 
     def get_poi_icon_url(self):
         parse_url = self.poi_icon.url
