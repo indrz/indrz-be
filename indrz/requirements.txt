@@ -5,7 +5,8 @@ requests == 2.22.0
 python-dotenv==0.10.3
 sentry-sdk==0.13.1
 pandas==0.25.1
-pillow=6.2.1
+pillow==6.2.1
+
 django-mptt==0.10.0
 django-rosetta==0.9.3
 django-taggit==1.1.0
