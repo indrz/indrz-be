@@ -18,9 +18,9 @@ class PoiCatAdmin(DraggableMPTTAdmin):
 
 
 class PoiIconAdmin(admin.ModelAdmin):
-    list_display = ('name', 'pictogram_img',)
-    fields = ('pictogram_img',)
-    readonly_fields = ('pictogram_img',)
+    list_display = ('name', 'poi_icon',)
+    fields = ('name', 'poi_icon',)
+
 
 
 
