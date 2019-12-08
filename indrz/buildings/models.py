@@ -342,15 +342,13 @@ class BuildingFloorSpace(FloorSpaceBase):
         ordering = ['room_code']
 
 
-class Wing(gis_models.Model):
+class Wing(FloorSpaceBase):
     """
     Represents a logical or physical division of a single floor.
     One or more floor sections define a wing, zone, etc.
     """
-    building = gis_models.ForeignKey(Building, on_delete=gis_models.CASCADE, null=True, blank=True)
     name = gis_models.CharField(verbose_name=_("Wing name"), max_length=256, null=True, blank=True)
     abbreviation = gis_models.CharField(verbose_name=_("Abbreviation"), max_length=20, null=True, blank=True)
-    geom = gis_models.MultiPolygonField(srid=3857, spatial_index=True, null=True, blank=True)
 
     def __str__(self):
-        return self.name or ''
+        return self.abbreviation or ''
