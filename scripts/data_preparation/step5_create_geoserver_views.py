@@ -1,8 +1,8 @@
 import psycopg2
 from utils import unique_floor_names, get_floor_float
-from utils import con_string, con_dj_string, unique_floor_names
+from utils import con_string_navigatur, unique_floor_names
 
-conn_dj = psycopg2.connect(con_dj_string)
+conn_dj = psycopg2.connect(con_string_navigatur)
 cur_dj = conn_dj.cursor()
 
 def drop_all_views():
@@ -100,13 +100,30 @@ def create_routing_view():
         cur_dj.execute(q_route)
         conn_dj.commit()
 
+def create_construction_view():
+    for floor_name in unique_floor_names:
+        floor_float = get_floor_float(floor_name)
+
+        q_route = f"""
+            DROP VIEW IF EXISTS geodata.construction_{floor_name};
+            CREATE OR REPLACE VIEW geodata.construction_{floor_name} AS
+            SELECT id, short_name, organization, floor_name, floor_num, geom
+            FROM django.buildings_interiorfloorsection
+            WHERE floor_num = {floor_float};
+        """
+        cur_dj.execute(q_route)
+        conn_dj.commit()
+
+
+
 if __name__ == "__main__":
     # NOTE TO SELF
     # NONE of these command delete data only insert
-    drop_all_views()
-    create_cartolines_view()
-    create_spaces_view()
-    create_floor_footprint_view()
-    create_routing_view()
+    # drop_all_views()
+    # create_cartolines_view()
+    # create_spaces_view()
+    # create_floor_footprint_view()
+    # create_routing_view()
+    create_construction_view()
     conn_dj.close()
 
