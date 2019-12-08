@@ -264,7 +264,7 @@ def create_layer(new_feature_name, type):
     s = requests.Session()
     s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
-    types = ['spaces', 'anno', 'cartolines', 'footprint']
+    types = ['spaces', 'anno', 'cartolines', 'footprint', 'construction']
 
     if type not in types:
         print(f"sorry your type must equal one of the following {types}")
@@ -522,6 +522,39 @@ def create_layer(new_feature_name, type):
             </attribute>
         </attributes>"""
 
+    if type == "construction":
+        atts = """	<attributes>
+                            <attribute>
+                <name>id</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
+            <attribute>
+                <name>geom</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <binding>org.locationtech.jts.geom.MultiPolygon</binding>
+                <length>0</length>
+            </attribute>
+              <attribute>
+                <name>short_name</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
+                    <attribute>
+                <name>organization</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
+        </attributes>"""
+
 
     data = "<featureType><name>" + new_feature_name + "</name>" + srs_3857 + bbox + "<srs>EPSG:3857</srs><projectionPolicy>FORCE_DECLARED</projectionPolicy><enabled>true</enabled><advertised>false</advertised>"+  atts + "</featureType>"
     r = s.post(URL_BASE + '/workspaces/indrztu/datastores/ds-indrz-tu/featuretypes',
@@ -534,7 +567,7 @@ def create_layer(new_feature_name, type):
 
 
 def assign_style_to_layer(floor_name, type):
-    types = ['spaces', 'anno', 'cartolines', 'footprint', 'route']
+    types = ['spaces', 'anno', 'cartolines', 'footprint', 'route', 'construction']
 
     if type not in types:
         print(f"sorry your type must equal one of the following {types}")
@@ -631,6 +664,24 @@ def assign_style_to_layer(floor_name, type):
             }
         }}
 
+    if type == "construction":
+        style = {"layer": {
+            "name": f"indrztu:{type}_{floor_name}",
+            "path": "string",
+            "type": "VECTOR",
+            "defaultStyle": {
+                "name": "indrz-construction"
+            },
+            "styles": {
+                "@class": "linked-hash-set",
+                "style": [
+                    {
+                        "name": "indrztu:indrz-construction"
+                    }
+                ]
+            }
+        }}
+
     s = requests.Session()
     s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
@@ -660,6 +711,7 @@ def create_groups(grp_name):
                         <published type="layer"><name>indrz:{0}_space_polys</name></published>
                         <published type="layer"><name>indrz:{0}_carto_lines</name></published>
                         <published type="layer"><name>indrz:{0}_space_anno</name></published>
+                        <published type="layer"><name>indrz:{0}_construction</name></published>
                       </publishables>
                        <bounds>
                         <minx>1587621.59469851</minx>
@@ -693,7 +745,7 @@ def generate_groups(floor_name,):
     s = requests.Session()
     s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
-    group_names = ['footprint', 'spaces', 'cartolines', 'anno']
+    group_names = ['footprint', 'spaces', 'cartolines', 'anno', 'construction']
 
     post_data = """<?xml version="1.0" encoding="UTF-8"?>
                     <layerGroup>
@@ -707,6 +759,7 @@ def generate_groups(floor_name,):
                         <published type="layer"><name>indrztu:spaces_{0}</name></published>
                         <published type="layer"><name>indrztu:cartolines_{0}</name></published>
                         <published type="layer"><name>indrztu:anno_{0}</name></published>
+                        <published type="layer"><name>indrztu:construction_{0}</name></published>
                       </publishables>
                        <bounds>
                         <minx>1820700.70162944</minx>
@@ -737,7 +790,8 @@ def generate_groups(floor_name,):
                 {"type":"layer", "name": f"indrztu:footprint_{floor_name}"},
                 { "type":"layer", "name": f"indrztu:spaces_{floor_name}"},
                 {"type":"layer",  "name": f"indrztu:cartolines_{floor_name}"},
-                {"type":"layer", "name": f"indrztu:anno_{floor_name}",}
+                {"type":"layer", "name": f"indrztu:anno_{floor_name}",},
+                {"type": "layer", "name": f"indrztu:construction_{floor_name}", }
             ]
         },
         "bounds": {
@@ -798,9 +852,12 @@ def run_create_layers():
             create_layer("{0}{1}".format(floor, layer))
 
 
-def generate_layers():
-    types = ['footprint', 'spaces', 'cartolines', 'anno', ]
+if __name__ == '__main__':
+
+    # GENERATE LAYERS
+    # types = ['footprint', 'spaces', 'cartolines', 'anno', 'construction' ]
     # types = ["cartolines", "anno", "routes"]
+    types = ['construction']
 
     for type in types:
         for floor_name in unique_floor_names:
@@ -809,12 +866,10 @@ def generate_layers():
             print(f"now running floor {type} - {floor_name.lower()}")
             assign_style_to_layer(floor_name.lower(), type)
 
-
-if __name__ == '__main__':
-    # generate_layers()
-    for floor_name in unique_floor_names:
-        time.sleep(3)
-        generate_groups(floor_name.lower())
+    # generate GROUPS
+    # for floor_name in unique_floor_names:
+    #     time.sleep(3)
+    #     generate_groups(floor_name.lower())
 
     # assign_style_to_layer(floor_name.lower(), 'anno')
     #delete_layer('route_01')

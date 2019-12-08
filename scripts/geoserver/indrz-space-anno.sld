@@ -389,7 +389,7 @@
           <ogc:Filter>
             <ogc:PropertyIsEqualTo>
               <ogc:PropertyName>space_type_id</ogc:PropertyName>
-              <ogc:Literal>105</ogc:Literal>
+              <ogc:Literal>106</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
           <MinScaleDenominator>1</MinScaleDenominator>
@@ -398,7 +398,7 @@
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="wc_wheelchair_32.png"/>
+                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="wc_wheelchair_24.png"/>
                 <Format>image/png</Format>
               </ExternalGraphic>
               <Size>24</Size>
