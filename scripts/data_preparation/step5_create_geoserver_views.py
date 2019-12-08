@@ -115,6 +115,20 @@ def create_construction_view():
         conn_dj.commit()
 
 
+def create_wing_view():
+    for floor_name in unique_floor_names:
+        floor_float = get_floor_float(floor_name)
+
+        q_route = f"""
+            DROP VIEW IF EXISTS geodata.wing_{floor_name};
+            CREATE OR REPLACE VIEW geodata.wing_{floor_name} AS
+            SELECT id, abbreviation, floor_name, floor_num, geom
+            FROM django.buildings_wing
+            WHERE floor_num = {floor_float};
+        """
+        cur_dj.execute(q_route)
+        conn_dj.commit()
+
 
 if __name__ == "__main__":
     # NOTE TO SELF

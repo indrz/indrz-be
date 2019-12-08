@@ -867,9 +867,9 @@ if __name__ == '__main__':
             assign_style_to_layer(floor_name.lower(), type)
 
     # generate GROUPS
-    # for floor_name in unique_floor_names:
-    #     time.sleep(3)
-    #     generate_groups(floor_name.lower())
+    for floor_name in unique_floor_names:
+        time.sleep(3)
+        generate_groups(floor_name.lower())
 
     # assign_style_to_layer(floor_name.lower(), 'anno')
     #delete_layer('route_01')
