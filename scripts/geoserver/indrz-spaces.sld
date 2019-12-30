@@ -125,11 +125,11 @@
 
 
         <Rule>
-          <Title>Office Space</Title>
+          <Title>Office Administration</Title>
           <ogc:Filter>
             <ogc:PropertyIsLike wildCard="%" singleChar="?" escape="|">
               <ogc:PropertyName>space_type_id</ogc:PropertyName>
-              <ogc:Literal>63</ogc:Literal>
+              <ogc:Literal>103</ogc:Literal>
             </ogc:PropertyIsLike>
           </ogc:Filter>
           <MaxScaleDenominator>8000</MaxScaleDenominator>

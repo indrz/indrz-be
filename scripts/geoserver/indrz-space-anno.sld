@@ -439,15 +439,19 @@
           <MinScaleDenominator>1</MinScaleDenominator>
           <MaxScaleDenominator>800</MaxScaleDenominator>
 
+
           <PointSymbolizer>
             <Graphic>
               <ExternalGraphic>
                 <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="elevator.png"/>
                 <Format>image/png</Format>
+
               </ExternalGraphic>
               <Size>24</Size>
             </Graphic>
+
           </PointSymbolizer>
+
         </Rule>
 
 

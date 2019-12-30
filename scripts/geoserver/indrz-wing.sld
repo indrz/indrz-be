@@ -27,8 +27,8 @@
                 </Rule>
                 <Rule>
                     <Name>Building Anno</Name>
-                    <MinScaleDenominator>2200</MinScaleDenominator>
-                    <MaxScaleDenominator>20000</MaxScaleDenominator>
+                    <MinScaleDenominator>10</MinScaleDenominator>
+                    <MaxScaleDenominator>2200</MaxScaleDenominator>
                     <TextSymbolizer>
                         <Geometry>
                             <ogc:Function name="centroid">
@@ -36,11 +36,11 @@
                             </ogc:Function>
                         </Geometry>
                         <Label>
-                            <ogc:PropertyName>building_name</ogc:PropertyName>
+                            <ogc:PropertyName>abbreviation</ogc:PropertyName>
                         </Label>
                         <Font>
                             <CssParameter name="font-family">TU Text Medium</CssParameter>
-                            <CssParameter name="font-size">35</CssParameter>
+                            <CssParameter name="font-size">15</CssParameter>
                             <CssParameter name="font-color">#797979</CssParameter>
                             <CssParameter name="font-weight">bold</CssParameter>
                         </Font>
