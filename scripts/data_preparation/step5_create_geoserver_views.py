@@ -1,8 +1,9 @@
 import psycopg2
 from utils import unique_floor_names, get_floor_float
-from utils import con_string_navigatur, unique_floor_names
+from utils import con_string_navigatur, unique_floor_names, con_tuindrz
 
-conn_dj = psycopg2.connect(con_string_navigatur)
+conn_dj = psycopg2.connect(con_string_navigatur) # tuw-maps.tuwien.ac.at
+# conn_dj = psycopg2.connect(con_tuindrz) # tu.indrz.com
 cur_dj = conn_dj.cursor()
 
 def drop_all_views():
@@ -10,7 +11,7 @@ def drop_all_views():
     for view_name in view_names:
         for floor_name in unique_floor_names:
 
-            q =  f"""
+            q = f"""
             DROP VIEW IF EXISTS geodata.{view_name}_{floor_name};
             """
             cur_dj.execute(q)
@@ -122,13 +123,27 @@ def create_wing_view():
         q_route = f"""
             DROP VIEW IF EXISTS geodata.wing_{floor_name};
             CREATE OR REPLACE VIEW geodata.wing_{floor_name} AS
-            SELECT id, abbreviation, floor_name, floor_num, geom
-            FROM django.buildings_wing
-            WHERE floor_num = {floor_float};
+            SELECT id, name, abbreviation, '{floor_name}' as floor_name, '{floor_float}' as floor_num, geom
+            FROM django.buildings_wing;
         """
+        print(q_route)
         cur_dj.execute(q_route)
         conn_dj.commit()
 
+def create_wing_points_view():
+    for f_name in unique_floor_names:
+        floor_float = get_floor_float(f_name)
+
+        q_route = f"""
+            DROP VIEW IF EXISTS geodata.wing_points_{f_name};
+            CREATE OR REPLACE VIEW geodata.wing_points_{f_name} AS
+            SELECT id, name, floor_name, floor_num, geom
+            FROM django.poi_manager_poi
+            WHERE floor_name = '{f_name}';
+        """
+        print(q_route)
+        cur_dj.execute(q_route)
+        conn_dj.commit()
 
 if __name__ == "__main__":
     # NOTE TO SELF
@@ -138,6 +153,8 @@ if __name__ == "__main__":
     # create_spaces_view()
     # create_floor_footprint_view()
     # create_routing_view()
-    create_construction_view()
+    # create_construction_view()
+    create_wing_view()
+    create_wing_points_view()
     conn_dj.close()
 

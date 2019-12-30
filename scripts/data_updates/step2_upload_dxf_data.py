@@ -5,9 +5,9 @@ from pathlib import Path, PurePath
 import subprocess
 import psycopg2
 
-from .utils import unique_floor_names, get_floor_float
+from utils import unique_floor_names, get_floor_float
 
-from .indrz_secrets import con_string_navigatur, ogr_db_con_navigatur
+from indrz_secrets import con_string_navigatur, ogr_db_con_navigatur
 
 conn = psycopg2.connect(con_string_navigatur)
 cur = conn.cursor()
@@ -59,7 +59,8 @@ cad_umriss_layers = tuple(cad_umriss)
 cad_missing_stairs_elevators = ['X_S_29', 'X_S27', 'X_O_F49', 'X_O_T49', 'X_H_L27', 'X_M_A29','X_M_Z29',]
 cad_missing = tuple(cad_missing_stairs_elevators)
 
-FILE_DIR = 'c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/campus-updates/'
+# FILE_DIR = 'c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/campus-updates/'
+FILE_DIR = 'c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/'
 
 # TODO add S__27  missing from lines DE-U1
 
@@ -211,9 +212,9 @@ def insert_spaces_cartolines(campus, table):
 def step1_import_csv_roomcodes(campus, dxf_files):
 
     for dxf_file in dxf_files:
-        dxf_file = get_dxf_fullpath(campus, dxf_file)
+        dxf_file = get_dxf_fullpath(campus + "/dxf/", dxf_file)
         csv_filename = dxf_file.stem + "_roomcodes.csv"
-        csv_file = get_csv_fullpath(campus, csv_filename)
+        csv_file = get_csv_fullpath(campus + "/dxf/", csv_filename)
 
         floor_name = dxf_file.stem.split('_')[-3]
         floor_num = get_floor_float(floor_name)
@@ -272,7 +273,8 @@ def reimport_dxf(campus, dxf_files, re_import=False):
 
     for dxf_file_name in dxf_files:
 
-        dxf_file = get_dxf_fullpath(campus, dxf_file_name)
+        # dxf_file = get_dxf_fullpath(campus, dxf_file_name)
+        dxf_file = get_dxf_fullpath(campus + "/dxf/", dxf_file_name)
 
         print(dxf_file)
 
@@ -317,6 +319,12 @@ def reimport_dxf(campus, dxf_files, re_import=False):
 
 if __name__ == '__main__':
     # reimport_dxf('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'], re_import=True)
+    # reimport_dxf('Getreidemarkt', ['BA_01_IP_032019.dxf'], re_import=True)
+    # step1_import_csv_roomcodes('Getreidemarkt', ['BA_01_IP_032019.dxf'])
+    # reimport_dxf('Getreidemarkt', ['BH_01_IP_042019.dxf'], re_import=True)
+    # step1_import_csv_roomcodes('Getreidemarkt', ['BH_01_IP_042019.dxf'])
+    reimport_dxf('Getreidemarkt', ['BA_04_IP_032019.dxf'], re_import=True)
+    step1_import_csv_roomcodes('Getreidemarkt', ['BA_04_IP_032019.dxf'])
     # step1_import_csv_roomcodes('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'] )
     # reimport_dxf('Karlsplatz', get_dxf_files('Karlsplatz', name_only=True), re_import=True)
     # step1_import_csv_roomcodes('Karlsplatz', get_dxf_files('Karlsplatz', name_only=True))

@@ -37,7 +37,7 @@ from utils import unique_floor_names
 
 
 # URL_BASE = "https://www.indrz.com/geoserver/rest"
-URL_BASE = "https://navigatur.tuwien.ac.at/geoserver/rest"
+URL_BASE = "https://tuw-maps.tuwien.ac.at/geoserver/rest"
 headers_xml = {'Content-type': 'text/xml', }
 headers_json = {'Content-type': 'application/json', }
 
@@ -47,7 +47,7 @@ def create_workspace(name):
     s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
     data = '<workspace><name>' + name + '</name></workspace>'
 
-    s.post(URL_BASE + '/rest/workspaces', headers=headers, data=data)
+    s.post(URL_BASE + '/rest/workspaces', headers=headers_xml, data=data)
 
 
 def get_workspaces():
@@ -253,7 +253,7 @@ def delete_layer(layer_name):
     print(r.text)
 
 
-def create_layer(new_feature_name, type):
+def create_layer(new_feature_name, type, session):
     """
 
     :param new_feature_name:
@@ -261,10 +261,9 @@ def create_layer(new_feature_name, type):
     :return:
     """
 
-    s = requests.Session()
-    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
-    types = ['spaces', 'anno', 'cartolines', 'footprint', 'construction']
+
+    types = ['spaces', 'anno', 'cartolines', 'footprint', 'construction', 'wing', 'wing_points']
 
     if type not in types:
         print(f"sorry your type must equal one of the following {types}")
@@ -555,19 +554,78 @@ def create_layer(new_feature_name, type):
             </attribute>
         </attributes>"""
 
+    if type == "wing":
+        atts = """	<attributes>
+                            <attribute>
+                <name>id</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
+            <attribute>
+                <name>geom</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <binding>org.locationtech.jts.geom.MultiPolygon</binding>
+                <length>0</length>
+            </attribute>
+              <attribute>
+                <name>name</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
+                    <attribute>
+                <name>abbreviation</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
+        </attributes>"""
+
+    if type == "wing_points":
+        atts = """	<attributes>
+                            <attribute>
+                <name>id</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
+            <attribute>
+                <name>geom</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <binding>org.locationtech.jts.geom.MultiPolygon</binding>
+                <length>0</length>
+            </attribute>
+              <attribute>
+                <name>name</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
+        </attributes>"""
+
 
     data = "<featureType><name>" + new_feature_name + "</name>" + srs_3857 + bbox + "<srs>EPSG:3857</srs><projectionPolicy>FORCE_DECLARED</projectionPolicy><enabled>true</enabled><advertised>false</advertised>"+  atts + "</featureType>"
-    r = s.post(URL_BASE + '/workspaces/indrztu/datastores/ds-indrz-tu/featuretypes',
+    r = session.post(URL_BASE + '/workspaces/indrztu/datastores/ds-indrz-tu/featuretypes',
                       headers=headers_xml, data=data)
     # print(r.raise_for_status())
     print(r.content)
     print(r.reason)
     print(r.status_code)
-    print(r.text)
+    # print(r.text)
 
 
-def assign_style_to_layer(floor_name, type):
-    types = ['spaces', 'anno', 'cartolines', 'footprint', 'route', 'construction']
+def assign_style_to_layer(floor_name, type, session):
+    types = ['spaces', 'anno', 'cartolines', 'footprint', 'route', 'construction', 'wing', 'wing_points']
 
     if type not in types:
         print(f"sorry your type must equal one of the following {types}")
@@ -682,10 +740,47 @@ def assign_style_to_layer(floor_name, type):
             }
         }}
 
-    s = requests.Session()
-    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
-    r = s.put(URL_BASE + f"/workspaces/indrztu/layers/{type}_{floor_name}", headers=headers_json,
+    if type == "wing":
+        style = {"layer": {
+            "name": f"indrztu:{type}_{floor_name}",
+            "path": "string",
+            "type": "VECTOR",
+            "defaultStyle": {
+                "name": "indrz-wing"
+            },
+            "styles": {
+                "@class": "linked-hash-set",
+                "style": [
+                    {
+                        "name": "indrztu:indrz-wing"
+                    }
+                ]
+            }
+        }}
+
+    if type == "wing_points":
+        style = {"layer": {
+            "name": f"indrztu:{type}_{floor_name}",
+            "path": "string",
+            "type": "VECTOR",
+            "defaultStyle": {
+                "name": "indrz-wing-points"
+            },
+            "styles": {
+                "@class": "linked-hash-set",
+                "style": [
+                    {
+                        "name": "indrztu:indrz-wing-points"
+                    }
+                ]
+            }
+        }}
+
+    # s = requests.Session()
+    # s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
+
+    r = session.put(URL_BASE + f"/workspaces/indrztu/layers/{type}_{floor_name}", headers=headers_json,
                      data=json.dumps(style))
     print(r.content)
     print(r.reason)
@@ -740,12 +835,9 @@ def create_groups(grp_name):
     print(r.status_code)
     print(r.text)
 
-def generate_groups(floor_name,):
+def generate_groups(floor_name, session):
 
-    s = requests.Session()
-    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
-
-    group_names = ['footprint', 'spaces', 'cartolines', 'anno', 'construction']
+    group_names = ['footprint', 'spaces', 'cartolines', 'anno', 'construction', 'wing', 'wing_points']
 
     post_data = """<?xml version="1.0" encoding="UTF-8"?>
                     <layerGroup>
@@ -760,6 +852,8 @@ def generate_groups(floor_name,):
                         <published type="layer"><name>indrztu:cartolines_{0}</name></published>
                         <published type="layer"><name>indrztu:anno_{0}</name></published>
                         <published type="layer"><name>indrztu:construction_{0}</name></published>
+                        <published type="layer"><name>indrztu:wing_{0}</name></published>
+                        <published type="layer"><name>indrztu:wing_points_{0}</name></published>
                       </publishables>
                        <bounds>
                         <minx>1820700.70162944</minx>
@@ -791,7 +885,9 @@ def generate_groups(floor_name,):
                 { "type":"layer", "name": f"indrztu:spaces_{floor_name}"},
                 {"type":"layer",  "name": f"indrztu:cartolines_{floor_name}"},
                 {"type":"layer", "name": f"indrztu:anno_{floor_name}",},
-                {"type": "layer", "name": f"indrztu:construction_{floor_name}", }
+                {"type": "layer", "name": f"indrztu:construction_{floor_name}", },
+                {"type": "layer", "name": f"indrztu:wing_{floor_name}", },
+                {"type": "layer", "name": f"indrztu:wing_points_{floor_name}", }
             ]
         },
         "bounds": {
@@ -804,7 +900,7 @@ def generate_groups(floor_name,):
     }
     }
 
-    r = s.post(URL_BASE + "/layergroups", headers=headers_xml, data=post_data)
+    r = session.post(URL_BASE + "/layergroups", headers=headers_xml, data=post_data)
 
     # r = s.post(URL_BASE + "/layergroups", headers=headers_json, data=json.dumps(b))
 
@@ -821,9 +917,7 @@ def generate_groups(floor_name,):
 #
 # run_create_groups()
 
-def create_style(name, filename):
-    s = requests.Session()
-    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
+def create_style(name, filename, session):
 
     data = {
         "style": {
@@ -835,7 +929,7 @@ def create_style(name, filename):
     style_url = URL_BASE + "/styles"
     xmlfile = open('trb-1996-219.xml', 'rb')
 
-    s.post(style_url, data=data, files=xmlfile, headers=headers)
+    session.post(style_url, data=data, files=xmlfile, headers=headers)
 
 
 def run_assign_stlye():
@@ -854,27 +948,37 @@ def run_create_layers():
 
 if __name__ == '__main__':
 
+    s = requests.Session()
+    s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
+
     # GENERATE LAYERS
     # types = ['footprint', 'spaces', 'cartolines', 'anno', 'construction' ]
     # types = ["cartolines", "anno", "routes"]
-    types = ['construction']
 
-    for type in types:
-        for floor_name in unique_floor_names:
-            create_layer(f'{type}_{floor_name.lower()}', type)
-            time.sleep(4)
-            print(f"now running floor {type} - {floor_name.lower()}")
-            assign_style_to_layer(floor_name.lower(), type)
+    # uncomment this to create geoserver layer with style
+    # you must first create the sld style manually in geoserver
+    # before you run this
+
+    # types = ['wing', 'wing_points']
+    #
+    # for type in types:
+    #     for floor_name in unique_floor_names:
+    #         create_layer(f'{type}_{floor_name.lower()}', type, session=s)
+    #         time.sleep(4)
+    #         print(f"now running floor {type} - {floor_name.lower()}")
+    #         assign_style_to_layer(floor_name.lower(), type, session=s)
 
     # generate GROUPS
     for floor_name in unique_floor_names:
         time.sleep(3)
-        generate_groups(floor_name.lower())
+        generate_groups(floor_name.lower(), session=s)
 
     # assign_style_to_layer(floor_name.lower(), 'anno')
     #delete_layer('route_01')
     # curl -X DELETE http://localhost:8080/geoserver/rest/workspaces/abc/datastores/gtu/featuretypes/tom -H  "accept: application/json" -H  "content-type: application/json"
     # delete_layer('spaces')
+
+    s.close()
 
 
 
