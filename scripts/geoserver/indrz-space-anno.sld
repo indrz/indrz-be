@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<StyledLayerDescriptor version="1.0.0"
-                       xmlns="http://www.opengis.net/sld"
-                       xmlns:ogc="http://www.opengis.net/ogc"
-                       xmlns:xlink="http://www.w3.org/1999/xlink"
-                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd">
+<StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <NamedLayer>
     <Name>eg00 rooms</Name>
     <UserStyle>
@@ -74,16 +71,19 @@
               </ogc:Function>
             </Geometry>
             <Label>
-              <ogc:Function name="strSubstringStart">
+
+
+
+              <ogc:Function name="strSubstring">
                 <ogc:PropertyName>room_code</ogc:PropertyName>
-                <ogc:Function name="parseInt">
-                  <ogc:Literal>2</ogc:Literal>
-                </ogc:Function>
+                <ogc:Literal>0</ogc:Literal>
+                <ogc:Literal>2</ogc:Literal>
               </ogc:Function>
+
             </Label>
             <Font>
               <CssParameter name="font-family">TU Text Medium</CssParameter>
-              <CssParameter name="font-size">8</CssParameter>
+              <CssParameter name="font-size">10</CssParameter>
               <CssParameter name="font-color">#797979</CssParameter>
             </Font>
             <LabelPlacement>
@@ -293,6 +293,7 @@
             <Fill>
               <CssParameter name="fill">#000000</CssParameter>
             </Fill>
+
           </TextSymbolizer>
         </Rule>
 
@@ -307,15 +308,18 @@
           <MinScaleDenominator>450</MinScaleDenominator>
           <MaxScaleDenominator>850</MaxScaleDenominator>
 
-          <PointSymbolizer>
+                    <TextSymbolizer>
+            <Label><![CDATA[ ]]></Label>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="wc_32.png"/>
+                <OnlineResource xlink:type="simple" xlink:href="wc_32.png" />
                 <Format>image/png</Format>
               </ExternalGraphic>
               <Size>24</Size>
             </Graphic>
-          </PointSymbolizer>
+          </TextSymbolizer>
+
+
         </Rule>
 
         <Rule>
@@ -329,15 +333,18 @@
           <MinScaleDenominator>1</MinScaleDenominator>
           <MaxScaleDenominator>800</MaxScaleDenominator>
 
-          <PointSymbolizer>
+                    <TextSymbolizer>
+            <Label><![CDATA[ ]]></Label>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="wc_32.png"/>
+                <OnlineResource xlink:type="simple" xlink:href="wc_32.png" />
                 <Format>image/png</Format>
               </ExternalGraphic>
               <Size>24</Size>
             </Graphic>
-          </PointSymbolizer>
+          </TextSymbolizer>
+
+
         </Rule>
 
         <Rule>
@@ -351,15 +358,18 @@
           <MinScaleDenominator>1</MinScaleDenominator>
           <MaxScaleDenominator>800</MaxScaleDenominator>
 
-          <PointSymbolizer>
+                    <TextSymbolizer>
+            <Label><![CDATA[ ]]></Label>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="wc_herren_32.png"/>
+                <OnlineResource xlink:type="simple" xlink:href="wc_herren_32.png" />
                 <Format>image/png</Format>
               </ExternalGraphic>
               <Size>24</Size>
             </Graphic>
-          </PointSymbolizer>
+          </TextSymbolizer>
+
+
         </Rule>
 
         <Rule>
@@ -373,15 +383,17 @@
           <MinScaleDenominator>1</MinScaleDenominator>
           <MaxScaleDenominator>800</MaxScaleDenominator>
 
-          <PointSymbolizer>
+                    <TextSymbolizer>
+            <Label><![CDATA[ ]]></Label>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="wc_damen_32.png"/>
+                <OnlineResource xlink:type="simple" xlink:href="wc_damen_32.png" />
                 <Format>image/png</Format>
               </ExternalGraphic>
               <Size>24</Size>
             </Graphic>
-          </PointSymbolizer>
+          </TextSymbolizer>
+
         </Rule>
 
         <Rule>
@@ -395,15 +407,18 @@
           <MinScaleDenominator>1</MinScaleDenominator>
           <MaxScaleDenominator>800</MaxScaleDenominator>
 
-          <PointSymbolizer>
+          <TextSymbolizer>
+            <Label><![CDATA[ ]]></Label>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="wc_wheelchair_24.png"/>
+                <OnlineResource xlink:type="simple" xlink:href="wc_wheelchair_24.png" />
                 <Format>image/png</Format>
               </ExternalGraphic>
               <Size>24</Size>
             </Graphic>
-          </PointSymbolizer>
+          </TextSymbolizer>
+
+
         </Rule>
 
         <Rule>
@@ -417,15 +432,18 @@
           <MinScaleDenominator>1</MinScaleDenominator>
           <MaxScaleDenominator>800</MaxScaleDenominator>
 
-          <PointSymbolizer>
+          <TextSymbolizer>
+            <Label><![CDATA[ ]]></Label>
             <Graphic>
               <ExternalGraphic>
-                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="stairs_32.png"/>
+                <OnlineResource xlink:type="simple" xlink:href="stairs_32.png" />
                 <Format>image/png</Format>
               </ExternalGraphic>
               <Size>24</Size>
             </Graphic>
-          </PointSymbolizer>
+           </TextSymbolizer>
+
+
         </Rule>
 
         <Rule>
@@ -438,21 +456,21 @@
           </ogc:Filter>
           <MinScaleDenominator>1</MinScaleDenominator>
           <MaxScaleDenominator>800</MaxScaleDenominator>
-
-
-          <PointSymbolizer>
-            <Graphic>
-              <ExternalGraphic>
-                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="elevator.png"/>
+          <TextSymbolizer>
+            <Label><![CDATA[ ]]></Label>
+              <Graphic>
+                <ExternalGraphic>
+                <OnlineResource xlink:type="simple" xlink:href="elevator.png" />
                 <Format>image/png</Format>
+                </ExternalGraphic>
+                <Size>24</Size>
+              </Graphic>
+           </TextSymbolizer>
 
-              </ExternalGraphic>
-              <Size>24</Size>
-            </Graphic>
 
-          </PointSymbolizer>
 
         </Rule>
+        <VendorOption name="conflictResolution">true</VendorOption>
 
 
       </FeatureTypeStyle>

@@ -25,7 +25,7 @@
                         </Stroke>
                     </PolygonSymbolizer>
                 </Rule>
-                <Rule>
+                              <Rule>
                     <Name>Building Anno</Name>
                     <MinScaleDenominator>2200</MinScaleDenominator>
                     <MaxScaleDenominator>20000</MaxScaleDenominator>
@@ -40,7 +40,7 @@
                         </Label>
                         <Font>
                             <CssParameter name="font-family">TU Text Medium</CssParameter>
-                            <CssParameter name="font-size">35</CssParameter>
+                            <CssParameter name="font-size">30</CssParameter>
                             <CssParameter name="font-color">#797979</CssParameter>
                             <CssParameter name="font-weight">bold</CssParameter>
                         </Font>
@@ -90,6 +90,7 @@
             -->
                     </TextSymbolizer>
                 </Rule>
+
 
             </FeatureTypeStyle>
         </UserStyle>

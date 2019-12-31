@@ -12,23 +12,9 @@
             <FeatureTypeStyle>
                 <Name>name</Name>
                 <Rule>
-                    <Name>default</Name>
-                    <Title>Polygon</Title>
-                    <MaxScaleDenominator>20000</MaxScaleDenominator>
-                    <PolygonSymbolizer>
-                        <Fill>
-                            <CssParameter name="fill">#555555</CssParameter>
-                        </Fill>
-                        <Stroke>
-                            <CssParameter name="stroke">#555555</CssParameter>
-                            <CssParameter name="stroke-width">1</CssParameter>
-                        </Stroke>
-                    </PolygonSymbolizer>
-                </Rule>
-                <Rule>
                     <Name>Building Anno</Name>
-                    <MinScaleDenominator>10</MinScaleDenominator>
-                    <MaxScaleDenominator>2200</MaxScaleDenominator>
+                    <MinScaleDenominator>1</MinScaleDenominator>
+                    <MaxScaleDenominator>5</MaxScaleDenominator>
                     <TextSymbolizer>
                         <Geometry>
                             <ogc:Function name="centroid">
@@ -40,7 +26,7 @@
                         </Label>
                         <Font>
                             <CssParameter name="font-family">TU Text Medium</CssParameter>
-                            <CssParameter name="font-size">15</CssParameter>
+                            <CssParameter name="font-size">35</CssParameter>
                             <CssParameter name="font-color">#797979</CssParameter>
                             <CssParameter name="font-weight">bold</CssParameter>
                         </Font>

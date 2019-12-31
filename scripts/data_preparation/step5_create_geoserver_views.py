@@ -139,7 +139,8 @@ def create_wing_points_view():
             CREATE OR REPLACE VIEW geodata.wing_points_{f_name} AS
             SELECT id, name, floor_name, floor_num, geom
             FROM django.poi_manager_poi
-            WHERE floor_name = '{f_name}';
+            WHERE floor_name = '{f_name}'
+            AND category_id = 80 ;
         """
         print(q_route)
         cur_dj.execute(q_route)
@@ -154,7 +155,7 @@ if __name__ == "__main__":
     # create_floor_footprint_view()
     # create_routing_view()
     # create_construction_view()
-    create_wing_view()
+    # create_wing_view()
     create_wing_points_view()
     conn_dj.close()
 
