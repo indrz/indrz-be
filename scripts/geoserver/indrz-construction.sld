@@ -22,6 +22,8 @@
             <Fill>
               <CssParameter name="fill">#f5e5ef
               </CssParameter>
+              <CssParameter name="fill-opacity">0.9
+              </CssParameter>
             </Fill>
             <Stroke>
               <CssParameter name="stroke">#f5e5ef</CssParameter>
