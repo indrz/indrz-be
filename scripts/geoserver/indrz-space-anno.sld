@@ -74,10 +74,10 @@
 
 
 
-              <ogc:Function name="strSubstring">
+              <ogc:Function name="strSubstringStart">
                 <ogc:PropertyName>room_code</ogc:PropertyName>
-                <ogc:Literal>0</ogc:Literal>
-                <ogc:Literal>2</ogc:Literal>
+                <ogc:Literal>4</ogc:Literal>
+
               </ogc:Function>
 
             </Label>
@@ -177,7 +177,7 @@
 
             <Font>
               <CssParameter name="font-family">TU Text Medium</CssParameter>
-              <CssParameter name="font-size">10</CssParameter>
+              <CssParameter name="font-size">14</CssParameter>
               <CssParameter name="font-color">#797979</CssParameter>
             </Font>
             <LabelPlacement>
