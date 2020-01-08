@@ -2,34 +2,24 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import traceback
 import logging
-import json
+import traceback
 from collections import OrderedDict
 
 import requests
+from buildings.models import BuildingFloorSpace
 from django.conf import settings
-from django.contrib.gis.db.models.functions import AsGeoJSON
-from django.core.serializers import serialize
-from django.http import HttpResponseNotFound
 from django.db import connection
-from django.utils.translation import ugettext as _
-from rest_framework import status
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from django.http import HttpResponseNotFound
+from django.shortcuts import get_object_or_404
 from geojson import loads, Feature, FeatureCollection, Point, MultiPoint
-from rest_framework.views import APIView
+from poi_manager.models import Poi
+from poi_manager.serializers import PoiSerializer
+from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
-
-
-
-from poi_manager.models import Poi
-
-from api.search_tu import search_any
-from poi_manager.serializers import PoiSerializer
-from buildings.models import BuildingFloorSpace
+from rest_framework.views import APIView
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +33,8 @@ def get_room_centroid_node(space_id):
     :return: Closest route node to submitted room number
     '''
 
-    qs = BuildingFloorSpace.objects.get(pk=space_id)
+    qs = get_object_or_404(BuildingFloorSpace, pk=space_id)
+
     center_geom = qs.geom.centroid
 
     x_coord = float(center_geom.x)

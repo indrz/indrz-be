@@ -182,8 +182,10 @@ def search_any(request, q, format=None):
 
 def searchSpaces(lang_code, search_text, mode):
 
-    spaces_data = BuildingFloorSpace.objects.filter(Q(room_code__icontains=search_text)
-                                                    | Q(room_description__icontains=search_text))
+    # spaces_data = BuildingFloorSpace.objects.filter(Q(room_code__icontains=search_text)
+    #                                                 | Q(room_description__icontains=search_text))
+
+    spaces_data = BuildingFloorSpace.objects.filter(room_code__icontains=search_text)
 
     if spaces_data:
 
