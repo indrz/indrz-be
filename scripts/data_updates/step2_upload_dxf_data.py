@@ -66,6 +66,11 @@ FILE_DIR = 'c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/'
 
 
 def assign_space_type():
+    set_null = """UPDATE django.buildings_buildingfloorspace set space_type_id = 94
+                                WHERE room_description ISNULL; """
+
+    cur.execute(set_null)
+    conn.commit()
 
     space_type_map = {"Büro": 63, "WC": 91, "wc h": 104, "wc d": 105, "wc wheel": 106, "stieg": 79, "aufz": 33,
                       "sekret": 103, "ramp": 108, "aula": 4, "labor": 50, "lift": 79, "gang": 44}
@@ -73,11 +78,7 @@ def assign_space_type():
     for k, v in space_type_map.items():
 
         sel_building_floor_id = f"""UPDATE django.buildings_buildingfloorspace set space_type_id = {v} 
-                                    WHERE upper(room_description) LIKE upper('%{k}%');
-                                     
-                                    UPDATE django.buildings_buildingfloorspace set space_type_id = 94
-                                    WHERE room_description ISNULL """
-
+                                    WHERE upper(room_description) LIKE upper('%{k}%');"""
 
 
         print(sel_building_floor_id)
@@ -85,9 +86,10 @@ def assign_space_type():
         conn.commit()
 
 
-def get_dxf_files(campus, floor=None, name_only=False):
 
-    dxf_dir_path = Path(FILE_DIR + campus)
+def get_dxf_files(base_dir, campus, floor=None, name_only=False):
+
+    dxf_dir_path = Path(base_dir + campus)
     dxf_list = os.listdir(dxf_dir_path)
     dxf_files = []
     for dxf in dxf_list:
@@ -108,8 +110,9 @@ def get_dxf_files(campus, floor=None, name_only=False):
 
     return dxf_file_paths
 
-def get_dxf_fullpath(campus, dxf_file_name):
-    dxf_dir_path = Path(FILE_DIR + campus)
+
+def get_dxf_fullpath(base_dir, campus, dxf_file_name):
+    dxf_dir_path = Path(base_dir + campus)
 
     dxf_file_full_path = Path.joinpath(dxf_dir_path, dxf_file_name)
 
@@ -120,7 +123,7 @@ def dxf2postgis(dxf_file, campus_name):
 
     table_name = str(dxf_file.stem)
 
-    print(f"now importing , {table_name.lower()}")
+    print(f"now importing via ogr2ogr , {table_name.lower()}")
 
     subprocess.run([
         "ogr2ogr", "-a_srs", "EPSG:31259", "-oo", "DXF_FEATURE_LIMIT_PER_BLOCK=-1",
@@ -212,9 +215,9 @@ def insert_spaces_cartolines(campus, table):
 def step1_import_csv_roomcodes(campus, dxf_files):
 
     for dxf_file in dxf_files:
-        dxf_file = get_dxf_fullpath(campus + "/dxf/", dxf_file)
+        dxf_file = get_dxf_fullpath(campus + "/", dxf_file)
         csv_filename = dxf_file.stem + "_roomcodes.csv"
-        csv_file = get_csv_fullpath(campus + "/dxf/", csv_filename)
+        csv_file = get_csv_fullpath(campus + "/", csv_filename)
 
         floor_name = dxf_file.stem.split('_')[-3]
         floor_num = get_floor_float(floor_name)
@@ -269,12 +272,12 @@ def step1_import_csv_roomcodes(campus, dxf_files):
         conn.commit()
 
 
-def reimport_dxf(campus, dxf_files, re_import=False):
+def reimport_dxf(base_dir, campus, dxf_files, re_import=False):
 
     for dxf_file_name in dxf_files:
 
         # dxf_file = get_dxf_fullpath(campus, dxf_file_name)
-        dxf_file = get_dxf_fullpath(campus + "/dxf/", dxf_file_name)
+        dxf_file = get_dxf_fullpath(base_dir, campus + "/", dxf_file_name)
 
         print(dxf_file)
 
@@ -318,6 +321,10 @@ def reimport_dxf(campus, dxf_files, re_import=False):
 
 
 if __name__ == '__main__':
+    path_src_dir = 'c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/'
+    path_src_dir_server = "/opt/src_indrz/indrz-tu/data/indrz/"
+    path_src_dir_med = "/opt/data/media/"
+
     # reimport_dxf('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'], re_import=True)
     # reimport_dxf('Getreidemarkt', ['BA_01_IP_032019.dxf'], re_import=True)
     # step1_import_csv_roomcodes('Getreidemarkt', ['BA_01_IP_032019.dxf'])
@@ -331,6 +338,12 @@ if __name__ == '__main__':
     assign_space_type()
 
     print("DONE")
-    # print(get_dxf_files('Karlsplatz', name_only=True))
+
+    # import all dxf files in a directory
+
+    list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus='Karlsplatz', name_only=True)
+    reimport_dxf('Karlsplatz', list_dxf_files, re_import=True)
+    step1_import_csv_roomcodes('Karlsplatz', list_dxf_files)
+
     # print(len(get_dxf_files('Karlsplatz', name_only=True)))
     conn.close()
