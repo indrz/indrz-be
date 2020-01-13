@@ -136,8 +136,8 @@ def dxf2postgis(dxf_file, campus_name):
 
 
 
-def get_csv_fullpath(campus, dxf_file_name):
-    dxf_dir_path = Path(FILE_DIR + campus )
+def get_csv_fullpath(base_dir, campus, dxf_file_name):
+    dxf_dir_path = Path(base_dir + campus )
 
     dxf_file_full_path = Path.joinpath(dxf_dir_path, dxf_file_name)
 
@@ -212,12 +212,12 @@ def insert_spaces_cartolines(campus, table):
     conn.commit()
 
 
-def step1_import_csv_roomcodes(campus, dxf_files):
+def step1_import_csv_roomcodes(base_dir, campus, dxf_files):
 
     for dxf_file in dxf_files:
-        dxf_file = get_dxf_fullpath(campus + "/", dxf_file)
+        dxf_file = get_dxf_fullpath(base_dir, campus + "/", dxf_file)
         csv_filename = dxf_file.stem + "_roomcodes.csv"
-        csv_file = get_csv_fullpath(campus + "/", csv_filename)
+        csv_file = get_csv_fullpath(base_dir, campus + "/", csv_filename)
 
         floor_name = dxf_file.stem.split('_')[-3]
         floor_num = get_floor_float(floor_name)
@@ -330,20 +330,23 @@ if __name__ == '__main__':
     # step1_import_csv_roomcodes('Getreidemarkt', ['BA_01_IP_032019.dxf'])
     # reimport_dxf('Getreidemarkt', ['BH_01_IP_042019.dxf'], re_import=True)
     # step1_import_csv_roomcodes('Getreidemarkt', ['BH_01_IP_042019.dxf'])
-    reimport_dxf('Getreidemarkt', ['BA_04_IP_032019.dxf'], re_import=True)
-    step1_import_csv_roomcodes('Getreidemarkt', ['BA_04_IP_032019.dxf'])
+    # reimport_dxf('Getreidemarkt', ['BA_04_IP_032019.dxf'], re_import=True)
+    # step1_import_csv_roomcodes('Getreidemarkt', ['BA_04_IP_032019.dxf'])
+
     # step1_import_csv_roomcodes('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'] )
     # reimport_dxf('Karlsplatz', get_dxf_files('Karlsplatz', name_only=True), re_import=True)
     # step1_import_csv_roomcodes('Karlsplatz', get_dxf_files('Karlsplatz', name_only=True))
-    assign_space_type()
+    # assign_space_type()
 
     print("DONE")
 
     # import all dxf files in a directory
 
-    list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus='Karlsplatz', name_only=True)
-    reimport_dxf('Karlsplatz', list_dxf_files, re_import=True)
-    step1_import_csv_roomcodes('Karlsplatz', list_dxf_files)
+    campus_name = 'Arsenal'
+
+    list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
+    reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
+    step1_import_csv_roomcodes(campus_name, list_dxf_files)
 
     # print(len(get_dxf_files('Karlsplatz', name_only=True)))
     conn.close()
