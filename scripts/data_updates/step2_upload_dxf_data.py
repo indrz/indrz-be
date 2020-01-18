@@ -67,7 +67,7 @@ FILE_DIR = 'c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/'
 
 def assign_space_type():
     set_null = """UPDATE django.buildings_buildingfloorspace set space_type_id = 94
-                                WHERE room_description ISNULL; """
+                                WHERE space_type_id ISNULL; """
 
     cur.execute(set_null)
     conn.commit()
@@ -77,12 +77,12 @@ def assign_space_type():
 
     for k, v in space_type_map.items():
 
-        sel_building_floor_id = f"""UPDATE django.buildings_buildingfloorspace set space_type_id = {v} 
+        sql_update_spacetype = f"""UPDATE django.buildings_buildingfloorspace set space_type_id = {v} 
                                     WHERE upper(room_description) LIKE upper('%{k}%');"""
 
 
-        print(sel_building_floor_id)
-        cur.execute(sel_building_floor_id)
+        print(sql_update_spacetype)
+        cur.execute(sql_update_spacetype)
         conn.commit()
 
 
@@ -322,6 +322,7 @@ def reimport_dxf(base_dir, campus, dxf_files, re_import=False):
 
 if __name__ == '__main__':
     path_src_dir = 'c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/'
+    path_src_local = 'c:/Users/mdiener/ownCloud/Shared/NavigaTUr/'
     path_src_dir_server = "/opt/src_indrz/indrz-tu/data/indrz/"
     path_src_dir_med = "/opt/data/media/"
 
@@ -336,7 +337,7 @@ if __name__ == '__main__':
     # step1_import_csv_roomcodes('Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_EG_IP_112018.dxf'] )
     # reimport_dxf('Karlsplatz', get_dxf_files('Karlsplatz', name_only=True), re_import=True)
     # step1_import_csv_roomcodes('Karlsplatz', get_dxf_files('Karlsplatz', name_only=True))
-    # assign_space_type()
+
 
     print("DONE")
 
@@ -344,9 +345,15 @@ if __name__ == '__main__':
 
     campus_name = 'Arsenal'
 
-    list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
-    reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
-    step1_import_csv_roomcodes(campus_name, list_dxf_files)
+    # list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
+    # reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
+    # step1_import_csv_roomcodes(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files)
 
     # print(len(get_dxf_files('Karlsplatz', name_only=True)))
+
+    reimport_dxf(path_src_dir_med, 'Arsenal', ['OA_EG_IP_032019.dxf'], re_import=True)
+    step1_import_csv_roomcodes(path_src_dir_med, 'Arsenal', ['OA_EG_IP_032019.dxf'])
+
+    assign_space_type()
+
     conn.close()
