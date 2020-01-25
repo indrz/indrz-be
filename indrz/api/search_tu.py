@@ -103,10 +103,20 @@ def search_any(request, q, format=None):
 
     res_aau_api = TuCampusAPI().search(q)
 
+    # poi_data = searchPoi(lang_code, searchString, "search")
+    spaces_data = searchSpaces(lang_code, searchString, "search")
+
+    # if poi_data:
+    #     return Response(poi_data, status=status.HTTP_200_OK)
+
+    if spaces_data:
+        return Response(spaces_data, status=status.HTTP_200_OK)
     # print("res_aau_api ", res_aau_api)
     # res_aau_api = False
 
-    if res_aau_api:
+    elif res_aau_api:
+
+        # print(res_aau_api)
 
         src = api_res_source(res_aau_api)
 
@@ -132,7 +142,7 @@ def search_any(request, q, format=None):
 
 
         roomcodes = list(set(val['roomcode'] for val in all_api_results))
-        print(roomcodes)
+        # print(roomcodes)
 
         spaces = BuildingFloorSpace.objects.filter(room_code__in=roomcodes)
         features = []
@@ -148,6 +158,7 @@ def search_any(request, q, format=None):
             props = dict()
 
             for code in f:
+
                 if code['roomcode'] == space.room_code:
                     props.update(code)
 
@@ -165,19 +176,12 @@ def search_any(request, q, format=None):
         else:
             return Response({"error": "no geometry found for that query: " + q}, status=status.HTTP_404_NOT_FOUND)
 
+    else:
+        return Response({"error": "no data found in local or api search"}, status=status.HTTP_404_NOT_FOUND)
 
     # =================================================================================================================================
     # external data api lookup finished, if entries present --> return them, else do a lookup in our local data.
-    else:
-        # poi_data = searchPoi(lang_code, searchString, "search")
-        spaces_data = searchSpaces(lang_code, searchString, "search")
 
-        # if poi_data:
-        #     return Response(poi_data, status=status.HTTP_200_OK)
-        if spaces_data:
-            return Response(spaces_data, status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "no data found in localdb"}, status=status.HTTP_404_NOT_FOUND)
 
 
 def searchSpaces(lang_code, search_text, mode):
@@ -315,7 +319,7 @@ class searchAutoComplete(APIView):
 
         res_api = TuCampusAPI().search(search_text)
 
-        print("in AUTOCOMPLETE ", res_api)
+        # print("in AUTOCOMPLETE ", res_api)
 
 
         if res_api:
