@@ -174,7 +174,7 @@ def insert_spaces_cartolines(campus, table):
     conn.commit()
 
     ###  INSERT CARTOLINES #######
-    print(f"inserting django cartolines {table.stem}")
+    print(f"inserting DJ CARTOLINES {table.stem}")
     sql_insert_cartolines = f"""INSERT INTO django.buildings_buildingfloorplanline (floor_name, tags, long_name, floor_num,
                                  geom, fk_building_floor_id)
                                 SELECT '{floor}', tags, long_name, {floor_num}, st_setsrid(st_transform(geom,3857), 3857), 1
@@ -191,9 +191,9 @@ def insert_spaces_cartolines(campus, table):
 
     ###  INSERT SPACES #######
 
-    print(f"inserting django spaces {table.stem}")
+    print(f"inserting DJ SPACES {table.stem}")
 
-    sql_spaces = f"""INSERT INTO django.buildings_buildingfloorspace(long_name, tags, geom, floor_num, floor_name, fk_building_floor_id)
+    sql_dj_spaces = f"""INSERT INTO django.buildings_buildingfloorspace(long_name, tags, geom, floor_num, floor_name, fk_building_floor_id)
                         SELECT layer, ARRAY['{table.stem}', layer], st_setsrid(st_multi(st_buildarea(st_transform(wkb_geometry, 3857))), 3857),
                             {floor_num}, '{floor}', 1
                 FROM {campus.lower()}.{table.stem} 
@@ -208,7 +208,8 @@ def insert_spaces_cartolines(campus, table):
     #                         WHERE split_part(tags[1], ',',1) = '{table.stem}'
     #              """
 
-    cur.execute(sql_spaces)
+    print(sql_dj_spaces)
+    cur.execute(sql_dj_spaces)
     conn.commit()
 
 
@@ -253,7 +254,8 @@ def step1_import_csv_roomcodes(base_dir, campus, dxf_files):
 
             if roomcode != 'nan':
 
-                sql = f"""INSERT INTO campuses.indrz_labels_{floor_name.lower()} (short_name, long_name, floor_num, floor_name, room_code, tags, geom)
+                sql = f"""INSERT INTO campuses.indrz_labels_{floor_name.lower()} (short_name, long_name, 
+                            floor_num, floor_name, room_code, tags, geom)
                             VALUES ('{room_n}', '{room_des}', {floor_num},'{floor_name}',
                                   '{roomcode}', ARRAY['{dxf_file.stem}, {campus.lower()}'], {geom_sql});
                                  alter table campuses.indrz_labels_{floor_name.lower()} owner to tu; """
@@ -268,6 +270,7 @@ def step1_import_csv_roomcodes(base_dir, campus, dxf_files):
                 FROM campuses.indrz_labels_{floor_name.lower()} AS pt 
                 WHERE st_contains(s.geom, st_transform(pt.geom, 3857)) 
                 AND s.floor_name = '{floor_name}';"""
+
         cur.execute(s)
         conn.commit()
 
@@ -313,11 +316,11 @@ def reimport_dxf(base_dir, campus, dxf_files, re_import=False):
             conn.commit()
 
         print(f"now running ogr, creating table and importing dxf data {dxf_file.stem}")
-        dxf2postgis(dxf_file, campus)
+        # dxf2postgis(dxf_file, campus)
 
         print("DONE Generating table")
         print(f"now inserting to lines and spaces into db  table called {dxf_file.stem}")
-        insert_spaces_cartolines(campus, dxf_file)
+        # insert_spaces_cartolines(campus, dxf_file)
 
 
 if __name__ == '__main__':
@@ -339,20 +342,43 @@ if __name__ == '__main__':
     # step1_import_csv_roomcodes('Karlsplatz', get_dxf_files('Karlsplatz', name_only=True))
 
 
-    print("DONE")
+    # print("DONE")
 
     # import all dxf files in a directory
 
-    campus_name = 'Arsenal'
+##########################################################
+    ########### kill all these since names are wrong #############
+    ## done on  31.01.2020  ####
+    # guss_list = ['CF_01_CG_02_IP_042019.dxf',
+    #                 'CF_02_CG_03_IP_042019.dxf',
+    #                 'CF_03_CG_05_IP_042019.dxf',
+    #                 'CF_04_CG_06_IP_042019.dxf',
+    #                 'CF_EG_CG_01_IP_042019.dxf',
+    #                 'CF_SOU_CG_EG_IP_042019.dxf',
+    #                 'CF_U1_CG_U1_IP_042019.dxf',
+    #                 'CF_Z2_CG_04_IP_042019.dxf',
+    #                 'GA_EG_IP_042019.dxf',
+    #                 'GA_U1_U2_IP_042019.dxf'
+    #              ]
+    # reimport_dxf(path_src_dir_med, 'Gusshaus', guss_list, re_import=True)
+    # step1_import_csv_roomcodes(path_src_dir_med, 'Gusshaus', guss_list)
 
-    # list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
-    # reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
-    # step1_import_csv_roomcodes(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files)
+#################################################
+
+    campus_name = 'Gusshaus'
+
+    list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
+    reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
+    step1_import_csv_roomcodes(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files)
 
     # print(len(get_dxf_files('Karlsplatz', name_only=True)))
 
-    reimport_dxf(path_src_dir_med, 'Arsenal', ['OA_EG_IP_032019.dxf'], re_import=True)
-    step1_import_csv_roomcodes(path_src_dir_med, 'Arsenal', ['OA_EG_IP_032019.dxf'])
+    # reimport_dxf(path_src_dir_med, 'Arsenal', ['OA_EG_IP_032019.dxf'], re_import=True)
+    # step1_import_csv_roomcodes(path_src_dir_med, 'Arsenal', ['OA_EG_IP_032019.dxf'])
+
+
+
+
 
     assign_space_type()
 
