@@ -316,11 +316,11 @@ def reimport_dxf(base_dir, campus, dxf_files, re_import=False):
             conn.commit()
 
         print(f"now running ogr, creating table and importing dxf data {dxf_file.stem}")
-        # dxf2postgis(dxf_file, campus)
+        dxf2postgis(dxf_file, campus)
 
         print("DONE Generating table")
         print(f"now inserting to lines and spaces into db  table called {dxf_file.stem}")
-        # insert_spaces_cartolines(campus, dxf_file)
+        insert_spaces_cartolines(campus, dxf_file)
 
 
 if __name__ == '__main__':
