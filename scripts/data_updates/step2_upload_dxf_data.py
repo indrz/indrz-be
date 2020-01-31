@@ -254,7 +254,7 @@ def step1_import_csv_roomcodes(base_dir, campus, dxf_files):
 
             if roomcode != 'nan':
 
-                sql = f"""INSERT INTO campuses.indrz_labels_{floor_name.lower()} (short_name, long_name, 
+                sql = f"""INSERT INTO campuses.indrz_labels_{floor_name.lower()} (short_name, long_name,
                             floor_num, floor_name, room_code, tags, geom)
                             VALUES ('{room_n}', '{room_des}', {floor_num},'{floor_name}',
                                   '{roomcode}', ARRAY['{dxf_file.stem}, {campus.lower()}'], {geom_sql});
@@ -265,10 +265,10 @@ def step1_import_csv_roomcodes(base_dir, campus, dxf_files):
 
         print("ASSIGNING roomcode and room description to spaces from csv points")
 
-        s = f"""Update django.buildings_buildingfloorspace AS s 
+        s = f"""Update django.buildings_buildingfloorspace AS s
                 SET room_code = pt.room_code, room_description = pt.long_name
-                FROM campuses.indrz_labels_{floor_name.lower()} AS pt 
-                WHERE st_contains(s.geom, st_transform(pt.geom, 3857)) 
+                FROM campuses.indrz_labels_{floor_name.lower()} AS pt
+                WHERE st_contains(s.geom, st_transform(pt.geom, 3857))
                 AND s.floor_name = '{floor_name}';"""
 
         cur.execute(s)
@@ -365,7 +365,21 @@ if __name__ == '__main__':
 
 #################################################
 
-    campus_name = 'Gusshaus'
+    ##   one off 31.01.2020  removed
+
+    # getreid_new_list = ['BD_BE_04_IP_042019.dxf',
+    #                     'BD_BE_05_IP_042019.dxf',
+    #                     'BD_BE_06_IP_042019.dxf',
+    #                     'BD_BE_07_DG_IP_042019.dxf',
+    #                     'QA_EG_ZE_IP_15072019.dxf',
+    #                     ]
+    # reimport_dxf(path_src_dir_med, 'Getreidemarkt', getreid_new_list, re_import=True)
+    # step1_import_csv_roomcodes(path_src_dir_med, 'Getreidemarkt', getreid_new_list)
+
+    ############################################################################
+
+
+    campus_name = 'Getreidemarkt'
 
     list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
     reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
