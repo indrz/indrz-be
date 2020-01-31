@@ -3,7 +3,7 @@ import os
 
 from scripts.data_preparation.utils import con_string_localhost, unique_floor_names, con_string_navigatur
 
-conn = psycopg2.connect(con_string_localhost)
+conn = psycopg2.connect(con_string_navigatur)
 cur = conn.cursor()
 # cur.execute("select * from information_schema.tables where table_name=%s", ('mytable',))
 # bool(cur.rowcount)
@@ -292,4 +292,6 @@ def step2_create_roomcode_points_table():
     conn.commit()
 
 step1_create_empty_tables(labels=True)
-
+# create_label_table(floor='sou', )
+# create_lines_table(floor='sou', )
+# create_spaces_table(floor='sou',)

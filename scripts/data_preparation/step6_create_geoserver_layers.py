@@ -36,8 +36,8 @@ GEOSERVER_PASS = os.getenv('GEOSERVER_PASS')
 from utils import unique_floor_names
 
 
-# URL_BASE = "https://www.indrz.com/geoserver/rest"
-URL_BASE = "https://tuw-maps.tuwien.ac.at/geoserver/rest"
+URL_BASE = "https://www.indrz.com/geoserver/rest"
+#URL_BASE = "https://tuw-maps.tuwien.ac.at/geoserver/rest"
 headers_xml = {'Content-type': 'text/xml', }
 headers_json = {'Content-type': 'application/json', }
 
@@ -196,7 +196,7 @@ def get_layers():
     s = requests.Session()
     s.auth = (GEOSERVER_USER, GEOSERVER_PASS)
 
-    r = s.get(URL_BASE + '/layers.json', headers=headers)
+    r = s.get(URL_BASE + '/layers.json', headers=headers_xml)
 
     res = json.loads(r.text)
     print(r.text)
@@ -881,10 +881,10 @@ def generate_groups(floor_name, session):
         },
         "publishables": {
             "published": [
-                {"type":"layer", "name": f"indrztu:footprint_{floor_name}"},
-                { "type":"layer", "name": f"indrztu:spaces_{floor_name}"},
-                {"type":"layer",  "name": f"indrztu:cartolines_{floor_name}"},
-                {"type":"layer", "name": f"indrztu:anno_{floor_name}",},
+                {"type": "layer", "name": f"indrztu:footprint_{floor_name}"},
+                {"type": "layer", "name": f"indrztu:spaces_{floor_name}"},
+                {"type": "layer",  "name": f"indrztu:cartolines_{floor_name}"},
+                {"type": "layer", "name": f"indrztu:anno_{floor_name}",},
                 {"type": "layer", "name": f"indrztu:construction_{floor_name}", },
                 {"type": "layer", "name": f"indrztu:wing_{floor_name}", },
                 {"type": "layer", "name": f"indrztu:wing_points_{floor_name}", }
@@ -961,6 +961,11 @@ if __name__ == '__main__':
 
     # types = ['wing', 'wing_points']
     #
+
+    # get_workspaces()
+    # get_layers()
+
+    # types = ['construction', ]
     # for type in types:
     #     for floor_name in unique_floor_names:
     #         create_layer(f'{type}_{floor_name.lower()}', type, session=s)

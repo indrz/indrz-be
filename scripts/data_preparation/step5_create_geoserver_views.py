@@ -2,8 +2,8 @@ import psycopg2
 from utils import unique_floor_names, get_floor_float
 from utils import con_string_navigatur, unique_floor_names, con_tuindrz
 
-conn_dj = psycopg2.connect(con_string_navigatur) # tuw-maps.tuwien.ac.at
-# conn_dj = psycopg2.connect(con_tuindrz) # tu.indrz.com
+# conn_dj = psycopg2.connect(con_string_navigatur) # tuw-maps.tuwien.ac.at
+conn_dj = psycopg2.connect(con_tuindrz) # tu.indrz.com
 cur_dj = conn_dj.cursor()
 
 def drop_all_views():
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     # create_floor_footprint_view()
     # create_routing_view()
     # create_construction_view()
-    # create_wing_view()
+    create_wing_view()
     create_wing_points_view()
     conn_dj.close()
 
