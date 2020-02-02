@@ -189,7 +189,7 @@ def searchSpaces(lang_code, search_text, mode):
     # spaces_data = BuildingFloorSpace.objects.filter(Q(room_code__icontains=search_text)
     #                                                 | Q(room_description__icontains=search_text))
 
-    space_in = search_text.replace(" ", "")
+    space_in = search_text.replace(" ", "")  # enable HS 04 H34   to return HS04H34
     spaces_data = BuildingFloorSpace.objects.filter(room_code__icontains=space_in)
 
     if spaces_data:
