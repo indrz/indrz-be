@@ -258,9 +258,14 @@ def step1_import_csv_roomcodes(base_dir, campus, dxf_files):
                             floor_num, floor_name, room_code, tags, geom)
                             VALUES ('{room_n}', '{room_des}', {floor_num},'{floor_name}',
                                   '{roomcode}', ARRAY['{dxf_file.stem}, {campus.lower()}'], {geom_sql});
-                                 alter table campuses.indrz_labels_{floor_name.lower()} owner to tu; """
+                                 """
 
+                print(sql)
                 cur.execute(sql)
+                conn.commit()
+
+                s2alter = f"""alter table campuses.indrz_labels_{floor_name.lower()} owner to tu; """
+                cur.execute(s2alter)
                 conn.commit()
 
         print("ASSIGNING roomcode and room description to spaces from csv points")
@@ -379,7 +384,7 @@ if __name__ == '__main__':
     ############################################################################
 
 
-    campus_name = 'Getreidemarkt'
+    campus_name = 'Freihaus'
 
     list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
     reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
