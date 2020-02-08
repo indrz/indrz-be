@@ -30,11 +30,11 @@ linefeatures = [
 {'layer': 'M_Z29', 'type':'inner-wall'},
 {'layer': 'A2-TUER-SYM050', 'type': 'door'},
 {'layer': 'O_T49', 'type': 'door'},
+{'layer': 'O_T29', 'type': 'miss'},
 {'layer': 'X_S_29', 'type': 'stair'},
 {'layer': 'X_S27', 'type': 'stair'},
 {'layer': 'X_O_F49', 'type': 'window'},
 {'layer': 'X_O_T49', 'type': 'miss'},
-{'layer': 'O_T29', 'type': 'miss'},
 {'layer': 'X_H_L27', 'type': 'miss'},
 {'layer': 'X_M_A29', 'type': 'miss'},
 {'layer': 'M_A28', 'type': 'miss'},
@@ -73,7 +73,7 @@ def assign_space_type():
     conn.commit()
 
     space_type_map = {"Büro": 63, "WC": 91, "wc h": 104, "wc d": 105, "wc wheel": 106, "stieg": 79, "aufz": 33,
-                      "sekret": 103, "ramp": 108, "aula": 4, "labor": 50, "lift": 79, "gang": 44}
+                      "sekret": 103, "ramp": 108, "aula": 4, "labor": 50, "lift": 33, "gang": 44}
 
     for k, v in space_type_map.items():
 

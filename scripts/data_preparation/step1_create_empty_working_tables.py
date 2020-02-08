@@ -4,6 +4,7 @@ import os
 from scripts.data_preparation.utils import con_string_localhost, unique_floor_names, con_string_navigatur
 
 conn = psycopg2.connect(con_string_navigatur)
+# conn = psycopg2.connect(con_string_localhost)
 cur = conn.cursor()
 # cur.execute("select * from information_schema.tables where table_name=%s", ('mytable',))
 # bool(cur.rowcount)
@@ -240,6 +241,73 @@ def create_lines_table(floor, campus="campuses", drop=False):
     # cur.execute(sql_col)
     conn.commit()
 
+def create_tu_data_table():
+
+    # ['Name', 'Position X', 'Position Y', 'RAUMBEZEICHNUNG', 'RAUMNUMMER', 'Value', "Layer", "RAUMCODE", "RAUMNR"],
+    sql_create = """CREATE TABLE geodata.tu_data
+    (
+        id serial primary key ,
+        room_code character varying(150),
+        wing character varying(150),
+        floor character varying(150),
+        room_number character varying(150),
+        main_use character varying(150),
+        color character varying(150),
+        description character varying(150)
+    )
+    WITH (
+        OIDS = FALSE
+    )"""
+
+    sql_drop = "DROP TABLE IF EXISTS geodata.tu_data CASCADE"
+
+    alt = "alter table geodata.tu_data owner to tu;"
+
+    cur.execute(sql_drop)
+    cur.execute(sql_create)
+    cur.execute(alt)
+    conn.commit()
+
+
+def update_space_id_by_color():
+
+    # Flure, Hallen, Aula, Gang, Stiege
+    sql_flure = """update django.buildings_buildingfloorspace as d set space_type_id = 44 from geodata.tu_data as a
+     where d.room_code = a.room_code
+     and a.color = '#FFF8CF';"""
+
+    # Student Zones, edv raueme pc raum, gemeinschafts raum
+    sql_zones = """update django.buildings_buildingfloorspace as d set space_type_id = 20 from geodata.tu_data as a
+     where d.room_code = a.room_code
+     and a.color = '#F5D0A8';"""
+
+    # versammlungsraueme Festsaal
+    sql_fest = """update django.buildings_buildingfloorspace as d set space_type_id = 22 from geodata.tu_data as a
+     where d.room_code = a.room_code
+     and a.color = '#CD81A8';"""
+
+    # WC
+    sql_wc = """update django.buildings_buildingfloorspace as d set space_type_id = 91 from geodata.tu_data as a
+     where d.room_code = a.room_code
+     and a.color = '#9D9D9D';"""
+
+    # Sekretariat  Office admin
+    sql_sektret = """update django.buildings_buildingfloorspace as d set space_type_id = 103 from geodata.tu_data as a
+     where d.room_code = a.room_code
+     and a.color = '#4DC7FF';"""
+
+    # unterrichts raume übungs raume Seminar Hörsaal
+    sql_untericht = """update django.buildings_buildingfloorspace as d set space_type_id = 6 from geodata.tu_data as a
+     where d.room_code = a.room_code
+     and a.color = '#006699';"""
+
+    cur.execute(sql_flure)
+    cur.execute(sql_zones)
+    cur.execute(sql_fest)
+    cur.execute(sql_wc)
+    cur.execute(sql_sektret)
+    cur.execute(sql_untericht)
+    conn.commit()
 
 def step1_create_empty_tables(campus="campuses", lines=False, spaces=False, labels=False, routing=False):
     for floor in unique_floor_names:
@@ -291,7 +359,14 @@ def step2_create_roomcode_points_table():
     # cur.execute(sql_col)
     conn.commit()
 
-step1_create_empty_tables(labels=True)
+# step1_create_empty_tables(labels=True)
 # create_label_table(floor='sou', )
 # create_lines_table(floor='sou', )
 # create_spaces_table(floor='sou',)
+
+
+# create_tu_data_table()
+
+
+update_space_id_by_color()
+

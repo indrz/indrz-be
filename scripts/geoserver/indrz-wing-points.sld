@@ -13,7 +13,7 @@
                 <Name>level 1</Name>
                   <Rule>
                     <Name>level 2</Name>
-                    <MinScaleDenominator>50</MinScaleDenominator>
+                    <MinScaleDenominator>500</MinScaleDenominator>
                     <MaxScaleDenominator>2199</MaxScaleDenominator>
                     <TextSymbolizer>
                         <Label>
@@ -47,7 +47,13 @@
                                 <WellKnownName>circle</WellKnownName>
                                 <Fill>
                                     <CssParameter name="fill">#006699</CssParameter>
+
                                 </Fill>
+                                       <Stroke>
+           <CssParameter name="stroke">#FFFFFF</CssParameter>
+           <CssParameter name="stroke-width">1</CssParameter>
+         </Stroke>
+
                             </Mark>
 
                         </Graphic>
