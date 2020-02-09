@@ -85,6 +85,24 @@ def assign_space_type():
         cur.execute(sql_update_spacetype)
         conn.commit()
 
+    type_ids = [{'type_id': 44, 'color': '#FFF8CF'},  # Flure, Hallen, Aula, Gang, Stiege
+                {'type_id': 20, 'color': '#F5D0A8'},  # Student Zones, edv raueme pc raum, gemeinschafts raum
+                {'type_id': 22, 'color': '#CD81A8'},  # versammlungsraueme Festsaal
+                {'type_id': 91, 'color': '#9D9D9D'},  # WC
+                {'type_id': 103, 'color': '#4DC7FF'},  # Sekretariat  Office admin
+                {'type_id': 6, 'color': '#006699'},  # unterrichts raume übungs raume Seminar Hörsaal
+                ]
+
+    for type in type_ids:
+        color = type['color']
+        type_id = type['type_id']
+        sql_update_color = f"""update django.buildings_buildingfloorspace as d set space_type_id = {type_id} 
+                     FROM geodata.tu_data AS a
+                     WHERE d.room_code = a.room_code
+                     AND a.color = '{color}';"""
+
+        cur.execute(sql_update_color)
+        conn.commit()
 
 
 def get_dxf_files(base_dir, campus, floor=None, name_only=False):
@@ -126,11 +144,19 @@ def dxf2postgis(dxf_file, campus_name):
     print(f"now importing via ogr2ogr , {table_name.lower()}")
 
     subprocess.run([
-        "ogr2ogr", "-a_srs", "EPSG:31259", "-oo", "DXF_FEATURE_LIMIT_PER_BLOCK=-1",
-        "-nlt", "PROMOTE_TO_MULTI", "-oo", "DXF_INLINE_BLOCKS=FALSE", "-oo", "DXF_MERGE_BLOCK_GEOMETRIES=False",
+        "ogr2ogr", "-a_srs", "EPSG:31259",
+        "-nlt", "PROMOTE_TO_MULTI",
         "-lco", "OVERWRITE=YES",
         "-lco", f"SCHEMA={campus_name.lower()}", "-skipfailures", "-f", "PostgreSQL", ogr_db_con_navigatur,
         "-nln", table_name.lower(), str(dxf_file)])
+
+
+    # subprocess.run([
+    #     "ogr2ogr", "-a_srs", "EPSG:31259", "-oo", "DXF_FEATURE_LIMIT_PER_BLOCK=-1",
+    #     "-nlt", "PROMOTE_TO_MULTI", "-oo", "DXF_INLINE_BLOCKS=FALSE", "-oo", "DXF_MERGE_BLOCK_GEOMETRIES=False",
+    #     "-lco", "OVERWRITE=YES",
+    #     "-lco", f"SCHEMA={campus_name.lower()}", "-skipfailures", "-f", "PostgreSQL", ogr_db_con_navigatur,
+    #     "-nln", table_name.lower(), str(dxf_file)])
 
     print("DONE running ogr2ogr")
 
@@ -384,11 +410,18 @@ if __name__ == '__main__':
     ############################################################################
 
 
-    campus_name = 'Freihaus'
+    # campus_name = 'Freihaus'
+    #
+    # list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
+    # reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
+    # step1_import_csv_roomcodes(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files)
 
-    list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
-    reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
-    step1_import_csv_roomcodes(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files)
+    campuses = ['Freihaus', 'Getreidemarkt', 'Karlsplatz', 'Arsenal', 'Gusshaus']
+    for campus_name in campuses:
+        list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
+        reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
+        step1_import_csv_roomcodes(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files)
+
 
     # print(len(get_dxf_files('Karlsplatz', name_only=True)))
 
@@ -396,7 +429,8 @@ if __name__ == '__main__':
     # step1_import_csv_roomcodes(path_src_dir_med, 'Arsenal', ['OA_EG_IP_032019.dxf'])
 
 
-
+    # reimport_dxf(path_src_local, 'Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_ZU_ZE_IP_112018.dxf'], re_import=True)
+    # step1_import_csv_roomcodes(path_src_local, 'Karlsplatz', ['AA_AB_AC_AD_AE_AF_AG_AI_ZU_ZE_IP_112018.dxf'] )
 
 
     assign_space_type()
