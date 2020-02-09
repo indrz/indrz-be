@@ -1,0 +1,7 @@
+test_variable:
+  stage: test
+  script:
+    - echo $CI_JOB_STAGE # calls a predefined variable
+    - echo $TEST # calls a custom variable of type `env_var`
+    - echo $GREETING # calls a custom variable of type `file` that contains the path to the temp file
+    - cat $GREETING # the temp file itself contains the variable value
