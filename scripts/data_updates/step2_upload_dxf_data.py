@@ -143,20 +143,20 @@ def dxf2postgis(dxf_file, campus_name):
 
     print(f"now importing via ogr2ogr , {table_name.lower()}")
 
-    subprocess.run([
-        "ogr2ogr", "-a_srs", "EPSG:31259",
-        "-nlt", "PROMOTE_TO_MULTI",
-        "-lco", "OVERWRITE=YES",
-        "-lco", f"SCHEMA={campus_name.lower()}", "-skipfailures", "-f", "PostgreSQL", ogr_db_con_navigatur,
-        "-nln", table_name.lower(), str(dxf_file)])
-
-
     # subprocess.run([
-    #     "ogr2ogr", "-a_srs", "EPSG:31259", "-oo", "DXF_FEATURE_LIMIT_PER_BLOCK=-1",
-    #     "-nlt", "PROMOTE_TO_MULTI", "-oo", "DXF_INLINE_BLOCKS=FALSE", "-oo", "DXF_MERGE_BLOCK_GEOMETRIES=False",
+    #     "ogr2ogr", "-a_srs", "EPSG:31259",
+    #     "-nlt", "PROMOTE_TO_MULTI",
     #     "-lco", "OVERWRITE=YES",
     #     "-lco", f"SCHEMA={campus_name.lower()}", "-skipfailures", "-f", "PostgreSQL", ogr_db_con_navigatur,
     #     "-nln", table_name.lower(), str(dxf_file)])
+
+
+    subprocess.run([
+        "ogr2ogr", "-a_srs", "EPSG:31259", "-oo", "DXF_FEATURE_LIMIT_PER_BLOCK=-1",
+        "-nlt", "PROMOTE_TO_MULTI", "-oo", "DXF_INLINE_BLOCKS=FALSE", "-oo", "DXF_MERGE_BLOCK_GEOMETRIES=False",
+        "-lco", "OVERWRITE=YES",
+        "-lco", f"SCHEMA={campus_name.lower()}", "-skipfailures", "-f", "PostgreSQL", ogr_db_con_navigatur,
+        "-nln", table_name.lower(), str(dxf_file)])
 
     print("DONE running ogr2ogr")
 
