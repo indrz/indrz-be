@@ -105,6 +105,23 @@ def assign_space_type():
         conn.commit()
 
 
+def clean_geoms():
+    remove_big_poly = """Delete from django.buildings_buildingfloorspace 
+                WHERE room_code ='OC01N24' AND room_description = 'LAGER';"""
+    cur.execute(remove_big_poly)
+
+    remove_long_planlines = """delete from django.buildings_buildingfloorplanline where st_length(geom)>1000;"""
+    cur.execute(remove_long_planlines)
+
+    remove_short_planlines = """delete from django.buildings_buildingfloorplanline where st_length(geom) < 0.001"""
+    cur.execute(remove_short_planlines)
+
+    remove_large_room = """delete from django.buildings_buildingfloorspace where st_area(geom) > 4000"""
+    cur.execute(remove_large_room)
+
+    conn.commit()
+
+
 def get_dxf_files(base_dir, campus, floor=None, name_only=False):
 
     dxf_dir_path = Path(base_dir + campus)
@@ -434,5 +451,6 @@ if __name__ == '__main__':
 
 
     assign_space_type()
+    clean_geoms()
 
     conn.close()
