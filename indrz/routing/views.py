@@ -1250,27 +1250,25 @@ def create_route_from_id(request, start_room_id, end_room_id, route_type):
         start_node_id = get_room_centroid_node(start_room)
         end_node_id = get_room_centroid_node(end_room)
 
-        start_qs = BuildingFloorSpace.objects.get(pk=start_room)
-        end_qs = BuildingFloorSpace.objects.get(pk=end_room)
+        start_qs = get_object_or_404(BuildingFloorSpace, pk=start_room)
+        end_qs = get_object_or_404(BuildingFloorSpace, pk=end_room)
 
-        res = run_route(start_node_id, end_node_id, route_type)
-
-        if "error" in res:
-            print({"error":res})
-            return Response({"error": res}, status=status.HTTP_404_NOT_FOUND)
-        else:
-
-            res['route_info']['start_name'] = start_qs.room_code
-            res['route_info']['end_name'] = end_qs.room_code
-
-            try:
-                return Response(res)
-            except:
-                logger.error("error exporting to json model: " + str(res))
-                logger.error(traceback.format_exc())
-                return Response({'error': 'either no JSON or no key params in your JSON'})
+        try:
+            if start_node_id and end_node_id:
+                res = run_route(start_node_id, end_node_id, route_type)
+                if res:
+                    res['route_info']['start_name'] = start_qs.room_code
+                    res['route_info']['end_name'] = end_qs.room_code
+                    return Response(res)
+                else:
+                    return Response({'error': 'no route found in create route'}, status=status.HTTP_404_NOT_FOUND)
+            else:
+                return Response({'error': 'start or end node id NOT found'}, status=status.HTTP_404_NOT_FOUND)
+        except:
+            logger.error(traceback.format_exc())
+            return Response({'error': 'running route function failed'}, status=status.HTTP_404_NOT_FOUND)
     else:
-        return HttpResponseNotFound('<h1>Sorry not a GET or POST request</h1>')
+        return Response({'error': 'post or get'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 @api_view(['GET', 'POST'])
