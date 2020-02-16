@@ -1255,15 +1255,19 @@ def create_route_from_id(request, start_room_id, end_room_id, route_type):
 
         try:
             if start_node_id and end_node_id:
-                res = run_route(start_node_id, end_node_id, route_type)
-                if res:
-                    res['route_info']['start_name'] = start_qs.room_code
-                    res['route_info']['end_name'] = end_qs.room_code
-                    return Response(res)
+                if start_node_id == end_node_id:
+                    return Response({'error': 'start and end node cannot be the same'}, status.HTTP_400_BAD_REQUEST)
                 else:
-                    return Response({'error': 'no route found in create route'}, status=status.HTTP_404_NOT_FOUND)
+                    res = run_route(start_node_id, end_node_id, route_type)
+                    if res:
+                        res['route_info']['start_name'] = start_qs.room_code
+                        res['route_info']['end_name'] = end_qs.room_code
+                        return Response(res)
+                    else:
+                        return Response({'error': 'no route found in create route'}, status=status.HTTP_404_NOT_FOUND)
             else:
-                return Response({'error': 'start or end node id NOT found'}, status=status.HTTP_404_NOT_FOUND)
+                # if "error" in start_node_id or "error" in end_node_id:
+                return Response({'error': 'route by id is not sending response'}, status=status.HTTP_404_NOT_FOUND)
         except:
             logger.error(traceback.format_exc())
             return Response({'error': 'running route function failed'}, status=status.HTTP_404_NOT_FOUND)
