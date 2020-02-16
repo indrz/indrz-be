@@ -36,7 +36,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('api/v1/api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
-    url(r'^api/docs/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    url(r'^api/v1/docs/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     url(r'^api/v1/autocomplete/(?P<search_text>.+)', searchAutoComplete.as_view(), name='search_autocomplete'),
     url(r'^api/v1/search/(?P<q>.+)', search_any, name='search'),
     url(r'^api/v1/directions/', include(('routing.urls', 'directions'), namespace='directions')),
