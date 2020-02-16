@@ -15,6 +15,7 @@ djangorestframework_gis==0.14
 djangorestframework==3.10.3
 django-rest-swagger==2.2.0
 coreapi
+drf-yasg==1.17.0
 
 
 gunicorn==19.9.0
