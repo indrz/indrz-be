@@ -1,6 +1,5 @@
 import os
 import sentry_sdk
-
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from dotenv import load_dotenv
@@ -33,11 +32,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_gis',
     'rest_framework.authtoken',
-    'rest_framework_swagger',
     'taggit',
     'mptt',
     'rosetta',
     'corsheaders',
+    'drf_yasg',
 
     ##### our local indrz apps
     'api',
@@ -50,7 +49,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -152,6 +151,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOGIN_URL = '/api/v1/admin/login/'
+LOGOUT_URL = '/api/v1/admin/logout/'
+LOGIN_REDIRECT_URL = '/'
 
 STATIC_URL = os.getenv('STATIC_URL')
 STATIC_FOLDER = os.getenv('STATIC_FOLDER')
@@ -202,12 +204,25 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated', )
 }
 
-sentry_sdk.init(os.getenv('SENTRY_URL'), integrations=[DjangoIntegration()])
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': True,
+}
+
+
+sentry_sdk.init(
+    dsn=os.getenv('SENTRY_URL'),
+    integrations=[DjangoIntegration()],
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
 
 
 CORS_ORIGIN_WHITELIST = [
