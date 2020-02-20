@@ -83,7 +83,7 @@
 
           <PolygonSymbolizer>
             <Fill>
-              <CssParameter name="fill">#FFF8CF</CssParameter>
+              <CssParameter name="fill">#FFFFFF</CssParameter>
             </Fill>
             <Stroke>
               <CssParameter name="stroke">#5c5c5c</CssParameter>

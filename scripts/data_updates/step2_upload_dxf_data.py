@@ -76,7 +76,8 @@ def assign_space_type():
     cur.execute(set_null)
     conn.commit()
 
-    space_type_map = {"Büro": 63, "WC": 91, "wc h": 104, "wc d": 105, "wc wheel": 106, "stieg": 79, "aufz": 33,
+    space_type_map = {"Büro": 63, "WC": 91, "wc h": 104, "wc her": 104, "wc d": 105, "wc dam": 105,
+                      "wc wheel": 106, "wc beh": 106, "stieg": 79, "aufz": 33, "sth": 79,
                       "sekret": 103, "ramp": 108, "aula": 4, "labor": 50, "lift": 33, "gang": 44}
 
     for k, v in space_type_map.items():
@@ -89,10 +90,10 @@ def assign_space_type():
         cur.execute(sql_update_spacetype)
         conn.commit()
 
-    type_ids = [{'type_id': 44, 'color': '#FFF8CF'},  # Flure, Hallen, Aula, Gang, Stiege
+    type_ids = [#{'type_id': 44, 'color': '#FFF8CF'},  # Flure, Hallen, Aula, Gang, Stiege
+                # {'type_id': 91, 'color': '#9D9D9D'},  # WC
                 {'type_id': 20, 'color': '#F5D0A8'},  # Student Zones, edv raueme pc raum, gemeinschafts raum
                 {'type_id': 22, 'color': '#CD81A8'},  # versammlungsraueme Festsaal
-                {'type_id': 91, 'color': '#9D9D9D'},  # WC
                 {'type_id': 103, 'color': '#4DC7FF'},  # Sekretariat  Office admin
                 {'type_id': 6, 'color': '#006699'},  # unterrichts raume übungs raume Seminar Hörsaal
                 ]
