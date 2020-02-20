@@ -437,7 +437,15 @@ if __name__ == '__main__':
     # reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
     # step1_import_csv_roomcodes(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files)
 
-    campuses = ['Freihaus', 'Getreidemarkt', 'Karlsplatz', 'Arsenal', 'Gusshaus']
+
+    campuses = ['Getreidemarkt', 'Freihaus', 'Karlsplatz', 'Gusshaus', 'Arsenal']
+
+    # copy files
+    for campus in campuses:
+        campus_path = f"""/home/OwnCloud-Directory/Shared/NavigaTUr/{campus}"""
+        subprocess.call(["cp", "-r", campus_path, "/opt/src_indrz/indrz-tu/data/indrz/media/"])
+
+
     for campus_name in campuses:
         list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
         reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
@@ -456,5 +464,10 @@ if __name__ == '__main__':
 
     assign_space_type()
     clean_geoms()
+
+    # clean up temp dxf files used for import files on server
+    for campus in campuses:
+        campus_path = f"""/opt/src_indrz/indrz-tu/data/indrz/media/{campus}"""
+        subprocess.call(["rm", "-r", campus_path])
 
     conn.close()
