@@ -184,6 +184,7 @@ def part1(schema, floors):
         SELECT public.pgr_createtopology3dIndrz('{merged_network_lines}', 0.0001, 'geom', 'id', 'source', 'target', 'true', true);
     
         DELETE FROM {merged_network_lines} WHERE cost ISNULL;
+        DELETE FROM {merged_network_lines} WHERE length = 0;
         ALTER TABLE {merged_network_lines}_vertices_pgr OWNER TO "tu";
     
         """
