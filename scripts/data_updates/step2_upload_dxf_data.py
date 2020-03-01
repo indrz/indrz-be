@@ -33,12 +33,13 @@ linefeatures = [
 {'layer': 'M_A27', 'type':'outer-wall'},
 {'layer': 'M_A28', 'type': 'miss'},
 {'layer': 'M_A29', 'type':'outer-wall'},
+{'layer': 'M_F29', 'type':'outer-wall'},
 {'layer': 'M_L28', 'type': 'miss'},
 {'layer': 'M_Z28', 'type': 'miss'},
 {'layer': 'M_Z29', 'type':'inner-wall'},
 {'layer': 'M_V29', 'type':'outer-wall'},
 {'layer': 'M_V29 (Fassadenverkleidung)', 'type': 'window'},
-{'layer': 'Z_010', 'type':'outer-wall'},
+{'layer': 'Z_010', 'type':'building-umriss'},
 {'layer': 'Parkplatz', 'type':'parking'},
 {'layer': 'DA26ST', 'type':'dachstuhl'},
 {'layer': 'DA27ST', 'type':'dachstuhl'},
@@ -49,7 +50,8 @@ linefeatures = [
 {'layer': 'X_O_T49', 'type': 'miss'},
 {'layer': 'X_H_L27', 'type': 'miss'},
 {'layer': 'X_M_A29', 'type': 'miss'},
-{'layer': 'X_M_Z29', 'type': 'miss'}
+{'layer': 'X_M_Z29', 'type': 'miss'},
+{'layer':'GUT_HSMoeblierung', 'type':'furniture'}
 ]
 
 
@@ -57,6 +59,8 @@ cad_layer_names = [x['layer'] for x in linefeatures]
 cad_layer_names = tuple(cad_layer_names)
 
 cad_spaces_names = 'Z_009'
+cad_construction_names = tuple(list(['Baustelle']))
+
 cad_label_layers = ['B_127N', 'B_227Z','XRNR0', 'XRNR', 'GUT_RAUMSTEMPEL']
 cad_umriss = ['B_227IDTR', 'A_A29_VER', 'O_F49', 'M_A29',]
 cad_umriss_layers = tuple(cad_umriss)
@@ -241,12 +245,32 @@ def insert_spaces_cartolines(campus, table):
 
     print(f"inserting DJ SPACES {table.stem}")
 
-    sql_dj_spaces = f"""INSERT INTO django.buildings_buildingfloorspace(long_name, tags, geom, floor_num, floor_name, fk_building_floor_id)
-                        SELECT layer, ARRAY['{table.stem}', layer], st_setsrid(st_multi(st_buildarea(st_transform(wkb_geometry, 3857))), 3857),
-                            {floor_num}, '{floor}', 1
-                FROM {campus.lower()}.{table.stem} 
-                WHERE ST_NPoints(wkb_geometry) >= 4
-                AND layer in ('{cad_spaces_names}')"""
+    sql_dj_spaces = f"""INSERT INTO django.buildings_buildingfloorspace(long_name, tags, geom, floor_num, 
+                            floor_name, fk_building_floor_id)
+                        SELECT layer, ARRAY['{table.stem}', layer], 
+                                st_setsrid(st_multi(st_buildarea(st_transform(wkb_geometry, 3857))), 3857),
+                                {floor_num}, '{floor}', 1
+                        FROM {campus.lower()}.{table.stem} 
+                        WHERE ST_NPoints(wkb_geometry) >= 4
+                        AND layer in ('{cad_spaces_names}')"""
+
+    print(sql_dj_spaces)
+    cur.execute(sql_dj_spaces)
+    conn.commit()
+
+    print(f"inserting CONSTRUCTION AREAS {table.stem}")
+    sql_dj_construction = f"""INSERT INTO django.buildings_interiorfloorsection(short_name, long_name, tags, geom,
+                                floor_num, floor_name, fk_building_floor_id)
+                        SELECT 'Construction', layer, ARRAY['{table.stem}', layer], 
+                                st_setsrid(st_multi(st_buildarea(st_transform(wkb_geometry, 3857))), 3857),
+                                     {floor_num}, '{floor}', 1
+                        FROM {campus.lower()}.{table.stem} 
+                        WHERE ST_NPoints(wkb_geometry) >= 4
+                        AND layer in ('{cad_construction_names}')"""
+
+    print(sql_dj_construction)
+    cur.execute(sql_dj_construction)
+    conn.commit()
 
     # OLD QUERY was not importing all generated polys why ?  not sure
     # sql_insert_spaces = f"""INSERT INTO django.buildings_buildingfloorspace (long_name, floor_num, floor_name, tags, geom,
@@ -256,9 +280,6 @@ def insert_spaces_cartolines(campus, table):
     #                         WHERE split_part(tags[1], ',',1) = '{table.stem}'
     #              """
 
-    print(sql_dj_spaces)
-    cur.execute(sql_dj_spaces)
-    conn.commit()
 
 
 def step1_import_csv_roomcodes(base_dir, campus, dxf_files):
