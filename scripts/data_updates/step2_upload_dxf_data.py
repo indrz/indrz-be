@@ -358,6 +358,11 @@ def delete_db_data(base_dir, campus, dxf_files):
         cur.execute(sql_delete_labels)
         conn.commit()
 
+        sql_delete_labels = F"DELETE FROM campuses.indrz_labels_{floor.lower()} CASCADE WHERE tags[1] like '%{campus}'"
+        print(sql_delete_labels)
+        cur.execute(sql_delete_labels)
+        conn.commit()
+
         print(f"now droping table {campus.lower()}.{dxf_file.stem}")
         sql_drop = F"DROP TABLE IF EXISTS {campus.lower()}.{dxf_file.stem} CASCADE"
         cur.execute(sql_drop)
@@ -384,6 +389,11 @@ def delete_db_data(base_dir, campus, dxf_files):
         print("now deleting django.buildings_buildingfloorplanline  DJANGO cartolines in db")
         sql_delete = F"DELETE FROM django.buildings_buildingfloorplanline CASCADE WHERE split_part(tags[1], ',',1) = '{dxf_file.stem}'"
         cur.execute(sql_delete)
+        conn.commit()
+
+        print("now deleting django.buildings_interiorfloorsection DJANGO spaces in db")
+        sql_del_intfloorsection = F"DELETE FROM django.buildings_interiorfloorsection CASCADE WHERE split_part(tags[1], ',',1) = '{dxf_file.stem}'"
+        cur.execute(sql_del_intfloorsection)
         conn.commit()
 
 
@@ -491,8 +501,13 @@ if __name__ == '__main__':
 
     ############## re-import single file ##############################################
 
-    # reimport_dxf(path_src_dir_med, 'Arsenal', ['OA_EG_IP_032019.dxf'], re_import=True)
-    # step1_import_csv_roomcodes(path_src_dir_med, 'Arsenal', ['OA_EG_IP_032019.dxf'])
+    # campu_getreid= "Getreidemarkt"
+    # reimport_dxf(path_src_dir_med, campu_getreid, ['BH_01_IP_042019.dxf','BH_02_IP_042019.dxf'], re_import=True)
+    # step1_import_csv_roomcodes(path_src_dir_med, campu_getreid, ['BH_01_IP_042019.dxf','BH_02_IP_042019.dxf'])
+    #
+    # campu_frei= "Freihaus"
+    # reimport_dxf(path_src_dir_med, campu_frei, ['DD_02_IP_092018.dxf','DD_03_IP_092018.dxf'], re_import=True)
+    # step1_import_csv_roomcodes(path_src_dir_med, campu_frei, ['DD_02_IP_092018.dxf', 'DD_03_IP_092018.dxf'])
 
     #####################################################################
 
