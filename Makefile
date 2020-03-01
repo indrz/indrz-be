@@ -31,10 +31,13 @@ collectstatic: ## Collect Django static files
 	docker exec -t nginx cp -r /opt/data/static/dist/. $(WEB_FOLDER)/
 	docker exec -t nginx cp -r /opt/data/static $(WEB_FOLDER)/
 
+migrate:
+    docker exec -t indrz python manage.py migrate
+
 pull: ## Pull source code from Git
 	git pull
 
-deploy: pull collectstatic run ## Update and deploy Indrz application
+deploy: pull migrate collectstatic run ## Update and deploy Indrz application
 	docker restart indrz
 
 stop: ## Stop Indrz Docker project
