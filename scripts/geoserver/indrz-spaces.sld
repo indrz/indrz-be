@@ -52,7 +52,7 @@
 
           <PolygonSymbolizer>
             <Fill>
-              <CssParameter name="fill">#FFF8CF</CssParameter>
+              <CssParameter name="fill">#FFFFFF</CssParameter>
             </Fill>
             <Stroke>
               <CssParameter name="stroke">#5c5c5c</CssParameter>
@@ -61,7 +61,7 @@
           </PolygonSymbolizer>
         </Rule>
 
-                  <Rule>
+        <Rule>
           <Title>Flure, Halle, Gang</Title>
           <ogc:Filter>
             <ogc:Or>
@@ -93,84 +93,12 @@
         </Rule>
 
 
-                  <Rule>
+        <Rule>
           <Title>Aula</Title>
           <ogc:Filter>
             <ogc:PropertyIsLike wildCard="%" singleChar="?" escape="|">
               <ogc:PropertyName>space_type_id</ogc:PropertyName>
               <ogc:Literal>4</ogc:Literal>
-            </ogc:PropertyIsLike>
-          </ogc:Filter>
-          <MaxScaleDenominator>8000</MaxScaleDenominator>
-
-          <PolygonSymbolizer>
-            <Fill>
-              <CssParameter name="fill">#FFF8CF</CssParameter>
-            </Fill>
-            <Stroke>
-              <CssParameter name="stroke">#5c5c5c</CssParameter>
-              <CssParameter name="stroke-width">0.26</CssParameter>
-            </Stroke>
-          </PolygonSymbolizer>
-        </Rule>
-
-
-
-
-        <Rule>
-          <Title>WC</Title>
-          <ogc:Filter>
-            <ogc:PropertyIsLike wildCard="%" singleChar="?" escape="|">
-              <ogc:PropertyName>space_type_id</ogc:PropertyName>
-              <ogc:Literal>91</ogc:Literal>
-            </ogc:PropertyIsLike>
-          </ogc:Filter>
-          <MaxScaleDenominator>8000</MaxScaleDenominator>
-
-          <PolygonSymbolizer>
-            <Fill>
-              <CssParameter name="fill">#9D9D9D</CssParameter>
-            </Fill>
-            <Stroke>
-              <CssParameter name="stroke">#5c5c5c</CssParameter>
-              <CssParameter name="stroke-width">0.26</CssParameter>
-            </Stroke>
-          </PolygonSymbolizer>
-        </Rule>
-
-
-
-
-
-
-        <Rule>
-          <Title>Office Administration Sektretariat</Title>
-          <ogc:Filter>
-            <ogc:PropertyIsLike wildCard="%" singleChar="?" escape="|">
-              <ogc:PropertyName>space_type_id</ogc:PropertyName>
-              <ogc:Literal>103</ogc:Literal>
-            </ogc:PropertyIsLike>
-          </ogc:Filter>
-          <MaxScaleDenominator>8000</MaxScaleDenominator>
-
-          <PolygonSymbolizer>
-            <Fill>
-              <CssParameter name="fill">#4DC7FF</CssParameter>
-            </Fill>
-            <Stroke>
-              <CssParameter name="stroke">#5c5c5c</CssParameter>
-              <CssParameter name="stroke-width">0.26</CssParameter>
-            </Stroke>
-          </PolygonSymbolizer>
-
-        </Rule>
-
-        <Rule>
-          <Title>Studentenzone EDV</Title>
-          <ogc:Filter>
-            <ogc:PropertyIsLike wildCard="%" singleChar="?" escape="|">
-              <ogc:PropertyName>space_type_id</ogc:PropertyName>
-              <ogc:Literal>20</ogc:Literal>
             </ogc:PropertyIsLike>
           </ogc:Filter>
           <MaxScaleDenominator>8000</MaxScaleDenominator>
@@ -189,9 +117,97 @@
 
 
 
+        <Rule>
+          <Title>WC</Title>
 
-          <Rule>
-          <Title>Auditorium Unterrichtsräume</Title>
+          <ogc:Filter>
+            <ogc:Or>
+
+              <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>space_type_id</ogc:PropertyName>
+                <ogc:Literal>91</ogc:Literal>
+              </ogc:PropertyIsEqualTo>
+              <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>space_type_id</ogc:PropertyName>
+                <ogc:Literal>104</ogc:Literal>
+              </ogc:PropertyIsEqualTo>
+              <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>space_type_id</ogc:PropertyName>
+                <ogc:Literal>105</ogc:Literal>
+              </ogc:PropertyIsEqualTo>
+              <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>space_type_id</ogc:PropertyName>
+                <ogc:Literal>106</ogc:Literal>
+              </ogc:PropertyIsEqualTo>
+
+
+            </ogc:Or>
+          </ogc:Filter>
+
+
+          <MaxScaleDenominator>8000</MaxScaleDenominator>
+
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#9D9D9D</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#5c5c5c</CssParameter>
+              <CssParameter name="stroke-width">0.26</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>
+        </Rule>
+
+
+        <Rule>
+          <Title>Sekretariat, Rektor, Dekanat</Title>
+          <ogc:Filter>
+            <ogc:PropertyIsLike wildCard="%" singleChar="?" escape="|">
+              <ogc:PropertyName>space_type_id</ogc:PropertyName>
+              <ogc:Literal>103</ogc:Literal>
+            </ogc:PropertyIsLike>
+          </ogc:Filter>
+          <MaxScaleDenominator>8000</MaxScaleDenominator>
+
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#41A1DA</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#5c5c5c</CssParameter>
+              <CssParameter name="stroke-width">0.26</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>
+
+        </Rule>
+
+        <Rule>
+          <Title>Werkstätten, Büro, Besprechungsraum, Bibliothek, Labor</Title>
+          <ogc:Filter>
+            <ogc:PropertyIsLike wildCard="%" singleChar="?" escape="|">
+              <ogc:PropertyName>space_type_id</ogc:PropertyName>
+              <ogc:Literal>63</ogc:Literal>
+            </ogc:PropertyIsLike>
+          </ogc:Filter>
+          <MaxScaleDenominator>8000</MaxScaleDenominator>
+
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#8AD1F5</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#5c5c5c</CssParameter>
+              <CssParameter name="stroke-width">0.26</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>
+        </Rule>
+
+
+
+
+
+        <Rule>
+          <Title>Hörsaal, Seminarraum, Projektraum, Lehräume, Zeichensäle</Title>
           <ogc:Filter>
             <ogc:PropertyIsLike wildCard="%" singleChar="?" escape="|">
               <ogc:PropertyName>space_type_id</ogc:PropertyName>
@@ -202,7 +218,7 @@
 
           <PolygonSymbolizer>
             <Fill>
-              <CssParameter name="fill">#006699</CssParameter>
+              <CssParameter name="fill">#006BAC</CssParameter>
             </Fill>
             <Stroke>
               <CssParameter name="stroke">#5c5c5c</CssParameter>
@@ -211,7 +227,7 @@
           </PolygonSymbolizer>
         </Rule>
 
-                  <Rule>
+        <Rule>
           <Title>Versammlungsräume</Title>
           <ogc:Filter>
             <ogc:PropertyIsLike wildCard="%" singleChar="?" escape="|">
@@ -224,6 +240,27 @@
           <PolygonSymbolizer>
             <Fill>
               <CssParameter name="fill">#CD81A8</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#5c5c5c</CssParameter>
+              <CssParameter name="stroke-width">0.26</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>
+        </Rule>
+        <Rule>
+          <Title>First Aid</Title>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>space_type_id</ogc:PropertyName>
+              <ogc:Literal>109</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
+          <MaxScaleDenominator>8000</MaxScaleDenominator>
+
+
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#42A12B</CssParameter>
             </Fill>
             <Stroke>
               <CssParameter name="stroke">#5c5c5c</CssParameter>

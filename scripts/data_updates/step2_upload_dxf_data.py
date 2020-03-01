@@ -13,47 +13,46 @@ conn = psycopg2.connect(con_string_navigatur)
 cur = conn.cursor()
 
 linefeatures = [
-{'layer': 'A2-TUER-SYM050', 'type': 'door'},
-{'layer': 'A_A29_VER', 'type':'outer-wall'},
-{'layer': 'E_S29', 'type': 'sink'},
-{'layer': 'E_M26', 'type':'chairs'},
-{'layer': 'E_X49', 'type': 'miss'},
-{'layer': 'S_29', 'type': 'stairs'},
-{'layer': 'S__29', 'type': 'stairs'},
-{'layer': 'S_27', 'type':'stairs'},
-{'layer': 'S_26', 'type':'stairs'},
-{'layer': 'S__27', 'type':'stairs'},
-{'layer': 'H_L27', 'type':'elevator'},
-{'layer': 'OUT26', 'type':'outer-wall'},
-{'layer': 'O_F49', 'type': 'window'},
-{'layer': 'O_T49', 'type': 'door'},
-{'layer': 'O_T29', 'type': 'miss'},
-{'layer': 'M_L29', 'type':'inner-wall'},
-{'layer': 'M_A26', 'type':'outer-wall'},
-{'layer': 'M_A27', 'type':'outer-wall'},
-{'layer': 'M_A28', 'type': 'miss'},
-{'layer': 'M_A29', 'type':'outer-wall'},
-{'layer': 'M_F29', 'type':'outer-wall'},
-{'layer': 'M_L28', 'type': 'miss'},
-{'layer': 'M_Z28', 'type': 'miss'},
-{'layer': 'M_Z29', 'type':'inner-wall'},
-{'layer': 'M_V29', 'type':'outer-wall'},
-{'layer': 'M_V29 (Fassadenverkleidung)', 'type': 'window'},
-{'layer': 'Z_010', 'type':'building-umriss'},
-{'layer': 'Parkplatz', 'type':'parking'},
-{'layer': 'DA26ST', 'type':'dachstuhl'},
-{'layer': 'DA27ST', 'type':'dachstuhl'},
-{'layer': 'DA29DR', 'type':'dachstuhl'},
-{'layer': 'X_S_29', 'type': 'stair'},
-{'layer': 'X_S27', 'type': 'stair'},
-{'layer': 'X_O_F49', 'type': 'window'},
-{'layer': 'X_O_T49', 'type': 'miss'},
-{'layer': 'X_H_L27', 'type': 'miss'},
-{'layer': 'X_M_A29', 'type': 'miss'},
-{'layer': 'X_M_Z29', 'type': 'miss'},
-{'layer':'GUT_HSMoeblierung', 'type':'furniture'}
+    {'layer': 'A2-TUER-SYM050', 'type': 'door'},
+    {'layer': 'A_A29_VER', 'type': 'outer-wall'},
+    {'layer': 'E_S29', 'type': 'sink'},
+    {'layer': 'E_M26', 'type': 'chairs'},
+    {'layer': 'E_X49', 'type': 'miss'},
+    {'layer': 'S_29', 'type': 'stairs'},
+    {'layer': 'S__29', 'type': 'stairs'},
+    {'layer': 'S_27', 'type': 'stairs'},
+    {'layer': 'S_26', 'type': 'stairs'},
+    {'layer': 'S__27', 'type': 'stairs'},
+    {'layer': 'H_L27', 'type': 'elevator'},
+    {'layer': 'OUT26', 'type': 'outer-wall'},
+    {'layer': 'O_F49', 'type': 'window'},
+    {'layer': 'O_T49', 'type': 'door'},
+    {'layer': 'O_T29', 'type': 'miss'},
+    {'layer': 'M_L29', 'type': 'inner-wall'},
+    {'layer': 'M_A26', 'type': 'outer-wall'},
+    {'layer': 'M_A27', 'type': 'outer-wall'},
+    {'layer': 'M_A28', 'type': 'miss'},
+    {'layer': 'M_A29', 'type': 'outer-wall'},
+    {'layer': 'M_F29', 'type': 'outer-wall'},
+    {'layer': 'M_L28', 'type': 'miss'},
+    {'layer': 'M_Z28', 'type': 'miss'},
+    {'layer': 'M_Z29', 'type': 'inner-wall'},
+    {'layer': 'M_V29', 'type': 'outer-wall'},
+    {'layer': 'M_V29 (Fassadenverkleidung)', 'type': 'window'},
+    {'layer': 'Z_010', 'type': 'building-umriss'},
+    {'layer': 'Parkplatz', 'type': 'parking'},
+    {'layer': 'DA26ST', 'type': 'dachstuhl'},
+    {'layer': 'DA27ST', 'type': 'dachstuhl'},
+    {'layer': 'DA29DR', 'type': 'dachstuhl'},
+    {'layer': 'X_S_29', 'type': 'stair'},
+    {'layer': 'X_S27', 'type': 'stair'},
+    {'layer': 'X_O_F49', 'type': 'window'},
+    {'layer': 'X_O_T49', 'type': 'miss'},
+    {'layer': 'X_H_L27', 'type': 'miss'},
+    {'layer': 'X_M_A29', 'type': 'miss'},
+    {'layer': 'X_M_Z29', 'type': 'miss'},
+    {'layer': 'GUT_HSMoeblierung', 'type': 'furniture'}
 ]
-
 
 cad_layer_names = [x['layer'] for x in linefeatures]
 cad_layer_names = tuple(cad_layer_names)
@@ -61,10 +60,10 @@ cad_layer_names = tuple(cad_layer_names)
 cad_spaces_names = 'Z_009'
 cad_construction_names = 'Baustelle'
 
-cad_label_layers = ['B_127N', 'B_227Z','XRNR0', 'XRNR', 'GUT_RAUMSTEMPEL']
-cad_umriss = ['B_227IDTR', 'A_A29_VER', 'O_F49', 'M_A29',]
+cad_label_layers = ['B_127N', 'B_227Z', 'XRNR0', 'XRNR', 'GUT_RAUMSTEMPEL']
+cad_umriss = ['B_227IDTR', 'A_A29_VER', 'O_F49', 'M_A29', ]
 cad_umriss_layers = tuple(cad_umriss)
-cad_missing_stairs_elevators = ['X_S_29', 'X_S27', 'X_O_F49', 'X_O_T49', 'X_H_L27', 'X_M_A29','X_M_Z29',]
+cad_missing_stairs_elevators = ['X_S_29', 'X_S27', 'X_O_F49', 'X_O_T49', 'X_H_L27', 'X_M_A29', 'X_M_Z29', ]
 cad_missing = tuple(cad_missing_stairs_elevators)
 
 # FILE_DIR = 'c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/campus-updates/'
@@ -80,38 +79,48 @@ def assign_space_type():
     cur.execute(set_null)
     conn.commit()
 
-    space_type_map = {"Büro": 63, "WC": 91, "wc h": 104, "wc her": 104, "wc d": 105, "wc dam": 105,
-                      "wc wheel": 106, "wc beh": 106, "stieg": 79, "aufz": 33, "sth": 79,
-                      "sekret": 103, "ramp": 108, "aula": 4, "labor": 50, "lift": 33, "gang": 44}
+    space_type_map = {"besprech": 63,
+                      "WC": 91, "wc h": 104, "wc her": 104, "wc d": 105, "wc dam": 105,
+                      "wc wheel": 106, "wc beh": 106,
+                      "stieg": 79, "sth": 79,
+                      "rsaal": 6, "semi":6, "zeichen": 6,
+                      "labor": 63, "LABO":63, "biblio": 63, "büro": 63, 'BÜRO': 63, "werkst": 63,
+                      "rekt": 103, "sekr": 103, "dek": 103,
+                      "ramp": 108, "aula": 4,
+                      "lift": 33, "aufz": 33, "gang": 44,
+                      "erste": 109
+                       }
 
     for k, v in space_type_map.items():
-
         sql_update_spacetype = f"""UPDATE django.buildings_buildingfloorspace set space_type_id = {v} 
-                                    WHERE upper(room_description) LIKE upper('%{k}%');"""
-
+                                    WHERE upper(room_description) LIKE '%{k.upper()}%';"""
 
         print(sql_update_spacetype)
         cur.execute(sql_update_spacetype)
         conn.commit()
 
-    type_ids = [#{'type_id': 44, 'color': '#FFF8CF'},  # Flure, Hallen, Aula, Gang, Stiege
-                # {'type_id': 91, 'color': '#9D9D9D'},  # WC
-                {'type_id': 20, 'color': '#F5D0A8'},  # Student Zones, edv raueme pc raum, gemeinschafts raum
-                {'type_id': 22, 'color': '#CD81A8'},  # versammlungsraueme Festsaal
-                {'type_id': 103, 'color': '#4DC7FF'},  # Sekretariat  Office admin
-                {'type_id': 6, 'color': '#006699'},  # unterrichts raume übungs raume Seminar Hörsaal
-                ]
+    type_ids = [  # {'type_id': 44, 'color': '#FFF8CF'},  # Flure, Hallen, Aula, Gang, Stiege
+        # {'type_id': 91, 'color': '#9D9D9D'},  # WC
+        {'type_id': 20, 'color': '#8AD1F5'}, # Büro, Werkstätten
+        {'type_id': 20, 'color': '#8AD1F5'}, # Büro, Werkstätten, Labor
+        {'type_id': 20, 'color': '#F5D0A8'},  # Student Zones, edv raueme pc raum, gemeinschafts raum
+        {'type_id': 22, 'color': '#CD81A8'},  # versammlungsraueme Festsaal
+        {'type_id': 103, 'color': '#41A1DA'},  # Sekretariat  Office admin, Dekanat, Verwaltung
+        {'type_id': 103, 'color': '#006BAC'},  # Hörsaal, Seminarraum, Projektraum, Lehräume
+    ]
 
-    for type in type_ids:
-        color = type['color']
-        type_id = type['type_id']
-        sql_update_color = f"""update django.buildings_buildingfloorspace as d set space_type_id = {type_id} 
-                     FROM geodata.tu_data AS a
-                     WHERE d.room_code = a.room_code
-                     AND a.color = '{color}';"""
-
-        cur.execute(sql_update_color)
-        conn.commit()
+    print('ASSIGNING COLOR from geodata.tu_data')
+    # for type in type_ids:
+    #     color = type['color']
+    #     type_id = type['type_id']
+    #     sql_update_color = f"""update django.buildings_buildingfloorspace as d set space_type_id = {type_id}
+    #                  FROM geodata.tu_data AS a
+    #                  WHERE d.room_code = a.room_code
+    #                  AND a.color = '{color}';"""
+    #
+    #     print(sql_update_color)
+    #     cur.execute(sql_update_color)
+    #     conn.commit()
 
 
 def clean_geoms():
@@ -132,13 +141,12 @@ def clean_geoms():
 
 
 def get_dxf_files(base_dir, campus, floor=None, name_only=False):
-
     dxf_dir_path = Path(base_dir + campus)
     dxf_list = os.listdir(dxf_dir_path)
     dxf_files = []
     for dxf in dxf_list:
         if PurePath(dxf).suffix == ".dxf":
-                dxf_files.append(dxf)
+            dxf_files.append(dxf)
 
     if name_only:
         return dxf_files
@@ -164,7 +172,6 @@ def get_dxf_fullpath(base_dir, campus, dxf_file_name):
 
 
 def dxf2postgis(dxf_file, campus_name):
-
     table_name = str(dxf_file.stem)
 
     print(f"now importing via ogr2ogr , {table_name.lower()}")
@@ -233,11 +240,8 @@ def insert_spaces_cartolines(campus, table):
                                  FROM campuses.{dest_table_name_lines}
                                  WHERE split_part(tags[1], ',',1) = '{table.stem}'
                                  AND ST_GeometryType(geom)='ST_MultiLineString'
-
                  """
 
-
-    print(sql_insert_cartolines)
     cur.execute(sql_insert_cartolines)
     conn.commit()
 
@@ -254,7 +258,7 @@ def insert_spaces_cartolines(campus, table):
                         WHERE ST_NPoints(wkb_geometry) >= 4
                         AND layer in ('{cad_spaces_names}')"""
 
-    print(sql_dj_spaces)
+
     cur.execute(sql_dj_spaces)
     conn.commit()
 
@@ -268,18 +272,28 @@ def insert_spaces_cartolines(campus, table):
                         WHERE ST_NPoints(wkb_geometry) >= 4
                         AND layer in ('{cad_construction_names}')"""
 
-    print(sql_dj_construction)
     cur.execute(sql_dj_construction)
     conn.commit()
 
-    # OLD QUERY was not importing all generated polys why ?  not sure
-    # sql_insert_spaces = f"""INSERT INTO django.buildings_buildingfloorspace (long_name, floor_num, floor_name, tags, geom,
-    #                             fk_building_floor_id )
-    #                         SELECT long_name, {floor_num}, '{floor}', tags, st_setsrid(st_transform(geom,3857), 3857), 1
-    #                         FROM campuses.{dest_table_name_spaces}
-    #                         WHERE split_part(tags[1], ',',1) = '{table.stem}'
-    #              """
+    # remove holes in construction areas caused by dxf  symbols
+    print(f"inserting CONSTRUCTION AREAS {table.stem}")
+    sql_update_ifs = f"""UPDATE django.buildings_interiorfloorsection t
+                                SET geom = a.geom
+                                FROM (
+                                    SELECT id, ST_Collect(ST_MakePolygon(geom)) AS geom
+                                    FROM (
+                                        SELECT id, ST_NRings(geom) AS nrings,
+                                            ST_ExteriorRing((ST_Dump(geom)).geom) AS geom
+                                        FROM django.buildings_interiorfloorsection
+                                        WHERE ST_NRings(geom) > 1
+                                        ) s
+                                    GROUP BY id, nrings
+                                    HAVING nrings > COUNT(id)
+                                    ) a
+                                WHERE t.id = a.id;"""
 
+    cur.execute(sql_update_ifs)
+    conn.commit()
 
 
 def step1_import_csv_roomcodes(base_dir, campus, dxf_files):
@@ -352,48 +366,46 @@ def delete_db_data(base_dir, campus, dxf_files):
 
         floor = dxf_file.stem.split('_')[-3]
 
-        print("now removing old points   spaces in db")
-        sql_delete_labels = F"DELETE FROM campuses.indrz_labels_{floor.lower()} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
-        print(sql_delete_labels)
-        cur.execute(sql_delete_labels)
+        print(f"DELETING campuses.indrz_labels-{floor}")
+        sql_del_labels = F"DELETE FROM campuses.indrz_labels_{floor.lower()} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
+
+        cur.execute(sql_del_labels)
         conn.commit()
 
         sql_delete_labels = F"DELETE FROM campuses.indrz_labels_{floor.lower()} CASCADE WHERE tags[1] like '%{campus}'"
-        print(sql_delete_labels)
+
         cur.execute(sql_delete_labels)
         conn.commit()
 
-        print(f"now droping table {campus.lower()}.{dxf_file.stem}")
+        print(f"DROPPING table {campus.lower()}.{dxf_file.stem}")
         sql_drop = F"DROP TABLE IF EXISTS {campus.lower()}.{dxf_file.stem} CASCADE"
         cur.execute(sql_drop)
         conn.commit()
 
-        print(f"now removing  campuses.indrz_lines_{floor} old campuses lines in db")
-        sql_delete = F"DELETE FROM campuses.indrz_lines_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
-        cur.execute(sql_delete)
+        print(f"DELETING campuses.indrz_LINES_{floor} old campuses lines in db")
+        sql_del_lines = F"DELETE FROM campuses.indrz_lines_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
+        cur.execute(sql_del_lines)
         conn.commit()
 
-        print(f"now removing campuses.indrz_lines_{floor} old campuses spaces in db")
+        print(f"DELETING campuses.indrz_SPACES_{floor} old campuses spaces in db")
         sql_delete_s = F"DELETE FROM campuses.indrz_spaces_{floor} CASCADE WHERE tags[1] = '{dxf_file.stem}'"
-        print(sql_delete_s)
         cur.execute(sql_delete_s)
         conn.commit()
 
-        print("deleting spaces and cartolines in DJANGO schema")
-
+        print("DELETING django.buildingfloorspace")
         print("now deleting django.buildings_buildingfloorspace  DJANGO spaces in db")
-        sql_delete = F"DELETE FROM django.buildings_buildingfloorspace CASCADE WHERE split_part(tags[1], ',',1) = '{dxf_file.stem}'"
-        cur.execute(sql_delete)
+        del_fspace = F"DELETE FROM django.buildings_buildingfloorspace CASCADE WHERE split_part(tags[1], ',',1) = '{dxf_file.stem}'"
+        cur.execute(del_fspace)
         conn.commit()
 
-        print("now deleting django.buildings_buildingfloorplanline  DJANGO cartolines in db")
-        sql_delete = F"DELETE FROM django.buildings_buildingfloorplanline CASCADE WHERE split_part(tags[1], ',',1) = '{dxf_file.stem}'"
-        cur.execute(sql_delete)
+        print("DELETING django.buildings_buildingfloorplanline  DJANGO cartolines in db")
+        del_fplan = F"DELETE FROM django.buildings_buildingfloorplanline CASCADE WHERE split_part(tags[1], ',',1) = '{dxf_file.stem}'"
+        cur.execute(del_fplan)
         conn.commit()
 
-        print("now deleting django.buildings_interiorfloorsection DJANGO spaces in db")
-        sql_del_intfloorsection = F"DELETE FROM django.buildings_interiorfloorsection CASCADE WHERE split_part(tags[1], ',',1) = '{dxf_file.stem}'"
-        cur.execute(sql_del_intfloorsection)
+        print("DELETING django.buildings_interiorfloorsection DJANGO spaces in db")
+        del_floorsection = F"DELETE FROM django.buildings_interiorfloorsection CASCADE WHERE split_part(tags[1], ',',1) = '{dxf_file.stem}'"
+        cur.execute(del_floorsection)
         conn.commit()
 
 
@@ -483,12 +495,12 @@ if __name__ == '__main__':
     # step1_import_csv_roomcodes(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files)
 
     ########## re-import set of data ################################################
-    campuses = ['Getreidemarkt', 'Freihaus', 'Karlsplatz', 'Gusshaus', 'Arsenal']
-
-    for campus_name in campuses:
-        list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
-        reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
-        step1_import_csv_roomcodes(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files)
+    # campuses = ['Getreidemarkt', 'Freihaus', 'Karlsplatz', 'Gusshaus', 'Arsenal']
+    #
+    # for campus_name in campuses:
+    #     list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
+    #     reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
+    #     step1_import_csv_roomcodes(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files)
 
    #######################################################################
 
@@ -515,8 +527,8 @@ if __name__ == '__main__':
     clean_geoms()
 
     # clean up temp dxf files used for import files on server
-    for campus in campuses:
-        campus_path = f"""/opt/data/media/{campus}"""
-        subprocess.call(["rm", "-r", campus_path])
+    # for campus in campuses:
+    #     campus_path = f"""/opt/data/media/{campus}"""
+    #     subprocess.call(["rm", "-r", campus_path])
 
     conn.close()
