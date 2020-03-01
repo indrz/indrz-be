@@ -59,7 +59,7 @@ cad_layer_names = [x['layer'] for x in linefeatures]
 cad_layer_names = tuple(cad_layer_names)
 
 cad_spaces_names = 'Z_009'
-cad_construction_names = tuple(list(['Baustelle']))
+cad_construction_names = tuple(['Baustelle'])
 
 cad_label_layers = ['B_127N', 'B_227Z','XRNR0', 'XRNR', 'GUT_RAUMSTEMPEL']
 cad_umriss = ['B_227IDTR', 'A_A29_VER', 'O_F49', 'M_A29',]
