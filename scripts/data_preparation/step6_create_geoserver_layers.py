@@ -885,9 +885,9 @@ def generate_groups(floor_name, session):
                 {"type": "layer", "name": f"indrztu:spaces_{floor_name}"},
                 {"type": "layer",  "name": f"indrztu:cartolines_{floor_name}"},
                 {"type": "layer", "name": f"indrztu:anno_{floor_name}",},
-                {"type": "layer", "name": f"indrztu:construction_{floor_name}", },
                 {"type": "layer", "name": f"indrztu:wing_{floor_name}", },
-                {"type": "layer", "name": f"indrztu:wing_points_{floor_name}", }
+                {"type": "layer", "name": f"indrztu:wing_points_{floor_name}", },
+                {"type": "layer", "name": f"indrztu:construction_{floor_name}", }
             ]
         },
         "bounds": {
