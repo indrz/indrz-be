@@ -314,6 +314,7 @@ class InteriorFloorSection(FloorSpaceBase):
     organization = gis_models.CharField(verbose_name=_("Organization name e.g Engineering"), max_length=256, null=True, blank=True)
     department = gis_models.CharField(verbose_name=_("Department name e.g Engineering"), max_length=256, null=True, blank=True)
     division = gis_models.CharField(verbose_name=_("Division"), max_length=256, null=True, blank=True)
+    tags = ArrayField(ArrayField(gis_models.CharField(max_length=255), blank=True, null=True), null=True, blank=True)
 
 
 class BuildingFloorSpace(FloorSpaceBase):
