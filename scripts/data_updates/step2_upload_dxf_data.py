@@ -12,6 +12,23 @@ from indrz_secrets import con_string_navigatur, ogr_db_con_navigatur
 conn = psycopg2.connect(con_string_navigatur)
 cur = conn.cursor()
 
+def linework():
+    ''' Import linework from AutoDesk Autocad'''
+
+
+    line_classes = [{"groupName": "someName", "layers": ["layer1", "layer2"]}]
+
+
+    line_mapping = [{"layer": "name", "space_type_id": 12, "description": "door"},
+    {"layer": "name", "space_type_id": 12, "description": "door"},
+    {"layer": "name", "space_type_id": 12, "description": "door"},
+    {"layer": "name", "space_type_id": 12, "description": "door"},
+    {"layer": "name", "space_type_id": 12, "description": "door"},
+    ]
+
+    return False
+
+
 linefeatures = [
     {'layer': 'A2-TUER-SYM050', 'type': 'door'},
     {'layer': 'A_A29_VER', 'type': 'outer-wall'},
@@ -79,15 +96,16 @@ def assign_space_type():
     cur.execute(set_null)
     conn.commit()
 
-    space_type_map = {"besprech": 63,
+    space_type_map = {
                       "WC": 91, "wc h": 104, "wc her": 104, "wc d": 105, "wc dam": 105,
                       "wc wheel": 106, "wc beh": 106,
                       "stieg": 79, "sth": 79,
                       "rsaal": 6, "semi":6, "zeichen": 6,
-                      "labor": 63, "LABO":63, "biblio": 63, "büro": 63, 'BÜRO': 63, "werkst": 63,
+                      "labor": 63, "LABO":63, "biblio": 63, "büro": 63, 'BÜRO': 63, "werkst": 63, "besprech": 63,
                       "rekt": 103, "sekr": 103, "dek": 103,
                       "ramp": 108, "aula": 4,
-                      "lift": 33, "aufz": 33, "gang": 44,
+                      "lift": 33, "aufz": 33,
+                      "gang": 44,
                       "erste": 109
                        }
 
@@ -101,26 +119,27 @@ def assign_space_type():
 
     type_ids = [  # {'type_id': 44, 'color': '#FFF8CF'},  # Flure, Hallen, Aula, Gang, Stiege
         # {'type_id': 91, 'color': '#9D9D9D'},  # WC
-        {'type_id': 20, 'color': '#8AD1F5'}, # Büro, Werkstätten
-        {'type_id': 20, 'color': '#8AD1F5'}, # Büro, Werkstätten, Labor
-        {'type_id': 20, 'color': '#F5D0A8'},  # Student Zones, edv raueme pc raum, gemeinschafts raum
-        {'type_id': 22, 'color': '#CD81A8'},  # versammlungsraueme Festsaal
-        {'type_id': 103, 'color': '#41A1DA'},  # Sekretariat  Office admin, Dekanat, Verwaltung
-        {'type_id': 103, 'color': '#006BAC'},  # Hörsaal, Seminarraum, Projektraum, Lehräume
+        {'type_id': 6, 'color': '#006BAC'},    # Hörsaal, Seminaar, zeichen , Projektraum, Lehräume
+        {'type_id': 103, 'color': '#41A1DA'},  # Rektor, Sekretariat
+        {'type_id': 109, 'color': '#42A12B'},  # erste hilfe
+        {'type_id': 63, 'color': '#8AD1F5'},   # Messraum, Besprechun, Bibliothek, Büro, Chemilager, Computerlabor
+        {'type_id': 22, 'color': '#99FFCC'},   # veranstaltungräume, Prechtsaal
+        {'type_id': 20, 'color': '#F5D0A8'},   # Studentenaufhaltzone
+        {'type_id': 44, 'color': '#FFFFFF'}    # Stiegen, gang, lift #FFFFFF,  44,79,33, 108,44
     ]
 
     print('ASSIGNING COLOR from geodata.tu_data')
-    # for type in type_ids:
-    #     color = type['color']
-    #     type_id = type['type_id']
-    #     sql_update_color = f"""update django.buildings_buildingfloorspace as d set space_type_id = {type_id}
-    #                  FROM geodata.tu_data AS a
-    #                  WHERE d.room_code = a.room_code
-    #                  AND a.color = '{color}';"""
-    #
-    #     print(sql_update_color)
-    #     cur.execute(sql_update_color)
-    #     conn.commit()
+    for type in type_ids:
+        color = type['color']
+        type_id = type['type_id']
+        sql_update_color = f"""update django.buildings_buildingfloorspace as d set space_type_id = {type_id}
+                     FROM geodata.tu_data AS a
+                     WHERE d.room_code = a.room_code
+                     AND a.color = '{color}';"""
+
+        print(sql_update_color)
+        cur.execute(sql_update_color)
+        conn.commit()
 
 
 def clean_geoms():
