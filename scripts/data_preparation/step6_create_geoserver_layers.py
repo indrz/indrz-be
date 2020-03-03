@@ -36,8 +36,8 @@ GEOSERVER_PASS = os.getenv('GEOSERVER_PASS')
 from utils import unique_floor_names
 
 
-URL_BASE = "https://www.indrz.com/geoserver/rest"
-#URL_BASE = "https://tuw-maps.tuwien.ac.at/geoserver/rest"
+#URL_BASE = "https://www.indrz.com/geoserver/rest"
+URL_BASE = "https://tuw-maps.tuwien.ac.at/geoserver/rest"
 headers_xml = {'Content-type': 'text/xml', }
 headers_json = {'Content-type': 'application/json', }
 
@@ -589,7 +589,7 @@ def create_layer(new_feature_name, type, session):
 
     if type == "wing_points":
         atts = """	<attributes>
-                            <attribute>
+            <attribute>
                 <name>id</name>
                 <minOccurs>0</minOccurs>
                 <maxOccurs>1</maxOccurs>
@@ -606,6 +606,20 @@ def create_layer(new_feature_name, type, session):
             </attribute>
               <attribute>
                 <name>name</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
+          <attribute>
+                <name>description</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
+              <attribute>
+                <name>category_id</name>
                 <minOccurs>0</minOccurs>
                 <maxOccurs>1</maxOccurs>
                 <nillable>true</nillable>
@@ -837,7 +851,7 @@ def create_groups(grp_name):
 
 def generate_groups(floor_name, session):
 
-    group_names = ['footprint', 'spaces', 'cartolines', 'anno', 'construction', 'wing', 'wing_points']
+    group_names = ['footprint', 'spaces', 'cartolines', 'anno', 'construction', 'wing_points']
 
     post_data = """<?xml version="1.0" encoding="UTF-8"?>
                     <layerGroup>
@@ -851,7 +865,6 @@ def generate_groups(floor_name, session):
                         <published type="layer"><name>indrztu:spaces_{0}</name></published>
                         <published type="layer"><name>indrztu:cartolines_{0}</name></published>
                         <published type="layer"><name>indrztu:anno_{0}</name></published>
-                        <published type="layer"><name>indrztu:wing_{0}</name></published>
                         <published type="layer"><name>indrztu:wing_points_{0}</name></published>
                         <published type="layer"><name>indrztu:construction_{0}</name></published>
                       </publishables>
@@ -885,7 +898,6 @@ def generate_groups(floor_name, session):
                 {"type": "layer", "name": f"indrztu:spaces_{floor_name}"},
                 {"type": "layer",  "name": f"indrztu:cartolines_{floor_name}"},
                 {"type": "layer", "name": f"indrztu:anno_{floor_name}",},
-                {"type": "layer", "name": f"indrztu:wing_{floor_name}", },
                 {"type": "layer", "name": f"indrztu:wing_points_{floor_name}", },
                 {"type": "layer", "name": f"indrztu:construction_{floor_name}", }
             ]
@@ -965,7 +977,7 @@ if __name__ == '__main__':
     # get_workspaces()
     # get_layers()
 
-    # types = ['construction', ]
+    # types = ['wing_points', ]
     # for type in types:
     #     for floor_name in unique_floor_names:
     #         create_layer(f'{type}_{floor_name.lower()}', type, session=s)

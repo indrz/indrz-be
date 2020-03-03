@@ -2,8 +2,8 @@ import psycopg2
 from utils import unique_floor_names, get_floor_float
 from utils import con_string_navigatur, unique_floor_names, con_tuindrz
 
-# conn_dj = psycopg2.connect(con_string_navigatur) # tuw-maps.tuwien.ac.at
-conn_dj = psycopg2.connect(con_tuindrz) # tu.indrz.com
+conn_dj = psycopg2.connect(con_string_navigatur) # tuw-maps.tuwien.ac.at
+# conn_dj = psycopg2.connect(con_tuindrz) # tu.indrz.com
 cur_dj = conn_dj.cursor()
 
 def drop_all_views():
@@ -137,10 +137,10 @@ def create_wing_points_view():
         q_route = f"""
             DROP VIEW IF EXISTS geodata.wing_points_{f_name};
             CREATE OR REPLACE VIEW geodata.wing_points_{f_name} AS
-            SELECT id, name, floor_name, floor_num, geom
+            SELECT id, name, description, floor_name, floor_num, category_id, geom
             FROM django.poi_manager_poi
             WHERE floor_name = '{f_name}'
-            AND category_id = 80 ;
+            AND category_id in (80, 81) ;
         """
         print(q_route)
         cur_dj.execute(q_route)
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     # create_floor_footprint_view()
     # create_routing_view()
     # create_construction_view()
-    create_wing_view()
+    # create_wing_view()
     create_wing_points_view()
     conn_dj.close()
 
