@@ -140,6 +140,20 @@ def assign_space_type():
         print(sql_update_color)
         cur.execute(sql_update_color)
         conn.commit()
+    
+    space_type_extra = {
+                  "stieg": 79, "sth": 79,
+                  "ramp": 108,
+                  "lift": 33, "aufz": 33
+                   }
+    for k, v in space_type_extra.items():
+        sql_update_extra = f"""UPDATE django.buildings_buildingfloorspace set space_type_id = {v} 
+                                    WHERE upper(room_description) LIKE '%{k.upper()}%';"""
+
+        print(sql_update_extra)
+        cur.execute(sql_update_extra)
+        conn.commit()
+
 
 
 def clean_geoms():
