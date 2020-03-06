@@ -48,6 +48,7 @@ def create_spaces_view():
                    room_code,
                    room_description,
                    space_type_id,
+                   capacity,
                    floor_num,
                    floor_name,
                    geom
@@ -151,11 +152,11 @@ if __name__ == "__main__":
     # NONE of these command delete data only insert
     # drop_all_views()
     # create_cartolines_view()
-    # create_spaces_view()
+    create_spaces_view()
     # create_floor_footprint_view()
     # create_routing_view()
     # create_construction_view()
     # create_wing_view()
-    create_wing_points_view()
+    # create_wing_points_view()
     conn_dj.close()
 

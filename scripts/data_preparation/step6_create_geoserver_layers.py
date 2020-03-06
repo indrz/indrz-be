@@ -380,6 +380,13 @@ def create_layer(new_feature_name, type, session):
                 <length>0</length>
             </attribute>
             <attribute>
+                <name>capacity</name>
+                <minOccurs>0</minOccurs>
+                <maxOccurs>1</maxOccurs>
+                <nillable>true</nillable>
+                <length>0</length>
+            </attribute>
+            <attribute>
                 <name>space_type_id</name>
                 <minOccurs>0</minOccurs>
                 <maxOccurs>1</maxOccurs>
@@ -977,7 +984,7 @@ if __name__ == '__main__':
     # get_workspaces()
     # get_layers()
 
-    # types = ['wing_points', ]
+    # types = ['spaces', ]
     # for type in types:
     #     for floor_name in unique_floor_names:
     #         create_layer(f'{type}_{floor_name.lower()}', type, session=s)
