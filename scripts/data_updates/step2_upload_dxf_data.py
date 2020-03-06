@@ -109,9 +109,9 @@ def assign_space_type():
                       "erste": 109
                        }
 
-    for k, v in space_type_map.items():
-        sql_update_spacetype = f"""UPDATE django.buildings_buildingfloorspace set space_type_id = {v} 
-                                    WHERE upper(room_description) LIKE '%{k.upper()}%';"""
+    for name, type_id in space_type_map.items():
+        sql_update_spacetype = f"""UPDATE django.buildings_buildingfloorspace set space_type_id = {type_id} 
+                                    WHERE upper(room_description) LIKE '%{name.upper()}%';"""
 
         print(sql_update_spacetype)
         cur.execute(sql_update_spacetype)
@@ -221,7 +221,15 @@ def get_csv_fullpath(base_dir, campus, dxf_file_name):
 
     return dxf_file_full_path
 
+def import_capacity():
 
+    sql_update_color = f"""update django.buildings_buildingfloorspace as d set capacity = c.capacity
+                 FROM geodata.tu_capacity AS c
+                 WHERE d.room_code = c.room_code;"""
+
+    print(sql_update_color)
+    cur.execute(sql_update_color)
+    conn.commit()
 
 def insert_spaces_cartolines(campus, table):
     floor = table.stem.split('_')[-3]
@@ -543,6 +551,7 @@ if __name__ == '__main__':
     #####################################################################
 
     assign_space_type()
+    # import_capacity()
     clean_geoms()
 
     # clean up temp dxf files used for import files on server
