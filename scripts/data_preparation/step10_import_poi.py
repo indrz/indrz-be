@@ -147,7 +147,26 @@ def update_floor_name():
         conn.commit()
 
 
+def create_poi_building_letters():
+    for floor_name in unique_floor_names:
+        floor_float = get_floor_float(floor_name)
+
+        sql = f"""INSERT INTO django.poi_manager_poi (name, floor_num, description, enabled, geom, poi_tags,
+name_en, name_de, floor_id, category_id, floor_name, campus_id)
+            SELECT name, {floor_float}, description, enabled, geom, poi_tags,
+name_en, name_de, floor_id, category_id, '{floor_name}', campus_id  
+            FROM django.poi_manager_poi 
+            WHERE category_id = 81
+            AND floor_name = 'EG' ;"""
+
+        print(sql)
+
+        cur.execute(sql)
+        res = conn.commit()
+
+
 if __name__ == '__main__':
-    create_poi_wings()
+    # create_poi_wings()
+    create_poi_building_letters()
     # update_space_type_id()
     # create_poi()
