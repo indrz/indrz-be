@@ -325,14 +325,14 @@ function setPoiFeatureVisibility(){
                                     if(feature.getProperties().floor_num != active_floor_num){
 
                                         // console.log(feature.getStyle().getImage().getOpacity());
-                                        // console.log(feature.getProperties().fk_poi_category.icon_css_name);
+                                        // console.log(feature.getProperties().category.icon_css_name);
                                         // feature.getStyle().getImage().setOpacity(1);
 
-                                        feature.setStyle(setPoiStyleOnLayerSwitch(feature.getProperties().fk_poi_category.icon_css_name, false));
+                                        feature.setStyle(setPoiStyleOnLayerSwitch(feature.getProperties().category.icon_css_name, false));
                                         // console.log(feature.getProperties());
 
                                     }else{
-                                        feature.setStyle(setPoiStyleOnLayerSwitch(feature.getProperties().fk_poi_category.icon_css_name, true));
+                                        feature.setStyle(setPoiStyleOnLayerSwitch(feature.getProperties().category.icon_css_name, true));
                                         // console.log(style_active.getImage().getOpacity())
                                     }
                                 });
@@ -659,8 +659,8 @@ function showSinglePoi(poiId, zlevel) {
 
             zoomer(centerCoord, zlevel);
 
-            globalPopupInfo.poiCatId = featuresSearch[0].getProperties().fk_poi_category.id;
-            globalPopupInfo.poiCatShareUrl = "?poi-cat-id=" + featuresSearch[0].getProperties().fk_poi_category.id;
+            globalPopupInfo.poiCatId = featuresSearch[0].getProperties().category.id;
+            globalPopupInfo.poiCatShareUrl = "?poi-cat-id=" + featuresSearch[0].getProperties().category.id;
         }
 
     });
@@ -680,7 +680,7 @@ function showSinglePoi(poiId, zlevel) {
                 poi_title = feature.getProperties().name;
             }
 
-            var css_name = feature.getProperties().fk_poi_category.icon_css_name;
+            var css_name = feature.getProperties().category.icon_css_name;
 
             // feature.setStyle(createPoiStyle(css_name, 'y', poiFeature_floor));
 
@@ -769,7 +769,7 @@ function createPoi(campusId, poiName, poiCatId, poiIconName) {
                     poi_title = feature.getProperties().name;
                 }
 
-                var css_name = feature.getProperties().fk_poi_category.icon_css_name;
+                var css_name = feature.getProperties().category.icon_css_name;
 
                 // feature.setStyle(createPoiStyle(css_name, 'y', poiFeature_floor));
 

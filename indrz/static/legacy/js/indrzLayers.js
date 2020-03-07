@@ -311,7 +311,7 @@ wmsE03 = createWmsLayer('floor_03', 'indrztu:floor_03', '3', 'false', 3);
 
 
 
-var wmsfloorLayerGroup = new ol.layer.Group({layers: [wmsE00, wmsE01, wmsE02, wmsE03], name: "wms floor maps"});
+// var wmsfloorLayerGroup = new ol.layer.Group({layers: [wmsE00, wmsE01, wmsE02, wmsE03], name: "wms floor maps"});
 var poiLayerGroup = new ol.layer.Group({layers: [], id:99999, name: "poi group"});
 var campusLocationsGroup = new ol.layer.Group({layers: [], id:900, name: "campus locations"});
 
@@ -325,6 +325,7 @@ var OsmBackLayer = new ol.layer.Tile({
     type: "background"
 });
 
+switchableLayers = []
 
 indrzApiCall( baseApiUrl + "floor/" )
     .then(function (response) {
@@ -333,13 +334,31 @@ indrzApiCall( baseApiUrl + "floor/" )
         for (var i = 0; i < floors_info.length; ++i) {
             floor_layers.push(floors_info[i]);
             // appendFloorNav(floors_info[i].short_name, [i]);
-            appendFloorNav(floors_info[i].floor_num, [i]);
+            appendFloorNav(floors_info[i].short_name.toLowerCase(), floors_info[i].short_name.toLowerCase());
+            lyr = createWmsLayer('floor_' + floors_info[i].short_name.toLowerCase(), 'indrztu:floor_'+ floors_info[i].short_name.toLowerCase(), floors_info[i].floor_num, 'false', 3);
+            switchableLayers.push(lyr)
             }
 
         activateLayer(floor_num);
 
     });
+var wmsfloorLayerGroup = new ol.layer.Group({layers: switchableLayers, name: "wms floor maps"});
 
+function foo(){
+
+  var layersToRemove = [];
+  map.getLayers().forEach(function (layer) {
+      if (layer.get('name') != undefined && layer.get('name') === 'selectvector') {
+          layersToRemove.push(layer);
+      }
+  });
+
+  var len = layersToRemove.length;
+  for(var i = 0; i < len; i++) {
+      map.removeLayer(layersToRemove[i]);
+  }
+
+}
 
 function appendFloorNav(floor_info, index) {
     $("#floor-links").prepend("<li class='list-group-item ' >" +

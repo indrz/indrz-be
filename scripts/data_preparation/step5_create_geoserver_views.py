@@ -58,18 +58,40 @@ def create_spaces_view():
         cur_dj.execute(q_space)
         conn_dj.commit()
 
+
+def create_anno_view():
+    for floor_name in unique_floor_names:
+        floor_float = get_floor_float(floor_name)
+
         q_anno = f"""
-            drop view if exists geodata.anno_{floor_name};
-            CREATE OR REPLACE VIEW geodata.anno_{floor_name} AS
-             SELECT d.id,
-                 room_code,
-                 room_description,
-                 d.space_type_id,
-                 d.geom
-              FROM django.buildings_buildingfloorspace as d
-              WHERE d.floor_num = {floor_float} AND
-              room_code is not null ;
-        """
+                drop view if exists geodata.anno_{floor_name};
+                CREATE OR REPLACE VIEW geodata.anno_{floor_name} AS
+                 SELECT d.id,
+                         room_code,
+                         room_description,
+                         d.space_type_id,
+                         d.geom
+                      FROM django.buildings_buildingfloorspace as d
+                      WHERE d.floor_num = 0
+                            AND room_code is not null
+                            AND d.id not in (SELECT d.id FROM django.buildings_buildingfloorspace AS d,
+                                                              django.buildings_interiorfloorsection AS ifc
+                                                             WHERE st_within(d.geom, ifc.geom)
+                                                                    AND ifc.long_name = 'Baustelle')
+                
+                """
+        # q_anno = f"""
+        #     drop view if exists geodata.anno_{floor_name};
+        #     CREATE OR REPLACE VIEW geodata.anno_{floor_name} AS
+        #      SELECT d.id,
+        #          room_code,
+        #          room_description,
+        #          d.space_type_id,
+        #          d.geom
+        #       FROM django.buildings_buildingfloorspace as d
+        #       WHERE d.floor_num = {floor_float} AND
+        #       room_code is not null ;
+        # """
         cur_dj.execute(q_anno)
         conn_dj.commit()
 
@@ -152,7 +174,8 @@ if __name__ == "__main__":
     # NONE of these command delete data only insert
     # drop_all_views()
     # create_cartolines_view()
-    create_spaces_view()
+    # create_spaces_view()
+    create_anno_view()
     # create_floor_footprint_view()
     # create_routing_view()
     # create_construction_view()

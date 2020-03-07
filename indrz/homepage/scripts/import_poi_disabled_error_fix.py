@@ -108,7 +108,7 @@ def test_call(floor_abr):
                     if m_floor_id_value > 79:
                         print("we have a problem houston")
 
-                    # sel_poi_dis = """SELECT name, floor_num, fk_building_floor_id, fk_campus_id, fk_building_id, fk_poi_category_id, geom, description
+                    # sel_poi_dis = """SELECT name, floor_num, fk_building_floor_id, fk_campus_id, fk_building_id, category_id, geom, description
                     # from django.poi_manager_poi
                     # WHERE st_equals(geom,\'{0}\')""".format(m_geom)
 

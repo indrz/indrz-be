@@ -14,13 +14,34 @@
 
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 from collections import OrderedDict
 
 import psycopg2
 import json
 from geojson import loads, Feature, FeatureCollection
+from dotenv import load_dotenv
 
-from settings.secret_settings import db_host, db_user, db_name, db_pwd
+load_dotenv(r'C:\Users\mdiener\Dev\pyspace\indrz-tu\indrz\settings\.env')
+
+
+
+# connect to DB
+
+db_name = os.getenv('POSTGRES_DB')
+db_user = os.getenv('POSTGRES_USER')
+db_pwd = os.getenv('POSTGRES_PASS')
+db_host = os.getenv('POSTGRES_HOST')
+db_port = os.getenv('POSTGRES_PORT')
+
+
+
+conn = psycopg2.connect(host=db_host, user=db_user, port=db_port,
+                        password=db_pwd, database=db_name)
+
+# create a cursor
+cur = conn.cursor()
+
 
 def nearest_edge(xyz_coords):
     """
@@ -28,7 +49,6 @@ def nearest_edge(xyz_coords):
     :param xyz_coords:
     :return:
     """
-    cur = connection.cursor()
     x_coord = xyz_coords[0]
     y_coord = xyz_coords[1]
     floor = xyz_coords[2]
@@ -54,19 +74,11 @@ def nearest_edge(xyz_coords):
 
         return query_result
     else:
-        logger.debug("query is none check tolerance value of 200")
+        print("error")
         return False
 
 
-db_database = "indrzAau"
-db_port = "5432"
 
-# connect to DB
-conn = psycopg2.connect(host=db_host, user=db_user, port=db_port,
-                        password=db_pwd, database=db_database)
-
-# create a cursor
-cur = conn.cursor()
 
 start_coords = "1587949.010,879614.590,3"
 end_coords = "1587951.563,5879613.595,3"

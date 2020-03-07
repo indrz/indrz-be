@@ -50,7 +50,7 @@ UPDATE django.buildings_buildingfloorspace SET space_type_id = 79 WHERE short_na
 
 select array_to_json(array_agg(row_to_json(t))) from (SELECT DISTINCT ON (short_name) short_name, 94 as id from django.buildings_buildingfloorspace ORDER BY short_name, id) as t ;
 
-SELECT DISTINCT fk_poi_category_id FROM django.poi_manager_poi ORDER BY fk_poi_category_id ASC ;
+SELECT DISTINCT category_id FROM django.poi_manager_poi ORDER BY category_id ASC ;
 
 
 UPDATE django.poi_manager_poicategory set enabled = FALSE;

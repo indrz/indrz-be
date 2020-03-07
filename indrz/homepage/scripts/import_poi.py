@@ -108,7 +108,7 @@ def import_poi(floor_abr):
                             print("we have a problem houston")
 
                         insert_state = """INSERT INTO django.poi_manager_poi (name, floor_num, fk_building_floor_id,
-                                                      fk_campus_id, fk_building_id, fk_poi_category_id, geom, description)
+                                                      fk_campus_id, fk_building_id, category_id, geom, description)
                                     VALUES (\'{0}\', \'{1}\', {2}, {3},\'{4}\',{5},\'{6}\',\'{7}\'  )""".format(poi_name, floor_level_txt, m_floor_id_value,
                                                                                1, building_id, 12, m_geom, poi_descript)
                         print(insert_state)
@@ -278,7 +278,7 @@ def assign_poi_cats():
         poi_cat = item['id']
         poi_name = item['name_de']
 
-        sel_poi_cats = """UPDATE django.poi_manager_poi set fk_poi_category_id = {0}
+        sel_poi_cats = """UPDATE django.poi_manager_poi set category_id = {0}
                                       WHERE name = \'{1}\'""".format(poi_cat, poi_name)
 
         print(sel_poi_cats)
@@ -291,84 +291,84 @@ def assign_poi_cats():
 def enable_active_poicats():
     poi_cats_available = [
         {
-            "fk_poi_category_id": 6
+            "category_id": 6
         },
         {
-            "fk_poi_category_id": 8
+            "category_id": 8
         },
         {
-            "fk_poi_category_id": 13
+            "category_id": 13
         },
         {
-            "fk_poi_category_id": 14
+            "category_id": 14
         },
         {
-            "fk_poi_category_id": 17
+            "category_id": 17
         },
         {
-            "fk_poi_category_id": 18
+            "category_id": 18
         },
         {
-            "fk_poi_category_id": 19
+            "category_id": 19
         },
         {
-            "fk_poi_category_id": 26
+            "category_id": 26
         },
         {
-            "fk_poi_category_id": 30
+            "category_id": 30
         },
         {
-            "fk_poi_category_id": 35
+            "category_id": 35
         },
         {
-            "fk_poi_category_id": 37
+            "category_id": 37
         },
         {
-            "fk_poi_category_id": 47
+            "category_id": 47
         },
         {
-            "fk_poi_category_id": 48
+            "category_id": 48
         },
         {
-            "fk_poi_category_id": 49
+            "category_id": 49
         },
         {
-            "fk_poi_category_id": 52
+            "category_id": 52
         },
         {
-            "fk_poi_category_id": 54
+            "category_id": 54
         },
         {
-            "fk_poi_category_id": 55
+            "category_id": 55
         },
         {
-            "fk_poi_category_id": 56
+            "category_id": 56
         },
         {
-            "fk_poi_category_id": 57
+            "category_id": 57
         },
         {
-            "fk_poi_category_id": 61
+            "category_id": 61
         },
         {
-            "fk_poi_category_id": 62
+            "category_id": 62
         },
         {
-            "fk_poi_category_id": 63
+            "category_id": 63
         },
         {
-            "fk_poi_category_id": 67
+            "category_id": 67
         },
         {
-            "fk_poi_category_id": 68
+            "category_id": 68
         },
         {
-            "fk_poi_category_id": 70
+            "category_id": 70
         }
     ]
 
     for poi in poi_cats_available:
-        cat_id = poi['fk_poi_category_id']
+        cat_id = poi['category_id']
 
         sel_poi_cats = """UPDATE django.poi_manager_poicategory set enabled = TRUE
                                       WHERE id = {0}""".format(cat_id)

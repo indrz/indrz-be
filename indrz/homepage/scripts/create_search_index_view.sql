@@ -45,7 +45,7 @@ UNION
     ST_Force2D(poi_manager_poi.geom) AS geom,
     ''::text AS room_code
    FROM django.poi_manager_poi
-  WHERE (poi_manager_poi.fk_poi_category_id <> 68 AND poi_manager_poi.enabled is TRUE )
+  WHERE (poi_manager_poi.category_id <> 68 AND poi_manager_poi.enabled is TRUE )
 UNION
  SELECT poi_manager_poi.id,
     poi_manager_poi.name_de AS search_string,
@@ -57,4 +57,4 @@ UNION
     ST_Force2D(poi_manager_poi.geom) AS geom,
     ''::text AS room_code
    FROM django.poi_manager_poi
-  WHERE (poi_manager_poi.fk_poi_category_id <> 68 AND poi_manager_poi.enabled is TRUE );
+  WHERE (poi_manager_poi.category_id <> 68 AND poi_manager_poi.enabled is TRUE );

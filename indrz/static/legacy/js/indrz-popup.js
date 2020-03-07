@@ -429,10 +429,10 @@ function open_popup(properties, coordinate, feature, offsetArray) {
       }
 
 
-      if(properties.hasOwnProperty('fk_poi_category')){
+      if(properties.hasOwnProperty('category')){
 
         globalPopupInfo.src = "poi";
-        globalPopupInfo.poiCatId = properties.fk_poi_category.id;
+        globalPopupInfo.poiCatId = properties.category.id;
 
 
       }
@@ -505,15 +505,15 @@ function open_popup(properties, coordinate, feature, offsetArray) {
     if (properties.hasOwnProperty('poi_id')) {
         current_poi_id = properties.poi_id;
         globalPopupInfo.poiId = properties.poi_id;
-        if (properties.hasOwnProperty('fk_poi_category')) {
+        if (properties.hasOwnProperty('category')) {
 
-            globalPopupInfo.poiCatId = properties.fk_poi_category.id;
+            globalPopupInfo.poiCatId = properties.category.id;
             if (req_locale === "de") {
-                globalPopupInfo.poiCatName = properties.fk_poi_category.cat_name_de;
+                globalPopupInfo.poiCatName = properties.category.cat_name_de;
             } else {
-                globalPopupInfo.poiCatName = properties.fk_poi_category.cat_name_en;
+                globalPopupInfo.poiCatName = properties.category.cat_name_en;
             }
-            // globalPopupInfo.poiCatName = properties.fk_poi_category.cat_name;
+            // globalPopupInfo.poiCatName = properties.category.cat_name;
             globalPopupInfo.poiCatShareUrl = hostUrl + "?poi-cat-id=" + globalPopupInfo.poiCatId;
 
         }
@@ -529,15 +529,15 @@ function open_popup(properties, coordinate, feature, offsetArray) {
                 globalPopupInfo.poiIdPopup = feature.getId();
 
                 // globalRouteInfo.startPoiId = feature.getId();
-                if (feature.get('fk_poi_category')) {
-                    globalPopupInfo.poiCatId = feature.get('fk_poi_category').id;
+                if (feature.get('category')) {
+                    globalPopupInfo.poiCatId = feature.get('category').id;
 
                     if (req_locale === "de") {
-                        globalPopupInfo.poiCatName = feature.get('fk_poi_category').cat_name_de;
+                        globalPopupInfo.poiCatName = feature.get('category').cat_name_de;
                     } else {
-                        globalPopupInfo.poiCatName = feature.get('fk_poi_category').cat_name_en;
+                        globalPopupInfo.poiCatName = feature.get('category').cat_name_en;
                     }
-                    // globalPopupInfo.poiCatName = feature.get('fk_poi_category').cat_name;
+                    // globalPopupInfo.poiCatName = feature.get('category').cat_name;
 
                     globalPopupInfo.poiCatShareUrl = hostUrl + "?poi-cat-id=" + globalPopupInfo.poiCatId;
                 }

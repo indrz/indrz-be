@@ -889,8 +889,6 @@ def generate_groups(floor_name, session):
 
                     </layerGroup>""".format(floor_name)
 
-    print(post_data)
-
     b = {"layerGroup": {
         "name": f"indrztu:floor_{floor_name}",
         "mode": "SINGLE",
@@ -901,7 +899,7 @@ def generate_groups(floor_name, session):
         },
         "publishables": {
             "published": [
-                {"type": "layer", "name": f"indrztu:footprint_{floor_name}"},
+                # {"type": "layer", "name": f"indrztu:footprint_{floor_name}"},
                 {"type": "layer", "name": f"indrztu:spaces_{floor_name}"},
                 {"type": "layer",  "name": f"indrztu:cartolines_{floor_name}"},
                 {"type": "layer", "name": f"indrztu:anno_{floor_name}",},
@@ -984,13 +982,15 @@ if __name__ == '__main__':
     # get_workspaces()
     # get_layers()
 
-    # types = ['spaces', ]
+    # types = ['construction', ]
     # for type in types:
     #     for floor_name in unique_floor_names:
     #         create_layer(f'{type}_{floor_name.lower()}', type, session=s)
     #         time.sleep(4)
     #         print(f"now running floor {type} - {floor_name.lower()}")
     #         assign_style_to_layer(floor_name.lower(), type, session=s)
+
+    # ['Z3','Z4','Z5', 'ZU', 'ZE','ZD']
 
     # generate GROUPS
     for floor_name in unique_floor_names:
