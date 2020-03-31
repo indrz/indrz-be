@@ -101,10 +101,14 @@ def search_any(request, q, format=None):
     lang_code = "en"
     searchString = q
 
-    res_aau_api = TuCampusAPI().search(q)
+    # TODO uncomment to enable search people via TU api
+    # res_aau_api = TuCampusAPI().search(q)
+    res_aau_api = None
 
     # poi_data = searchPoi(lang_code, searchString, "search")
     spaces_data = searchSpaces(lang_code, searchString, "search")
+
+    spaces_custom_data = search_custom_room_list(lang_code, searchString, "search")
 
     # if poi_data:
     #     return Response(poi_data, status=status.HTTP_200_OK)
@@ -113,6 +117,9 @@ def search_any(request, q, format=None):
         return Response(spaces_data, status=status.HTTP_200_OK)
     # print("res_aau_api ", res_aau_api)
     # res_aau_api = False
+
+    elif spaces_custom_data:
+        return Response(spaces_custom_data, status=status.HTTP_200_OK)
 
     elif res_aau_api:
 
@@ -182,6 +189,43 @@ def search_any(request, q, format=None):
     # =================================================================================================================================
     # external data api lookup finished, if entries present --> return them, else do a lookup in our local data.
 
+def search_custom_room_list(lang_code, search_text, mode):
+    # spaces_data = BuildingFloorSpace.objects.filter(Q(room_code__icontains=search_text)
+    #                                                 | Q(room_description__icontains=search_text))
+
+    space_in = search_text.replace(" ", "")  # enable HS 04 H34   to return HS04H34
+    spaces_data = BuildingFloorSpace.objects.filter(long_name__icontains=space_in)
+
+    if spaces_data:
+
+        s_features = []
+        ac_data = []
+        for sd in spaces_data:
+
+            s_data = {"label": sd.room_code, "name": sd.room_code, "name_de": sd.room_code, "type": "space",
+                      "external_id": sd.room_external_id,
+                      "centerGeometry": json.loads(sd.geom.centroid.geojson),
+                      "floor_num": sd.floor_num,
+                      "floor_name": sd.floor_name,
+                      "building": sd.fk_building_floor.fk_building.name,
+                      "roomcode": sd.room_code,
+                      "space_id": sd.id,
+                      "parent": "",
+                      "category": {'id': "", 'cat_name': ""},
+                      "icon": "",
+                      "src": "indrz custom room list", "poi_id": ""}
+
+            s_feature = Feature(geometry=json.loads(sd.geom.geojson), properties=s_data)
+            ac_data.append(s_data)
+            s_features.append(s_feature)
+        fc = FeatureCollection(s_features)
+
+        if mode == 'search':
+            return fc
+        if mode == 'autocomplete':
+            return ac_data
+    else:
+        return None
 
 
 def searchSpaces(lang_code, search_text, mode):
