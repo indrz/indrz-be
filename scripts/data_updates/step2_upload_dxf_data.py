@@ -484,8 +484,30 @@ def db_setup_custom_search_data():
                  FROM geodata.tu_room_poi AS c
                  WHERE d.room_code = replace(c.room_code, ' ', '');"""
 
+    sql_custom_fixes = """UPDATE django.buildings_buildingfloorspace set space_type_id = 44 
+                            WHERE room_code in ('OBEGB06', 'OBEGD07', 'OBEGD06', 'OAEGB27','OAEGC23',
+                             'BC02G41', 'BC03G41', 'BC04G41', 'BCEGG31');
+                              
+                    UPDATE django.buildings_buildingfloorspace set space_type_id = 105
+                                    WHERE upper(room_description) LIKE upper('%wc h%');
+
+                    UPDATE django.buildings_buildingfloorspace set space_type_id = 79
+                                                    WHERE upper(room_description) LIKE upper('%sth%');
+                                                    
+                    UPDATE django.buildings_buildingfloorspace set space_type_id = 104
+                        WHERE upper(room_description) LIKE upper('%wc h%');
+                    UPDATE django.buildings_buildingfloorspace set space_type_id = 104
+                        WHERE upper(room_description) LIKE upper('%wc her%');
+                    UPDATE django.buildings_buildingfloorspace set space_type_id = 105
+                        WHERE upper(room_description) LIKE upper('%wc d%');
+                    UPDATE django.buildings_buildingfloorspace set space_type_id = 105
+                        WHERE upper(room_description) LIKE upper('%wc dam%');
+                    
+                    """
+
     cur.execute(sql_clean_search)
     cur.execute(sql_set_search_value)
+    cur.execute(sql_custom_fixes)
     conn.commit()
 
 
