@@ -140,7 +140,7 @@ def assign_space_type():
         print(sql_update_color)
         cur.execute(sql_update_color)
         conn.commit()
-    
+
     space_type_extra = {
                   "stieg": 79, "sth": 79,
                   "ramp": 108,
@@ -473,6 +473,22 @@ def reimport_dxf(base_dir, campus, dxf_files, re_import=False):
         insert_spaces_cartolines(campus, dxf_file)
 
 
+def db_setup_custom_search_data():
+    """table geodata.tu_room_poi is a custom table created by hand
+       data in this table comes from an excel file that was converted
+       to a csv file then imported to the db via ui pycharm"""
+
+    sql_clean_search = """update django.buildings_buildingfloorspace set long_name = '' where 1=1;"""
+
+    sql_set_search_value = """update django.buildings_buildingfloorspace as d set long_name = c.description
+                 FROM geodata.tu_room_poi AS c
+                 WHERE d.room_code = replace(c.room_code, ' ', '');"""
+
+    cur.execute(sql_clean_search)
+    cur.execute(sql_set_search_value)
+    conn.commit()
+
+
 if __name__ == '__main__':
     path_src_dir = 'c:/Users/mdiener/GOMOGI/TU-indrz - Dokumente/dwg-working/'
     path_src_local = 'c:/Users/mdiener/ownCloud/Shared/NavigaTUr/'
@@ -536,12 +552,12 @@ if __name__ == '__main__':
     # step1_import_csv_roomcodes(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files)
 
     ########## re-import set of data ################################################
-    # campuses = ['Getreidemarkt', 'Freihaus', 'Karlsplatz', 'Gusshaus', 'Arsenal']
-    #
-    # for campus_name in campuses:
-    #     list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
-    #     reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
-    #     step1_import_csv_roomcodes(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files)
+    campuses = ['Getreidemarkt', 'Freihaus', 'Karlsplatz', 'Gusshaus', 'Arsenal']
+
+    for campus_name in campuses:
+        list_dxf_files = get_dxf_files(base_dir=path_src_dir_med, campus=campus_name, name_only=True)
+        reimport_dxf(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files, re_import=True)
+        step1_import_csv_roomcodes(base_dir=path_src_dir_med, campus=campus_name, dxf_files=list_dxf_files)
 
    #######################################################################
 
@@ -565,12 +581,14 @@ if __name__ == '__main__':
     #####################################################################
 
     assign_space_type()
-    # import_capacity()
+    import_capacity()
     clean_geoms()
 
+    db_setup_custom_search_data()
+
     # clean up temp dxf files used for import files on server
-    # for campus in campuses:
-    #     campus_path = f"""/opt/data/media/{campus}"""
-    #     subprocess.call(["rm", "-r", campus_path])
+    for campus in campuses:
+        campus_path = f"""/opt/data/media/{campus}"""
+        subprocess.call(["rm", "-r", campus_path])
 
     conn.close()
