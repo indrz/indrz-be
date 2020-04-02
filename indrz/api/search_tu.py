@@ -202,7 +202,7 @@ def search_custom_room_list(lang_code, search_text, mode):
         ac_data = []
         for sd in spaces_data:
 
-            s_data = {"label": sd.room_code, "name": sd.room_code, "name_de": sd.room_code, "type": "space",
+            s_data = {"label": sd.long_name, "name": sd.long_name, "name_de": sd.long_name, "type": "space",
                       "external_id": sd.room_external_id,
                       "centerGeometry": json.loads(sd.geom.centroid.geojson),
                       "floor_num": sd.floor_num,
