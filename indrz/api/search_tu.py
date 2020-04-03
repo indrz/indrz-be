@@ -200,7 +200,7 @@ def custom_db_query_tu(lang_code, searchString, mode):
         sql_sel = """SELECT d.room_code, d.floor_name, d.floor_num, rp.description, d.id, st_asgeojson(d.geom)
                 FROM django.buildings_buildingfloorspace as d
                    join geodata.tu_room_poi rp on replace(rp.room_code, ' ', '') = d.room_code
-                   where rp.description like %(xman)s"""
+                   where lower(rp.description) ILIKE %(xman)s"""
 
         cursor.execute(sql_sel, dict(xman= '%'+searchString+'%'))
         row = cursor.fetchall()
