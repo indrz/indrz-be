@@ -108,7 +108,8 @@ def search_any(request, q, format=None):
     # poi_data = searchPoi(lang_code, searchString, "search")
     spaces_data = searchSpaces(lang_code, searchString, "search")
 
-    spaces_custom_data = search_custom_room_list(lang_code, searchString, "search")
+    spaces_custom_data = custom_db_query_tu(lang_code, searchString, "search")
+
 
     # if poi_data:
     #     return Response(poi_data, status=status.HTTP_200_OK)
@@ -188,6 +189,55 @@ def search_any(request, q, format=None):
 
     # =================================================================================================================================
     # external data api lookup finished, if entries present --> return them, else do a lookup in our local data.
+
+
+def custom_db_query_tu(lang_code, searchString, mode):
+
+    with connection.cursor() as cursor:
+        sql_sel = f"""select d.room_code, d.floor_name, d.floor_num, rp.description, d.id, st_asgeojson(d.geom)
+                FROM django.buildings_buildingfloorspace as d
+                   join geodata.tu_room_poi rp on replace(rp.room_code, ' ', '') = d.room_code
+                   where rp.description like '%%s'"""
+
+        cursor.execute(sql_sel, searchString)
+        row = cursor.fetchall()
+
+        ac_data = []
+        s_features = []
+
+        for r in row:
+            long_name = r[3]
+            long_name = r[3]
+            room_code = r[0]
+            floor_num = r[2]
+            floor_name = r[1]
+            space_id = r[4]
+            geom = r[5]
+            s_data = {"label": long_name, "name": long_name, "name_de": long_name, "type": "space",
+                      "external_id": room_code,
+                      "centerGeometry": json.loads(geom),
+                      "floor_num": floor_num,
+                      "floor_name": floor_name,
+                      "building": "",
+                      "roomcode": room_code,
+                      "space_id": space_id,
+                      "parent": "",
+                      "category": {'id': "", 'cat_name': ""},
+                      "icon": "",
+                      "src": "indrz custom room list", "poi_id": ""}
+
+            s_feature = Feature(geometry=json.loads(geom), properties=s_data)
+            ac_data.append(s_data)
+            s_features.append(s_feature)
+        fc = FeatureCollection(s_features)
+
+        if mode == 'search':
+            return fc
+        if mode == 'autocomplete':
+            return ac_data
+        else:
+            return None
+
 
 def search_custom_room_list(lang_code, search_text, mode):
     # spaces_data = BuildingFloorSpace.objects.filter(Q(room_code__icontains=search_text)
@@ -362,9 +412,12 @@ class searchAutoComplete(APIView):
 
         lang_code = "en"
 
-        res_api = TuCampusAPI().search(search_text)
+        # res_api = TuCampusAPI().search(search_text)
+        res_api = None
 
         # print("in AUTOCOMPLETE ", res_api)
+
+        spaces_custom_data = custom_db_query_tu(lang_code, search_text, 'autocomplete')
 
 
         if res_api:
@@ -383,6 +436,10 @@ class searchAutoComplete(APIView):
             #         return Response(x)
 
             # return Response(res_aau_api)
+        elif spaces_custom_data:
+
+            return Response(spaces_custom_data, status=status.HTTP_200_OK)
+
         else:
             # ===========================================================================
             # local Postgresql search_index_v data
