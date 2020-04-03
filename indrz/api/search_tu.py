@@ -193,24 +193,26 @@ def search_any(request, q, format=None):
 
 def custom_db_query_tu(lang_code, searchString, mode):
 
+    if len(searchString) < 3:
+        return None
+
     with connection.cursor() as cursor:
-        sql_sel = f"""select d.room_code, d.floor_name, d.floor_num, rp.description, d.id, st_asgeojson(d.geom)
+        sql_sel = """SELECT d.room_code, d.floor_name, d.floor_num, rp.description, d.id, st_asgeojson(d.geom)
                 FROM django.buildings_buildingfloorspace as d
                    join geodata.tu_room_poi rp on replace(rp.room_code, ' ', '') = d.room_code
-                   where rp.description like '%%s'"""
+                   where rp.description like %(xman)s"""
 
-        cursor.execute(sql_sel, searchString)
+        cursor.execute(sql_sel, dict(xman= '%'+searchString+'%'))
         row = cursor.fetchall()
 
         ac_data = []
         s_features = []
 
         for r in row:
-            long_name = r[3]
-            long_name = r[3]
             room_code = r[0]
-            floor_num = r[2]
             floor_name = r[1]
+            floor_num = r[2]
+            long_name = r[3]
             space_id = r[4]
             geom = r[5]
             s_data = {"label": long_name, "name": long_name, "name_de": long_name, "type": "space",
@@ -239,49 +241,16 @@ def custom_db_query_tu(lang_code, searchString, mode):
             return None
 
 
-def search_custom_room_list(lang_code, search_text, mode):
-    # spaces_data = BuildingFloorSpace.objects.filter(Q(room_code__icontains=search_text)
-    #                                                 | Q(room_description__icontains=search_text))
-
-    space_in = search_text.replace(" ", "")  # enable HS 04 H34   to return HS04H34
-    spaces_data = BuildingFloorSpace.objects.filter(long_name__icontains=space_in)
-
-    if spaces_data:
-
-        s_features = []
-        ac_data = []
-        for sd in spaces_data:
-
-            s_data = {"label": sd.long_name, "name": sd.long_name, "name_de": sd.long_name, "type": "space",
-                      "external_id": sd.room_external_id,
-                      "centerGeometry": json.loads(sd.geom.centroid.geojson),
-                      "floor_num": sd.floor_num,
-                      "floor_name": sd.floor_name,
-                      "building": sd.fk_building_floor.fk_building.name,
-                      "roomcode": sd.room_code,
-                      "space_id": sd.id,
-                      "parent": "",
-                      "category": {'id': "", 'cat_name': ""},
-                      "icon": "",
-                      "src": "indrz custom room list", "poi_id": ""}
-
-            s_feature = Feature(geometry=json.loads(sd.geom.geojson), properties=s_data)
-            ac_data.append(s_data)
-            s_features.append(s_feature)
-        fc = FeatureCollection(s_features)
-
-        if mode == 'search':
-            return fc
-        if mode == 'autocomplete':
-            return ac_data
-    else:
-        return None
-
 
 def searchSpaces(lang_code, search_text, mode):
 
     # spaces_data = BuildingFloorSpace.objects.filter(Q(room_code__icontains=search_text)
     #                                                 | Q(room_description__icontains=search_text))
+
+    if len(search_text) < 3:
+        return None
+
+    print("WHAAT ", len(search_text))
 
     space_in = search_text.replace(" ", "")  # enable HS 04 H34   to return HS04H34
     spaces_data = BuildingFloorSpace.objects.filter(room_code__icontains=space_in)
@@ -303,7 +272,7 @@ def searchSpaces(lang_code, search_text, mode):
                       "parent": "",
                       "category": {'id': "", 'cat_name': ""},
                       "icon": "",
-                      "src": "indrz spaces", "poi_id": ""}
+                      "src": "indrz spaces room_code", "poi_id": ""}
 
             s_feature = Feature(geometry=json.loads(sd.geom.geojson), properties=s_data)
             ac_data.append(s_data)
