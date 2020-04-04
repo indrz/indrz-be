@@ -51,8 +51,12 @@
                             <Mark>
                                 <WellKnownName>circle</WellKnownName>
                                 <Fill>
+
                                     <CssParameter name="fill">#006699</CssParameter>
+                                  <CssParameter name="stroke">#FFFFFF</CssParameter>
+                                  <CssParameter name="stroke-width">1</CssParameter>
                                 </Fill>
+
                             </Mark>
 
                         </Graphic>
