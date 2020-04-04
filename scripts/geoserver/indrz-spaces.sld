@@ -26,7 +26,7 @@
         </Rule>
 
         <Rule>
-          <Title>Stiegen, Lift, Rampen</Title>
+          <Title>Stiegen, Lift, Rampen, Flur, Gang</Title>
           <ogc:Filter>
             <ogc:Or>
 
@@ -42,42 +42,15 @@
                 <ogc:PropertyName>space_type_id</ogc:PropertyName>
                 <ogc:Literal>108</ogc:Literal>
               </ogc:PropertyIsEqualTo>
-
-
-            </ogc:Or>
-          </ogc:Filter>
-
-
-          <MaxScaleDenominator>8000</MaxScaleDenominator>
-
-          <PolygonSymbolizer>
-            <Fill>
-              <CssParameter name="fill">#FFFFFF</CssParameter>
-            </Fill>
-            <Stroke>
-              <CssParameter name="stroke">#5c5c5c</CssParameter>
-              <CssParameter name="stroke-width">0.26</CssParameter>
-            </Stroke>
-          </PolygonSymbolizer>
-        </Rule>
-
-        <Rule>
-          <Title>Flure, Halle, Gang</Title>
-          <ogc:Filter>
-            <ogc:Or>
-
               <ogc:PropertyIsEqualTo>
                 <ogc:PropertyName>space_type_id</ogc:PropertyName>
                 <ogc:Literal>44</ogc:Literal>
               </ogc:PropertyIsEqualTo>
-              <ogc:PropertyIsEqualTo>
-                <ogc:PropertyName>space_type_id</ogc:PropertyName>
-                <ogc:Literal>108</ogc:Literal>
-              </ogc:PropertyIsEqualTo>
 
 
             </ogc:Or>
           </ogc:Filter>
+
 
           <MaxScaleDenominator>8000</MaxScaleDenominator>
 
@@ -94,18 +67,18 @@
 
 
         <Rule>
-          <Title>Aula</Title>
+          <Title>Hörsaal, Seminaar, zeichen</Title>
           <ogc:Filter>
             <ogc:PropertyIsLike wildCard="%" singleChar="?" escape="|">
               <ogc:PropertyName>space_type_id</ogc:PropertyName>
-              <ogc:Literal>4</ogc:Literal>
+              <ogc:Literal>6</ogc:Literal>
             </ogc:PropertyIsLike>
           </ogc:Filter>
           <MaxScaleDenominator>8000</MaxScaleDenominator>
 
           <PolygonSymbolizer>
             <Fill>
-              <CssParameter name="fill">#F5D0A8</CssParameter>
+              <CssParameter name="fill">#006BAC</CssParameter>
             </Fill>
             <Stroke>
               <CssParameter name="stroke">#5c5c5c</CssParameter>
@@ -207,28 +180,7 @@
 
 
         <Rule>
-          <Title>Hörsaal, Seminarraum, Projektraum, Lehräume, Zeichensäle</Title>
-          <ogc:Filter>
-            <ogc:PropertyIsLike wildCard="%" singleChar="?" escape="|">
-              <ogc:PropertyName>space_type_id</ogc:PropertyName>
-              <ogc:Literal>6</ogc:Literal>
-            </ogc:PropertyIsLike>
-          </ogc:Filter>
-          <MaxScaleDenominator>8000</MaxScaleDenominator>
-
-          <PolygonSymbolizer>
-            <Fill>
-              <CssParameter name="fill">#006BAC</CssParameter>
-            </Fill>
-            <Stroke>
-              <CssParameter name="stroke">#5c5c5c</CssParameter>
-              <CssParameter name="stroke-width">0.26</CssParameter>
-            </Stroke>
-          </PolygonSymbolizer>
-        </Rule>
-
-        <Rule>
-          <Title>Versammlungsräume</Title>
+          <Title>veranstaltungräume, Prechtsaale</Title>
           <ogc:Filter>
             <ogc:PropertyIsLike wildCard="%" singleChar="?" escape="|">
               <ogc:PropertyName>space_type_id</ogc:PropertyName>
@@ -239,7 +191,28 @@
 
           <PolygonSymbolizer>
             <Fill>
-              <CssParameter name="fill">#CD81A8</CssParameter>
+              <CssParameter name="fill">#99FFCC</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#5c5c5c</CssParameter>
+              <CssParameter name="stroke-width">0.26</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>
+        </Rule>
+
+        <Rule>
+          <Title>Versammlungsräume, Studentenaufhaltzone</Title>
+          <ogc:Filter>
+            <ogc:PropertyIsLike wildCard="%" singleChar="?" escape="|">
+              <ogc:PropertyName>space_type_id</ogc:PropertyName>
+              <ogc:Literal>20</ogc:Literal>
+            </ogc:PropertyIsLike>
+          </ogc:Filter>
+          <MaxScaleDenominator>8000</MaxScaleDenominator>
+
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#F5D0A8</CssParameter>
             </Fill>
             <Stroke>
               <CssParameter name="stroke">#5c5c5c</CssParameter>
