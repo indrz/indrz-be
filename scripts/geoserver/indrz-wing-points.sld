@@ -20,7 +20,7 @@
 
           </ogc:Filter>
            <MinScaleDenominator>2800</MinScaleDenominator>
-          <MaxScaleDenominator>20000</MaxScaleDenominator>
+          <MaxScaleDenominator>100000</MaxScaleDenominator>
 
 
           <TextSymbolizer>
