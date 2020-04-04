@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc"
-  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                       xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <NamedLayer>
     <Name>eg00 rooms</Name>
     <UserStyle>
@@ -59,6 +59,10 @@
               <ogc:PropertyIsEqualTo>
                 <ogc:PropertyName>space_type_id</ogc:PropertyName>
                 <ogc:Literal>108</ogc:Literal>
+              </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>space_type_id</ogc:PropertyName>
+                <ogc:Literal>109</ogc:Literal>
               </ogc:PropertyIsEqualTo>
             </ogc:Or>
           </ogc:Filter>
@@ -157,6 +161,10 @@
                 <ogc:PropertyName>space_type_id</ogc:PropertyName>
                 <ogc:Literal>108</ogc:Literal>
               </ogc:PropertyIsEqualTo>
+              <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>space_type_id</ogc:PropertyName>
+                <ogc:Literal>109</ogc:Literal>
+              </ogc:PropertyIsEqualTo>
             </ogc:Or>
 
 
@@ -253,6 +261,10 @@
                 <ogc:PropertyName>space_type_id</ogc:PropertyName>
                 <ogc:Literal>108</ogc:Literal>
               </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>space_type_id</ogc:PropertyName>
+                <ogc:Literal>109</ogc:Literal>
+              </ogc:PropertyIsEqualTo>
             </ogc:Or>
 
 
@@ -308,7 +320,7 @@
           <MinScaleDenominator>450</MinScaleDenominator>
           <MaxScaleDenominator>850</MaxScaleDenominator>
 
-                    <TextSymbolizer>
+          <TextSymbolizer>
             <Label><![CDATA[ ]]></Label>
             <Graphic>
               <ExternalGraphic>
@@ -333,7 +345,7 @@
           <MinScaleDenominator>1</MinScaleDenominator>
           <MaxScaleDenominator>800</MaxScaleDenominator>
 
-                    <TextSymbolizer>
+          <TextSymbolizer>
             <Label><![CDATA[ ]]></Label>
             <Graphic>
               <ExternalGraphic>
@@ -358,7 +370,7 @@
           <MinScaleDenominator>1</MinScaleDenominator>
           <MaxScaleDenominator>800</MaxScaleDenominator>
 
-                    <TextSymbolizer>
+          <TextSymbolizer>
             <Label><![CDATA[ ]]></Label>
             <Graphic>
               <ExternalGraphic>
@@ -383,7 +395,7 @@
           <MinScaleDenominator>1</MinScaleDenominator>
           <MaxScaleDenominator>800</MaxScaleDenominator>
 
-                    <TextSymbolizer>
+          <TextSymbolizer>
             <Label><![CDATA[ ]]></Label>
             <Graphic>
               <ExternalGraphic>
@@ -441,7 +453,7 @@
               </ExternalGraphic>
               <Size>24</Size>
             </Graphic>
-           </TextSymbolizer>
+          </TextSymbolizer>
 
 
         </Rule>
@@ -458,14 +470,14 @@
           <MaxScaleDenominator>800</MaxScaleDenominator>
           <TextSymbolizer>
             <Label><![CDATA[ ]]></Label>
-              <Graphic>
-                <ExternalGraphic>
+            <Graphic>
+              <ExternalGraphic>
                 <OnlineResource xlink:type="simple" xlink:href="elevator.png" />
                 <Format>image/png</Format>
-                </ExternalGraphic>
-                <Size>24</Size>
-              </Graphic>
-           </TextSymbolizer>
+              </ExternalGraphic>
+              <Size>24</Size>
+            </Graphic>
+          </TextSymbolizer>
 
 
 
