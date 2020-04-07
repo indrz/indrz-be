@@ -8,8 +8,7 @@ load_dotenv()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', 'tu.indrz.com', 'indrz.com', 'tuw-maps.tuwien.ac.at',
-                 'navigatur.tuwien.ac.at', os.getenv('ALLOWED_HOSTS')]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', os.getenv('ALLOWED_HOSTS')]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
@@ -91,10 +90,6 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'indrz.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -191,8 +186,8 @@ ROSETTA_UWSGI_AUTO_RELOAD = False
 
 
 INDRZ_API_TOKEN = os.getenv('INDRZ_API_TOKEN')
-IP_STARTSWITH = "137.208."
-LOCALHOST_URL = os.getenv('LOCALHOST_URL') #'"https://campusplan.aau.at/"  # http://campus.wu.ac.at
+IP_STARTSWITH = ""
+LOCALHOST_URL = os.getenv('LOCALHOST_URL')
 
 
 REST_FRAMEWORK = {

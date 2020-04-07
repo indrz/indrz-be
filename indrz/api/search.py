@@ -9,7 +9,6 @@ from buildings.models import BuildingFloorSpace
 from buildings.serializers import BuildingFloorSpaceSerializer
 
 
-
 def normalize_query(query_string,
                     findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
                     normspace=re.compile(r'\s{2,}').sub):
@@ -47,14 +46,6 @@ def get_query(query_string, search_fields):
 
 @api_view(['GET'])
 def search_indrz(request, campus_id, search_string, format=None):
-    # query_string = ''
-    # found_entries = None
-
-    # if using a url like http://www.campus.com/search/?q=sometext
-    # use this if statement and indent code block
-
-    # if ('q' in request.GET) and request.GET['q'].strip():
-    #     query_string = request.GET['q']
 
     entry_query = get_query(search_string, ['short_name', 'long_name', 'room_code', 'room_description'])
 
@@ -68,23 +59,6 @@ def search_indrz(request, campus_id, search_string, format=None):
 
         return Response(serializer.data)
 
-    # elif:
-    #     pass
-        # return Response({'error': 'sorry nothing found with the text:  ' + search_string})
-
     else:
         return Response({'error': 'sorry nothing found with the text:  ' + search_string})
-
-# old silly search
-# @api_view(['GET'])
-# def campus_search(request, campus_id, search_string, format=None):
-#     """
-#     Search campus spaces in system and pois
-#     """
-#     if request.method == 'GET':
-#
-#         buildings_on_campus = BuildingFloorSpace.objects.filter(Q(short_name__icontains=search_string) | Q(room_code__icontains=search_string))
-#         serializer = BuildingFloorSpaceSerializer(buildings_on_campus, many=True)
-#
-#         return Response(serializer.data)
 

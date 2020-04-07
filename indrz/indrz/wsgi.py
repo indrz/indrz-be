@@ -12,7 +12,7 @@ import sys
 import site
 from dotenv import load_dotenv
 
-load_dotenv("/opt/git_repos/indrz-tu/indrz/settings/.env")
+load_dotenv(".env")
 
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings.settings'
