@@ -1,4 +1,4 @@
-from api.search_tu import search_any, searchAutoComplete
+from api.search import search_any, searchAutoComplete
 from django.conf import settings
 from django.conf.urls import url
 from django.conf.urls.static import static
@@ -11,13 +11,7 @@ from users.views import CustomAuthToken
 
 from .routers import router
 
-##############################################
-# Default
-##############################################
-
-
 admin.site.site_header = 'INDRZ Manager'
-
 
 schema_view = get_schema_view(
    openapi.Info(
