@@ -20,7 +20,6 @@ indrz/logs
 /indrz/settings/secret_settings.py
 /indrz/indrz/client_secret.json
 
-/indrz/homepage/scripts/roomlog.log
 
 
 /indrz/htmlcov/
