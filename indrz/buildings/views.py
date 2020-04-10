@@ -26,6 +26,8 @@ from buildings.serializers import (CampusSerializer,
 
                                    )
 
+from buildings.serializers import FloorListSerializer
+
 logger = logging.getLogger(__name__)
 
 
@@ -35,6 +37,41 @@ class CampusViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Campus.objects.all()
     serializer_class = CampusSerializer
+
+
+@api_view(['GET'])
+def get_campus_floors(request, campus_id, format=None):
+    """
+    Get a list of floors on campus
+    """
+    if request.method == 'GET':
+        # floor_list = BuildingFloor.objects.order_by('floor_num').distinct('floor_num')
+        floor_list = BuildingFloor.objects.order_by('floor_num').distinct('floor_num')
+        data = FloorListSerializer(floor_list, many=True)
+
+        return Response(data.data)
+
+
+@api_view(['GET'])
+def get_room_center(request, external_room_id, format=None):
+
+    space_qs = BuildingFloorSpace.objects.filter(room_external_id=external_room_id)
+
+    if space_qs:
+        att = space_qs.values()[0]
+
+        if att['multi_poly']:
+            att['multi_poly'] = None
+
+        centroid_res = BuildingFloorSpace.objects.annotate(json=AsGeoJSON(Centroid('multi_poly'))).get(
+            room_external_id=external_room_id).json
+
+        res = Feature(geometry=json.loads(centroid_res), properties=att)
+
+        return Response(res)
+    else:
+        return Response(
+            {'error': 'Sorry we did not find any record in our database matching your id = ' + str(external_room_id)})
 
 
 @api_view(['GET', ])

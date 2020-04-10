@@ -4,6 +4,7 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
@@ -53,3 +54,27 @@ if 'rosetta' in settings.INSTALLED_APPS:
     urlpatterns += [
         url(r'^translate/', include('rosetta.urls')),
     ]
+
+
+##############################################
+# Static and media files in debug mode
+##############################################
+
+if settings.DEBUG:
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+    def mediafiles_urlpatterns(prefix):
+        """
+        Method for serve media files with runserver.
+        """
+        import re
+        from django.views.static import serve
+
+        return [
+            url(r'^%s(?P<path>.*)$' % re.escape(prefix.lstrip('/')), serve,
+                {'document_root': settings.MEDIA_ROOT})
+        ]
+
+    # Hardcoded only for development server
+    urlpatterns += staticfiles_urlpatterns(prefix="/static/")
+    urlpatterns += mediafiles_urlpatterns(prefix="/media/")
