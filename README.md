@@ -9,7 +9,7 @@ digital wayfinding indoors, maps, orientation and indoor routing for buildings l
 
 
 ## Licence
-indrz is under GNU General Public License v3.0.  The name "indrz" is not allowed to be used by third parties and is a trademark.  Other than that you can do what you want accordingly 
+indrz is under GNU General Public License v3.0.  The name "indrz" trademarked and is not allowed to be used by third parties and is a trademark.  Other than that you can do what you want accordingly 
 
 
 ## Documentation
