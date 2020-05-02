@@ -1,5 +1,5 @@
 # indrz open source wayfinding, routing, navigation
-Project homepage [www.indrz.com] (http://www.indrz.com)
+Project homepage [www.indrz.com] (https://www.indrz.com) The [frontend code](https://gitlab.com/indrz/indrz-frontend)
 digital wayfinding indoors, maps, orientation and indoor routing for buildings large or small, app or webpage.
 [![GitHub stars](https://img.shields.io/github/stars/indrz/indrz.svg?style=flat-square)](https://github.com/indrz/indrz/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/indrz/indrz.svg)](https://github.com/indrz/indrz/issues)
@@ -14,20 +14,20 @@ indrz is under GNU General Public License v3.0.  The name "indrz" trademarked an
 
 ## Documentation
 
-You can find our documentation project here [indrz Docs] (https://github.com/indrz/indrz-doc) in the folder content
+You can find our documentation project here [indrz Docs] (https://gitlab.com/indrz/indrz-doc) in the folder content
 
 Our documentation structure and build environment is built upon the [mapbox docbox] (https://github.com/mapbox/docbox) nodejs static
  documentation generator.  The main content is found under the (content) folder.
 
-[indrz Installation details] (https://github.com/indrz/indrz-doc/blob/master/content/installation.md)
+[indrz Installation details] (https://gitlab.com/indrz/indrz-doc/blob/master/content/installation.md)
 
-[indrz introduction to API] (https://github.com/indrz/indrz-doc/blob/master/content/introduction.md)
+[indrz introduction to API] (https://gitlab.com/indrz/indrz-doc/blob/master/content/introduction.md)
 
-[indrz Directions API] (https://github.com/indrz/indrz-doc/blob/master/content/directions.md)
+[indrz Directions API] (https://gitlab.com/indrz/indrz-doc/blob/master/content/directions.md)
 
-[indrz Buildings API] (https://github.com/indrz/indrz-doc/blob/master/content/buildings.md)
+[indrz Buildings API] (https://gitlab.com/indrz/indrz-doc/blob/master/content/buildings.md)
 
-[indrz Working with GeoData](https://github.com/indrz/indrz-doc/blob/master/content/geodata.md)
+[indrz Working with GeoData](https://gitlab.com/indrz/indrz-doc/blob/master/content/geodata.md)
 
 ## Quick start installation for developers
 
