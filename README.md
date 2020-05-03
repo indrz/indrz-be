@@ -1,5 +1,5 @@
 # indrz open source wayfinding, routing, navigation
-Project homepage [www.indrz.com] (https://www.indrz.com) The [frontend code](https://gitlab.com/indrz/indrz-frontend)
+Project homepage [www.indrz.com](https://www.indrz.com) The [frontend code](https://gitlab.com/indrz/indrz-frontend)
 digital wayfinding indoors, maps, orientation and indoor routing for buildings large or small, app or webpage.
 [![GitHub stars](https://img.shields.io/github/stars/indrz/indrz.svg?style=flat-square)](https://github.com/indrz/indrz/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/indrz/indrz.svg)](https://github.com/indrz/indrz/issues)
@@ -19,13 +19,13 @@ You can find our documentation project here [indrz Docs] (https://gitlab.com/ind
 Our documentation structure and build environment is built upon the [mapbox docbox] (https://github.com/mapbox/docbox) nodejs static
  documentation generator.  The main content is found under the (content) folder.
 
-[indrz Installation details] (https://gitlab.com/indrz/indrz-doc/blob/master/content/installation.md)
+[indrz Installation details](https://gitlab.com/indrz/indrz-doc/blob/master/content/installation.md)
 
-[indrz introduction to API] (https://gitlab.com/indrz/indrz-doc/blob/master/content/introduction.md)
+[indrz introduction to API](https://gitlab.com/indrz/indrz-doc/blob/master/content/introduction.md)
 
-[indrz Directions API] (https://gitlab.com/indrz/indrz-doc/blob/master/content/directions.md)
+[indrz Directions API](https://gitlab.com/indrz/indrz-doc/blob/master/content/directions.md)
 
-[indrz Buildings API] (https://gitlab.com/indrz/indrz-doc/blob/master/content/buildings.md)
+[indrz Buildings API](https://gitlab.com/indrz/indrz-doc/blob/master/content/buildings.md)
 
 [indrz Working with GeoData](https://gitlab.com/indrz/indrz-doc/blob/master/content/geodata.md)
 
@@ -61,10 +61,10 @@ sudo -u postgres createdb indrz -O indrz
 
 ```
 
-### Create virtualenv with python 3.4
+### Create virtualenv with python 3.6+
 ```bash
 cd indrz
-mkvirtualenv -p /usr/bin/python3.4 indrz
+mkvirtualenv -p /usr/bin/python3.6 indrz
 ```
 install the requirements using pip.
 If you have problems, make sure you have the right version of pip installed
@@ -107,7 +107,7 @@ How to deploy and maintain application in all environments.
 
 1. Create or copy project `.env` file in root folder.
 2. Create or copy containers `*.env` files in `devops/docker-env` folder:
-    1. `db.env`
+    1.  `db.env`
     2.  `db-backups.env`
     3.  `geoserver.env`
     4.  `indrz.env`
@@ -174,7 +174,7 @@ Pull code from Git
 make pull
 ```
 
-## Building blocks Libraries we use
+## Backend Libraries we use
 
 * [Django](http://djangoproject.com) – Web Framework Backend
 * [Django Rest Framework](http://www.django-rest-framework.org) – Django Rest Web Framework our API
@@ -182,13 +182,7 @@ make pull
 * [PGRouting](http://pgrouting.org) - Routing extension to PostGIS and Posgresql
 * [Postgresql](http://www.postgresql.org) – Database
 * [Geoserver](http://geoserver.org) – Web map server to serve and create, maps and data
-* [Openlayers 3](http://openlayers.org) – Slippy client side javascript mapping library
-* [Bootstrap css](http://bootstrap.com/) - css framework bootstrap
-* Not YET implemented [Angularjs](http://angularjs.org/) - Javascript framework
-* Not YET implemented [three.js](http://threejs.org) - 3d Javascript library
-* will be depreciated [jQuery Mobile js](http://http://jquerymobile.com) - mobile web pages made easy
-* Not YET implemented [ionic Framework](http://ionicframework.com) - hybrid mobile apps with html 5
-* Not YET implemented [Gulpjs js](http://gulpjs.com) - js building 
+
 
 
 ## Supported and built by:
