@@ -11,7 +11,7 @@ django-mptt==0.10.0
 django-rosetta==0.9.3
 django-taggit==1.1.0
 django-cors-headers==3.1.0
-djangorestframework_gis==0.14
+djangorestframework_gis==0.15
 djangorestframework==3.10.3
 
 drf-yasg==1.17.0
