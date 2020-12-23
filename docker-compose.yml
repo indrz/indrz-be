@@ -7,7 +7,7 @@ services:
   db:
     hostname: db
     container_name: db
-    image: kartoza/postgis:9.6-2.4
+    image: kartoza/postgis:13.0
     volumes:
       - ${PWD}/data/geo-db-data:/var/lib/postgresql
     ports:
@@ -50,7 +50,7 @@ services:
   db-backups:
     hostname: db-backups
     container_name: db-backups
-    image: kartoza/pg-backup:11.0
+    image: kartoza/pg-backup:13.0
     volumes:
       - ${PWD}/data/db-backups:/opt/data/backups
     env_file:
