@@ -1,0 +1,1 @@
+[{"model": "buildings.organization", "pk": 1, "fields": {"street": "Superstreet", "house_number": "13", "postal_code": null, "municipality": null, "city": null, "country": null, "name": "SuperHero University", "description": null, "phone": null, "email": null, "website": null, "geom": null, "owner": null, "legal_form": null, "num_buildings": null}}]
