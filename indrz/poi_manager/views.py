@@ -1,22 +1,18 @@
 import collections
-import json
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404, render
 from django.utils.translation import ugettext as _
-
-from rest_framework.exceptions import APIException
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
-
-from poi_manager.models import PoiCategory, Poi
-from poi_manager.forms import PoiCategoryForm, PoiForm
-from poi_manager.serializers import PoiSerializer, PoiCategorySerializer
-
 from mptt.exceptions import InvalidMove
 from mptt.forms import MoveNodeForm
 from mptt.templatetags.mptt_tags import cache_tree_children
+from poi_manager.forms import PoiForm
+from poi_manager.models import PoiCategory, Poi
+from poi_manager.serializers import PoiSerializer, PoiCategorySerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.exceptions import APIException
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 
 def poi_category_list(request, format=None):
@@ -141,6 +137,8 @@ def get_poi_by_cat_id(request, cat_id, format=None):
 
         poicat_qs = PoiCategory.objects.filter(enabled=True).get(pk=cat_id).get_descendants()
         # cat_children = PoiCategory.objects.add_related_count(poicat_qs,Poi,'category', 'cat_name')
+        # poicat_qs = Poi.objects.filter(category__in=PoiCategory.objects.get(pk=cat_id) \
+        #                        .get_descendants(include_self=True))
 
         poi_ids = []
         for x in poicat_qs:
@@ -301,73 +299,3 @@ def move_category(request, category_pk):
         'category': category,
         'category_tree': PoiCategory.objects.all(),
     })
-
-icon_map = [{"name": "icon-h", "description": "exit"},
-{"name": "icon-g", "description": "stairs-up"},
-{"name": "icon-i", "description": "ramp-up"},
-{"name": "icon-l", "description": "baby"},
-{"name": "icon-n", "description": "fountain"},
-{"name": "icon-t", "description": "plus"},
-{"name": "icon-o", "description": "people"},
-{"name": "icon-p", "description": "info-library"},
-{"name": "icon-q", "description": "sit-workstation"},
-{"name": "icon-r", "description": "stand-workstation"},
-{"name": "icon-s", "description": "hanger"},
-{"name": "icon-u", "description": "no-mobiles"},
-{"name": "icon-v", "description": "phone-booth"},
-{"name": "icon-y", "description": "security-camera"},
-{"name": "icon-B", "description": "no-dogs"},
-{"name": "icon-C", "description": "no-sound"},
-{"name": "icon-D", "description": "no-fire"},
-{"name": "icon-E", "description": "no-skateboarding"},
-{"name": "icon-F", "description": "parking"},
-{"name": "icon-G", "description": "parking-payment"},
-{"name": "icon-H", "description": "motorcycle"},
-{"name": "icon-I", "description": "delivery"},
-{"name": "icon-J", "description": "bike-parking"},
-{"name": "icon-L", "description": "basketball"},
-{"name": "icon-M", "description": "pingpong"},
-{"name": "icon-N", "description": "cafe"},
-{"name": "icon-O", "description": "food"},
-{"name": "icon-Q", "description": "sitting-area"},
-{"name": "icon-S", "description": "shopping-cart"},
-{"name": "icon-T", "description": "smoking"},
-{"name": "icon-U", "description": "printer"},
-{"name": "icon-V", "description": "print-station"},
-{"name": "icon-W", "description": "scanner"},
-{"name": "icon-Y", "description": "self-checkout"},
-{"name": "icon-Z", "description": "quiet-area"},
-{"name": "icon-zero", "description": "info-point"},
-{"name": "icon-one", "description": "triangle"},
-{"name": "icon-two", "description": "arrow-up"},
-{"name": "icon-R", "description": "shopping-cart-empty"},
-{"name": "icon-X", "description": "books"},
-{"name": "icon-a", "description": "elevator-a"},
-{"name": "icon-b", "description": "elevator-b"},
-{"name": "icon-c", "description": "elevator-c"},
-{"name": "icon-d", "description": "elevator"},
-{"name": "icon-x", "description": "info"},
-{"name": "icon-K", "description": "basketball"},
-{"name": "icon-w", "description": "women-wc"},
-{"name": "icon-m", "description": "men-wc"},
-{"name": "icon-j", "description": "wc"},
-{"name": "icon-k", "description": "wheelchair"},
-{"name": "icon-z", "description": "locker"},
-{"name": "icon-P", "description": "family"},
-{"name": "icon-f", "description": "stairs-arrow-up"},
-{"name": "icon-A", "description": "no-smoking"},
-{"name": "icon-e", "description": "stairs-arrow-down"},
-{"name": "icon-three", "description": "defi"},
-{"name": "icon-four", "description": "info-triangle"},
-{"name": "icon-five", "description": "baby-buggy"},
-{"name": "icon-Agrave", "description": "p1"},
-{"name": "icon-Aacute", "description": "p2"},
-{"name": "icon-Acircumflex", "description": "p3"},
-{"name": "icon-Atilde", "description": "p4"},
-{"name": "icon-six", "description": "meeting-point"},
-{"name": "icon-agrave", "description": "elevator-d"},
-{"name": "icon-aacute", "description": "elevator-e"},
-{"name": "icon-seven", "description": "ramp-down"},
-{"name": "icon-eight", "description": "bicycle"},
-{"name": "icon-nine", "description": "bike-covered"},
-{"name": "icon-colon", "description": "front-office"}]
