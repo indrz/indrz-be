@@ -49,23 +49,14 @@ class PoiIcon(models.Model):
     An image added to an icon of the map.
     """
     name = models.CharField(verbose_name=_('Name of map icon'),max_length=255)
-
-    poi_icon = models.ImageField(verbose_name=_('Poi icon image'), upload_to='poi-icons', max_length=512)
-
-    def get_poi_icon_url(self):
-        parse_url = self.poi_icon.url
-        parse_url.replace("media/", "")
-        n_url = parse_url.replace("media/","")
-        # return self.poi_icon.url if self.poi_icon else None
-        return parse_url if self.poi_icon else None
+    icon = models.ImageField(verbose_name=_('Poi icon image'), upload_to='poi-icons', max_length=512)
 
     def pictogram_img(self):
-        parse_url = self.poi_icon.url
+        parse_url = self.icon.url
         n_url = parse_url.replace("media/", "")
         print(parse_url)
 
-        return u'<img src="%s" />' % (n_url if self.poi_icon else "")
-        # return u'<img src="%s" />' % (self.poi_icon.url if self.poi_icon else "")
+        return u'<img src="%s" />' % (n_url if self.icon else "")
 
     pictogram_img.short_description = _("Pictogram")
     pictogram_img.allow_tags = True
@@ -78,11 +69,8 @@ class PoiIcon(models.Model):
         return {
             "id": self.pk,
             "name": self.name,
-            "src": self.poi_icon.url
+            "src": self.icon.url
         }
-
-    def __unicode__(self):
-        return self.name
 
     def __str__(self):
         return self.name
@@ -124,7 +112,7 @@ class PoiCategory(MPTTModel):
     @property
     def icon(self):
         if self.fk_poi_icon:
-            return self.fk_poi_icon.poi_icon.url
+            return self.fk_poi_icon.icon.url
         else:
             return ""
 
@@ -151,7 +139,7 @@ class Poi(models.Model):
     @property
     def icon(self):
         if self.category.fk_poi_icon:
-            return self.category.fk_poi_icon.poi_icon.url
+            return self.category.fk_poi_icon.icon.url
         else:
             return ""
 
