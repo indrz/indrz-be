@@ -1,7 +1,4 @@
 import os
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
-
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -12,7 +9,29 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', os.getenv('ALLOWED_HOSTS')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
+if os.name == 'nt':
+    import platform
+    OSGEO4W = r"C:\OSGeo4W"
+    if '64' in platform.architecture()[0]:
+        OSGEO4W += "64"
+    assert os.path.isdir(OSGEO4W), "Directory does not exist: " + OSGEO4W
+    os.environ['OSGEO4W_ROOT'] = OSGEO4W
+    os.environ['GDAL_DATA'] = OSGEO4W + r"\share\epsg_csv"
+    os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
 
+
+if DEBUG == False:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=os.getenv('SENTRY_URL'),
+        integrations=[DjangoIntegration()],
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )
 
 AUTH_USER_MODEL = 'users.User'  # my app is called users  hence users.User I could make app called core.Users
 
