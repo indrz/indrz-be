@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.contrib.gis.admin import OSMGeoAdmin
-from mptt.admin import MPTTModelAdmin, DraggableMPTTAdmin
+from mptt.admin import DraggableMPTTAdmin
 from poi_manager.models import PoiCategory, Poi, PoiIcon
-
 
 class PoiAdmin(OSMGeoAdmin):
     list_display = ('id', 'name', 'name_de', 'name_en', 'category', 'enabled')
@@ -16,13 +15,9 @@ class PoiCatAdmin(DraggableMPTTAdmin):
     search_fields = ('cat_name',)
     list_filter = ('cat_name', 'enabled')
 
-
 class PoiIconAdmin(admin.ModelAdmin):
-    list_display = ('name', 'poi_icon',)
-    fields = ('name', 'poi_icon',)
-
-
-
+    list_display = ('name', 'icon',)
+    fields = ('name', 'icon',)
 
 admin.site.register(Poi, PoiAdmin)
 admin.site.register(PoiIcon, PoiIconAdmin)
