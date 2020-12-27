@@ -1,13 +1,11 @@
 from __future__ import unicode_literals
 
 import json
-import geojson
+
 from django.contrib.gis.db import models as gis_models
 from django.contrib.gis.gdal import OGRGeometry
 from django.contrib.postgres.fields import ArrayField
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-from taggit.managers import TaggableManager
 
 
 class BaseLookupDomain(gis_models.Model):
@@ -221,8 +219,6 @@ class Building(OrganizationInfoBase):
     fk_campus = gis_models.ForeignKey(Campus, null=True, blank=True, related_name='buildings', on_delete=gis_models.CASCADE)
 
 
-
-@python_2_unicode_compatible
 class BuildingFloor(gis_models.Model):
     """
     Represents the floors contained in a building as a floor foot print
@@ -251,7 +247,6 @@ class BuildingFloor(gis_models.Model):
         return self.short_name or ''
 
 
-@python_2_unicode_compatible
 class FloorSpaceBase(gis_models.Model):
     """
     floor areas as polygons base
