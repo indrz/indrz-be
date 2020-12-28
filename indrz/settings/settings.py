@@ -143,9 +143,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.8/topics/i18n/
-
 LANGUAGE_CODE = 'en'
 
 LANGUAGES = (
@@ -229,14 +226,7 @@ SWAGGER_SETTINGS = {
 }
 
 
-sentry_sdk.init(
-    dsn=os.getenv('SENTRY_URL'),
-    integrations=[DjangoIntegration()],
 
-    # If you wish to associate users to errors (assuming you are using
-    # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=True
-)
 
 
 CORS_ORIGIN_WHITELIST = [
