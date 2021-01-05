@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  indrz-tu:
+  indrz-net:
 
 services:
   db:
@@ -13,7 +13,7 @@ services:
     ports:
       - ${POSTGRES_EXT_PORT}:5432
     networks:
-      - indrz-tu
+      - indrz-net
     env_file:
       - devops/docker-env/db.env
     restart: always
@@ -26,7 +26,7 @@ services:
   geoserver:
     hostname: geoserver
     container_name: geoserver
-    image: indrz-tu/geoserver:2.15.0
+    image: indrz/geoserver:2.18.0
     build:
       context: .
       dockerfile: devops/docker/geoserver/Dockerfile
@@ -40,7 +40,7 @@ services:
     depends_on:
       - db
     networks:
-      - indrz-tu
+      - indrz-net
     healthcheck:
       test: curl --fail -s http://localhost:8080/ || exit 1
       interval: 1m30s
@@ -63,14 +63,14 @@ services:
   indrz:
     container_name: indrz
     hostname: indrz
-    image: indrz-tu/indrz:latest
+    image: indrz/indrz-be:latest
     build:
       context: .
       dockerfile: devops/docker/indrz/Dockerfile
     ports:
       - 8000:8000
     networks:
-      - indrz-tu
+      - indrz-net
     depends_on:
       - db
     volumes:
@@ -86,7 +86,7 @@ services:
   nginx:
     container_name: nginx
     hostname: nginx
-    image: indrz-tu/nginx:latest
+    image: indrz/nginx:latest
     build:
       context: .
       dockerfile: devops/docker/nginx/Dockerfile
@@ -98,7 +98,7 @@ services:
       - 80:80
       - 443:443
     networks:
-      - indrz-tu
+      - indrz-net
     restart: always
     depends_on:
       - indrz
