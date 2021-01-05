@@ -1,9 +1,21 @@
-FROM python:3.6
-
+FROM python:3.8-slim-buster
 
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GDAL_SKIP=DODS
+
+
+RUN apt-get update \
+  # dependencies for building Python packages
+  && apt-get install -y build-essential \
+  # psycopg2 dependencies
+  && apt-get install -y libpq-dev \
+  # Translations dependencies
+  && apt-get install -y gettext \
+  # cleaning up unused files
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+  && rm -rf /var/lib/apt/lists/*
+
 
 # Install packages
 RUN apt-get update && apt-get install binutils bzip2 wget make g++ -y && \
@@ -13,16 +25,16 @@ RUN apt-get update && apt-get install binutils bzip2 wget make g++ -y && \
 
 # GEOS
 RUN cd /tmp && \
-    wget http://download.osgeo.org/geos/geos-3.6.4.tar.bz2 && \
-    tar xjf geos-3.6.4.tar.bz2 && \
-    cd geos-3.6.4 && \
+    wget http://download.osgeo.org/geos/geos-3.8.1.tar.bz2 && \
+    tar xjf geos-3.8.1.tar.bz2 && \
+    cd geos-3.8.1 && \
     ./configure && make && make install && ldconfig
 
 #GDAL
 RUN cd /tmp && \
-    wget https://download.osgeo.org/gdal/2.1.4/gdal-2.1.4.tar.gz && \
-    tar -zxf gdal-2.1.4.tar.gz && \
-    cd gdal-2.1.4 && \
+    wget https://download.osgeo.org/gdal/3.1.4/gdal-3.1.4.tar.gz && \
+    tar -zxf gdal-3.1.4.tar.gz && \
+    cd gdal-3.1.4 && \
     ./configure && make && make install && ldconfig
 
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
@@ -32,8 +44,8 @@ ENV LC_ALL="C.UTF-8"
 ENV LC_CTYPE="C.UTF-8"
 
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p /app
+WORKDIR /app
 
 # COPY indrz/ /usr/src/app/
 COPY indrz/requirements.txt requirements.txt
