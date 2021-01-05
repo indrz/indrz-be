@@ -16,7 +16,7 @@ indrz/.env
 indrz/logs
 
 *.pyc
-
+.pytest_cache
 /indrz/logs/
 /indrz/htmlcov/
 

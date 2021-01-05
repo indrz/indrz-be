@@ -13,20 +13,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from django.contrib.auth.models import Group
 from rest_framework import viewsets
-from users.serializers import UserSerializer, GroupSerializer
 from users.models import User
-
-
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from users.serializers import UserSerializer, GroupSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
-    from rest_framework.permissions import IsAuthenticated
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -36,8 +30,6 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
-    from rest_framework.permissions import IsAuthenticated
 
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
