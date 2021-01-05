@@ -1,4 +1,4 @@
-FROM nginx:1.17
+FROM nginx:1.18
 ARG ENV_TYPE
 ARG WEB_FOLDER
 
