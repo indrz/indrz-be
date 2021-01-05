@@ -5,6 +5,10 @@
 indrz/settings/.env
 indrz/.env
 .env
+/devops/docker-env/db.env
+/devops/docker-env/db-backups.env
+/devops/docker-env/geoserver.env
+
 ## Directory-based project format:
 .idea/
 # if you remove the above rule, at least ignore the following:
@@ -13,15 +17,7 @@ indrz/logs
 
 *.pyc
 
-
-
 /indrz/logs/
-
-/indrz/settings/secret_settings.py
-/indrz/indrz/client_secret.json
-
-
-
 /indrz/htmlcov/
 
 /.cache/
