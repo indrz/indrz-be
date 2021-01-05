@@ -173,12 +173,10 @@ STATIC_ROOT = os.getenv('STATIC_ROOT')
 MEDIA_URL = os.getenv("MEDIA_URL")
 MEDIA_ROOT = os.getenv('MEDIA_ROOT')
 
-
 # finds all static folders in all apps
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    #'compressor.finders.CompressorFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
 
 STATICFILES_DIRS = [
