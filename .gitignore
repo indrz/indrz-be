@@ -1,6 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### JetBrains template
 
+dist/
+indrz.egg-info/
 *.iml
 indrz/settings/.env
 indrz/.env
