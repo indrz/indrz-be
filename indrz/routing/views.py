@@ -1112,8 +1112,6 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
 
     base_route_q = """SELECT id, source, target, cost, reverse_cost, floor_name FROM geodata.networklines_3857"""
 
-
-
     if route_type == '1':
         # exclude all networklines of type stairs
         barrierfree_q = "WHERE network_type not in (1,3,101,104)"
@@ -1125,33 +1123,6 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
 
     route_node_array = [start_node_id, end_node_id]
 
-    # new routing query for AAU
-    ################################
-    # routing_query = """ WITH
-    #             dijkstra AS (
-    #                 SELECT * FROM pgr_dijkstra(
-    #                     '{sql_query} {type}', {start_node}, {end_node})),
-    #             get_geom AS (
-    #                 SELECT dijkstra.*, input_network.network_type as network_type, input_network.id as id, input_network.floor as floor,
-    #                     -- adjusting directionality
-    #                     CASE
-    #                         WHEN dijkstra.node = input_network.source THEN geom
-    #                         ELSE ST_Reverse(geom)
-    #                     END AS route_geom
-    #                 FROM dijkstra JOIN geodata.networklines_3857 AS input_network ON (dijkstra.edge = input_network.id)
-    #                 ORDER BY seq)
-    #             SELECT seq, id, node, edge,
-    #                 ST_Length(st_transform(route_geom,4326), TRUE ) AS cost,
-    #                 agg_cost, floor, network_type,
-    #                 ST_AsGeoJSON(route_geom) AS geoj,
-    #                 degrees(ST_azimuth(ST_StartPoint(route_geom),
-    #                 ST_EndPoint(route_geom))) AS azimuth,
-    #                 route_geom
-    #             FROM get_geom
-    #             ORDER BY seq""".format(sql_query=route_query, type=barrierfree_q,
-    #                                             start_node=start_node_id, end_node=end_node_id)
-
-    # this is same query as WU indrz
     routing_query = """
         SELECT seq, id, node, edge,
             ST_Length(st_transform(geom,4326), TRUE ) AS cost, agg_cost, floor, network_type,
@@ -1327,15 +1298,15 @@ def get_features(FeatureCollection):
     return props_list
 
 
-def create_mid_point(wu_json):
-    if wu_json['features'][0]['properties']['frontoffice']:
+def create_mid_point(feature):
+    if feature['features'][0]['properties']['frontoffice']:
         cur = connection.cursor()
 
         # fo = front office
-        fo_aks = wu_json['features'][0]['properties']['frontoffice']['location']
-        fo_name = wu_json['features'][0]['properties']['frontoffice']['name']
-        fo_floor_num = wu_json['features'][0]['properties']['frontoffice']['floor_num']
-        fo_coords = wu_json['features'][0]['properties']['frontoffice']['geom']['coordinates']
+        fo_aks = feature['features'][0]['properties']['frontoffice']['location']
+        fo_name = feature['features'][0]['properties']['frontoffice']['name']
+        fo_floor_num = feature['features'][0]['properties']['frontoffice']['floor_num']
+        fo_coords = feature['features'][0]['properties']['frontoffice']['geom']['coordinates']
 
         mid_query = """SELECT id, external_id, search_string FROM geodata.search_index_v
                           WHERE search_string LIKE '%{0}%'
