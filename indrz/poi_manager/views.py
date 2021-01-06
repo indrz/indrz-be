@@ -1,7 +1,7 @@
 import collections
 
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404, render
+from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext as _
 from mptt.exceptions import InvalidMove
 from mptt.forms import MoveNodeForm
@@ -294,7 +294,7 @@ def move_category(request, category_pk):
     else:
         form = MoveNodeForm(category)
 
-    return render_to_response('poi/poi-form.html', {
+    return render('poi/poi-form.html', {
         'form': form,
         'category': category,
         'category_tree': PoiCategory.objects.all(),

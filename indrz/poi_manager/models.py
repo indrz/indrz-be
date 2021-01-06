@@ -90,8 +90,8 @@ class PoiCategory(MPTTModel):
     fk_poi_icon = models.ForeignKey(PoiIcon, on_delete=models.CASCADE, null=True, blank=True)
     description = models.CharField(verbose_name=_("description"), max_length=255, null=True, blank=True)
 
-    force_mid_point = models.NullBooleanField(verbose_name=_("Force route to this location"), null=True, blank=True)
-    enabled = models.NullBooleanField(verbose_name=_("Activated and enabled"), null=True, blank=True)
+    force_mid_point = models.BooleanField(verbose_name=_("Force route to this location"), null=True, blank=True)
+    enabled = models.BooleanField(verbose_name=_("Activated and enabled"), null=True, blank=True)
     tree_order = models.IntegerField(verbose_name=_("Tree order in legend"), null=True, blank=True)
     sort_order = models.IntegerField(verbose_name=_("Sort oder of POI items"), null=True, blank=True)
 
@@ -126,7 +126,7 @@ class Poi(models.Model):
     floor_num = models.FloatField(verbose_name=_("floor number"), null=True, blank=True)
     floor_name = models.CharField(verbose_name=_("floor name"), max_length=200, null=True, blank=True)
     description = models.CharField(verbose_name=_("description"), max_length=255, null=True, blank=True)
-    enabled = models.NullBooleanField(verbose_name=_("Activated and enabled"), null=True, blank=True)
+    enabled = models.BooleanField(verbose_name=_("Activated and enabled"), null=True, blank=True)
 
     floor = models.ForeignKey(BuildingFloor, on_delete=models.DO_NOTHING, null=True, blank=True)
     campus = models.ForeignKey(Campus, on_delete=models.DO_NOTHING, null=True, blank=True)

@@ -3,7 +3,7 @@ from django.urls import path, include
 from poi_manager.views import poi_category_list, poi_category_json, search_poi_by_name, \
     poi_json_tree, poi_root_nodes, get_poi_by_cat_id
 
-from poi_manager.viewsets import PoiCategoryViewSet, PoiViewSet
+from poi_manager.api import PoiCategoryViewSet, PoiViewSet
 from rest_framework import routers
 
 router = routers.DefaultRouter()
