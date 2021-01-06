@@ -1,5 +1,5 @@
-from buildings.models import BuildingFloor, Campus
-from buildings.serializers import FloornewSerializer, CampusSerializer, BuildingSerializer
+from buildings.models import BuildingFloor, Campus, Building
+from buildings.serializers import FloorSerializer, CampusSerializer, BuildingSerializer
 from rest_framework import viewsets
 
 
@@ -16,7 +16,7 @@ class FloorViewSet(viewsets.ReadOnlyModelViewSet):
     A simple ViewSet for viewing accounts.
     """
     queryset = BuildingFloor.objects.order_by('-floor_num').distinct('floor_num')
-    serializer_class = FloornewSerializer
+    serializer_class = FloorSerializer
 
 
 class BuildingsViewSet(viewsets.ReadOnlyModelViewSet):

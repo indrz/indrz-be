@@ -11,12 +11,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description')
 
 
-class FloornewSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = BuildingFloor
-        fields = ('id', 'short_name', 'floor_num', 'fk_building')
-
 class CampusSerializer(serializers.ModelSerializer):
 
     class Meta:
