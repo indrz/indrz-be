@@ -563,15 +563,22 @@ class RoutePoiToPoi(APIView):
     Route from one POI to any other POI
     """
 
-    def get(self, request, start_poi_id, end_poi_id):
-
+    def get(self, request, start_poi_id, end_poi_id, route_type):
         """
-        Optionally restricts the returned purchases to a given user,
-        by filtering against a `username` query parameter in the URL.
+        Sample Request URL: /directions/start-poi-id=234&end-poi-id=1122&type=0?format=json
+        Optionally restricts the returned purchases to a given poi,
+        by filtering against a `name` query parameter in the URL.
+
+        :param request:
+        :param start-poi-id: integer start-poi-id
+        :param end-poi-id: integer end-poi-id
+        :param type: integer 0 normal route 1 barrierer free route
+        :return:
         """
 
         start_poi = int(start_poi_id.split("=")[1])
         end_poi = int(end_poi_id.split("=")[1])
+        r_type = int(route_type.split("=")[1])
 
         if start_poi is not None:
             if end_poi is not None:
@@ -583,7 +590,7 @@ class RoutePoiToPoi(APIView):
                 qs_end = Poi.objects.get(pk=end_poi)
                 end_node_id = find_closest_network_node(qs_end.geom.coords[0][0], qs_end.geom.coords[0][1], qs_end.floor_num)
 
-                geojs_fc = run_route(start_node_id, end_node_id, "1")
+                geojs_fc = run_route(start_node_id, end_node_id, route_type=r_type)
 
                 if "error" in geojs_fc:
                     return Response(geojs_fc, status=status.HTTP_404_NOT_FOUND)
