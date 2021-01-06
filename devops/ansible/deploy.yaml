@@ -19,7 +19,7 @@
   tasks:
   - name: pull branch master
     git:
-      repo: "https://{{ gitlabuser | urlencode }}:{{ gitlabpwd }}@gitlab.com/indrz/indrz-aau.git"
+      repo: "https://{{ gitlabuser | urlencode }}:{{ gitlabpwd }}@gitlab.com/indrz/indrz-backend.git"
       dest: "{{ repo_dir }}"
 
   - name: delete deploy dir
@@ -79,14 +79,14 @@
 
 
 #  - name: remove code in dir
-#    command: rm -rf /srv/www/campusplan.aau.at/wsgi/indrz
+#    command: rm -rf /srv/www/indrz.com/wsgi/indrz
 #
 #  - name: add code in dir
-#    command: cp /srv/indrz_src/indrz /srv/www/campusplan.aau.at/wsgi/
+#    command: cp /srv/indrz_src/indrz /srv/www/indrz.com/wsgi/
 
 
 #  - name: run local bash deploy calls
-#    shell: aau_deploy.sh
+#    shell: deploy.sh
 #      chdir: /srv/indrz_conf
 
 #  - name: install python3 requirements
@@ -132,7 +132,7 @@
 #  when: run_django_db_migrations is defined and run_django_db_migrations
 #  tags: django.migrate
 
-#- hosts: aaulive
+#- hosts: indrzlive
 #  vars:
 #    http_port: 80
 #    max_clients: 200
