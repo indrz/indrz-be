@@ -31,14 +31,6 @@ from buildings.serializers import FloorListSerializer
 logger = logging.getLogger(__name__)
 
 
-class CampusViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    A simple ViewSet for viewing accounts.
-    """
-    queryset = Campus.objects.all()
-    serializer_class = CampusSerializer
-
-
 @api_view(['GET'])
 def get_campus_floors(request, campus_id, format=None):
     """
