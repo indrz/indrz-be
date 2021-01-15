@@ -1,7 +1,7 @@
 from django.conf.urls import url
-
-from routing.views import create_route_from_coords, create_route_from_id, create_route_from_search, \
-    force_route_mid_point, route_to_nearest_poi, RoutePoiToPoi, NearestPoi,RoutePoiToXyz, route_space_id_and_poi_id
+from routing.views import NearestPoi, RoutePoiToXyz, route_space_id_and_poi_id
+from routing.views import create_route_from_coords, create_route_from_id, create_route_from_search
+from routing.views import force_route_mid_point, route_to_nearest_poi, RoutePoiToPoi
 
 urlpatterns = [
     url(
