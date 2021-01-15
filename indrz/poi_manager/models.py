@@ -1,11 +1,15 @@
+import os
+
+from buildings.models import BuildingFloor, Campus
+from django.contrib.gis.db import models as gis_model
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch.dispatcher import receiver
+from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 from taggit.managers import TaggableManager
-from django.utils.translation import ugettext_lazy as _
-from django.db import models
-from django.contrib.gis.db import models as gis_model
-from buildings.models import Building, BuildingFloor, Campus
-from django.contrib.postgres.fields import ArrayField
-from django.conf import settings
+
 
 # class BaseLookupDomain(models.Model):
 #     code = models.CharField(verbose_name=_("code value"), max_length=150, null=True, blank=True)
@@ -39,10 +43,6 @@ from django.conf import settings
 #         return self
 
 # Receive the pre_delete signal and delete the file associated with the model instance.
-from django.db.models.signals import pre_delete, post_delete
-from django.dispatch.dispatcher import receiver
-import os
-
 
 class PoiIcon(models.Model):
     """
@@ -95,7 +95,6 @@ class PoiCategory(MPTTModel):
     tree_order = models.IntegerField(verbose_name=_("Tree order in legend"), null=True, blank=True)
     sort_order = models.IntegerField(verbose_name=_("Sort oder of POI items"), null=True, blank=True)
 
-
     tags = TaggableManager(blank=True)
     parent = TreeForeignKey('self',
                         related_name='children', on_delete = models.CASCADE,
@@ -112,7 +111,10 @@ class PoiCategory(MPTTModel):
     @property
     def icon(self):
         if self.fk_poi_icon:
-            return self.fk_poi_icon.icon.url
+            if self.fk_poi_icon.icon:
+                return self.fk_poi_icon.icon.url
+            else:
+                return ""
         else:
             return ""
 
@@ -139,7 +141,10 @@ class Poi(models.Model):
     @property
     def icon(self):
         if self.category.fk_poi_icon:
-            return self.category.fk_poi_icon.icon.url
+            if self.category.fk_poi_icon.icon:
+                return self.category.fk_poi_icon.icon.url
+            else:
+                return ""
         else:
             return ""
 
