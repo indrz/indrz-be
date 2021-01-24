@@ -1,5 +1,6 @@
 # indrz backend
-This is the [indrz](https://www.indrz.com) backend API code repository. You can find our documentation project here [indrz Docs](https://gitlab.com/indrz/indrz-doc) in the folder content
+This is the [indrz](https://www.indrz.com) backend API code repository. You can find our 
+documentation project here [indrz Docs](https://gitlab.com/indrz/indrz-doc) in the folder content
 
 
 [![GitHub stars](https://img.shields.io/github/stars/indrz/indrz.svg?style=flat-square)](https://github.com/indrz/indrz/stargazers)
@@ -8,19 +9,15 @@ This is the [indrz](https://www.indrz.com) backend API code repository. You can 
 [![license](https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square)](https://raw.githubusercontent.com/indrz/indrz/master/LICENSE)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/indrz/indrz.svg?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=%5Bobject%20Object%5D)
 
-## DevOps 
+## Quick Local Developer Setup 
 
-How to deploy and maintain application in all environments.
-
-### Run the application (on local or remote env)
-
-1. Create or copy project `.env` file in root folder.
+1. Visit `indrz/settings/`and copy the `example-env.env` file and save as `.env` file in root folder.
 2. Create or copy containers `*.env` files in `devops/docker-env` folder:
     1.  `db.env`
     2.  `db-backups.env`
     3.  `geoserver.env`
     4.  `indrz.env`
-3. Include SSL Certificates in `ssl/` folder
+3. [OPTIONAL] but recommended include SSL Certificates in `ssl/` folder
 4. Build all required Docker images
     ```
     make build
@@ -97,8 +94,6 @@ make pull
 ## Supported and built by:
 
 Contact: Michael Diener
-
-Email: office@gomogi.com
 
 [www.gomogi.com](https://www.gomogi.com)
 
