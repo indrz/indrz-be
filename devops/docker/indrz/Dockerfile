@@ -48,7 +48,7 @@ RUN mkdir -p /app
 WORKDIR /app
 
 # COPY indrz/ /usr/src/app/
-COPY indrz/requirements.txt requirements.txt
+COPY indrz/requirements/requirements.txt requirements.txt
 
 # --ignore-pipfile, using Pipfile.lock file only
 # --skip-lock, ignore Pipfile.lock using only Pipfile
@@ -62,5 +62,5 @@ ENTRYPOINT ["bash", "/entrypoint.sh"]
 
 EXPOSE 8000
 
-#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+#CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
