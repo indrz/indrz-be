@@ -26,9 +26,9 @@
   gather_facts: no
 
   vars:
-    dbname: campusplan
-    dbuser: campusplan
-    dbpassword: deineP7yee
+    dbname: db
+    dbuser: db
+    dbpassword: secretStuff
 
   tasks:
   - name: ensure database is created

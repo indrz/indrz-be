@@ -2,7 +2,7 @@
 # defaults file for stumptownlabs.geoserver
 
 # path for ansible to store downloaded or templated data
-ansible_data_path: '/home/mdiener'
+ansible_data_path: '/home/your-user-name'
 
 # path for tomcat7 webapps directory
 tomcat_webapps_path: '/var/lib/tomcat8/webapps'

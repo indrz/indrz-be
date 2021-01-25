@@ -1,5 +1,5 @@
 ---
-- hosts: tulive
+- hosts: yourHostAnsible
   remote_user: root
 #  become: yes
 #  become_user: wsgi
