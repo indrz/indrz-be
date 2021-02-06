@@ -1,4 +1,8 @@
 # indrz backend
+[Gitlab](https://gitlab.com/indrz/indrz-backend) hosts the main repo 
+Mirror repo is at [Github](https://github.com/indrz/indrz-be)
+
+----------------------
 This is the [indrz](https://www.indrz.com) backend API code repository. You can find our 
 documentation project here [indrz Docs](https://gitlab.com/indrz/indrz-doc) in the folder content
 
