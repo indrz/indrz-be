@@ -4,9 +4,9 @@ networks:
   indrz-net:
 
 services:
-  db:
-    hostname: db
-    container_name: db
+  db_indrz:
+    hostname: db_indrz
+    container_name: db_indrz
     image: kartoza/postgis:13.0
     volumes:
       - ${PWD}/data/geo-db-data:/var/lib/postgresql
@@ -38,7 +38,7 @@ services:
     env_file:
       - devops/docker-env/geoserver.env
     depends_on:
-      - db
+      - db_indrz
     networks:
       - indrz-net
     healthcheck:
@@ -57,12 +57,12 @@ services:
       - devops/docker-env/db-backups.env
     restart: always
     depends_on:
-      - db
+      - db_indrz
 
 # INDRZ Backend
-  indrz:
-    container_name: indrz
-    hostname: indrz
+  indrz_be:
+    container_name: indrz_be
+    hostname: indrz_be
     image: indrz/indrz-be:latest
     build:
       context: .
@@ -72,7 +72,7 @@ services:
     networks:
       - indrz-net
     depends_on:
-      - db
+      - db_indrz
     volumes:
       - ${PWD}/indrz:/usr/src/app
       - ${PWD}/data/indrz/media:/opt/data/media
@@ -101,4 +101,4 @@ services:
       - indrz-net
     restart: always
     depends_on:
-      - indrz
+      - indrz_be
