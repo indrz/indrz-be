@@ -11,11 +11,11 @@ services:
     volumes:
       - ${PWD}/data/geo-db-data:/var/lib/postgresql
     ports:
-      - ${POSTGRES_EXT_PORT}:5432
+      - 5436:5436
     networks:
       - indrz-net
     env_file:
-      - devops/docker-env/db.env
+      - devops/docker-env/indrz.env
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -36,7 +36,7 @@ services:
       - "8600:8080"
     restart: on-failure
     env_file:
-      - devops/docker-env/geoserver.env
+      - devops/docker-env/indrz.env
     depends_on:
       - db_indrz
     networks:
@@ -54,7 +54,7 @@ services:
     volumes:
       - ${PWD}/data/db-backups:/opt/data/backups
     env_file:
-      - devops/docker-env/db-backups.env
+      - devops/docker-env/indrz.env
     restart: always
     depends_on:
       - db_indrz
