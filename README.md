@@ -3,6 +3,7 @@
 Mirror repo is at [Github](https://github.com/indrz/indrz-be)
 
 ----------------------
+
 This is the [indrz](https://www.indrz.com) backend API code repository. You can find our 
 documentation project here [indrz Docs](https://gitlab.com/indrz/indrz-doc) in the folder content
 
@@ -13,10 +14,10 @@ documentation project here [indrz Docs](https://gitlab.com/indrz/indrz-doc) in t
 [![license](https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square)](https://raw.githubusercontent.com/indrz/indrz/master/LICENSE)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/indrz/indrz.svg?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=%5Bobject%20Object%5D)
 
-## Quick Local Developer Setup 
+## Quick Start
 
 1. Visit `indrz/settings/`and copy the `example-env.env` file and save as `.env` file in root folder.
-2. Create or copy containers `*.env` files in `devops/docker-env` folder:
+2. Get Docker environment varialbles ready in `devops/docker-env` folder:
     1.  `db.env`
     2.  `db-backups.env`
     3.  `geoserver.env`
