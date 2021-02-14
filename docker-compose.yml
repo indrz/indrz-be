@@ -47,7 +47,7 @@ services:
       timeout: 10s
       retries: 3
 
-  db-backups:
+  db_backups:
     hostname: db-backups
     container_name: db-backups
     image: kartoza/pg-backup:13.0

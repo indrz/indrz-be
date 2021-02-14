@@ -12,13 +12,16 @@ help: ## This help.
 
 .DEFAULT_GOAL := help
 
-build: build-nginx build-indrz ## Build Nginx and Indrz docker images
+build: build-gse build-indrz build-geoserver build-nginx  ## Build all Docker images
+
+build-gogse: ## Build Gomogi Geospatial Environment (GDAL, PROJ, GEOS)
+	docker build -t gogse:latest -f devops/docker/gogse/Dockerfile
 
 build-nginx: ## Build Nginx Image
 	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) --build-arg WEB_FOLDER=$(WEB_FOLDER) nginx
 
-build-indrz: ## Build Indrz Image
-	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) indrz
+build-indrz: ## Build Indrz BE Image
+	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) indrz_be
 
 build-geoserver: ## Build Geoserver Image
 	docker-compose build geoserver
@@ -32,7 +35,7 @@ collectstatic: ## Collect Django static files
 	docker exec -t nginx cp -r /opt/data/static $(WEB_FOLDER)/
 
 migrate:
-    docker exec -t indrz python manage.py migrate
+	docker exec -t indrz python manage.py migrate
 
 pull: ## Pull source code from Git
 	git pull
@@ -42,4 +45,3 @@ deploy: pull migrate collectstatic run ## Update and deploy Indrz application
 
 stop: ## Stop Indrz Docker project
 	docker-compose down
-
