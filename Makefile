@@ -12,10 +12,10 @@ help: ## This help.
 
 .DEFAULT_GOAL := help
 
-build: build-gse build-indrz build-geoserver build-nginx  ## Build all Docker images
+build: build-gogse build-indrz build-geoserver build-nginx  ## Build all Docker images
 
 build-gogse: ## Build Gomogi Geospatial Environment (GDAL, PROJ, GEOS)
-	docker build -t gogse:latest -f devops/docker/gogse/Dockerfile
+	docker build -t gogse:latest - < devops/docker/gogse/Dockerfile
 
 build-nginx: ## Build Nginx Image
 	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) --build-arg WEB_FOLDER=$(WEB_FOLDER) nginx
