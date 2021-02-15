@@ -18,10 +18,7 @@ documentation project here [indrz Docs](https://gitlab.com/indrz/indrz-doc) in t
 
 1. Visit `indrz/settings/`and copy the `example-env.env` file and save as `.env` file in root folder.
 2. Get Docker environment varialbles ready in `devops/docker-env` folder:
-    1.  `db.env`
-    2.  `db-backups.env`
-    3.  `geoserver.env`
-    4.  `indrz.env`
+    1.  `config.env`
 3. [OPTIONAL] but recommended include SSL Certificates in `ssl/` folder
 4. Build all required Docker images
     ```
