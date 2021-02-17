@@ -1,0 +1,27 @@
+version: '3'
+
+networks:
+  indrz-net:
+
+services:
+  indrz_be:
+    container_name: indrz_be
+    hostname: indrz_be
+    image: indrz/indrz-be:latest
+    build:
+      context: .
+      dockerfile: devops/docker/indrz/Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - indrz-net
+    depends_on:
+      - db_indrz
+    volumes:
+      - ${PWD}/indrz:/app
+      - ${PWD}/data/indrz/media:/opt/data/media
+      - ${PWD}/data/indrz/static:/opt/data/static
+      - ${PWD}/data/indrz/logs:/usr/src/app/logs
+    restart: always
+    env_file:
+      - devops/docker-env/indrz.env

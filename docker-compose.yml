@@ -4,6 +4,7 @@ networks:
   indrz-net:
 
 services:
+  # POSTGRES DB
   db_indrz:
     hostname: db_indrz
     container_name: db_indrz
@@ -22,7 +23,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
+  # GEOSERVER
   geoserver:
     hostname: geoserver
     container_name: geoserver
@@ -46,20 +47,7 @@ services:
       interval: 1m30s
       timeout: 10s
       retries: 3
-
-  db_backups:
-    hostname: db-backups
-    container_name: db-backups
-    image: kartoza/pg-backup:13.0
-    volumes:
-      - ${PWD}/data/db-backups:/opt/data/backups
-    env_file:
-      - devops/docker-env/db-backups.env
-    restart: always
-    depends_on:
-      - db_indrz
-
-# INDRZ Backend
+  # INDRZ BACK-END
   indrz_be:
     container_name: indrz_be
     hostname: indrz_be
@@ -74,15 +62,13 @@ services:
     depends_on:
       - db_indrz
     volumes:
-      - ${PWD}/indrz:/usr/src/app
       - ${PWD}/data/indrz/media:/opt/data/media
       - ${PWD}/data/indrz/static:/opt/data/static
       - ${PWD}/data/indrz/logs:/usr/src/app/logs
     restart: always
     env_file:
       - devops/docker-env/indrz.env
-
-# NGINX
+  # NGINX
   nginx:
     container_name: nginx
     hostname: nginx
@@ -102,3 +88,15 @@ services:
     restart: always
     depends_on:
       - indrz_be
+  # DB BACKUP
+  db_backups:
+    hostname: db-backups
+    container_name: db-backups
+    image: kartoza/pg-backup:13.0
+    volumes:
+      - ${PWD}/data/db-backups:/opt/data/backups
+    env_file:
+      - devops/docker-env/db-backups.env
+    restart: always
+    depends_on:
+      - db_indrz

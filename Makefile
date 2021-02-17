@@ -15,7 +15,7 @@ help: ## This help.
 build: build-gogse build-indrz build-geoserver build-nginx  ## Build all Docker images
 
 build-gogse: ## Build Gomogi Geospatial Environment (GDAL, PROJ, GEOS)
-	docker build -t gogse:latest - < devops/docker/gogse/Dockerfile
+	docker build --build-arg GEOS_VERSION --build-arg PROJ_VERSION --build-arg GDAL_VERSION -t gogse:latest - < devops/docker/gogse/Dockerfile
 
 build-nginx: ## Build Nginx Image
 	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) --build-arg WEB_FOLDER=$(WEB_FOLDER) nginx
@@ -26,8 +26,11 @@ build-indrz: ## Build Indrz BE Image
 build-geoserver: ## Build Geoserver Image
 	docker-compose build geoserver
 
-run: ## Run Indrz Docker project
+run: ## Run Indrz Docker project (production-ready)
 	docker-compose -p $(PROJECT_NAME) up -d
+
+run-dev: ## Run Indrz Docker project in development mode
+	docker-compose -p $(PROJECT_NAME) -f docker-compose.yml -f docker-compose.dev.yml up -d
 
 collectstatic: ## Collect Django static files
 	docker exec -t indrz python manage.py collectstatic --clear --noinput
