@@ -1,7 +1,7 @@
 SHELL=/bin/bash
 PWD ?= pwd_unknown
 
-cnf ?= .env
+cnf ?= indrz/settings/.env
 include $(cnf)
 export $(shell sed 's/=.*//' $(cnf))
 
@@ -21,7 +21,7 @@ build-nginx: ## Build Nginx Image
 	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) --build-arg WEB_FOLDER=$(WEB_FOLDER) nginx
 
 build-indrz: ## Build Indrz BE Image
-	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) indrz_be
+	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) indrz_api
 
 build-geoserver: ## Build Geoserver Image
 	docker-compose build geoserver

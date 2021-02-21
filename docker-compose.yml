@@ -5,18 +5,18 @@ networks:
 
 services:
   # POSTGRES DB
-  db_indrz:
-    hostname: db_indrz
-    container_name: db_indrz
+  indrz_db:
+    hostname: indrz_db
+    container_name: indrz_db
     image: kartoza/postgis:13.0
     volumes:
       - ${PWD}/data/geo-db-data:/var/lib/postgresql
     ports:
-      - ${POSTGRES_EXT_PORT}:5432
+      - ${POSTGRES_EXT_PORT}:5433
     networks:
       - indrz-net
     env_file:
-      - devops/docker-env/db.env
+      - devops/docker-env/.env
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -34,24 +34,24 @@ services:
     volumes:
       - ${PWD}/data/geoserver-data:/opt/geoserver/data_dir
     ports:
-      - "8600:8080"
+      - "8600:8088"
     restart: on-failure
     env_file:
-      - devops/docker-env/geoserver.env
+      - devops/docker-env/.env
     depends_on:
-      - db_indrz
+      - indrz_db
     networks:
       - indrz-net
     healthcheck:
-      test: curl --fail -s http://localhost:8080/ || exit 1
+      test: curl --fail -s http://localhost:8088/ || exit 1
       interval: 1m30s
       timeout: 10s
       retries: 3
   # INDRZ BACK-END
-  indrz_be:
-    container_name: indrz_be
-    hostname: indrz_be
-    image: indrz/indrz-be:latest
+  indrz_api:
+    container_name: indrz_api
+    hostname: indrz_api
+    image: indrz/indrz-api:latest
     build:
       context: .
       dockerfile: devops/docker/indrz/Dockerfile
@@ -60,14 +60,14 @@ services:
     networks:
       - indrz-net
     depends_on:
-      - db_indrz
+      - indrz_db
     volumes:
       - ${PWD}/data/indrz/media:/opt/data/media
       - ${PWD}/data/indrz/static:/opt/data/static
       - ${PWD}/data/indrz/logs:/usr/src/app/logs
     restart: always
     env_file:
-      - devops/docker-env/indrz.env
+      - devops/docker-env/.env
   # NGINX
   nginx:
     container_name: nginx
@@ -87,16 +87,18 @@ services:
       - indrz-net
     restart: always
     depends_on:
-      - indrz_be
+      - indrz_api
   # DB BACKUP
-  db_backups:
-    hostname: db-backups
-    container_name: db-backups
-    image: kartoza/pg-backup:13.0
-    volumes:
-      - ${PWD}/data/db-backups:/opt/data/backups
-    env_file:
-      - devops/docker-env/db-backups.env
-    restart: always
-    depends_on:
-      - db_indrz
+#  db_backups:
+#    hostname: db-backups
+#    container_name: db-backups
+#    image: kartoza/pg-backup:13.0
+#    volumes:
+#      - ${PWD}/data/db-backups:/opt/data/backups
+#    ports:
+#      - ${POSTGRES_EXT_PORT}:5436
+#    env_file:
+#      - devops/docker-env/.env
+#    restart: always
+#    depends_on:
+#      - db_indrz
