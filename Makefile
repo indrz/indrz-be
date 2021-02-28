@@ -26,16 +26,11 @@ build-indrz: ## Build Indrz BE Image
 build-geoserver: ## Build Geoserver Image
 	docker-compose build geoserver
 
-run: data-folder ## Run Indrz Docker project (production-ready)
+run: ## Run Indrz Docker project (production-ready)
 	docker-compose -p $(PROJECT_NAME) up -d
 
 run-dev: ## Run Indrz Docker project in development mode
 	docker-compose -p $(PROJECT_NAME) -f docker-compose.yml -f docker-compose.dev.yml up -d
-
-data-folder: ## Create data folder
-	@echo "Create data folder"
-	@mkdir -p data/geoserver-data
-	@sudo chown -R 1000 data/geoserver-data
 
 collectstatic: ## Collect Django static files
 	docker exec -t indrz python manage.py collectstatic --clear --noinput
