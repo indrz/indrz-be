@@ -3,6 +3,13 @@ version: '3'
 networks:
   indrz-net:
 
+volumes:
+  indrz-db:
+  indrz-geoserver:
+  indrz-static:
+  indrz-media:
+  indrz-www:
+
 services:
   # POSTGRES DB
   indrz_db:
@@ -10,9 +17,9 @@ services:
     container_name: indrz_db
     image: kartoza/postgis:13.0
     volumes:
-      - ${PWD}/data/geo-db-data:/var/lib/postgresql
+      - indrz-db:/var/lib/postgresql
     ports:
-      - ${POSTGRES_EXT_PORT}:5433
+      - ${POSTGRES_EXT_PORT}:5432
     networks:
       - indrz-net
     env_file:
@@ -28,13 +35,14 @@ services:
     hostname: geoserver
     container_name: geoserver
     image: indrz/geoserver:2.18.0
+    user: "1000"
     build:
       context: .
       dockerfile: devops/docker/geoserver/Dockerfile
     volumes:
-      - ${PWD}/data/geoserver-data:/opt/geoserver/data_dir
+      - indrz-geoserver:/opt/geoserver/data_dir
     ports:
-      - "8600:8088"
+      - "${GEOSERVER_EXT_PORT}:8080"
     restart: on-failure
     env_file:
       - devops/docker-env/.env
@@ -62,9 +70,8 @@ services:
     depends_on:
       - indrz_db
     volumes:
-      - ${PWD}/data/indrz/media:/opt/data/media
-      - ${PWD}/data/indrz/static:/opt/data/static
-      - ${PWD}/data/indrz/logs:/usr/src/app/logs
+      - indrz-media:/opt/data/media
+      - indrz-static:/opt/data/static
     restart: always
     env_file:
       - devops/docker-env/.env
@@ -77,9 +84,9 @@ services:
       context: .
       dockerfile: devops/docker/nginx/Dockerfile
     volumes:
-      - ${PWD}/data/indrz/static:/opt/data/static
+      - indrz-static:/opt/data/static
+      - indrz-www:/var/www/indrz
       - ${SSL_CERTIFICATES_PATH}:/etc/ssl
-      - ${PWD}/data/nginx/www:${WEB_FOLDER}
     ports:
       - 80:80
       - 443:443
@@ -88,17 +95,3 @@ services:
     restart: always
     depends_on:
       - indrz_api
-  # DB BACKUP
-#  db_backups:
-#    hostname: db-backups
-#    container_name: db-backups
-#    image: kartoza/pg-backup:13.0
-#    volumes:
-#      - ${PWD}/data/db-backups:/opt/data/backups
-#    ports:
-#      - ${POSTGRES_EXT_PORT}:5436
-#    env_file:
-#      - devops/docker-env/.env
-#    restart: always
-#    depends_on:
-#      - db_indrz
