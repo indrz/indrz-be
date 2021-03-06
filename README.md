@@ -18,10 +18,8 @@ documentation project here [indrz Docs](https://gitlab.com/indrz/indrz-doc) in t
 
 1. Visit `indrz/settings/`and copy the `example-env.env` file and save as `.env` file in root folder.
 2. Get Docker environment varialbles ready in `devops/docker-env` folder:
-    1.  `db.env`
-    2.  `db-backups.env`
-    3.  `geoserver.env`
-    4.  `indrz.env`
+    1.  `dev.env`
+    2.  `.env`
 3. [OPTIONAL] but recommended include SSL Certificates in `ssl/` folder
 4. Build all required Docker images
     ```
@@ -40,6 +38,13 @@ documentation project here [indrz Docs](https://gitlab.com/indrz/indrz-doc) in t
 
 ```
 psql -h localhost -U POSTGRES_USER -p POSTGRES_EXT_PORT -l
+docker exec -it indrz_db bash
+su postgres
+dropdb indrz
+createdb -O indrz indrz
+psql -c "create extension postgis" -d indrz
+psql -c "create extension pgrouting" -d indrz
+psql -c "alter role \"indrz\" IN DATABASE indrz set search_path = django,geodata,library,public" -d indrz
 ```
 
 ### User Make command
