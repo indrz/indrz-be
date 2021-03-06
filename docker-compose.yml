@@ -42,7 +42,7 @@ services:
     volumes:
       - indrz-geoserver:/opt/geoserver/data_dir
     ports:
-      - "${GEOSERVER_EXT_PORT}:8080"
+      - ${GEOSERVER_EXT_PORT}:8080
     restart: on-failure
     env_file:
       - devops/docker-env/.env
@@ -51,7 +51,7 @@ services:
     networks:
       - indrz-net
     healthcheck:
-      test: curl --fail -s http://localhost:8088/ || exit 1
+      test: curl --fail -s http://localhost:8600/ || exit 1
       interval: 1m30s
       timeout: 10s
       retries: 3
@@ -93,5 +93,7 @@ services:
     networks:
       - indrz-net
     restart: always
+    env_file:
+      - devops/docker-env/.env
     depends_on:
       - indrz_api
