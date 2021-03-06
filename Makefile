@@ -27,10 +27,10 @@ build-geoserver: ## Build Geoserver Image
 	docker-compose build geoserver
 
 run: ## Run Indrz Docker project (production-ready)
-	docker-compose -p $(PROJECT_NAME) up -d
+	docker-compose -p $(PROJECT_NAME) -f docker-compose.yml  up -d
 
 run-dev: ## Run Indrz Docker project in development mode
-	docker-compose -p $(PROJECT_NAME) -f docker-compose.yml -f docker-compose.dev.yml up -d
+	docker-compose -p $(PROJECT_NAME) -f docker-compose.dev.yml up -d
 
 collectstatic: ## Collect Django static files
 	docker exec -t indrz python manage.py collectstatic --clear --noinput
