@@ -1,0 +1,101 @@
+version: '3'
+
+networks:
+  indrz-net:
+
+volumes:
+  indrz-db:
+  indrz-geoserver:
+  indrz-static:
+  indrz-media:
+  indrz-www:
+
+services:
+  # POSTGRES DB
+  indrz_db:
+    hostname: indrz_db
+    container_name: indrz_db
+    image: kartoza/postgis:13.0
+    volumes:
+      - indrz-db:/var/lib/postgresql
+    ports:
+      - ${POSTGRES_EXT_PORT}:5432
+    networks:
+      - indrz-net
+    env_file:
+      - devops/docker-env/.env
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # GEOSERVER
+  geoserver:
+    hostname: geoserver
+    container_name: geoserver
+    image: indrz/geoserver:2.18.0
+    user: "1000"
+    build:
+      context: .
+      dockerfile: devops/docker/geoserver/Dockerfile
+    volumes:
+      - indrz-geoserver:/opt/geoserver/data_dir
+    ports:
+      - ${GEOSERVER_EXT_PORT}:8080
+    restart: on-failure
+    env_file:
+      - devops/docker-env/.env
+    depends_on:
+      - indrz_db
+    networks:
+      - indrz-net
+    healthcheck:
+      test: curl --fail -s http://localhost:8600/ || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+  # INDRZ BACK-END
+  indrz_api:
+    container_name: indrz_api
+    hostname: indrz_api
+    image: indrz/indrz-api:latest
+    build:
+      context: .
+      dockerfile: devops/docker/indrz/Dockerfile
+    command: gunicorn indrz.wsgi:application --bind 0.0.0.0:8000
+    expose:
+      - 8000
+    networks:
+      - indrz-net
+    depends_on:
+      - indrz_db
+    volumes:
+      - indrz-media:/opt/data/media
+      - indrz-static:/opt/data/static
+    restart: always
+    env_file:
+      - devops/docker-env/.env
+  # NGINX
+  nginx:
+    container_name: nginx
+    hostname: nginx
+    image: indrz/nginx:latest
+    build:
+      context: .
+      dockerfile: devops/docker/nginx/Dockerfile
+    volumes:
+      - indrz-static:/opt/data/static
+      - indrz-media:/opt/data/media
+      - indrz-www:/var/www/indrz
+      - ${SSL_CERTIFICATES_PATH}:/etc/ssl
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - indrz-net
+    restart: always
+    env_file:
+      - devops/docker-env/.env
+    depends_on:
+      - indrz_api
