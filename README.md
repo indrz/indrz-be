@@ -1,11 +1,11 @@
-# indrz backend
+# indrz Backend
 [Gitlab](https://gitlab.com/indrz/indrz-backend) hosts the main repo 
 Mirror repo is at [Github](https://github.com/indrz/indrz-be)
 
 ----------------------
 
 This is the [indrz](https://www.indrz.com) backend API code repository. You can find our 
-documentation project here [indrz Docs](https://gitlab.com/indrz/indrz-doc) in the folder content
+documentation here [indrz Docs](https://gitlab.com/indrz/indrz-doc)
 
 
 [![GitHub stars](https://img.shields.io/github/stars/indrz/indrz.svg?style=flat-square)](https://github.com/indrz/indrz/stargazers)
@@ -14,7 +14,7 @@ documentation project here [indrz Docs](https://gitlab.com/indrz/indrz-doc) in t
 [![license](https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square)](https://raw.githubusercontent.com/indrz/indrz/master/LICENSE)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/indrz/indrz.svg?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=%5Bobject%20Object%5D)
 
-## Quick Start
+## Quick Start Backend Setup
 
 1. Visit `indrz/settings/`and copy the `example-env.env` file and save as `.env` file in root folder.
 2. Get Docker environment varialbles ready in `devops/docker-env` folder:
