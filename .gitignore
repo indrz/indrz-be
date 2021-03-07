@@ -8,9 +8,7 @@ indrz/settings/.env
 indrz/.env
 .env
 .env.*
-/devops/docker-env/db.env
-/devops/docker-env/db-backups.env
-/devops/docker-env/geoserver.env
+
 
 ## Directory-based project format:
 .idea/
