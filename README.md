@@ -20,7 +20,7 @@ documentation here [indrz Docs](https://gitlab.com/indrz/indrz-doc)
 2. Get Docker environment varialbles ready in `devops/docker-env` folder:
     1.  `dev.env`
     2.  `.env`
-3. [OPTIONAL] but recommended include SSL Certificates in `ssl/` folder
+3. [OPTIONAL PRODUCTION] include SSL Certificates in `ssl/` folder
 4. Build all required Docker images
     ```
     make build
@@ -29,11 +29,14 @@ documentation here [indrz Docs](https://gitlab.com/indrz/indrz-doc)
     ```
     make run
     ```
-6. Collect static file
+6. OPTIONAL ADD DEMO DATA such as organization, campus, buildings
+    ```
+    make import-demo-data
+    ```
+7. Collect static file
     ```
     make collectstatic
     ```
-
 ### Manage Postgres database
 
 ```
