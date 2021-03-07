@@ -1,0 +1,48 @@
+version: '3'
+
+networks:
+  indrz-net:
+
+volumes:
+  indrz-db:
+
+services:
+  indrz_db:
+    hostname: indrz_db
+    container_name: indrz_db
+    image: kartoza/postgis:13.0
+    volumes:
+      - indrz-db:/var/lib/postgresql
+    ports:
+      - ${POSTGRES_EXT_PORT}:5432
+    networks:
+      - indrz-net
+    env_file:
+      - devops/docker-env/dev.env
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  indrz_api:
+    container_name: indrz_api
+    hostname: indrz_api
+    image: indrz/indrz-api:latest
+    build:
+      context: .
+      dockerfile: devops/docker/indrz/Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - indrz-net
+    depends_on:
+      - indrz_db
+    volumes:
+      - ${PWD}/indrz:/app
+      - ${PWD}/data/indrz/media:/opt/data/media
+      - ${PWD}/data/indrz/static:/opt/data/static
+      - ${PWD}/data/indrz/logs:/usr/src/app/logs
+    restart: always
+    env_file:
+      - devops/docker-env/dev.env
