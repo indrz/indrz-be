@@ -40,6 +40,11 @@ collectstatic: ## Collect Django static files
 migrate:
 	docker exec -t indrz python manage.py migrate
 
+import-demo-data:
+	docker exec -t indrz python manage.py loaddata fixture_buildings_organization.json
+	docker exec -t indrz python manage.py loaddata fixture_buildings_campus.json
+	docker exec -t indrz python manage.py loaddata fixture_buildings_building.json
+
 pull: ## Pull source code from Git
 	git pull
 
