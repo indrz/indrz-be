@@ -23,9 +23,9 @@
         GDAL_VERSION=3.1.4
 
         ##########  database ############
-        POSTGRES_DB=indrztest
-        POSTGRES_USER=testman
-        POSTGRES_PASS=air
+        POSTGRES_DB=indrz
+        POSTGRES_USER=indrzguru
+        POSTGRES_PASS=secretpassword
         POSTGRES_HOST=indrz_db
         POSTGRES_PORT=5432
         POSTGRES_EXT_PORT=5434
@@ -37,14 +37,14 @@
         OPTIMIZE_LINE_WIDTH=false
         FOOTPRINTS_DATA_DIR=/opt/footprints_dir
         GEOWEBCACHE_CACHE_DIR=/opt/geoserver/data_dir/gwc
-        GEOSERVER_ADMIN_PASSWORD=secret10xSauce
+        GEOSERVER_ADMIN_PASSWORD=yourSecretPWD9090
         INITIAL_MEMORY=2G
         MAXIMUM_MEMORY=4G
         GEOSERVER_EXT_PORT=8600
 
         ##########  django ############
 
-        SECRET_KEY='8t+%(wa$3p*l_g86*&vt*@b9ujt2$p%5gy_+0dws$o%+s4kdlh'
+        SECRET_KEY='thissecret200needstobeeBIG8000LIKE999REALLYBIG2900'
 
         JS_DEBUG=True
         DEBUG=True
@@ -55,7 +55,7 @@
         MEDIA_URL=/media/
         MEDIA_ROOT=media
 
-        INDRZ_API_TOKEN='Token 42519ebe7bada4d7a151c76832b94614ea5b198d'
+        INDRZ_API_TOKEN='Token 123abcYOURTOKENVALUEISHERE'
 
         LOCALHOST_URL='http://localhost:8000'
 
@@ -82,11 +82,11 @@
         GDAL_VERSION=3.1.4
 
         ##########  database ############
-        POSTGRES_DB=indrztest
-        POSTGRES_USER=testman
-        POSTGRES_PASS=air
+        POSTGRES_DB=indrz
+        POSTGRES_USER=indrzguru
+        POSTGRES_PASS=secretpassword
         POSTGRES_HOST=indrz_db
-        POSTGRES_PORT=5433
+        POSTGRES_PORT=5432
         POSTGRES_EXT_PORT=5434
 
         ##########  geoserver ############
@@ -96,13 +96,13 @@
         OPTIMIZE_LINE_WIDTH=false
         FOOTPRINTS_DATA_DIR=/opt/footprints_dir
         GEOWEBCACHE_CACHE_DIR=/opt/geoserver/data_dir/gwc
-        GEOSERVER_ADMIN_PASSWORD=secret10xSauce
+        GEOSERVER_ADMIN_PASSWORD=yourSecretPWD9090
         INITIAL_MEMORY=2G
         MAXIMUM_MEMORY=4G
 
         ##########  django ############
 
-        SECRET_KEY='8t+%(wa$3p*l_g86*&vt*@b9ujt2$p%5gy_+0dws$o%+s4kdlh'
+        SECRET_KEY='thissecret200needstobeeBIG8000LIKE999REALLYBIG2900'
 
         JS_DEBUG=True
         DEBUG=True
@@ -113,7 +113,7 @@
         MEDIA_URL=/media/
         MEDIA_ROOT=media
 
-        INDRZ_API_TOKEN='Token 42519ebe7bada4d7a151c76832b94614ea5b198d'
+        INDRZ_API_TOKEN='Token 123abcYOURTOKENVALUEISHERE'
 
         LOCALHOST_URL='http://localhost:8000'
 
