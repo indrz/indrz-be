@@ -12,7 +12,7 @@ requests == 2.25.1
 python-dotenv==0.15.0
 sentry-sdk==0.14.1
 pandas==0.25.1
-pillow==8.1.1
+pillow==8.2.0
 GDAL==3.1.4
 
 
