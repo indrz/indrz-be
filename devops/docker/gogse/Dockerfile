@@ -2,7 +2,6 @@
 FROM python:3.8-slim-buster
 
 ENV PYTHONUNBUFFERED=1
-ENV DEBIAN_FRONTEND=noninteractive
 ENV GDAL_SKIP=DODS
 
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
@@ -15,7 +14,7 @@ ARG GEOS_VERSION
 ARG PROJ_VERSION
 ARG GDAL_VERSION
 
-RUN apt-get update && apt-get install -y --no-install-recommends \ 
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \ 
   build-essential wget make \
   libpq-dev sqlite3 libsqlite3-dev libsqlite3-mod-spatialite gettext pkg-config && \
   apt-get -y --purge autoremove && \
@@ -42,3 +41,14 @@ RUN cd /tmp && \
     tar -zxf gdal-${GDAL_VERSION}.tar.gz && \
     cd gdal-${GDAL_VERSION} && \
     ./configure && make -j $(nproc) && make install && ldconfig
+
+# Clean
+RUN cd /tmp && rm -fr \
+    geos-${GEOS_VERSION}.tar.bz2 \
+    geos-${GEOS_VERSION} \
+    proj-${PROJ_VERSION}.tar.gz \
+    proj-${PROJ_VERSION} \
+    gdal-${GDAL_VERSION}.tar.gz \
+    gdal-${GDAL_VERSION} && \
+    apt-get purge -y --auto-remove build-essential
+

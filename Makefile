@@ -15,7 +15,7 @@ help: ## This help.
 build: build-gogse build-indrz build-geoserver build-nginx  ## Build all Docker images
 
 build-gogse: ## Build Gomogi Geospatial Environment (GDAL, PROJ, GEOS)
-	docker build --build-arg GEOS_VERSION --build-arg PROJ_VERSION --build-arg GDAL_VERSION -t gogse:latest - < devops/docker/gogse/Dockerfile
+	docker build --build-arg GEOS_VERSION --build-arg PROJ_VERSION --build-arg GDAL_VERSION -t gogse:${GEOS_VERSION}-${PROJ_VERSION}-${GDAL_VERSION} - < devops/docker/gogse/Dockerfile
 
 build-nginx: ## Build Nginx Image
 	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) nginx

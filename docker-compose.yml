@@ -25,11 +25,11 @@ services:
     env_file:
       - devops/docker-env/.env
     restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -U postgres"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
   # GEOSERVER
   geoserver:
     hostname: geoserver
