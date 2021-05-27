@@ -5,6 +5,7 @@
 - Docker
 - Docker Compose
 - Git
+- make
 
 **Install**
 
@@ -61,10 +62,10 @@ SENTRY_URL=''
 LOGFILE_DIR=/logs/
 ```
 
-- Install build packages
+- Install make 
 
 ```bash
-sudo apt-get install -y build-essentials
+sudo apt-get install -y make
 ```
 
 - Start builds
@@ -147,6 +148,10 @@ branch: `devops-docker-v2`
 - Sample env files must be updated
 
 ## Changelog
+branch: `main` - 27.05.2021
+- Remove `indrz_db` healthcheck in docker-compose file
+- Add cleaner task to `gogse` Dockerfile
+- Switch `indrz_api` default command to gunicorn
 
 branch: `devops-docker-v2`
 

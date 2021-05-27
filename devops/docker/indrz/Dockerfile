@@ -1,4 +1,8 @@
-FROM gogse:latest
+ARG GEOS_VERSION
+ARG PROJ_VERSION
+ARG GDAL_VERSION
+
+FROM gogse:${GEOS_VERSION}-${PROJ_VERSION}-${GDAL_VERSION}
 
 # Install packages
 RUN apt-get update && apt-get install binutils bzip2 wget make g++ -y && \
