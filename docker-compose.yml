@@ -23,7 +23,7 @@ services:
     networks:
       - indrz-net
     env_file:
-      - devops/docker-env/.env
+      - devops/docker/.env
     restart: always
     # healthcheck:
     #   test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -45,7 +45,7 @@ services:
       - ${GEOSERVER_EXT_PORT}:8080
     restart: on-failure
     env_file:
-      - devops/docker-env/.env
+      - devops/docker/.env
     depends_on:
       - indrz_db
     networks:
@@ -74,7 +74,7 @@ services:
       - indrz-static:/opt/data/static
     restart: always
     env_file:
-      - devops/docker-env/.env
+      - devops/docker/.env
   # NGINX
   nginx:
     container_name: nginx
@@ -94,6 +94,6 @@ services:
       - indrz-net
     restart: always
     env_file:
-      - devops/docker-env/.env
+      - devops/docker/.env
     depends_on:
       - indrz_api

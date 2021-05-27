@@ -8,7 +8,7 @@
 **Install**
 
 - Clone the repo and `cd indrz-backend`
-- Create `devops/docker-env/.env` file and set variables
+- Create `devops/docker/.env` file and set variables
 - Create `indrz/settings/.env` file and set variables
 
         ```bash
@@ -141,7 +141,7 @@ Web page: [http://35.241.139.208/api/](http://35.241.139.208/api/)
 branch: `devops-docker-v2`
 
 - Duplicated `.env` files
-    - `devops/docker-env/.env`
+    - `devops/docker/.env`
     - `indrz/settings/.env`
 - Sample env files must be updated
 
