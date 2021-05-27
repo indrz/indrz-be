@@ -4,6 +4,7 @@
 
 - Docker
 - Docker Compose
+- Git
 
 **Install**
 
@@ -11,54 +12,54 @@
 - Create `devops/docker/.env` file and set variables
 - Create `indrz/settings/.env` file and set variables
 
-        ```bash
-        ########## docker ############
-        PROJECT_NAME=indrz-backend
-        ENV_TYPE=prod
-        TIMEZONE=Europe/Vienna
-        SSL_CERTIFICATES_PATH=./ssl
-        WEB_FOLDER=/var/www
+```bash
+########## docker ############
+PROJECT_NAME=indrz-backend
+ENV_TYPE=prod
+TIMEZONE=Europe/Vienna
+SSL_CERTIFICATES_PATH=./ssl
+WEB_FOLDER=/var/www
 
-        ########## versions ############
-        GEOS_VERSION=3.8.1
-        PROJ_VERSION=6.3.2
-        GDAL_VERSION=3.1.4
+########## versions ############
+GEOS_VERSION=3.8.1
+PROJ_VERSION=6.3.2
+GDAL_VERSION=3.1.4
 
-        ########## database ############
-        POSTGRES_DB=indrz
-        POSTGRES_USER=indrzguru
-        POSTGRES_PASS=secretpassword
-        POSTGRES_HOST=indrz_db
-        POSTGRES_PORT=5432
-        POSTGRES_EXT_PORT=5434
+########## database ############
+POSTGRES_DB=indrz
+POSTGRES_USER=indrzguru
+POSTGRES_PASS=secretpassword
+POSTGRES_HOST=indrz_db
+POSTGRES_PORT=5432
+POSTGRES_EXT_PORT=5434
 
-        ########## geoserver ############
-        GEOSERVER_DATA_DIR=/opt/geoserver/data_dir
-        ENABLE_JSONP=true
-        MAX_FILTER_RULES=20
-        OPTIMIZE_LINE_WIDTH=false
-        FOOTPRINTS_DATA_DIR=/opt/footprints_dir
-        GEOWEBCACHE_CACHE_DIR=/opt/geoserver/data_dir/gwc
-        GEOSERVER_ADMIN_PASSWORD=yourSecretPWD9090
-        INITIAL_MEMORY=2G
-        MAXIMUM_MEMORY=4G
-        GEOSERVER_EXT_PORT=8600
+########## geoserver ############
+GEOSERVER_DATA_DIR=/opt/geoserver/data_dir
+ENABLE_JSONP=true
+MAX_FILTER_RULES=20
+OPTIMIZE_LINE_WIDTH=false
+FOOTPRINTS_DATA_DIR=/opt/footprints_dir
+GEOWEBCACHE_CACHE_DIR=/opt/geoserver/data_dir/gwc
+GEOSERVER_ADMIN_PASSWORD=yourSecretPWD9090
+INITIAL_MEMORY=2G
+MAXIMUM_MEMORY=4G
+GEOSERVER_EXT_PORT=8600
 
-        ########## django ############
-        SECRET_KEY='thissecret200needstobeeBIG8000LIKE999REALLYBIG2900'
-        JS_DEBUG=True
-        DEBUG=True
-        STATIC_URL=/static/
-        STATIC_ROOT=staticfiles
-        STATIC_FOLDER=static
-        MEDIA_URL=/media/
-        MEDIA_ROOT=media
-        INDRZ_API_TOKEN='Token 123abcYOURTOKENVALUEISHERE'
-        LOCALHOST_URL='http://localhost:8000'
-        ALLOWED_HOSTS=localhost
-        SENTRY_URL=''
-        LOGFILE_DIR=/logs/
-        ```
+########## django ############
+SECRET_KEY='thissecret200needstobeeBIG8000LIKE999REALLYBIG2900'
+JS_DEBUG=True
+DEBUG=True
+STATIC_URL=/static/
+STATIC_ROOT=staticfiles
+STATIC_FOLDER=static
+MEDIA_URL=/media/
+MEDIA_ROOT=media
+INDRZ_API_TOKEN='Token 123abcYOURTOKENVALUEISHERE'
+LOCALHOST_URL='http://localhost:8000'
+ALLOWED_HOSTS=localhost
+SENTRY_URL=''
+LOGFILE_DIR=/logs/
+```
 
 - Install build packages
 
