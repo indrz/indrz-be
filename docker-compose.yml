@@ -64,7 +64,7 @@ services:
       context: .
       dockerfile: devops/docker/indrz/Dockerfile
       args:
-        GEOS_VERSION: ${GEOS_VERSION} 
+        GEOS_VERSION: ${GEOS_VERSION}
         PROJ_VERSION: ${PROJ_VERSION}
         GDAL_VERSION: ${GDAL_VERSION}
     ports:
@@ -78,7 +78,7 @@ services:
       - indrz-static:/opt/data/static
     restart: always
     env_file:
-      - devops/docker/.env     
+      - devops/docker/.env
   # NGINX
   nginx:
     container_name: nginx
@@ -89,6 +89,7 @@ services:
       dockerfile: devops/docker/nginx/Dockerfile
     volumes:
       - indrz-static:/opt/data/static
+      - indrz-media:/opt/data/media
       - indrz-www:/var/www/indrz
       - ${SSL_CERTIFICATES_PATH}:/etc/ssl
     ports:
