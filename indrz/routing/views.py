@@ -6,20 +6,21 @@ import logging
 import traceback
 from collections import OrderedDict
 
-import requests
-from buildings.models import BuildingFloorSpace
-from django.conf import settings
+from api import search_only
 from django.db import connection
 from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404
+from django.utils.translation import get_language_from_request
 from geojson import loads, Feature, FeatureCollection, Point, MultiPoint
-from poi_manager.models import Poi
-from poi_manager.serializers import PoiSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from buildings.models import BuildingFloorSpace
+from poi_manager.models import Poi
+from poi_manager.serializers import PoiSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -123,16 +124,11 @@ def nearest_edge(xyz_coords, position):
     sql_start = """(SELECT ST_AsGeoJSON(ST_LineSubstring(geom, 0, ST_LineLocatePoint(geom,ST_SetSRID(ST_MakePoint({0},{1},{2}),3857)))))""".format(
         x_coord, y_coord, floor)
     sql_position = ''
-    # print(sql_end)
-    # print(sql_start)
-    # print(position)
 
     if position == 'start':
         sql_position = sql_end
     if position == 'end':
         sql_position = sql_start
-
-    # print(sql_position)
 
     query = """ SELECT id as edge,
                 geom as geom,
@@ -152,8 +148,6 @@ def nearest_edge(xyz_coords, position):
 
     tmp1 = query.replace("'(SELECT", "(SELECT")
     ff = tmp1.replace("))'", "))")
-    # print(ff)
-    # print(query.replace("')", ")"))
     cur.execute(ff)
 
     # get the result
@@ -563,7 +557,7 @@ class RoutePoiToPoi(APIView):
     Route from one POI to any other POI
     """
 
-    def get(self, request, start_poi_id, end_poi_id, route_type):
+    def get(self, request, start_poi_id, end_poi_id, route_type='type=0'):
         """
         Sample Request URL: /directions/start-poi-id=234&end-poi-id=1122&type=0?format=json
         Optionally restricts the returned purchases to a given poi,
@@ -706,10 +700,7 @@ class NearestPoi(APIView):
         :param coordinates: coordinate pair x,y format  1234.56,987.54
         :param floor: integer number between -1 and 8
         :param poi_cat_id: integer
-        :return: JSON poi data
-
-        Example:
-        http://localhost:8000/en/indrz/api/v1/directions/near/coords=1826685.08369146,6142499.125477515&floor=4&poiCatId=27
+        :example /api/v1/directions/near/coords=1826699.1815499999,6142531.790750001&floor=5&poiCatId=13/?format=json
 
     """
     def get(self, request, coordinates, floor, poi_cat_id):
@@ -720,6 +711,7 @@ class NearestPoi(APIView):
         :param floor: integer number between -1 and 8
         :param poi_cat_id: integer
         :return: JSON poi data
+        :example /api/v1/directions/near/coords=1826699.1815499999,6142531.790750001&floor=5&poiCatId=13/?format=json
         """
 
         coords = coordinates.split("=")[1]
@@ -727,7 +719,7 @@ class NearestPoi(APIView):
         y_start_coord = float(coords.split(',')[1])
         start_floor_num = int(floor.split('=')[1])
         poi_cat_id_v = int(poi_cat_id.split("=")[1])
-        lang_code = request.LANGUAGE_CODE
+        lang_code = get_language_from_request(request)
 
         poi_data = find_closest_poi(coords, start_floor_num, poi_cat_id_v, lang_code)
 
@@ -820,7 +812,7 @@ def route_to_nearest_poi(request, start_xy, floor, poi_cat_id, reversed):
     start_floor_num = int(floor.split('=')[1])
     poi_cat_id_v = int(poi_cat_id.split("=")[1])
     rev_val = reversed.split("=")[1]
-    lang_code = request.LANGUAGE_CODE
+    lang_code = get_language_from_request(request)
 
 
     startid = find_closest_network_node(x_start_coord, y_start_coord, start_floor_num)
@@ -1052,7 +1044,6 @@ def split_route(route_segments, start_node_id, end_node_id, coord_data):
 
         if id in edge_ids:
             # do split line at coord on edge is already part of the route
-            # print("edge is in")
             pass
 
         else:
@@ -1153,7 +1144,6 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
                                                                nodes=route_node_array,
                                                                start_node=start_node_id, end_node=end_node_id)
 
-    print(routing_query)
     # run our shortest path query
     if start_node_id or end_node_id:
         if start_node_id != end_node_id:
@@ -1207,15 +1197,14 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
 
 
 @api_view(['GET', 'POST'])
-def create_route_from_id(request, start_room_id, end_room_id, route_type):
+def create_route_from_id(request, start_room_id, end_room_id, route_type, front_office_id=None):
     """
-    Generate a GeoJSON route from external room id
-    to external room id
-    :param building_id: id of building as integer
+    Generate a GeoJSON route from space id to space id
     :param request: GET or POST request
-    :param start_room_id: an integer room number
-    :param end_room_id: an integer room number
-    :param route_type: an integer room type
+    :param start_room_id: an integer space id
+    :param end_room_id: an integer space id
+    :param route_type: an integer route type
+    :param front_office_id: an integer of space id for the front office
     :return: a GeoJSON linestring of the route
     """
 
@@ -1223,7 +1212,6 @@ def create_route_from_id(request, start_room_id, end_room_id, route_type):
 
         start_room = int(start_room_id.split("=")[1])
         end_room = int(end_room_id.split("=")[1])
-        # building_id = int(building_id.split("=")[1])
 
         start_node_id = get_room_centroid_node(start_room)
         end_node_id = get_room_centroid_node(end_room)
@@ -1236,7 +1224,12 @@ def create_route_from_id(request, start_room_id, end_room_id, route_type):
                 if start_node_id == end_node_id:
                     return Response({'error': 'start and end node cannot be the same'}, status.HTTP_400_BAD_REQUEST)
                 else:
-                    res = run_route(start_node_id, end_node_id, route_type)
+                    if front_office_id:
+                        foid = int(front_office_id.split("=")[1])
+                        front_office_node = get_room_centroid_node(foid)
+                        res = run_route(start_node_id, end_node_id, route_type, mid_node_id=front_office_node)
+                    else:
+                        res = run_route(start_node_id, end_node_id, route_type)
                     if res:
                         res['route_info']['start_name'] = start_qs.room_code
                         res['route_info']['end_name'] = end_qs.room_code
@@ -1278,6 +1271,9 @@ def route_space_id_and_poi_id(request, space_id, poi_id, route_type, reversed_di
         y_coord_poi =poi.geom.coords[0][1]
         poi_floor = poi.floor_num
 
+        space = BuildingFloorSpace.objects.get(pk=end_room_id)
+
+
         start_node_id = find_closest_network_node(x_coord_poi, y_coord_poi, poi_floor)
 
         if reversed_direction:
@@ -1285,12 +1281,16 @@ def route_space_id_and_poi_id(request, space_id, poi_id, route_type, reversed_di
             if "error" in res:
                 return Response({"error": res}, status=status.HTTP_404_NOT_FOUND)
             else:
+                res['route_info']['start_name'] = space.room_code
+                res['route_info']['end_name'] = poi.name
                 return Response(res)
         else:
             res = run_route(start_node_id, end_node_id, "0")
             if "error" in res:
                 return Response({"error": res}, status=status.HTTP_404_NOT_FOUND)
             else:
+                res['route_info']['start_name'] = poi.name
+                res['route_info']['end_name'] = space.room_code
                 return Response(res)
     else:
         return Response({'error': 'either no JSON or no key params in your JSON'}, status=status.HTTP_404_NOT_FOUND)
@@ -1338,16 +1338,6 @@ def create_mid_point(feature):
         return None
 
 
-class RouteSearchToPoi(APIView):
-
-    def get(self, request, start_term, end_poi_id):
-        bach_results = searchBachApi(start_term, "search")
-
-        lang_code = request.LANGUAGE_CODE
-
-        poi_res = searchPoi(lang_code, searchString, "search")
-
-
 @api_view(['GET', 'POST'])
 def create_route_from_search(request, start_term, end_term, route_type):
     """
@@ -1365,7 +1355,7 @@ def create_route_from_search(request, start_term, end_term, route_type):
 
     if request.method == 'GET' or request.method == 'POST':
 
-        lang_code = request.LANGUAGE_CODE
+        lang_code = get_language_from_request(request)
 
         start_room = start_term.split("=")[1]
         end_room = end_term.split("=")[1]
@@ -1374,19 +1364,15 @@ def create_route_from_search(request, start_term, end_term, route_type):
         mid_name = ""
         mid_coords = None
         mid_point_info = None
+        start_aks = ""
 
-        in_url = settings.LOCALHOST_URL + "search/{0}?format=json".format(start_room)
-        end_url = settings.LOCALHOST_URL + "search/{0}?format=json".format(end_room)
+        res_start = search_only(start_room, lang_code)
+        res_end = search_only(end_room, lang_code)
 
-        headers = {'accept-language': lang_code}
+        if res_start and res_end:
 
-        res_start_searchany = requests.get(url=in_url, verify=False, headers=headers)
-        res_end_searchany = requests.get(url=end_url, verify=False, headers=headers)
-
-        if res_start_searchany.status_code == 200 and res_end_searchany.status_code == 200:
-
-            fx1 = res_start_searchany.json()
-            fx2 = res_end_searchany.json()
+            fx1 = res_start
+            fx2 = res_end
 
             if 'aks_nummer' in fx1['features'][0]['properties']:
                 if fx1['features'][0]['properties']['aks_nummer'] != "":

@@ -1,8 +1,8 @@
 # search anything on campus
 import json
 import logging
-
-
+from django.conf import settings
+import re
 from django.contrib.gis.gdal import OGRGeometry
 from django.db.models import Q
 from django.utils.translation import ugettext as _
@@ -53,7 +53,33 @@ def search_any(request, q, format=None):
     # =================================================================================================================================
     # external data api lookup finished, if entries present --> return them, else do a lookup in our local data.
 
-def searchSpaces(lang_code, search_text, mode):
+def search_only(q, lang_code):
+
+    # force 4 or more characters for search functions
+    if len(q) < 3:
+        return Response({"error":"4 or more characters needed for search"}, status=status.HTTP_200_OK)
+
+    searchString = q
+
+    # match a coodinate pair with floor num separated by ,  ex) 123.123,564.456,4
+    if re.match("[-]?\d+\.?\d+,\d+\.\d+,\d+$", searchString):
+        is_xyz = True
+
+    # search external unique ids
+    # find BIG unique code
+    if re.match("([0-9]{0,3}_[0-9]{0,2}_)([a-zA-Z]{0,2}[0-9]{0,2}_[0-9]{0,8})?", searchString.upper()):
+        # 001_10  is the first part needed
+        # 001_10_OG01_1902721  after 6th char is optional
+
+        spaces_aks = searchSpaces(searchString, "search")
+
+        if spaces_aks:
+            return spaces_aks
+        else:
+            return {"error":"no data found"}
+
+
+def searchSpaces(search_text, mode):
     """
 
     :param lang_code: such as "en" or "de"
