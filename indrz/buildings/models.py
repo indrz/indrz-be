@@ -239,6 +239,8 @@ class BuildingFloor(gis_models.Model):
 
     geom = gis_models.MultiPolygonField(srid=3857, spatial_index=True, null=True, blank=True)
 
+    tags = ArrayField(ArrayField(gis_models.CharField(max_length=255),
+                                 blank=True, null=True), null=True, blank=True)
 
     class Meta:
         ordering = ['floor_num']

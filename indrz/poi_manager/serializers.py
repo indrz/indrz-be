@@ -7,17 +7,26 @@ from .models import Poi, PoiCategory
 
 
 class PoiSerializer(GeoFeatureModelSerializer):
-    category_name = CharField(source='category.cat_name', read_only=True)
-    category_name_de = CharField(source='category.cat_name_de', read_only=True)
-    category_name_en = CharField(source='category.cat_name_en', read_only=True)
-    category_icon_css_name = CharField(source='category.icon_css_name', read_only=True )
     icon = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
 
     class Meta:
         model = Poi
         geo_field = 'geom'
-        fields = ('id', 'name', 'name_en', 'name_de', 'enabled', 'floor_num', 'floor_name', 'icon', 'category',
-                  'category_name', 'category_name_en', 'category_name_de', 'category_icon_css_name')
+        fields = ('id', 'name', 'name_en', 'name_de', 'enabled',
+                  'floor_num', 'floor_name', 'icon', 'category')
+
+    def get_category(self, Poi):
+        """
+        Each poi belongs to a category with or without a parent
+        :param Poi: object
+        :return: category details
+        """
+        if Poi.category:
+            return {"id":Poi.category.id, "name":Poi.category.cat_name, "name_en": Poi.category.cat_name_en,
+                    "name_de":Poi.category.cat_name_de, "icon": self.get_icon(Poi),
+                    "icon_css": Poi.category.icon_css_name,
+                    "parent": Poi.category.parent.cat_name if Poi.category.parent else ""}
 
     def get_icon(self, Poi):
         """
@@ -25,15 +34,14 @@ class PoiSerializer(GeoFeatureModelSerializer):
         :param Poi: poi obeject
         :return: a field ie property called icon for model Poi
         """
-        request = self.context.get('request')
         if Poi.category:
             if Poi.category.fk_poi_icon:
                 if Poi.category.fk_poi_icon.icon.url:
                     icon_url = Poi.category.fk_poi_icon.icon.url
-                    if request:
-                        return request.build_absolute_uri(icon_url)
+                    if icon_url:
+                        return icon_url
                     else:
-                        return settings.LOCALHOST_URL + icon_url
+                        return None
                 else:
                     return None
             else:
