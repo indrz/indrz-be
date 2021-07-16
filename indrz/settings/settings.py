@@ -19,7 +19,6 @@ if os.name == 'nt':
     os.environ['GDAL_DATA'] = OSGEO4W + r"\share\epsg_csv"
     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
 
-
 if DEBUG == False:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
@@ -32,6 +31,7 @@ if DEBUG == False:
         # django.contrib.auth) you may enable sending PII data.
         send_default_pii=True
     )
+
 
 AUTH_USER_MODEL = 'users.User'  # my app is called users  hence users.User I could make app called core.Users
 
@@ -94,14 +94,12 @@ TEMPLATES = [
                 # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
                 # list if you haven't customized them:
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
-
+                'django.contrib.messages.context_processors.messages',
             ],
             # not needed if APP_DIRS is true
             # 'loaders':[(
