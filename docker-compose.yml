@@ -19,17 +19,19 @@ services:
     volumes:
       - indrz-db:/var/lib/postgresql
     ports:
-      - ${POSTGRES_EXT_PORT}:5432
+      - 5434:5432
     networks:
       - indrz-net
     env_file:
-      - devops/docker/.env
+      - .env
     restart: always
-    # healthcheck:
-    #   test: ["CMD-SHELL", "pg_isready -U postgres"]
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 5
+#    healthcheck:
+#      test: "exit 0"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   # GEOSERVER
   geoserver:
     hostname: geoserver
@@ -45,7 +47,7 @@ services:
       - ${GEOSERVER_EXT_PORT}:8080
     restart: on-failure
     env_file:
-      - devops/docker/.env
+      - .env
     depends_on:
       - indrz_db
     networks:
@@ -63,10 +65,6 @@ services:
     build:
       context: .
       dockerfile: devops/docker/indrz/Dockerfile
-      args:
-        GEOS_VERSION: ${GEOS_VERSION}
-        PROJ_VERSION: ${PROJ_VERSION}
-        GDAL_VERSION: ${GDAL_VERSION}
     ports:
       - 8000:8000
     networks:
@@ -78,27 +76,4 @@ services:
       - indrz-static:/opt/data/static
     restart: always
     env_file:
-      - devops/docker/.env
-  # NGINX
-  nginx:
-    container_name: nginx
-    hostname: nginx
-    image: indrz/nginx:latest
-    build:
-      context: .
-      dockerfile: devops/docker/nginx/Dockerfile
-    volumes:
-      - indrz-static:/opt/data/static
-      - indrz-media:/opt/data/media
-      - indrz-www:/var/www/indrz
-      - ${SSL_CERTIFICATES_PATH}:/etc/ssl
-    ports:
-      - 80:80
-      - 443:443
-    networks:
-      - indrz-net
-    restart: always
-    env_file:
-      - devops/docker/.env
-    depends_on:
-      - indrz_api
+      - .env
