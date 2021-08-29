@@ -1,23 +1,23 @@
-from django.conf import settings
 from rest_framework import serializers
-from rest_framework.fields import CharField
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from .models import Poi, PoiCategory
 
 
 class PoiSerializer(GeoFeatureModelSerializer):
-    category_name = CharField(source='category.cat_name', read_only=True)
-    category_name_de = CharField(source='category.cat_name_de', read_only=True)
-    category_name_en = CharField(source='category.cat_name_en', read_only=True)
-    category_icon_css_name = CharField(source='category.icon_css_name', read_only=True )
     icon = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
 
     class Meta:
         model = Poi
         geo_field = 'geom'
-        fields = ('id', 'name', 'name_en', 'name_de', 'enabled', 'floor_num', 'floor_name', 'icon', 'category',
-                  'category_name', 'category_name_en', 'category_name_de', 'category_icon_css_name')
+        fields = '__all__'
+
+    def get_category(self, Poi):
+            cat = {'id': Poi.category.id, 'name': Poi.category.cat_name,
+                  'name_en': Poi.category.cat_name_en, 'name_de': Poi.category.cat_name_de,
+            'icon': Poi.category.fk_poi_icon.icon.url, 'enabled': Poi.category.enabled}
+            return cat
 
     def get_icon(self, Poi):
         """
@@ -52,9 +52,9 @@ class PoiCategorySerializer(serializers.ModelSerializer):
             if PoiCategory.fk_poi_icon.icon and hasattr(PoiCategory.fk_poi_icon.icon, "url"):
                 icon_url = PoiCategory.fk_poi_icon.icon.url
                 if request:
-                    return request.build_absolute_uri(icon_url)
+                    return icon_url
                 else:
-                    return settings.LOCALHOST_URL + icon_url
+                    return icon_url
             else:
                 return None
         else:
