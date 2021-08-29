@@ -1,14 +1,11 @@
-import os
-
-from buildings.models import BuildingFloor, Campus
 from django.contrib.gis.db import models as gis_model
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.db.models.signals import post_delete
-from django.dispatch.dispatcher import receiver
 from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 from taggit.managers import TaggableManager
+
+from buildings.models import BuildingFloor, Campus
 
 
 # class BaseLookupDomain(models.Model):
@@ -49,17 +46,8 @@ class PoiIcon(models.Model):
     An image added to an icon of the map.
     """
     name = models.CharField(verbose_name=_('Name of map icon'),max_length=255)
-    icon = models.ImageField(verbose_name=_('Poi icon image'), upload_to='poi-icons', max_length=512)
-
-    def pictogram_img(self):
-        parse_url = self.icon.url
-        n_url = parse_url.replace("media/", "")
-        print(parse_url)
-
-        return u'<img src="%s" />' % (n_url if self.icon else "")
-
-    pictogram_img.short_description = _("Pictogram")
-    pictogram_img.allow_tags = True
+    icon = models.ImageField(verbose_name=_('Poi icon image'), upload_to='poi_icons',
+                             max_length=512, default="/poi_icons/other_pin.png")
 
     class Meta:
         ordering = ('name', )
@@ -74,14 +62,6 @@ class PoiIcon(models.Model):
 
     def __str__(self):
         return self.name
-
-
-@receiver(post_delete, sender=PoiIcon)
-def poi_icon_delete(sender, instance, **kwargs):
-    # Pass false so FileField doesn't save the model.
-    if instance.poi_icon and instance.poi_icon.name:
-        if os.path.isfile(instance.poi_icon.path):
-            os.remove(instance.poi_icon.path)
 
 
 class PoiCategory(MPTTModel):
