@@ -1,8 +1,4 @@
-ARG GEOS_VERSION
-ARG PROJ_VERSION
-ARG GDAL_VERSION
-
-FROM gogse:${GEOS_VERSION}-${PROJ_VERSION}-${GDAL_VERSION}
+FROM indrz/gogse:latest
 
 # Install packages
 RUN apt-get update && apt-get install binutils bzip2 wget make g++ -y && \
@@ -25,5 +21,5 @@ ENTRYPOINT ["bash", "/entrypoint.sh"]
 
 EXPOSE 8000
 
-#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+#CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
