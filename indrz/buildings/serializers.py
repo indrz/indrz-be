@@ -27,13 +27,6 @@ class CampusLocationsSerializer(GeoFeatureModelSerializer):
         geo_field = 'geom'
         fields = ('id', 'campus_name', 'description', 'fk_organization', 'buildings' )
 
-# class ItemSerializer(serializers.ModelSerializer):
-#     category_name = serializers.RelatedField(source='category', read_only=True)
-#
-#     class Meta:
-#         model = Item
-#         fields = ('id', 'name', 'category_name')
-
 
 class BuildingFloorSpaceSerializer(GeoFeatureModelSerializer):
     building_name = serializers.StringRelatedField(source='fk_building', read_only=True)
@@ -74,13 +67,6 @@ class BuildingSerializer(serializers.ModelSerializer):
         model = Building
         fields = ('id', 'building_name', 'num_floors', 'fk_organization', 'fk_campus')
 
-class BuildingSerializerDetails(serializers.ModelSerializer):
-
-    buildingfloor_set = FloorSerializerOld(many=True, read_only=True)
-
-    class Meta:
-        model = Building
-        fields = ('id', 'building_name', 'num_floors', 'buildingfloor_set')
 
 class FloorSerializerDetails(serializers.ModelSerializer):
 
