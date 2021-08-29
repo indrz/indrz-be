@@ -242,11 +242,12 @@ class BuildingFloor(gis_models.Model):
     tags = ArrayField(ArrayField(gis_models.CharField(max_length=255),
                                  blank=True, null=True), null=True, blank=True)
 
+
     class Meta:
         ordering = ['floor_num']
 
     def __str__(self):
-        return self.short_name or ''
+        return self.short_name + " (" + self.fk_building.name + " )" or ''
 
 
 class FloorSpaceBase(gis_models.Model):
@@ -264,6 +265,7 @@ class FloorSpaceBase(gis_models.Model):
 
     fk_access_type = gis_models.ForeignKey(LtAccessType, null=True, blank=True, on_delete=gis_models.CASCADE)
     fk_building_floor = gis_models.ForeignKey(BuildingFloor, on_delete=gis_models.CASCADE)
+    fk_building = gis_models.ForeignKey(Building, on_delete=gis_models.CASCADE, null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -295,7 +297,6 @@ class BuildingFloorPlanLine(gis_models.Model):
 
     tags = ArrayField(ArrayField(gis_models.CharField(max_length=150), blank=True, null=True), null=True, blank=True)
 
-
     class meta:
         ordering = ['short_name']
 
@@ -312,7 +313,8 @@ class InteriorFloorSection(FloorSpaceBase):
     department = gis_models.CharField(verbose_name=_("Department name e.g Engineering"), max_length=256, null=True, blank=True)
     division = gis_models.CharField(verbose_name=_("Division"), max_length=256, null=True, blank=True)
     tags = ArrayField(ArrayField(gis_models.CharField(max_length=255), blank=True, null=True), null=True, blank=True)
-
+    rule_nearest_entrance = gis_models.ManyToManyField('poi_manager.Poi',
+                                                       limit_choices_to={'category': 13}, blank=True)
 
 class BuildingFloorSpace(FloorSpaceBase):
     """
