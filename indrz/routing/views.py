@@ -6,7 +6,6 @@ import logging
 import traceback
 from collections import OrderedDict
 
-from api import search_only
 from django.db import connection
 from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404
@@ -14,10 +13,10 @@ from django.utils.translation import get_language_from_request
 from geojson import loads, Feature, FeatureCollection, Point, MultiPoint
 from rest_framework import status
 from rest_framework.decorators import api_view
-from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.search import search_only
 from buildings.models import BuildingFloorSpace
 from poi_manager.models import Poi
 from poi_manager.serializers import PoiSerializer
@@ -89,19 +88,6 @@ def find_closest_network_node(x_coord, y_coord, floor):
     else:
         logger.debug("query is none check tolerance value of 200")
         return False
-
-
-
-class ExampleView(APIView):
-    """
-    A view that can accept POST requests with JSON content.
-    """
-    parser_classes = (JSONParser,)
-
-
-
-    def post(self, request, format=None):
-        return Response({'received data': request.data})
 
 
 def nearest_edge(xyz_coords, position):

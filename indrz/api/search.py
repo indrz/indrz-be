@@ -1,12 +1,9 @@
 # search anything on campus
 import json
 import logging
-from django.conf import settings
-import re
-from django.contrib.gis.gdal import OGRGeometry
-from django.db.models import Q
-from django.utils.translation import ugettext as _
 
+from django.db.models import Q
+from geojson import Feature, FeatureCollection
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -14,10 +11,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from geojson import Feature, FeatureCollection
-
-from poi_manager.models import Poi
 from buildings.models import BuildingFloorSpace
+from poi_manager.models import Poi
+from poi_manager.serializers import PoiSerializer
 
 logr = logging.getLogger(__name__)
 
@@ -38,7 +34,7 @@ def search_any(request, q, format=None):
     lang_code = "en"
     searchString = q
 
-    poi_data = searchPoi(lang_code, searchString, "search")
+    poi_data = searchPoi(lang_code, searchString)
     spaces_data = searchSpaces(lang_code, searchString, "search")
 
     if poi_data:
@@ -52,7 +48,6 @@ def search_any(request, q, format=None):
 
     # =================================================================================================================================
     # external data api lookup finished, if entries present --> return them, else do a lookup in our local data.
-
 def search_only(q, lang_code):
 
     # force 4 or more characters for search functions
@@ -79,10 +74,8 @@ def search_only(q, lang_code):
             return {"error":"no data found"}
 
 
-def searchSpaces(search_text, mode):
+def searchSpaces( search_text, mode):
     """
-
-    :param lang_code: such as "en" or "de"
     :param search_text: string value used to search agains
     :param mode: "autocomplete" or "search"
     :return:
@@ -126,9 +119,7 @@ def searchSpaces(search_text, mode):
         return None
 
 
-def searchPoi(lang_code, search_text, mode):
-
-    poi_list = []
+def searchPoi(lang_code, search_text):
 
     pois = Poi.objects.filter(Q(name__icontains=search_text) | Q(poi_tags__icontains=search_text)
                               | Q(category__cat_name__icontains=search_text)).filter(enabled=True)
@@ -137,79 +128,11 @@ def searchPoi(lang_code, search_text, mode):
         pois = Poi.objects.filter(Q(name_de__icontains=search_text) | Q(poi_tags__icontains=search_text)
                                   | Q(category__cat_name_de__icontains=search_text)).filter(enabled=True)
 
-    build_name = ""
-    icon_path = ""
-
     if pois:
-        for poi in pois:
-            if hasattr(poi.fk_building, 'building_name'):
-                build_name = poi.fk_building.building_name
-            if hasattr(poi.category.fk_poi_icon, 'poi_icon'):
-                icon_path = str(poi.category.fk_poi_icon.poi_icon)
-
-            center_geom = json.loads(poi.geom.geojson)
-
-            if lang_code == "de":
-                poi_data = {"label": poi.name_de, "name": poi.name_de, "name_de": poi.name_de, "type": "",
-                            "external_id": "",
-                            "centerGeometry": center_geom,
-                            "floor_num": poi.floor_num,
-                            "floor_name": poi.floor_name,
-                            "building": build_name, "aks_nummer": "",
-                            "roomcode": "",
-                            "parent": poi.category.cat_name_de,
-                            "category": {'id': poi.category_id,
-                                                'cat_name': poi.category.cat_name_de},
-                            "icon": icon_path,
-                            "poi_link_unique": "/?poi-id=" + str(poi.id) + "&floor=" + str(poi.floor_num),
-                            "poi_link_category": "/?poi-cat-id=" + str(poi.category_id),
-                            "src": "poi db", "poi_id": poi.id}
-
-                if mode == "search":
-                    new_feature_geojson = Feature(geometry=center_geom, properties=poi_data)
-                    poi_list.append(new_feature_geojson)
-                elif mode == "autocomplete":
-                    poi_list.append(poi_data)
-
-            else:
-                poi_data = {"label": poi.name, "name": poi.name, "name_de": poi.name_de, "type": "", "external_id": "",
-                         "centerGeometry": center_geom,
-                         "floor_num": poi.floor_num,
-                         "building": build_name, "aks_nummer": "",
-                         "roomcode": "",
-                         "parent": poi.category.cat_name,
-                         "category": {'id': poi.category_id, 'cat_name': poi.category.cat_name_en},
-                            "poi_link_unique": "/?poi-id=" + str(poi.id) + "&floor=" + str(poi.floor_num),
-                            "poi_link_category": "/?poi-cat-id=" + str(poi.category_id),
-                         "icon": icon_path,
-                         "src": "poi db", "poi_id": poi.id}
-
-                if mode == "search":
-                    new_feature_geojson = Feature(geometry=center_geom, properties=poi_data)
-                    poi_list.append(new_feature_geojson)
-                elif mode == "autocomplete":
-                    poi_list.append(poi_data)
-
-    spaces_list = [{"name": _(space.room_code), "name_" + lang_code: _(space.room_code), "id": space.id, "space_id": space.id} for
-                   space in
-                   BuildingFloorSpace.objects.filter(room_code__isnull=False).filter(room_code__icontains=search_text)]
-
-    if poi_list:
-
-        final_geojs_res = FeatureCollection(features=poi_list)
+        serializer = PoiSerializer(pois, many=True)
+        return serializer.data
     else:
-        final_geojs_res = False
-
-    if mode == "search":
-        if final_geojs_res:
-            return final_geojs_res
-        else:
-            return False
-    else:
-        if poi_list:
-            return poi_list
-        else:
-            return False
+        return False
 
 
 class searchAutoComplete(APIView):
@@ -230,7 +153,7 @@ class searchAutoComplete(APIView):
                 return Response(all_api_results)
         else:
 
-            poi_results = searchPoi(lang_code, search_text, "autocomplete")
+            poi_results = searchPoi(lang_code, search_text)
             spaces_data = searchSpaces(lang_code, search_text, 'autocomplete')
 
             if poi_results:
