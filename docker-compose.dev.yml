@@ -18,7 +18,7 @@ services:
     networks:
       - indrz-net
     env_file:
-      - devops/docker-env/dev.env
+      - .env-dev
     restart: always
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
@@ -45,4 +45,4 @@ services:
       - ${PWD}/data/indrz/logs:/usr/src/app/logs
     restart: always
     env_file:
-      - devops/docker-env/dev.env
+      - .env-dev
