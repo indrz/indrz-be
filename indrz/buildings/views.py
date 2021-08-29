@@ -6,18 +6,12 @@ import logging
 import geojson
 from django.contrib.gis.geos import GEOSGeometry
 from django.http import HttpResponse
-from geojson import Feature, FeatureCollection, Point
-from rest_framework import viewsets
-
+from geojson import Feature, FeatureCollection
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from buildings.models import Campus, Building, BuildingFloorSpace, BuildingFloor
-from buildings.serializers import (CampusSerializer,
-                                   CampusLocationsSerializer,
-                                   BuildingSerializer,
-                                   BuildingShortSerializer,
-                                   BuildingSerializerDetails,
+from buildings.models import Campus, Building, BuildingFloorSpace
+from buildings.serializers import (BuildingSerializer,
                                    BuildingFloorSpaceSerializer,
                                    BuildingFloorGeomSerializer,
                                    SpaceSerializer,
@@ -25,7 +19,6 @@ from buildings.serializers import (CampusSerializer,
                                    FloorSerializer
 
                                    )
-
 from buildings.serializers import FloorListSerializer
 
 logger = logging.getLogger(__name__)
@@ -138,7 +131,7 @@ def campus_buildings_short_list(request, campus_id, format=None):
     """
     if request.method == 'GET':
         buildings = Building.objects.filter(fk_campus=campus_id)
-        serializer = BuildingShortSerializer(buildings, many=True)
+        serializer = BuildingSerializer(buildings, many=True)
         return Response(serializer.data)
 
 
@@ -167,7 +160,7 @@ def building_list(request, format=None):
     """
     if request.method == 'GET':
         buildings = Building.objects.all()
-        serializer = BuildingShortSerializer(buildings, many=True)
+        serializer = BuildingSerializer(buildings, many=True)
         return Response(serializer.data)
 
         # elif request.method == 'POST':
