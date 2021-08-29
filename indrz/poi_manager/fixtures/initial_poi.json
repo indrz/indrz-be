@@ -1,0 +1,1 @@
+[{"model": "poi_manager.poi", "pk": 1, "fields": {"name": "Bus", "name_en": "Bus", "name_de": "Bus", "floor_num": 0.0, "floor_name": null, "description": null, "enabled": true, "floor": null, "campus": null, "category": 3, "geom": "SRID=3857;MULTIPOINT (1588202.4142135 5879744.4929996)", "poi_tags": "[]"}}]
