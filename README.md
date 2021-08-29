@@ -1,10 +1,10 @@
-# indrz Backend
+# INDRZ API (a.k.a the backend)
 [Gitlab](https://gitlab.com/indrz/indrz-backend) hosts the main repo 
 Mirror repo is at [Github](https://github.com/indrz/indrz-be)
 
 ----------------------
 
-This is the [indrz](https://www.indrz.com) backend API code repository. You can find our 
+This is the [indrz](https://www.indrz.com) API backend code repository.  
 documentation here [indrz Docs](https://gitlab.com/indrz/indrz-doc)
 
 
@@ -17,37 +17,42 @@ documentation here [indrz Docs](https://gitlab.com/indrz/indrz-doc)
 ## Quick Start Backend Setup
 
 1. Visit `indrz/settings/`and copy the `example-env.env` file and save as `.env` file in root folder.
-2. Get Docker environment varialbles ready in `devops/docker-env` folder:
-    1.  `dev.env`
-    2.  `.env`
-3. [OPTIONAL PRODUCTION] include SSL Certificates in `ssl/` folder
-4. Build all required Docker images
+1. Get Docker `.env`  environment varialbles ready, located in the root folder
+   allong with the `docker-compose.yml` :
+1. Build all required Docker images
     ```
     make build
     ```
-5. Run application
+1. Run application
     ```
     make run
     ```
-6. OPTIONAL ADD DEMO DATA such as organization, campus, buildings
+1. Run database setup that will create postgresql schemas and set db user search_path
     ```
-    make import-demo-data
+    make setup_indrz_db
     ```
-7. Collect static file
+1. Load demo data for testing
+    ```
+    make load_demo_data
+    ```
+1. Collect static file
     ```
     make collectstatic
     ```
 ### Manage Postgres database
+If you have issues with the db `setup_indrz_db`
 
-```
+```bash
 psql -h localhost -U POSTGRES_USER -p POSTGRES_EXT_PORT -l
 docker exec -it indrz_db bash
 su postgres
-dropdb indrz
-createdb -O indrz indrz
-psql -c "create extension postgis" -d indrz
-psql -c "create extension pgrouting" -d indrz
-psql -c "alter role \"indrz\" IN DATABASE indrz set search_path = django,geodata,library,public" -d indrz
+dropdb indrzcloud
+createdb -O indrzcloud indrzcloud
+psql -c "create extension postgis" -d indrzcloud
+psql -c "create extension pgrouting" -d indrzcloud
+psql -c "CREATE SCHEMA IF NOT EXISTS django AUTHORIZATION indrzcloud" -d indrzcloud
+psql -c "CREATE SCHEMA IF NOT EXISTS geodata AUTHORIZATION indrzcloud" -d indrzcloud
+psql -c "ALTER ROLE indrzcloud IN DATABASE indrzcloud SET search_path TO django,geodata,public;" -d indrzcloud
 ```
 
 ### User Make command
@@ -68,9 +73,6 @@ make collectstatic
 Build Docker images
 
 ```
-# Build Nginx image only
-make build-nginx
-
 # Build Indrz image only
 make build-indrz
 
@@ -95,7 +97,7 @@ make pull
 
 ## Backend Tech
 
-* Python 3.x
+* Python 3.8
 * [Django](http://djangoproject.com) – Web Framework Backend
 * [Django Rest Framework](http://www.django-rest-framework.org) – Django Rest Web Framework our API
 * [PostGIS](http://postgis.net) – Spatial Database extension to Postgresql
