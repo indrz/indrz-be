@@ -9,15 +9,14 @@ from rest_framework.response import Response
 
 class PoiViewSet(viewsets.ModelViewSet):
     """
-    A simple ViewSet for viewing and editing the accounts
-    associated with the user.
+    A simple ViewSet for viewing and editing the POI
     """
     queryset = Poi.objects.all()
     serializer_class = PoiSerializer
     # search_fields = ('name',)  #  or  'category__cat_name'
 
-    # def get_queryset(self):
-    #     return Poi.objects.filter(enabled=True)
+    def get_queryset(self):
+        return Poi.objects.filter(enabled=True)
 
     def create(self, request, *args, **kwargs):
         """
@@ -38,8 +37,7 @@ class PoiViewSet(viewsets.ModelViewSet):
 
 class PoiCategoryViewSet(viewsets.ModelViewSet):
     """
-    A simple ViewSet for viewing and editing the accounts
-    associated with the user.
+    A simple ViewSet for viewing and editing the POI Categories
     """
     queryset = PoiCategory.objects.all()
     serializer_class = PoiCategorySerializer
