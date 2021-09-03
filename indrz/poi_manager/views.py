@@ -6,23 +6,13 @@ from django.utils.translation import ugettext as _
 from mptt.exceptions import InvalidMove
 from mptt.forms import MoveNodeForm
 from mptt.templatetags.mptt_tags import cache_tree_children
-from poi_manager.forms import PoiForm
-from poi_manager.models import PoiCategory, Poi
-from poi_manager.serializers import PoiSerializer, PoiCategorySerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-
-def poi_category_list(request, format=None):
-    return render(request, "poi/poi-category.html",
-                  {'nodes': PoiCategory.objects.filter(enabled=True)})
-
-
-def poi_bootstrap_tree(request, format=None):
-    return render(request, "poi/poi-tree.html",
-                  {'nodes': PoiCategory.objects.filter(enabled=True)})
+from poi_manager.models import PoiCategory, Poi
+from poi_manager.serializers import PoiSerializer, PoiCategorySerializer
 
 
 @api_view(['GET', ])
@@ -42,7 +32,7 @@ def poi_category_json(request, format=None):
         result = collections.OrderedDict()
         result['id'] = node.pk
         result['name'] = node.cat_name
-        result['icon'] = node.icon_css_name
+        result['icon'] = node.icon
 
         children = [recursive_node_to_dict(c) for c in node.get_children()]
         if children:
@@ -56,13 +46,14 @@ def poi_category_json(request, format=None):
 
     return Response(dicts)
 
+
 @api_view(['GET', ])
 def poi_root_nodes(request, format=None):
     def recursive_node_to_dict(node):
         result = collections.OrderedDict()
         result['id'] = node.pk
         result['name'] = _(node.cat_name)
-        result['icon'] = node.icon_css_name
+        result['icon'] = node.icon
 
         children = [recursive_node_to_dict(c) for c in node.get_children()]
         if children:
@@ -78,9 +69,8 @@ def poi_root_nodes(request, format=None):
 
 
 @api_view(['GET', ])
-@permission_classes((IsAuthenticated, ))
+@permission_classes((IsAuthenticated,))
 def poi_json_tree(request, format=None):
-
     def recursive_node_to_dict(node):
         result = collections.OrderedDict()
         result['id'] = node.pk
@@ -90,7 +80,7 @@ def poi_json_tree(request, format=None):
         result['icon'] = node.icon
         result['selectedIcon'] = node.icon_css_name + "_active"
 
-        if node.pk in (1,2,3,4,5):
+        if node.pk in (1, 2, 3, 4, 5):
             result['selectable'] = False
         # result['state'] = {"checked": False, "disabled": True, "expanded": False, "selected": False}
 
@@ -149,8 +139,8 @@ def get_poi_by_cat_id(request, cat_id, format=None):
         if qs_objs:
             serializer = PoiSerializer(qs_objs, many=True)
             return Response(serializer.data)
-        elif len(poi_ids)==0:
-            qs = Poi.objects.filter(category_id = cat_id).filter(enabled=True)
+        elif len(poi_ids) == 0:
+            qs = Poi.objects.filter(category_id=cat_id).filter(enabled=True)
             serializer = PoiSerializer(qs, many=True)
             return Response(serializer.data)
         else:
@@ -162,7 +152,6 @@ def get_poi_by_cat_name(request, category_name, format=None):
     cats = PoiCategory.objects.filter(cat_name__exact=category_name).filter(enabled=True)
     # list = cats.get_descendants()
 
-
     # from itertools import chain
     # result_list = list(chain(page_list, article_list, post_list))
 
@@ -170,7 +159,6 @@ def get_poi_by_cat_name(request, category_name, format=None):
         if len(cats) > 1:
             cat_ids = []
             for cat in cats:
-
                 cat_ids.append(cat.id)
 
             poi_qs = Poi.objects.filter(category__in=cat_ids).filter(enabled=True)
@@ -222,17 +210,6 @@ def poi_category_by_name(request, category_name, format=None):
         return Response({'error': 'no category found with the name : ' + category_name})
 
 
-# @api_view(['GET', ])
-# def poi_list(request, format=None):
-#     try:
-#         poi_qs = Poi.objects.filter(enabled=True).order_by('category__icon_css_name')
-#         serializer = PoiSerializer(poi_qs, many=True)
-#         return Response(serializer.data)
-#
-#     except Exception as e:
-#         raise APIException(detail=e)
-
-
 @api_view(['GET', ])
 def search_poi_by_name(request, poi_name, format=None, **kwargs):
     poi_qs = Poi.objects.filter(name__icontains=poi_name).filter(enabled=True)
@@ -252,33 +229,6 @@ def search_poi_by_name(request, poi_name, format=None, **kwargs):
         return Response(poi_entries)
     else:
         return Response({'error': 'something went wrong no POI with that name found'})
-
-
-
-def add_poi(request, category_name_slug):
-    try:
-        cat = PoiCategory.objects.get(slug=category_name_slug)
-    except PoiCategory.DoesNotExist:
-        cat = None
-
-    if request.method == 'POST':
-        form = PoiForm(request.POST)
-        if form.is_valid():
-            if cat:
-                page = form.save(commit=False)
-                page.category = cat
-                page.views = 0
-                page.save()
-                # probably better to use a redirect here.
-                return poi_category_list(request)
-        else:
-            print(form.errors)
-    else:
-        form = PoiForm()
-
-    context_dict = {'form': form, 'category': cat}
-
-    return render(request, 'poi/add-poi.html', context_dict)
 
 
 def move_category(request, category_pk):
