@@ -6,18 +6,11 @@ from .models import Poi, PoiCategory, PoiIcon
 
 class PoiSerializer(GeoFeatureModelSerializer):
     icon = serializers.SerializerMethodField()
-    category = serializers.SerializerMethodField()
 
     class Meta:
         model = Poi
         geo_field = 'geom'
         fields = '__all__'
-
-    def get_category(self, Poi):
-            cat = {'id': Poi.category.id, 'name': Poi.category.cat_name,
-                  'name_en': Poi.category.cat_name_en, 'name_de': Poi.category.cat_name_de,
-            'icon': Poi.category.fk_poi_icon.icon.url, 'enabled': Poi.category.enabled}
-            return cat
 
     def get_icon(self, Poi):
         """
@@ -40,8 +33,10 @@ class PoiSerializer(GeoFeatureModelSerializer):
         else:
             return None
 
+
 class PoiCategorySerializer(serializers.ModelSerializer):
     icon = serializers.SerializerMethodField()
+
     class Meta:
         model = PoiCategory
         fields = ('id', 'cat_name', 'cat_name_en', 'cat_name_de', 'icon', 'fk_poi_icon', 'enabled')
@@ -60,8 +55,8 @@ class PoiCategorySerializer(serializers.ModelSerializer):
         else:
             return None
 
-class PoiIconSerializer(serializers.ModelSerializer):
 
+class PoiIconSerializer(serializers.ModelSerializer):
     class Meta:
         model = PoiIcon
         fields = ('id', 'name', 'icon')
