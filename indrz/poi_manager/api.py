@@ -1,8 +1,8 @@
 import collections
 
 from mptt.templatetags.mptt_tags import cache_tree_children
-from poi_manager.models import PoiCategory, Poi
-from poi_manager.serializers import PoiSerializer, PoiCategorySerializer
+from poi_manager.models import PoiCategory, Poi, PoiIcon
+from poi_manager.serializers import PoiSerializer, PoiCategorySerializer, PoiIconSerializer
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 
@@ -80,70 +80,9 @@ def poi_json_tree(request, campus_id, format=None):
     return Response(dicts)
 
 
-
-# class PoiCategoryViewSet(viewsets.ViewSet):
-#     """
-#     A simple ViewSet for viewing accounts.
-#     """
-#
-#     def retrieve(self, request, category_name, pk=None):
-#         print(request.data)
-#         try:
-#             cats = PoiCategory.objects.filter(enabled=True).get(cat_name__contains=category_name)
-#             if cats:
-#
-#                 queryset = Poi.objects.filter(category=cats.id).filter(enabled=True)
-#                 if queryset:
-#                     serializer_class = PoiSerializer(queryset, many=True)
-#
-#         except Exception as e:
-#             raise APIException(detail=e)
-#
-#         pass
-
-#
-
-# class ListableViewMixin(object):
-#     def get_serializer(self, instance=None, data=None, many=False, *args, **kwargs):
-#         return super(ListableViewMixin, self).get_serializer(
-#             instance=instance, data=data, many=isinstance(instance, list) or isinstance(data, list),
-#             *args, **kwargs)
-#  https://stackoverflow.com/questions/22881067/django-rest-framework-post-array-of-objects
-
-# class PoiViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
-#     """
-#     ViewSet create and list books
-#
-#     Usage single : POST
-#     {
-#         "name":"Killing Floor: A Jack Reacher Novel",
-#         "author":"Lee Child"
-#     }
-#
-#     Usage array : POST
-#     [{
-#         "name":"Mr. Mercedes: A Novel (The Bill Hodges Trilogy)",
-#         "author":"Stephen King"
-#     },{
-#         "name":"Killing Floor: A Jack Reacher Novel",
-#         "author":"Lee Child"
-#     }]
-#     """
-    # queryset = Poi.objects.all()
-    # serializer_class = PoiSerializer
-    # search_fields = ('name',)
-    #
-    # def create(self, request, *args, **kwargs):
-    #     """
-    #     #checks if post request data is an array initializes serializer with many=True
-    #     else executes default CreateModelMixin.create function
-    #     """
-    #     is_many = isinstance(request.data, list)
-    #     if not is_many:
-    #         return super(PoiViewSet, self).create(request, *args, **kwargs)
-    #     else:
-    #         serializer = self.get_serializer(data=request.data, many=True)
-    #         serializer.is_valid(raise_exception=True)
-    #         self.perform_create(serializer)
-    #         headers = self.get_success_headers(serializer.data)
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+class PoiIconViewSet(viewsets.ModelViewSet):
+    """
+    A simple ViewSet for viewing and editing the POI Icons
+    """
+    queryset = PoiIcon.objects.all()
+    serializer_class = PoiIconSerializer
