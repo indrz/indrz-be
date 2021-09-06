@@ -188,6 +188,8 @@ class Campus(gis_models.Model):
     geom = gis_models.MultiPolygonField(verbose_name=_("Campus area of one or more buildings"),
                                                  blank=True, null=True, srid=3857, spatial_index=True)
 
+    sort_order = gis_models.IntegerField(verbose_name=_('Display order'), null=True, blank=True)
+
     @property
     def centroid(self):
         #TODO this is a hack work around
