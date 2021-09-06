@@ -208,7 +208,7 @@ class Campus(gis_models.Model):
 
 class Building(OrganizationInfoBase):
     """
-    Model of a single building owned by 1 or more owners
+    A physical building that only has one address
     """
 
     building_name = gis_models.CharField(verbose_name=_("Building name"), max_length=128, null=True, blank=True)
@@ -227,7 +227,7 @@ class Building(OrganizationInfoBase):
 
 class BuildingFloor(gis_models.Model):
     """
-    Represents the floors contained in a building as a floor foot print
+    A floor representing a single building floor
     """
     short_name = gis_models.CharField(verbose_name=_("short name eg first floor"), max_length=150, null=True, blank=True)
     long_name = gis_models.CharField(verbose_name=_("long name"), max_length=150, null=True, blank=True)
@@ -258,7 +258,7 @@ class BuildingFloor(gis_models.Model):
 
 class FloorSpaceBase(gis_models.Model):
     """
-    floor areas as polygons base
+    Base class for modeling any polygons.
     """
 
     short_name = gis_models.CharField(verbose_name=_("short name"), max_length=150, null=True, blank=True)
