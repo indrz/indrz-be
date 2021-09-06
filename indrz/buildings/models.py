@@ -177,7 +177,8 @@ class Organization(OrganizationInfoBase):
 
 class Campus(gis_models.Model):
     """
-    Model of a single golf course owned by 1 or more owners
+    A campus is  location of one or more buildings that belong together somehow
+    how is determined by the organization.
     """
 
     campus_name = gis_models.CharField(verbose_name=_("Campus name"), max_length=128, null=True, blank=True)
