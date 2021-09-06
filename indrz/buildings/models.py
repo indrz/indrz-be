@@ -198,6 +198,9 @@ class Campus(gis_models.Model):
         g = OGRGeometry(self.geom.centroid.wkt)
         return json.loads(g.json)
 
+    class Meta:
+        ordering = ['sort_order']
+
     def __str__(self):
         return str(self.campus_name) or ''
 
