@@ -95,16 +95,17 @@ Pull code from Git
 make pull
 ```
 
-## Backend Tech
+## Tech
 
-* Python 3.8
+* [Python](https://python.org) (3.x)
 * [Django](http://djangoproject.com) – Web Framework Backend
 * [Django Rest Framework](http://www.django-rest-framework.org) – Django Rest Web Framework our API
 * [PostGIS](http://postgis.net) – Spatial Database extension to Postgresql
 * [PGRouting](http://pgrouting.org) - Routing extension to PostGIS and Posgresql
 * [Postgresql](http://www.postgresql.org) – Database
 * [Geoserver](http://geoserver.org) – Web map server to serve and create, maps and data
-
+* [Ubuntu server](https://ubuntu.com/) - Server
+* [Docker, docker-compose](https://docker.com/) - Docker, Docker-Compse
 
 ## Supported and built by:
 
