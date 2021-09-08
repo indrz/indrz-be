@@ -78,7 +78,6 @@ def poi_json_tree(request, format=None):
         result['name_en'] = node.cat_name_en
         result['name_de'] = node.cat_name_de
         result['icon'] = node.icon
-        result['selectedIcon'] = node.icon_css_name + "_active"
 
         if node.pk in (1, 2, 3, 4, 5):
             result['selectable'] = False

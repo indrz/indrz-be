@@ -75,6 +75,8 @@ class PoiCategory(MPTTModel):
     tree_order = models.IntegerField(verbose_name=_("Tree order in legend"), null=True, blank=True)
     sort_order = models.IntegerField(verbose_name=_("Sort oder of POI items"), null=True, blank=True)
 
+    html_field = models.TextField(verbose_name=_('HTML for popups'), null=True, blank=True)
+
     tags = TaggableManager(blank=True)
     parent = TreeForeignKey('self',
                         related_name='children', on_delete = models.CASCADE,

@@ -1,3 +1,4 @@
+from django.utils.safestring import SafeString, mark_safe, SafeData
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
@@ -36,10 +37,16 @@ class PoiSerializer(GeoFeatureModelSerializer):
 
 class PoiCategorySerializer(serializers.ModelSerializer):
     icon = serializers.SerializerMethodField()
+    html = serializers.SerializerMethodField()
 
     class Meta:
         model = PoiCategory
-        fields = ('id', 'cat_name', 'cat_name_en', 'cat_name_de', 'icon', 'fk_poi_icon', 'enabled')
+        fields = ('id', 'cat_name', 'cat_name_en', 'cat_name_de', 'icon', 'fk_poi_icon', 'enabled', 'html')
+
+    def get_html(self, PoiCategory):
+        return PoiCategory.html_field
+
+        # return PoiCategory.html_field
 
     def get_icon(self, PoiCategory):
         request = self.context.get('request')
