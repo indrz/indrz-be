@@ -4,18 +4,18 @@ import json
 import logging
 
 import geojson
+from django.contrib.gis.db.models.functions import AsGeoJSON, Centroid
 from django.contrib.gis.geos import GEOSGeometry
 from django.http import HttpResponse
 from geojson import Feature, FeatureCollection
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from buildings.models import Campus, Building, BuildingFloorSpace
+from buildings.models import Campus, Building, BuildingFloorSpace, BuildingFloor
 from buildings.serializers import (BuildingSerializer,
                                    BuildingFloorSpaceSerializer,
                                    BuildingFloorGeomSerializer,
                                    SpaceSerializer,
-                                   BuildingFloor,
                                    FloorSerializer
 
                                    )
