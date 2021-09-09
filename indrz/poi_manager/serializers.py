@@ -44,7 +44,7 @@ class PoiCategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'cat_name', 'cat_name_en', 'cat_name_de', 'icon', 'fk_poi_icon', 'enabled', 'html')
 
     def get_html(self, PoiCategory):
-        return PoiCategory.html_field
+        return PoiCategory.html_content
 
         # return PoiCategory.html_field
 
