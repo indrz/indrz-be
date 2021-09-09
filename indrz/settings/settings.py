@@ -1,14 +1,16 @@
 import os
+from distutils.util import strtobool
 from dotenv import load_dotenv
 load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', os.getenv('ALLOWED_HOSTS')]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
+DEBUG = strtobool(os.getenv('DEBUG'))
+
 if os.name == 'nt':
     import platform
     OSGEO4W = r"C:\OSGeo4W"
@@ -18,19 +20,6 @@ if os.name == 'nt':
     os.environ['OSGEO4W_ROOT'] = OSGEO4W
     os.environ['GDAL_DATA'] = OSGEO4W + r"\share\epsg_csv"
     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
-
-if DEBUG == False:
-    import sentry_sdk
-    from sentry_sdk.integrations.django import DjangoIntegration
-
-    sentry_sdk.init(
-        dsn=os.getenv('SENTRY_URL'),
-        integrations=[DjangoIntegration()],
-
-        # If you wish to associate users to errors (assuming you are using
-        # django.contrib.auth) you may enable sending PII data.
-        send_default_pii=True
-    )
 
 
 AUTH_USER_MODEL = 'users.User'  # my app is called users  hence users.User I could make app called core.Users
@@ -226,17 +215,12 @@ SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': True,
 }
 
-
-
-
-
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
     "http://localhost:8000",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:8000"
 ]
-
 
 LOGFILE_DIR = os.getenv('LOGFILE_DIR')
 
@@ -306,20 +290,4 @@ if os.path.isdir(LOGFILE_DIR):
 
     import logging.config
     logging.config.dictConfig(LOGGING)
-
-
-# if DEBUG:
-#     # django-debug-toolbar
-#     # ------------------------------------------------------------------------------
-#
-#     MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-#     INSTALLED_APPS += ('debug_toolbar',)
-#     INTERNAL_IPS = ['127.0.0.1', '10.0.2.2', ]
-#
-#     DEBUG_TOOLBAR_CONFIG = {
-#         'DISABLE_PANELS': [
-#             'debug_toolbar.panels.redirects.RedirectsPanel',
-#         ],
-#         'SHOW_TEMPLATE_CONTEXT': True,
-#     }
 

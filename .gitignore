@@ -8,6 +8,9 @@ indrz/settings/.env
 indrz/.env
 .env
 .env.*
+.venv/*
+.venv
+
 
 
 ## Directory-based project format:
