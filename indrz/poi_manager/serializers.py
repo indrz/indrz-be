@@ -1,4 +1,3 @@
-from django.utils.safestring import SafeString, mark_safe, SafeData
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
@@ -7,11 +6,15 @@ from .models import Poi, PoiCategory, PoiIcon
 
 class PoiSerializer(GeoFeatureModelSerializer):
     icon = serializers.SerializerMethodField()
+    html_content = serializers.SerializerMethodField()
 
     class Meta:
         model = Poi
         geo_field = 'geom'
         fields = '__all__'
+
+    def get_html_content(self, Poi):
+        return Poi.category.html_content if Poi.category.html_content else ""
 
     def get_icon(self, Poi):
         """
@@ -37,16 +40,11 @@ class PoiSerializer(GeoFeatureModelSerializer):
 
 class PoiCategorySerializer(serializers.ModelSerializer):
     icon = serializers.SerializerMethodField()
-    html = serializers.SerializerMethodField()
 
     class Meta:
         model = PoiCategory
-        fields = ('id', 'cat_name', 'cat_name_en', 'cat_name_de', 'icon', 'fk_poi_icon', 'enabled', 'html')
+        fields = ('id', 'cat_name', 'cat_name_en', 'cat_name_de', 'icon', 'fk_poi_icon', 'html_content', 'enabled')
 
-    def get_html(self, PoiCategory):
-        return PoiCategory.html_content
-
-        # return PoiCategory.html_field
 
     def get_icon(self, PoiCategory):
         request = self.context.get('request')
