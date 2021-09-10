@@ -15,6 +15,10 @@ documentation here [indrz Docs](https://gitlab.com/indrz/indrz-doc)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/indrz/indrz.svg?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=%5Bobject%20Object%5D)
 
 ## Quick Start Backend Setup
+We are working on making the setup easier, with an all docker development
+environmentment.  The production deployment aswell will be an all docker
+deployment.
+
 
 1. Visit `indrz/settings/`and copy the `example-env.env` file and save as `.env` file in root folder.
 1. Get Docker `.env`  environment varialbles ready, located in the root folder
