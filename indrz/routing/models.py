@@ -63,7 +63,7 @@ class NetworklinesBase(gis_models.Model):
     cost = gis_models.DecimalField(verbose_name=_("cost to travel network"), max_digits=10, decimal_places=2, null=True, blank=True)
     length = gis_models.DecimalField(verbose_name=_("gis length of linestring"), max_digits=10, decimal_places=2, null=True, blank=True)
     floor_num = gis_models.IntegerField(verbose_name=_("floor number"), null=True, blank=True)
-
+    floor_name = gis_models.CharField(verbose_name=_('Floor name'), max_length=255, null=True, blank=True)
     network_type = gis_models.IntegerField(verbose_name=_("Type of network path type"), choices=ROUTE_TYPE, null=True, blank=True)
     access_type = gis_models.CharField(verbose_name=_("Routing access type"),  max_length=150, choices=ACCESS_TYPE, null=True, blank=True)
 
