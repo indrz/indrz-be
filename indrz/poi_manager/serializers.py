@@ -18,7 +18,6 @@ class PoiSerializer(GeoFeatureModelSerializer):
 
     def get_icon(self, Poi):
         """
-
         :param Poi: poi obeject
         :return: a field ie property called icon for model Poi
         """
