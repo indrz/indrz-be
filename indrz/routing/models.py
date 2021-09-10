@@ -25,52 +25,6 @@ class NetworklinesBase(gis_models.Model):
 
     UBAHN = 66
 
-    ubahn_karlsplatz_to_atom = """
-            Karlsplatz
-            Wien
-            Zu FußZu Fuß
-            ca. 1 Min. , 120 m
-            
-            Karlsplatz
-            
-            U-BahnU1Wien Leopoldau
-             2 Min. (ohne Zwischenhalt)
-            
-            Stephansplatz
-            U-BahnU3Wien Simmering
-             6 Min. (5 Haltestellen)
-            
-            Schlachthausgasse
-            Zu FußZu Fuß
-             ca. 10 Min. , 800 m
-            
-            Atominstitut
-            Schüttelstraße 115, 1020 Wien"""
-
-    ubahn_karlsplatz_to_arsenal = """
-            Karlsplatz
-            Wien
-            Zu FußZu Fuß
-            ca. 1 Min. , 120 m
-            Karlsplatz
-            U-BahnU1Wien Alaudagasse
-             3 Min. (2 Haltestellen)
-            
-            Hauptbahnhof
-            Zu FußZu Fuß
-             ca. 4 Min.
-            
-            Hauptbahnhof S+U
-            Bus69AWien Simmering S+U
-             10 Min. (6 Haltestellen)
-            
-            Lilienthalgasse
-            Zu FußZu Fuß
-             ca. 4 Min. , 400 m
-            
-            Franz-Grill-Straße 2-4
-            1030 Wien"""
-
     ROUTE_TYPE = (
         (INDOORWAY, _("Indoor way")),
         (STAIRWAY, _("Stairway")),
