@@ -10,4 +10,5 @@ An inevitably incomplete list of MUCH-APPRECIATED CONTRIBUTORS --
 people who have submitted patches, reported bugs, added translations, helped
 answer newbie questions, and generally made indrz that much better:
 
-- Titu 
+- Abdullah (frontend)
+- Fabio Ferrari (devops)
