@@ -8,5 +8,4 @@ setup(name='indrz',
       license='GNU 3',
       url='https://indrz.com',
       packages=find_packages(),
-
       scripts=['manage.py'])
