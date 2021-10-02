@@ -6,7 +6,7 @@ indrz.egg-info/
 *.iml
 indrz/settings/.env
 indrz/.env
-.env
+indrz/.env
 .env.*
 .venv/*
 .venv
