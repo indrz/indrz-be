@@ -1,22 +1,22 @@
 version: '3'
 
 networks:
-  indrz-net:
+  indrz-net-dev:
 
 volumes:
-  indrz-db:
+  indrz-db-dev:
 
 services:
-  indrz_db:
-    hostname: indrz_db
-    container_name: indrz_db
+  indrz_db_dev:
+    hostname: indrz_db_dev
+    container_name: indrz_db_dev
     image: kartoza/postgis:13.0
     volumes:
-      - indrz-db:/var/lib/postgresql
+      - indrz-db-dev:/var/lib/postgresql
     ports:
-      - ${POSTGRES_EXT_PORT}:5432
+      - 5432:5432
     networks:
-      - indrz-net
+      - indrz-net-dev
     env_file:
       - .env-dev
     restart: always
@@ -25,9 +25,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  indrz_api:
-    container_name: indrz_api
-    hostname: indrz_api
+  indrz_api_dev:
+    container_name: indrz_api_dev
+    hostname: indrz_api_dev
     image: indrz/indrz-api:latest
     build:
       context: .
@@ -35,14 +35,11 @@ services:
     ports:
       - 8000:8000
     networks:
-      - indrz-net
+      - indrz-net-dev
     depends_on:
-      - indrz_db
+      - indrz_db_dev
     volumes:
-      - ${PWD}/indrz:/app
-      - ${PWD}/data/indrz/media:/opt/data/media
-      - ${PWD}/data/indrz/static:/opt/data/static
-      - ${PWD}/data/indrz/logs:/usr/src/app/logs
+      - ./indrz:/app
     restart: always
     env_file:
       - .env-dev
