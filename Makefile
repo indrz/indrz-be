@@ -1,7 +1,7 @@
 SHELL=/bin/bash
 PWD ?= pwd_unknown
 
-cnf ?= indrz/settings/.env
+cnf ?= .env
 include $(cnf)
 export $(shell sed 's/=.*//' $(cnf))
 
@@ -14,14 +14,14 @@ help: ## This help.
 
 build: build-gogse build-indrz build-geoserver ## Build all Docker images
 
-build-gogse: ## Build GOMOGI Geospatial Environment, for Geodjango
-	docker build -t gogse:latest - < devops/docker/geodj/Dockerfile
+build-geodj: ## Build Gomogi Geospatial Environment (GDAL, PROJ, GEOS)
+	docker build -t geodj:latest - < devops/docker/geodj/Dockerfile
 
 build-indrz: ## Build Indrz BE Image
 	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) indrz_api
 
 build-geoserver: ## Build Geoserver Image
-	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) geoserver
+	docker-compose build geoserver
 
 run: ## Run Indrz Docker project (production-ready)
 	docker-compose -p $(PROJECT_NAME) -f docker-compose.yml  up -d
