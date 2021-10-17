@@ -44,7 +44,7 @@ services:
     volumes:
       - indrz-geoserver:/opt/geoserver/data_dir
     ports:
-      - ${GEOSERVER_EXT_PORT}:8080
+      - 8600:8080
     restart: on-failure
     env_file:
       - .env
