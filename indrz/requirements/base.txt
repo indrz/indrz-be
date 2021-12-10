@@ -1,0 +1,19 @@
+# Django
+# ------------------------------------------------------------------------------
+django==3.1.13
+django-mptt==0.11.0
+django-rosetta==0.9.5
+django-taggit==1.3.0
+django-cors-headers==3.7.0
+djangorestframework_gis==0.17
+djangorestframework==3.12.2
+drf-yasg==1.20.0
+
+# Data
+# ------------------------------------------------------------------------------
+python-dotenv==0.15.0
+pandas==1.2.2
+geojson==2.5.0
+requests==2.25.1
+pillow==8.4.0
+
