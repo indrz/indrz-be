@@ -645,7 +645,7 @@ def find_closest_poi(coordinates, floor, poi_cat_id, lang_code):
 
                 dest_nodes.append(network_node_id)
             else:
-                return Response({"error": "no network node found close to poi"}, status=status.HTTP_400_BAD_REQUEST)
+                continue
 
         pgr_query = """SELECT end_vid, sum(cost) as distance_to_poi
             FROM pgr_dijkstra(
