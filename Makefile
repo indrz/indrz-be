@@ -12,10 +12,7 @@ help: ## This help.
 
 .DEFAULT_GOAL := help
 
-build: build-gogse build-indrz build-geoserver ## Build all Docker images
-
-build-geodj: ## Build Gomogi Geospatial Environment (GDAL, PROJ, GEOS)
-	docker build -t geodj:latest - < devops/docker/geodj/Dockerfile
+build: build-indrz build-geoserver ## Build all Docker images
 
 build-indrz: ## Build Indrz BE Image
 	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) indrz_api
