@@ -40,7 +40,7 @@ services:
     user: "1000"
     build:
       context: .
-      dockerfile: devops/docker/geoserver/Dockerfile
+      dockerfile: devops/docker/local/geoserver/Dockerfile
     volumes:
       - indrz-geoserver:/opt/geoserver/data_dir
     ports:
@@ -64,7 +64,7 @@ services:
     image: indrz/indrz-api:latest
     build:
       context: .
-      dockerfile: devops/docker/indrz/Dockerfile
+      dockerfile: devops/docker/local/indrz/Dockerfile
     ports:
       - 8000:8000
     networks:
