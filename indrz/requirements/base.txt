@@ -15,5 +15,5 @@ python-dotenv==0.15.0
 pandas==1.2.2
 geojson==2.5.0
 requests==2.25.1
-pillow==8.4.0
+pillow==9.0.0
 
