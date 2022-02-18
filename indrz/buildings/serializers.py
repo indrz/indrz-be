@@ -61,11 +61,12 @@ class FloorSerializer(serializers.ModelSerializer):
         fields = ('id', 'short_name', 'floor_num', 'fk_building')
 
 
-class BuildingSerializer(serializers.ModelSerializer):
+class BuildingSerializer(GeoFeatureModelSerializer):
 
     class Meta:
         model = Building
-        fields = ('id', 'building_name', 'num_floors', 'fk_organization', 'fk_campus')
+        geo_field = 'geom'
+        fields = ('id', 'building_name', 'street', 'num_floors', 'fk_organization', 'fk_campus', 'wings')
 
 
 class FloorSerializerDetails(serializers.ModelSerializer):
