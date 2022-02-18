@@ -38,7 +38,7 @@ services:
     user: "1000"
     build:
       context: .
-      dockerfile: devops/docker/geoserver/Dockerfile
+      dockerfile: devops/docker/local/geoserver/Dockerfile
     volumes:
       - indrz-geoserver:/opt/geoserver/data_dir
     ports:
@@ -62,7 +62,7 @@ services:
     image: indrz/indrz-api:latest
     build:
       context: .
-      dockerfile: devops/docker/indrz/Dockerfile
+      dockerfile: devops/docker/local/indrz/Dockerfile
     command: gunicorn indrz.wsgi:application --bind 0.0.0.0:8000
     expose:
       - 8000
@@ -83,7 +83,7 @@ services:
     image: indrz/nginx:latest
     build:
       context: .
-      dockerfile: devops/docker/nginx/Dockerfile
+      dockerfile: devops/docker/production/nginx/Dockerfile
     volumes:
       - indrz-static:/opt/data/static
       - indrz-media:/opt/data/media

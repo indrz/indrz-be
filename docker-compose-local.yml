@@ -1,0 +1,81 @@
+version: '2.1'
+volumes:
+  postgis-dev:
+  indrz-geoserver-dev:
+  pgadmin-data-dev:
+networks:
+  indrz-net-dev:
+services:
+  geoserverdev:
+    container_name: geoserverdev
+    image: kartoza/geoserver:2.18.0
+    volumes:
+     - indrz-geoserver-dev:/opt/geoserver/data_dir
+    ports:
+     - '8080:8080'
+    restart: on-failure
+    networks:
+      - indrz-net-dev
+    env_file:
+     - .env-local
+    healthcheck:
+     test: curl --fail -s http://localhost:8080/ || exit 1
+     interval: 1m30s
+     timeout: 10s
+     retries: 3
+    depends_on:
+      indrz_db_dev:
+        condition: service_healthy
+  # INDRZ BACK-END
+  indrz_api_dev:
+    container_name: indrz_api_dev
+    image: indrz/indrz_api_test:latest
+    build:
+      context: ./indrz
+      dockerfile: devops/docker/local/indrz_api/Dockerfile
+    ports:
+      - '8000:8000'
+    depends_on:
+      - indrz_db_dev
+    volumes:
+      - ./indrz:/app
+    restart: always
+    networks:
+      - indrz-net-dev
+    env_file:
+      - .env-local
+  pgadmin_dev:
+    container_name: indrz_pgadmin_dev
+    image: dpage/pgadmin4:latest
+    volumes:
+      - pgadmin-data-dev:/var/lib/pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gomogi.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "8081:80"
+    networks:
+      - indrz-net-dev
+    links:
+      - "indrz_db_dev:pgsql-server"
+    depends_on:
+      indrz_db_dev:
+        condition: service_healthy
+  indrz_db_dev:
+    container_name: indrz_db_dev
+    image: kartoza/postgis:13-3.1
+    volumes:
+      - postgis-dev:/var/lib/postgresql
+    ports:
+      - '5435:5432'
+    env_file:
+      .env-local
+    environment:
+      - ALLOW_IP_RANGE=0.0.0.0/0
+    restart: on-failure
+    networks:
+      - indrz-net-dev
+    healthcheck:
+      test: "exit 0"

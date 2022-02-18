@@ -400,7 +400,7 @@ def create_route_from_coords(request, start_coord, start_floor, end_coord, end_f
         else:
             geojs_fc = run_route(start_node_id, end_node_id, route_type_val, None, coord_data)
 
-        if "error" in geojs_fc:
+        if "error" in geojs_fc.keys():
             return Response({"error": geojs_fc}, status=status.HTTP_404_NOT_FOUND)
         else:
             start_coords = {'coordinates': [[x_start_coord, y_start_coord]], 'type': 'MultiPoint'}
@@ -645,7 +645,7 @@ def find_closest_poi(coordinates, floor, poi_cat_id, lang_code):
 
                 dest_nodes.append(network_node_id)
             else:
-                return Response({"error": "no network node found close to poi"}, status=status.HTTP_400_BAD_REQUEST)
+                continue
 
         pgr_query = """SELECT end_vid, sum(cost) as distance_to_poi
             FROM pgr_dijkstra(
@@ -1147,7 +1147,7 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
     route_info = calc_distance_walktime(route_simple)
     route_result = []
 
-    if "error" in route_info:
+    if "error" in route_info.keys():
         return {"error": "no route", "reason": "route has a length of zero"}
     else:
 
@@ -1216,7 +1216,7 @@ def create_route_from_id(request, start_room_id, end_room_id, route_type, front_
                         res = run_route(start_node_id, end_node_id, route_type, mid_node_id=front_office_node)
                     else:
                         res = run_route(start_node_id, end_node_id, route_type)
-                    if res:
+                    if "error" not in res.keys():
                         res['route_info']['start_name'] = start_qs.room_code
                         res['route_info']['end_name'] = end_qs.room_code
                         return Response(res)

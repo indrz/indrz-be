@@ -42,7 +42,7 @@ class PoiCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PoiCategory
-        fields = ('id', 'cat_name', 'cat_name_en', 'cat_name_de', 'icon', 'fk_poi_icon', 'html_content', 'enabled')
+        fields = ('id', 'cat_name', 'cat_name_en', 'cat_name_de', 'icon', 'fk_poi_icon', 'html_content', 'enabled', 'parent')
 
 
     def get_icon(self, PoiCategory):

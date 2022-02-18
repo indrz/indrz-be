@@ -11,7 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from buildings.models import BuildingFloorSpace
+from buildings.models import BuildingFloorSpace, Building, Campus
+from buildings.serializers import BuildingSerializer
 from poi_manager.models import Poi
 from poi_manager.serializers import PoiSerializer
 
@@ -36,12 +37,16 @@ def search_any(request, q, format=None):
 
     poi_data = searchPoi(lang_code, searchString)
     spaces_data = searchSpaces(lang_code, searchString, "search")
+    buildings_data = searchBuildings(lang_code, searchString)
 
     if poi_data:
         return Response(poi_data, status=status.HTTP_200_OK)
 
     if spaces_data:
         return Response(spaces_data, status=status.HTTP_200_OK)
+
+    if buildings_data:
+        return Response(buildings_data, status=status.HTTP_200_OK)
 
     else:
         return Response({"error": "no data found in local or api search"}, status=status.HTTP_404_NOT_FOUND)
@@ -130,6 +135,17 @@ def searchPoi(lang_code, search_text):
 
     if pois:
         serializer = PoiSerializer(pois, many=True)
+        return serializer.data
+    else:
+        return False
+
+def searchBuildings(lang_code, search_text):
+
+    buildings = Building.objects.filter(Q(building_name__icontains=search_text)
+                                        | Q(street__icontains=search_text)).filter(enabled=True)
+
+    if buildings:
+        serializer = BuildingSerializer(buildings, many=True)
         return serializer.data
     else:
         return False
