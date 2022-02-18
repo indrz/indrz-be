@@ -5,24 +5,7 @@ volumes:
   pgadmin-data-dev:
 networks:
   indrz-net-dev:
-
 services:
-  indrz_db_dev:
-    container_name: indrz_db_dev
-    image: kartoza/postgis:13.0
-    volumes:
-      - postgis-dev:/var/lib/postgresql
-    ports:
-      - '5435:5432'
-    env_file:
-      .env
-    environment:
-      - ALLOW_IP_RANGE=0.0.0.0/0
-    restart: on-failure
-    networks:
-      - indrz-net-dev
-    healthcheck:
-      test: "exit 0"
   geoserverdev:
     container_name: geoserverdev
     image: kartoza/geoserver:2.18.0
@@ -34,7 +17,7 @@ services:
     networks:
       - indrz-net-dev
     env_file:
-     - .env
+     - .env-local
     healthcheck:
      test: curl --fail -s http://localhost:8080/ || exit 1
      interval: 1m30s
@@ -46,10 +29,10 @@ services:
   # INDRZ BACK-END
   indrz_api_dev:
     container_name: indrz_api_dev
-    image: indrz/indrz-dev-api:3.0
+    image: indrz/indrz_api_test:latest
     build:
-      context: .
-      dockerfile: devops/docker/indrz/Dockerfile
+      context: ./indrz
+      dockerfile: devops/docker/local/indrz_api/Dockerfile
     ports:
       - '8000:8000'
     depends_on:
@@ -60,7 +43,7 @@ services:
     networks:
       - indrz-net-dev
     env_file:
-      - .env
+      - .env-local
   pgadmin_dev:
     container_name: indrz_pgadmin_dev
     image: dpage/pgadmin4:latest
@@ -80,3 +63,19 @@ services:
     depends_on:
       indrz_db_dev:
         condition: service_healthy
+  indrz_db_dev:
+    container_name: indrz_db_dev
+    image: kartoza/postgis:13-3.1
+    volumes:
+      - postgis-dev:/var/lib/postgresql
+    ports:
+      - '5435:5432'
+    env_file:
+      .env-local
+    environment:
+      - ALLOW_IP_RANGE=0.0.0.0/0
+    restart: on-failure
+    networks:
+      - indrz-net-dev
+    healthcheck:
+      test: "exit 0"
