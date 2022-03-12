@@ -14,6 +14,6 @@ geojson==2.5.0
 psycopg2-binary==2.8.3
 requests==2.25.1
 
-pillow==8.2.0
+pillow==9.0.1
 
 gunicorn==20.0.4
