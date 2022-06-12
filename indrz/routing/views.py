@@ -1099,7 +1099,7 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
 
     if route_type == '1':
         # exclude all networklines of type stairs
-        barrierfree_q = "WHERE network_type not in (1,3,101,104)"
+        barrierfree_q = "WHERE network_type not in (1,11)"
     else:
         # default type is "0"
         barrierfree_q = "WHERE 1=1"
