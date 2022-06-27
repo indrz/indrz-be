@@ -5,10 +5,10 @@ from routing.views import force_route_mid_point, route_to_nearest_poi, RoutePoiT
 
 urlpatterns = [
     url(
-        r'(?P<start_xy>startxy=[-]?\d+\.?\d+,\d+\.\d+)&(?P<floor>floor=[-]?\d+)(?P<poi_cat_id>&poiCatId=\d{1,7})(?P<reversed>&reversed=(true|false))?/$',
+        r'(?P<start_xy>startxy=[-]?\d+\.?\d+,\d+\.\d+)&(?P<floor>floor=[-]?\d+)(?P<poi_cat_id>&poiCatId=\d{1,7})(?P<reversed>&reversed=(true|false))?(?P<route_type>&type=\d{1,5})?/$',
         route_to_nearest_poi, name='routing-from-poi'),
     url(
-        r'(?P<start_poi_id>poi-id=\d{1,7})&(?P<end_xyz>xyz=[-]?\d+\.?\d+,\d+\.\d+)&(?P<z_floor>floor=[-]?\d+)&?(?P<reversed_dir>reversed=(true|false))?/$',
+        r'(?P<start_poi_id>poi-id=\d{1,7})&(?P<end_xyz>xyz=[-]?\d+\.?\d+,\d+\.\d+)&(?P<z_floor>floor=[-]?\d+)&?(?P<reversed_dir>reversed=(true|false))?(?P<route_type>&type=\d{1,5})?/$',
         RoutePoiToXyz.as_view(), name='route_poi_to_xyz'),
     url(
         r'(?P<start_coord>[-]?\d+\.?\d+,\d+\.\d+),(?P<start_floor>[-]?\d+)&(?P<end_coord>[-]?\d+\.?\d+,\d+\.\d+),(?P<end_floor>[-]?\d+)&(?P<route_type>[0-9])(?P<reverse_route>&reversed=(true|false))?',

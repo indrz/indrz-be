@@ -733,7 +733,7 @@ class RoutePoiToXyz(APIView):
 
     """
 
-    def get(self, request, start_poi_id, end_xyz, z_floor, reversed_dir=False):
+    def get(self, request, start_poi_id, end_xyz, z_floor, reversed_dir=False, route_type='type=0'):
         """
 
         :param reversed_dir: boolean to set the direction of route query to allow routing
@@ -752,6 +752,7 @@ class RoutePoiToXyz(APIView):
         x_end_coord = float(xyz_str.split(",")[0])
         y_end_coord = float(xyz_str.split(",")[1])
         z_end_floor = z_floor.split("=")[1]
+        r_type = route_type.split("=")[1]
 
         if start_poi is not None:
 
@@ -763,9 +764,9 @@ class RoutePoiToXyz(APIView):
             end_node_id = find_closest_network_node(x_end_coord, y_end_coord, z_end_floor)
 
             if reversed_dir:
-                geojs_fc = run_route(end_node_id, start_node_id, "1")
+                geojs_fc = run_route(end_node_id, start_node_id, r_type)
             else:
-                geojs_fc = run_route(start_node_id, end_node_id, "1")
+                geojs_fc = run_route(start_node_id, end_node_id, r_type)
 
             if "error" in geojs_fc:
                 Response(geojs_fc, status=status.HTTP_404_NOT_FOUND)
