@@ -792,7 +792,7 @@ class RoutePoiToXyz(APIView):
 
 
 @api_view(['GET', ])
-def route_to_nearest_poi(request, start_xy, floor, poi_cat_id, reversed):
+def route_to_nearest_poi(request, start_xy, floor, poi_cat_id, reversed, route_type='type=0'):
     coords = start_xy.split("=")[1]
     x_start_coord = float(coords.split(',')[0])
     y_start_coord = float(coords.split(',')[1])
@@ -800,6 +800,7 @@ def route_to_nearest_poi(request, start_xy, floor, poi_cat_id, reversed):
     poi_cat_id_v = int(poi_cat_id.split("=")[1])
     rev_val = reversed.split("=")[1]
     lang_code = get_language_from_request(request)
+    r_type = route_type.split("=")[1]
 
 
     startid = find_closest_network_node(x_start_coord, y_start_coord, start_floor_num)
@@ -858,9 +859,9 @@ def route_to_nearest_poi(request, start_xy, floor, poi_cat_id, reversed):
                 poi_data['category-id'] = x['cat_id']
 
         if rev_val == 'true':
-            geojs_fc = run_route(node_id_closest_poi, startid, "1")
+            geojs_fc = run_route(node_id_closest_poi, startid, r_type)
         else:
-            geojs_fc = run_route(startid, node_id_closest_poi, "1")
+            geojs_fc = run_route(startid, node_id_closest_poi, r_type)
 
         if "error" in geojs_fc:
             return Response({"error": geojs_fc}, status=status.HTTP_404_NOT_FOUND)
