@@ -1,54 +1,54 @@
-version: '2.1'
+version: '3'
 volumes:
-  postgis-dev:
-  indrz-geoserver-dev:
-  pgadmin-data-dev:
+  indrz-cloud-postgis:
+  indrz-cloud-geoserver:
+  indrz-cloud-pgadmin-data:
 networks:
-  indrz-net-dev:
+  indrz-cloud-net:
+
 services:
-  geoserverdev:
-    container_name: geoserverdev
-    image: kartoza/geoserver:2.18.0
-    volumes:
-     - indrz-geoserver-dev:/opt/geoserver/data_dir
+  indrz_cloud_api:
+    container_name: indrz_cloud_api
+    image: indrz-cloud-api:3.0
+    build:
+      context: ./indrz
+      dockerfile: ./devops/docker/indrz
     ports:
-     - '8080:8080'
+      - 8000:8000
+    depends_on:
+      - indrz_cloud_postgis
+    volumes:
+      - ./indrz:/app
+      - ./data/dwg:/app/scripts/geodata/dwg
+    restart: always
+    networks:
+      - indrz-cloud-net
+    env_file:
+      - .env
+  indrz_cloud_geoserver:
+    container_name: indrz_cloud_geoserver
+    image: kartoza/geoserver:2.21.1
+    volumes:
+     - indrz-cloud-geoserver:/opt/geoserver/data_dir
+    ports:
+     - 8080:8080
     restart: on-failure
     networks:
-      - indrz-net-dev
+      - indrz-cloud-net
     env_file:
-     - .env-local
+     - .env
     healthcheck:
      test: curl --fail -s http://localhost:8080/ || exit 1
      interval: 1m30s
      timeout: 10s
      retries: 3
     depends_on:
-      indrz_db_dev:
-        condition: service_healthy
-  # INDRZ BACK-END
-  indrz_api_dev:
-    container_name: indrz_api_dev
-    image: indrz/indrz_api_test:latest
-    build:
-      context: ./indrz
-      dockerfile: devops/docker/local/indrz_api/Dockerfile
-    ports:
-      - '8000:8000'
-    depends_on:
-      - indrz_db_dev
-    volumes:
-      - ./indrz:/app
-    restart: always
-    networks:
-      - indrz-net-dev
-    env_file:
-      - .env-local
-  pgadmin_dev:
-    container_name: indrz_pgadmin_dev
+      - indrz_cloud_postgis
+  indrz_cloud_pgadmin:
+    container_name: indrz_cloud_pgadmin
     image: dpage/pgadmin4:latest
     volumes:
-      - pgadmin-data-dev:/var/lib/pgadmin
+      - indrz-cloud-pgadmin-data:/var/lib/pgadmin
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@gomogi.com
@@ -57,25 +57,24 @@ services:
     ports:
       - "8081:80"
     networks:
-      - indrz-net-dev
+      - indrz-net-boku
     links:
-      - "indrz_db_dev:pgsql-server"
+      - "indrz_cloud_postgis:pgsql-server"
     depends_on:
-      indrz_db_dev:
-        condition: service_healthy
-  indrz_db_dev:
-    container_name: indrz_db_dev
-    image: kartoza/postgis:13-3.1
+      - indrz_cloud_postgis
+  indrz_cloud_postgis:
+    container_name: indrz_cloud_postgis
+    image: kartoza/postgis:13.0
     volumes:
-      - postgis-dev:/var/lib/postgresql
+      - indrz-cloud-postgis:/var/lib/postgresql
     ports:
-      - '5435:5432'
+      - 5432:5432
     env_file:
-      .env-local
+      .env
     environment:
       - ALLOW_IP_RANGE=0.0.0.0/0
     restart: on-failure
     networks:
-      - indrz-net-dev
+      - indrz-cloud-net
     healthcheck:
       test: "exit 0"
