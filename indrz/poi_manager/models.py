@@ -7,40 +7,6 @@ from taggit.managers import TaggableManager
 
 from buildings.models import BuildingFloor, Campus
 
-
-# class BaseLookupDomain(models.Model):
-#     code = models.CharField(verbose_name=_("code value"), max_length=150, null=True, blank=True)
-#     name = models.CharField(verbose_name=_("name value"), max_length=256, null=True, blank=True)
-#
-#     class Meta:
-#         abstract = True
-#         ordering = ['code', ]
-#
-#     def __str__(self):
-#         return str(self.name) or ''
-
-
-# class TimeStampedModelMixin(models.Model):
-#     # Computed values (managed at DB-level with triggers)
-#     date_insert = models.DateTimeField(auto_now_add=True, editable=False, verbose_name=_(u"Insertion date"),
-#                                        db_column='date_insert', null=True, blank=True)
-#     date_update = models.DateTimeField(auto_now=True, editable=False, verbose_name=_(u"Update date"),
-#                                        db_column='date_update', null=True, blank=True)
-#
-#     class Meta:
-#         abstract = True
-#
-#     def reload(self, fromdb=None):
-#         """Reload fields computed at DB-level (triggers)
-#         """
-#         if fromdb is None:
-#             fromdb = self.__class__.objects.get(pk=self.pk)
-#         self.date_insert = fromdb.date_insert
-#         self.date_update = fromdb.date_update
-#         return self
-
-# Receive the pre_delete signal and delete the file associated with the model instance.
-
 class PoiIcon(models.Model):
     """
     An image added to an icon of the map.
@@ -75,8 +41,6 @@ class PoiCategory(MPTTModel):
     tree_order = models.IntegerField(verbose_name=_("Tree order in legend"), null=True, blank=True)
     sort_order = models.IntegerField(verbose_name=_("Sort oder of POI items"), null=True, blank=True)
 
-    html_content = models.TextField(verbose_name=_('HTML content'), null=True, blank=True)
-
     tags = TaggableManager(blank=True)
     parent = TreeForeignKey('self',
                         related_name='children', on_delete = models.CASCADE,
@@ -86,6 +50,8 @@ class PoiCategory(MPTTModel):
                             default=9999)
     cat_name_en = models.CharField(max_length=255, null=True, blank=True)
     cat_name_de = models.CharField(max_length=255, null=True, blank=True)
+
+    html_content = models.TextField(_("HTML content"), null=True, blank=True)
 
     def __str__(self):
         return str(self.cat_name) or ''
