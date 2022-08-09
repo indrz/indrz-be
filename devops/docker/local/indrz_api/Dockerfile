@@ -37,7 +37,7 @@ COPY indrz/requirements/requirements.txt /app/
 RUN pip install -r requirements.txt
 
 # COPY indrz/ /usr/src/app/
-COPY indrz/ /app/
+# COPY indrz/ /app/
 
 # Instal Python module requirements
 # RUN pip install -r requirements/requirements.txt
@@ -46,7 +46,7 @@ COPY indrz/ /app/
 # RUN chmod a+x /entrypoint.sh
 # ENTRYPOINT ["bash", "/entrypoint.sh"]
 
-EXPOSE 8000
+# EXPOSE 8000
 
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+# CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
 #CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
