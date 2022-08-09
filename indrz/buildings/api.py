@@ -30,7 +30,7 @@ class BuildingsViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = BuildingSerializer
 
     @action(detail=True)
-    def floors(self,request, *args, **kwargs):
+    def floors(self, request, *args, **kwargs):
         instance = self.get_object()
         floor = BuildingFloor.objects.filter(fk_building_id=instance)
         serializer = FloorSerializer(floor, many=True)
