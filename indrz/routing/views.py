@@ -16,9 +16,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.search import search_only
 from buildings.models import BuildingFloorSpace
-from poi_manager.models import Poi
+from poi_manager.models import Poi, PoiCategory
 from poi_manager.serializers import PoiSerializer
 
 logger = logging.getLogger(__name__)
@@ -610,19 +609,15 @@ class RoutePoiToPoi(APIView):
 
 
 def find_closest_poi(coordinates, floor, poi_cat_id, lang_code):
-
-
     x_start_coord = float(coordinates.split(',')[0])
     y_start_coord = float(coordinates.split(',')[1])
     start_floor_num = floor
     poi_cat_id_v = poi_cat_id
 
-
     startid = find_closest_network_node(x_start_coord, y_start_coord, start_floor_num)
 
     cur = connection.cursor()
 
-    # bus = pk 27  underground= 26
     qs_nearest_poi = Poi.objects.filter(category=poi_cat_id_v)
 
     if qs_nearest_poi:
@@ -710,7 +705,6 @@ class NearestPoi(APIView):
         poi_data = find_closest_poi(coords, start_floor_num, poi_cat_id_v, lang_code)
 
         if poi_data:
-
             return Response(poi_data)
         else:
             return Response({"error": "no Pois with that poi_cat_id found"}, status=status.HTTP_400_BAD_REQUEST)
