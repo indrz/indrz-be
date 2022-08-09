@@ -1,5 +1,4 @@
-from api.search import search_any, searchAutoComplete
-from django.conf import settings
+from api.search import search_any
 from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -29,11 +28,9 @@ schema_view = get_schema_view(
 )
 
 
-
 urlpatterns = [
     path('api/v1/api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
     url(r'^api/v1/docs/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    url(r'^api/v1/autocomplete/(?P<search_text>.+)', searchAutoComplete.as_view(), name='search_autocomplete'),
     url(r'^api/v1/search/(?P<q>.+)', search_any, name='search'),
     url(r'^api/v1/directions/', include(('routing.urls', 'directions'), namespace='directions')),
     url(r'^api/v1/admin/', admin.site.urls),

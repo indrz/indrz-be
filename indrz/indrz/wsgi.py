@@ -8,15 +8,9 @@ https://docs.djangoproject.com/en/1.8/howto/deployment/wsgi/
 """
 
 import os
-import sys
-import site
-from dotenv import load_dotenv
-
-load_dotenv(".env")
-
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings.settings'
 
-
 from django.core.wsgi import get_wsgi_application
+
 application = get_wsgi_application()
