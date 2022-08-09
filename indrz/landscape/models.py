@@ -9,12 +9,12 @@ class BaseLookupDomain(gis_models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['code',]
+        ordering = ['code', ]
 
     def __str__(self):
         return str(self.name) or ''
 
-        
+
 class LtSurfaceType(BaseLookupDomain):
     """
     The type of surface in landscaped or unpaved areas
@@ -40,6 +40,7 @@ class LtSurfaceType(BaseLookupDomain):
     #
 
     pass
+
 
 class LtPavementMarkingType(BaseLookupDomain):
     """"
@@ -90,6 +91,7 @@ class LtCondition(BaseLookupDomain):
     #     )
     pass
 
+
 class LtPavementSurfaceType(BaseLookupDomain):
     """
     The type of pavement surface
@@ -108,25 +110,25 @@ class LtPavementSurfaceType(BaseLookupDomain):
     #     )
     pass
 
-        
+
 class LtPavementSurfaceUse(BaseLookupDomain):
     """
     The primary use of the paved surface
     """
-    # Street Street 
-    # Walking Path Walking Path 
-    # Sidewalk Sidewalk 
-    # Bike Path Bike Path 
-    # Parking Lot Parking Lot 
-    # Curb / Gutter Curb / Gutter 
-    # Unknown Unknown 
-    # Other Other 
-    # Curb Curb 
-    # Gutter Gutter 
-    # Athletic Track Athletic Track 
+    # Street Street
+    # Walking Path Walking Path
+    # Sidewalk Sidewalk
+    # Bike Path Bike Path
+    # Parking Lot Parking Lot
+    # Curb / Gutter Curb / Gutter
+    # Unknown Unknown
+    # Other Other
+    # Curb Curb
+    # Gutter Gutter
+    # Athletic Track Athletic Track
     pass
-    
-    
+
+
 class LtAmenityType(BaseLookupDomain):
     pass
     # AMENITY_TYPE = (
@@ -157,23 +159,24 @@ class LtAmenityType(BaseLookupDomain):
     # Other Other 
     # Unknown Unknown 
 
+
 class LandscapeArea(gis_models.Model):
     """
     The extent of open space (grass, mulch, etc.) and other unpaved areas.
     """
 
     name = gis_models.CharField(verbose_name=_("Name"),
-           max_length=256, db_column='name', null=True, blank=True)
+                                max_length=256, db_column='name', null=True, blank=True)
 
     description = gis_models.TextField(verbose_name=_("Description"),
-        db_column='description', help_text=_("Brief description"), null=True, blank=True)
+                                       db_column='description', help_text=_("Brief description"), null=True, blank=True)
 
-    fk_surface_type = gis_models.ForeignKey(LtSurfaceType , on_delete=gis_models.CASCADE, null=True, blank=True)
+    fk_surface_type = gis_models.ForeignKey(LtSurfaceType, on_delete=gis_models.CASCADE, null=True, blank=True)
     fk_campus = gis_models.ForeignKey(Campus, on_delete=gis_models.CASCADE)
 
-    geom_mpoly = gis_models.MultiPolygonField(verbose_name=_("Geometry multi-polygon outside facility areas"), db_column='geom',
-                             blank=True, null=True, srid=3857, spatial_index=True)
-
+    geom_mpoly = gis_models.MultiPolygonField(verbose_name=_("Geometry multi-polygon outside facility areas"),
+                                              db_column='geom',
+                                              blank=True, null=True, srid=3857, spatial_index=True)
 
     def __str__(self):
         return str(self.name) or ''
@@ -187,18 +190,17 @@ class LandscapeAmenityLine(gis_models.Model):
     """
 
     name = gis_models.CharField(verbose_name=_("Name"),
-           max_length=256, db_column='name', null=True, blank=True)
+                                max_length=256, db_column='name', null=True, blank=True)
 
     description = gis_models.TextField(verbose_name=_("Description"),
-        db_column='description', help_text=_(u"Brief description"), null=True, blank=True)
-
+                                       db_column='description', help_text=_(u"Brief description"), null=True,
+                                       blank=True)
 
     fk_amenity_type = gis_models.ForeignKey(LtAmenityType, on_delete=gis_models.CASCADE, null=True, blank=True)
     fk_campus = gis_models.ForeignKey(Campus, on_delete=gis_models.CASCADE)
 
     geom_mline = gis_models.MultiLineStringField(verbose_name=_("Geometry multi-linestrings outside area lines"),
                                                  db_column='geom', blank=True, null=True, srid=3857, spatial_index=True)
-
 
     def __str__(self):
         return str(self.name) or ''
