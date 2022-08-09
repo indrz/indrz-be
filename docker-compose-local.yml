@@ -1,6 +1,6 @@
 version: '3'
 volumes:
-  indrz-cloud-postgis:
+  indrz-cloud-db:
   indrz-cloud-geoserver:
   indrz-cloud-pgadmin-data:
 networks:
@@ -16,7 +16,7 @@ services:
     ports:
       - 8000:8000
     depends_on:
-      - indrz_cloud_postgis
+      - indrz_cloud_db
     volumes:
       - ./indrz:/app
       - ./data/dwg:/app/scripts/geodata/dwg
@@ -43,7 +43,7 @@ services:
      timeout: 10s
      retries: 3
     depends_on:
-      - indrz_cloud_postgis
+      - indrz_cloud_db
   indrz_cloud_pgadmin:
     container_name: indrz_cloud_pgadmin
     image: dpage/pgadmin4:latest
@@ -57,16 +57,16 @@ services:
     ports:
       - "8081:80"
     networks:
-      - indrz-net-boku
+      - indrz-cloud-net
     links:
-      - "indrz_cloud_postgis:pgsql-server"
+      - "indrz_cloud_db:pgsql-server"
     depends_on:
-      - indrz_cloud_postgis
-  indrz_cloud_postgis:
-    container_name: indrz_cloud_postgis
+      - indrz_cloud_db
+  indrz_cloud_db:
+    container_name: indrz_cloud_db
     image: kartoza/postgis:13.0
     volumes:
-      - indrz-cloud-postgis:/var/lib/postgresql
+      - indrz-cloud-db:/var/lib/postgresql
     ports:
       - 5432:5432
     env_file:
