@@ -1,9 +1,8 @@
 import os
 from distutils.util import strtobool
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
 
@@ -20,6 +19,23 @@ if os.name == 'nt':
     os.environ['GDAL_DATA'] = OSGEO4W + r"\share\epsg_csv"
     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
 
+if DEBUG == False:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=os.getenv('SENTRY_URL'),
+        integrations=[DjangoIntegration()],
+
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=1.0,
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )
 
 AUTH_USER_MODEL = 'users.User'  # my app is called users  hence users.User I could make app called core.Users
 
@@ -109,11 +125,11 @@ DATABASES = {
                 'options': '-c search_path=django,public'
             },
         # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('POSTGRES_DB'),  # DB name
-        'USER': os.getenv('POSTGRES_USER'),  # DB user name
-        'PASSWORD': os.getenv('POSTGRES_PASS'),  # DB user password
-        'HOST': os.getenv('POSTGRES_HOST'),
-        'PORT': os.getenv('POSTGRES_PORT'),
+        'NAME': os.getenv('PG_DB'),  # DB name
+        'USER': os.getenv('PG_USER'),  # DB user name
+        'PASSWORD': os.getenv('PG_PASS'),  # DB user password
+        'HOST': os.getenv('PG_HOST'),
+        'PORT': os.getenv('PG_PORT'),
     }
 }
 
@@ -169,14 +185,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
-
-STATICFILES_DIRS = [
-   os.path.join(BASE_DIR, STATIC_FOLDER),
-    os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'static/admin'),
-    os.path.join(BASE_DIR, 'static/legacy'),
-
-]
 
 
 UPLOAD_POI_DIR = MEDIA_ROOT + '/poi_icons/'
