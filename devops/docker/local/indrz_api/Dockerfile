@@ -1,4 +1,3 @@
-# geodj - GeoDjango base image by GOMOGI Geospatial Intelligence
 FROM docker.io/ubuntu:20.04
 
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -32,21 +31,17 @@ RUN apt-get update -qq && apt-get install -y -qq \
 RUN mkdir -p /app
 WORKDIR /app
 
-COPY indrz/requirements/requirements.txt /app/
-
-RUN pip install -r requirements.txt
-
 # COPY indrz/ /usr/src/app/
-# COPY indrz/ /app/
+COPY indrz/ /app/
 
 # Instal Python module requirements
-# RUN pip install -r requirements/requirements.txt
+RUN pip install -r requirements/requirements.txt
 
 # COPY devops/docker/indrz/entrypoint.sh /entrypoint.sh
 # RUN chmod a+x /entrypoint.sh
 # ENTRYPOINT ["bash", "/entrypoint.sh"]
 
-# EXPOSE 8000
+EXPOSE 8000
 
-# CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
-#CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+# CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
