@@ -12,7 +12,7 @@ services:
     image: indrz-cloud-api:3.0
     build:
       context: ./indrz
-      dockerfile: ./devops/docker/indrz
+      dockerfile: ./devops/docker/local/indrz_api
     ports:
       - 8000:8000
     depends_on:
