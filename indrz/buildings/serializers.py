@@ -82,9 +82,14 @@ class BuildingFloorSpaceSerializer(GeoFeatureModelSerializer):
         return BuildingFloorSpace.fk_building_floor.floor_name
 
     def get_name(self, BuildingFloorSpace):
-        name = BuildingFloorSpace.room_code
+        name = ""
+
         if BuildingFloorSpace.short_name:
             name = BuildingFloorSpace.short_name
+        else:
+            if BuildingFloorSpace.room_code:
+                name = BuildingFloorSpace.room_code
+
         return name
 
     def get_category_en(self, BuildingFloorSpace):
