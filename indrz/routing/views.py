@@ -1092,12 +1092,12 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
 
     base_route_q = """SELECT id, source, target, cost, reverse_cost, floor_name FROM geodata.networklines_3857"""
 
-    if route_type == '1':
+    # default type is "0"
+    barrierfree_q = "WHERE 1=1"
+    if route_type.split("=")[1] == '1':
         # exclude all networklines of type stairs
-        barrierfree_q = "WHERE network_type not in (1,11)"
-    else:
-        # default type is "0"
-        barrierfree_q = "WHERE 1=1"
+        # 1 = stairs floor change, 11 = stairs no floor change
+        barrierfree_q = "WHERE network_type not in (1,11)" 
 
     route_query = "SELECT id, source, target, cost, reverse_cost, floor_name FROM geodata.networklines_3857"
 
