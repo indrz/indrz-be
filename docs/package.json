@@ -1,0 +1,19 @@
+{
+  "name": "indrz",
+  "version": "0.0.1",
+  "description": "documentation",
+  "main": "index.js",
+  "authors": {
+    "name": "Michael Diener",
+    "email": "office@gomogi.com"
+  },
+  "repository": "https://gitlab.com/indrz/indrz-backend.git/indrz documentation",
+  "scripts": {
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.5.3"
+  }
+}
