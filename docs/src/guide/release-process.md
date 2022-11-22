@@ -1,14 +1,13 @@
-# INDRZ Release Process
-
+# Release process
 
 This document explains how to release Indrz. 
-Taken from the indrzproject as a great start.
+Inspiration taken/copied from the [Djangoproject Release How To](https://docs.djangoproject.com/en/dev/internals/howto-release-django/) as a great start.
 
 **Please, keep these instructions up-to-date if you make changes!** The point
 here is to be descriptive, not prescriptive, so feel free to streamline or
 otherwise make changes, but **update this document accordingly!**
 
-# Overview
+## Overview
 
 
 There are three types of releases that you might need to make:
@@ -43,7 +42,7 @@ The short version of the steps involved is:
 There are a lot of details, so please read on.
 
 
-# Pre-release tasks
+## Pre-release tasks
 
 A few items need to be taken care of before even beginning the release process.
 This stuff starts about a week before the release; most of it can be done
@@ -91,7 +90,7 @@ any time leading up to the actual release:
     $ git checkout -b stable/2.2.x origin/stable/2.1.x
     $ git push origin stable/2.2.x:stable/2.2.x
 
-# Preparing for release
+## Preparing for release
 
 
 Write the announcement blog post for the release. You can enter it into the
@@ -103,7 +102,7 @@ __ https://www.indrz.com/weblog/2013/feb/19/security/
 __ https://www.indrz.com/weblog/2012/mar/23/14/
 __ https://www.indrz.com/weblog/2012/nov/27/15-beta-1/
 
-# Actually rolling the release
+## Actually rolling the release
 
 
 OK, this is the fun part, where we actually push out a release!
@@ -225,7 +224,7 @@ Now you're ready to actually put the release out there. To do this:
 1. Add a link to the blog post in the topic of the ``#indrz`` IRC channel:
    ``/msg chanserv TOPIC #indrz new topic goes here``.
 
-# Post-release
+## Post-release
 
 You're almost done! All that's left to do now is:
 
@@ -238,7 +237,7 @@ You're almost done! All that's left to do now is:
    details of the issues addressed.
 
 
-# New stable branch tasks
+## New stable branch tasks
 
 There are several items to do in the time following the creation of a new
 stable branch (often following an alpha release). Some of these tasks don't
@@ -273,8 +272,7 @@ need to be done by the releaser.
    <https://github.com/pypa/trove-classifiers/issues/29>`_. For example
    ``Framework :: indrz :: 3.1``.
 
-Notes on setting the VERSION tuple
-==================================
+##  Notes on setting the VERSION tuple
 
 indrz's version reporting is controlled by the ``VERSION`` tuple in
 ``indrz/__init__.py``. This is a five-element tuple, whose elements

@@ -4,7 +4,7 @@ module.exports = {
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#title
    */
-  title: 'Vuepress Docs Boilerplate',
+  title: 'INDRZ Documentation',
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#description
    */
@@ -34,6 +34,14 @@ module.exports = {
     lastUpdated: false,
     nav: [
       {
+        text: 'Contact',
+        link: '/contact/'
+      },
+      {
+        text: 'Overview',
+        link: '/overview/'
+      },
+      {
         text: 'Guide',
         link: '/guide/',
       },
@@ -42,8 +50,8 @@ module.exports = {
         link: '/config/'
       },
       {
-        text: 'VuePress',
-        link: 'https://v1.vuepress.vuejs.org'
+        text: 'Gitlab',
+        link: 'https://gitlab.com/indrz'
       }
     ],
     sidebar: {
@@ -53,7 +61,28 @@ module.exports = {
           collapsable: false,
           children: [
             '',
-            'using-vue',
+            'release-process',
+            'frontend-setup',
+            'backend-setup'
+          ]
+        }
+      ],
+      '/overview/': [
+        {
+          title: 'Overview',
+          collapsable: false,
+          children: [
+            '',
+          ]
+        }
+      ],
+      '/config/': [
+        {
+          title: 'Config',
+          collapsable: false,
+          children: [
+            '',
+            'docker-setup',
           ]
         }
       ],
