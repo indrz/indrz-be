@@ -1,7 +1,7 @@
 ---
 home: true
 heroImage: https://v1.vuepress.vuejs.org/hero.png
-tagline: documentation how to&#39;s
+tagline: wayfinding
 actionText: Quick Start →
 actionLink: /guide/
 features:
@@ -9,7 +9,7 @@ features:
   details: Feature 1 Description
 - title: Deployment
   details: Docker-Compose ubernetes
-- title: Feature 3 Title
-  details: Feature 3 Description
+- title: Developers
+  details: release notes
 footer: Made by Michael Diener with ❤️
 ---
