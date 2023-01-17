@@ -3,13 +3,14 @@ from django.urls import path, include
 from poi_manager.views import search_poi_by_name, \
     poi_json_tree, poi_root_nodes, get_poi_by_cat_id
 
-from poi_manager.api import PoiCategoryViewSet, PoiViewSet, PoiIconViewSet
+from poi_manager.api import PoiCategoryViewSet, PoiViewSet, PoiIconViewSet, PoiImageViewSet
 from rest_framework import routers
 
 router = routers.DefaultRouter()
 
 router.register(r'category', PoiCategoryViewSet, basename='poi')
 router.register(r'icon', PoiIconViewSet)
+router.register(r'images', PoiImageViewSet)
 router.register(r'', PoiViewSet)
 
 

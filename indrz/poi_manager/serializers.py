@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from .models import Poi, PoiCategory, PoiIcon
+from .models import Poi, PoiCategory, PoiIcon, PoiImages
 
 class PoiSerializer(GeoFeatureModelSerializer):
     icon = serializers.SerializerMethodField()
@@ -56,3 +56,8 @@ class PoiIconSerializer(serializers.ModelSerializer):
         model = PoiIcon
         fields = ('id', 'name', 'icon')
 
+class PoiImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PoiImages
+        fields = ( 'poi', 'images')
