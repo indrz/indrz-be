@@ -1,8 +1,9 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 
-from poi_manager.models import PoiCategory, Poi, PoiIcon
-from poi_manager.serializers import PoiSerializer, PoiCategorySerializer, PoiIconSerializer
+from poi_manager.models import PoiCategory, Poi, PoiIcon, PoiImages
+from poi_manager.serializers import PoiSerializer, PoiCategorySerializer, PoiIconSerializer, PoiImageSerializer
 
 
 class PoiViewSet(viewsets.ModelViewSet):
@@ -50,3 +51,34 @@ class PoiIconViewSet(viewsets.ModelViewSet):
     """
     queryset = PoiIcon.objects.all()
     serializer_class = PoiIconSerializer
+
+class PoiImageViewSet(viewsets.ModelViewSet):
+    """
+    A simple ViewSet for viewing and editing the accounts
+    associated with the user.
+    """
+    queryset = PoiImages.objects.all()
+    serializer_class = PoiImageSerializer
+    parser_classes = (MultiPartParser, FormParser)
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly]
+    # search_fields = ('name',)  #  or  'category__cat_name'
+
+    # def get_queryset(self):
+    #     return Poi.objects.filter(enabled=True)
+
+
+    def create(self, request, *args, **kwargs):
+        """
+        #checks if post request data is an array initializes serializer with many=True
+        else executes default CreateModelMixin.create function
+        """
+        is_many = isinstance(request.data, list)
+        if not is_many:
+            return super(PoiImageViewSet, self).create(request, *args, **kwargs)
+        else:
+            serializer = self.get_serializer(data=request.data, many=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
