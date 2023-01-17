@@ -1,0 +1,1 @@
+[{"model": "buildings.organization", "pk": 1, "fields": {"street": "Universitätsstrasse", "house_number": "66", "postal_code": null, "municipality": null, "city": null, "country": null, "name": "AAU Klagenfurt", "description": "", "phone": null, "email": null, "website": null, "geom": null, "owner": null, "legal_form": null, "num_buildings": null}}]
