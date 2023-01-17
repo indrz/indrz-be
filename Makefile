@@ -15,7 +15,7 @@ help: ## This help.
 build: build-indrz build-geoserver ## Build all Docker images
 
 build-indrz: ## Build Indrz BE Image
-	docker build -t indrz_cloud_api:latest -f devops/docker/local/indrz_api/Dockerfile ./indrz
+	docker build -t indrz_api:latest -f devops/docker/local/indrz_api/Dockerfile ./indrz
 
 build-geoserver: ## Build Geoserver Image
 	docker-compose build geoserver
