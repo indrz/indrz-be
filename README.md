@@ -20,86 +20,24 @@ environmentment.  The production deployment aswell will be an all docker
 deployment.
 
 
-1. Visit `indrz/settings/`and copy the `example-env.env` file and save as `.env` file in root folder.
-1. Get Docker `.env`  environment varialbles ready, located in the root folder
-   allong with the `docker-compose.yml` :
-1. Build all required Docker images
+1. Copy `.env-example` into a new file called `.env`  configure your secret varialbles, this is in the root folder
+   allong with the `docker-compose-local.yml` 
+1. Build indrz_api image
     ```
-    make build
+    docker build -t indrz_api:latest -f devops/local/indrz_api/Dockerfile ./indrz
     ```
-1. Run application
+1. Run indrz_api on localhost
     ```
-    make run
+    docker-compose -f docker-compose-local.yml up -d
     ```
-1. Run database setup that will create postgresql schemas and set db user search_path
-    ```
-    make setup_indrz_db
-    ```
-1. Load demo data for testing
+1. OPTIONAL load demo data for testing
     ```
     make load_demo_data
     ```
-1. Collect static file
-    ```
-    make collectstatic
-    ```
-### Manage Postgres database
-If you have issues with the db `setup_indrz_db`
+1. Visit http://localhost:8000/api/v1/admin to login using Django admin
+1. Visit http://localhost:8000/api/v1/docs to see Swagger docs (not you must be logged into Django Admin)
 
-```bash
-psql -h localhost -U POSTGRES_USER -p POSTGRES_EXT_PORT -l
-docker exec -it indrz_db bash
-su postgres
-dropdb indrzcloud
-createdb -O indrzcloud indrzcloud
-psql -c "create extension postgis" -d indrzcloud
-psql -c "create extension pgrouting" -d indrzcloud
-psql -c "CREATE SCHEMA IF NOT EXISTS django AUTHORIZATION indrzcloud" -d indrzcloud
-psql -c "CREATE SCHEMA IF NOT EXISTS geodata AUTHORIZATION indrzcloud" -d indrzcloud
-psql -c "ALTER ROLE indrzcloud IN DATABASE indrzcloud SET search_path TO django,geodata,public;" -d indrzcloud
-```
-
-### User Make command
-
-Commands help
-
-```
-make
-- or -
-make help
-```
-
-Collect Django static files
-```
-make collectstatic
-```
-
-Build Docker images
-
-```
-# Build Indrz image only
-make build-indrz
-
-# Build all
-make build
-```
-
-Stop application 
-```
-make stop
-```
-
-Application releases deployment 
-```
-make deploy
-```
-
-Pull code from Git 
-```
-make pull
-```
-
-## Tech
+## Tech Stack
 
 * [Python](https://python.org) (3.x)
 * [Django](http://djangoproject.com) – Web Framework Backend
@@ -109,7 +47,7 @@ make pull
 * [Postgresql](http://www.postgresql.org) – Database
 * [Geoserver](http://geoserver.org) – Web map server to serve and create, maps and data
 * [Ubuntu server](https://ubuntu.com/) - Server
-* [Docker, docker-compose](https://docker.com/) - Docker, Docker-Compse
+* [Docker, docker-compose](https://docker.com/) - Docker, Docker-Compose
 
 ## Supported and built by:
 

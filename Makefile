@@ -24,12 +24,7 @@ run: ## Run Indrz Docker project (production-ready)
 	docker-compose -p $(PROJECT_NAME) -f docker-compose.yml  up -d
 
 run-dev: ## Run Indrz Docker project in development mode
-	docker-compose -p $(PROJECT_NAME) -f docker-compose.dev.yml up -d
-
-collectstatic: ## Collect Django static files
-	docker exec -t indrz_api python3 manage.py collectstatic --clear --noinput
-# 	docker exec -t nginx cp -r /opt/data/static/dist/. /var/www/indrz/
-# 	docker exec -t nginx cp -r /opt/data/static /var/www/indrz/
+	docker-compose -p $(PROJECT_NAME) -f docker-compose-local.yml up -d
 
 setup_indrz_db:
 	docker cp devops/docker/indrz/db_init.sql indrz_db:/scripts/db_init.sql
