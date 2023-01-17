@@ -1,40 +1,40 @@
 version: '3'
 volumes:
-  indrz-cloud-db:
-  indrz-cloud-geoserver:
-  indrz-cloud-pgadmin-data:
+  indrz-local-db:
+  indrz-local-geoserver:
+  indrz-local-pgadmin:
 networks:
-  indrz-cloud-net:
+  indrz-net:
 
 services:
-  indrz_cloud_api:
-    container_name: indrz_cloud_api
-    image: indrz-cloud-api:3.0
+  indrz_api:
+    container_name: indrz_api
+    image: indrz_api:latest
     build:
       context: ./indrz
       dockerfile: ./devops/docker/local/indrz_api
     ports:
       - 8000:8000
     depends_on:
-      - indrz_cloud_db
+      - indrz_db
     volumes:
       - ./indrz:/app
       - ./data/dwg:/app/scripts/geodata/dwg
     restart: always
     networks:
-      - indrz-cloud-net
+      - indrz-net
     env_file:
       - .env
-  indrz_cloud_geoserver:
-    container_name: indrz_cloud_geoserver
-    image: kartoza/geoserver:2.21.1
+  indrz_geoserver:
+    container_name: indrz_geoserver
+    image: kartoza/geoserver:2.22.0
     volumes:
-     - indrz-cloud-geoserver:/opt/geoserver/data_dir
+     - indrz-local-geoserver:/opt/geoserver/data_dir
     ports:
      - 8080:8080
     restart: on-failure
     networks:
-      - indrz-cloud-net
+      - indrz-net
     env_file:
      - .env
     healthcheck:
@@ -43,12 +43,12 @@ services:
      timeout: 10s
      retries: 3
     depends_on:
-      - indrz_cloud_db
-  indrz_cloud_pgadmin:
-    container_name: indrz_cloud_pgadmin
+      - indrz_db
+  indrz_pgadmin:
+    container_name: indrz_pgadmin
     image: dpage/pgadmin4:latest
     volumes:
-      - indrz-cloud-pgadmin-data:/var/lib/pgadmin
+      - indrz-local-pgadmin:/var/lib/pgadmin
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@gomogi.com
@@ -57,16 +57,16 @@ services:
     ports:
       - "8081:80"
     networks:
-      - indrz-cloud-net
+      - indrz-net
     links:
-      - "indrz_cloud_db:pgsql-server"
+      - "indrz_db:pgsql-server"
     depends_on:
-      - indrz_cloud_db
-  indrz_cloud_db:
-    container_name: indrz_cloud_db
-    image: kartoza/postgis:13.0
+      - indrz_db
+  indrz_db:
+    container_name: indrz_db
+    image: kartoza/postgis:15-3.3
     volumes:
-      - indrz-cloud-db:/var/lib/postgresql
+      - indrz-local-db:/var/lib/postgresql
     ports:
       - 5432:5432
     env_file:
@@ -75,6 +75,6 @@ services:
       - ALLOW_IP_RANGE=0.0.0.0/0
     restart: on-failure
     networks:
-      - indrz-cloud-net
+      - indrz-net
     healthcheck:
       test: "exit 0"
