@@ -1,4 +1,4 @@
-FROM docker.io/ubuntu:20.04
+FROM docker.io/ubuntu:22.04
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -19,7 +19,7 @@ RUN apt-get update -qq && apt-get install -y -qq \
     # security  \
     xmlsec1 libxml2-dev libxmlsec1-dev libxmlsec1-openssl \
     # python basic libs
-    python3.8 python3.8-dev python3.8-venv libpq-dev gettext python3-pip \
+    python3.10 python3.10-dev python3.10-venv libpq-dev gettext python3-pip \
     # geodjango
     gdal-bin binutils libproj-dev libgdal-dev \
     # postgresql
@@ -27,21 +27,26 @@ RUN apt-get update -qq && apt-get install -y -qq \
     apt-get clean all && rm -rf /var/apt/lists/* && rm -rf /var/cache/apt/*  && \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 
-
 RUN mkdir -p /app
+
+COPY indrz/requirements/requirements.txt /app/requirements/requirements.txt
+
 WORKDIR /app
 
-# COPY indrz/ /usr/src/app/
-COPY indrz/ /app/
 
 # Instal Python module requirements
 RUN pip install -r requirements/requirements.txt
 
-# COPY devops/docker/indrz/entrypoint.sh /entrypoint.sh
-# RUN chmod a+x /entrypoint.sh
-# ENTRYPOINT ["bash", "/entrypoint.sh"]
+# COPY indrz/ /usr/src/app/
+COPY indrz/ /app/
+
+COPY devops/docker/local/indrz_api/entrypoint.sh /entrypoint.sh
+RUN chmod a+x /entrypoint.sh
+ENTRYPOINT ["bash", "/entrypoint.sh"]
 
 EXPOSE 8000
 
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
-# CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
+
+# if production run gunicorn
+#CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]

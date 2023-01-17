@@ -1,9 +1,14 @@
+import sys
+from io import BytesIO
+
 from django.contrib.gis.db import models as gis_model
 from django.contrib.postgres.fields import ArrayField
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 from taggit.managers import TaggableManager
+from PIL import Image as Pilimage
 
 from buildings.models import BuildingFloor, Campus
 
@@ -98,3 +103,75 @@ class Poi(models.Model):
 
     def __str__(self):
         return str(self.name) or ''
+
+
+class PoiImages(models.Model):
+    poi = models.ForeignKey(Poi, on_delete=models.CASCADE)
+    images = models.ImageField(verbose_name=_('POI images'), upload_to='poi_images', max_length=512)
+    thumbnails = models.ImageField(verbose_name=_('POI Image Thumbnail'), upload_to='poi_thumbnails',
+                                   null=True, blank=True, max_length=512)
+
+    def save(self, *args, **kwargs):
+
+        img = Pilimage.open(self.images)
+
+        if img.height > 400 or img.width > 400:
+
+            desired_size = (408, 250)
+            thumbnail_bytes = BytesIO()
+
+            ##############  self crop   ###########################
+
+            im_size = img.size
+            new_size = img.size
+
+            if im_size[0] >= im_size[1]:
+                # Check if the image is already the desired size
+                if im_size[1] > desired_size[1]:
+                    x_axis = int(desired_size[1] / im_size[1] * im_size[0])
+                    y_axis = desired_size[1]
+            elif im_size[1] > im_size[0]:
+                # Check if the image is already the desired size
+                if im_size[0] > desired_size[0]:
+                    x_axis = desired_size[0]
+                    y_axis = int(desired_size[0] / im_size[0] * im_size[1])
+            new_size = (x_axis, y_axis)
+
+            im_resized = img.resize(new_size)
+
+            # Find the center of the image
+            left = int(im_resized.size[0] / 2 - desired_size[0] / 2)
+            upper = int(im_resized.size[1] / 2 - desired_size[1] / 2)
+            right = left + desired_size[0]
+            lower = upper + desired_size[1]
+
+            # Crop and save the image
+            im_cropped = im_resized.crop((left, upper, right, lower))
+
+            im_cropped.save(
+                thumbnail_bytes, "jpeg", quality=60, optimize=True, progressive=True
+            )
+
+            img_name = self.images.name.split('.')[0]
+
+            # good for simple thumbnails but not good for portrait size images ie height > width
+            # img.thumbnail(desired_size, Pilimage.ANTIALIAS)
+
+            img.save(
+                thumbnail_bytes, "jpeg", quality=60, optimize=True, progressive=True
+            )
+            self.thumbnails = InMemoryUploadedFile(thumbnail_bytes, 'ImageField', f"{img_name}_thumb.jpg", 'image/jpeg',
+                                                   sys.getsizeof(thumbnail_bytes), None)
+
+        force_update = False
+
+        # If the instance already has been saved, it has an id and we set
+        # force_update to True
+        if self.id:
+            force_update = True
+
+        # Force an UPDATE SQL query if we're editing the image to avoid integrity exception
+        super(PoiImages, self).save(force_update=force_update)
+
+    def __str__(self):
+        return self.images.name or ''

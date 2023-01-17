@@ -559,53 +559,62 @@ class RoutePoiToPoi(APIView):
         end_poi = int(end_poi_id.split("=")[1])
         r_type = int(route_type.split("=")[1])
 
-        if start_poi is not None:
-            if end_poi is not None:
-                qs_start = Poi.objects.get(pk=start_poi)
+        if start_poi is None or end_poi is None:
+            return Response({"error":"start id or end id cannot be None"}, status=status.HTTP_400_BAD_REQUEST)
 
-                start_node_id = find_closest_network_node(qs_start.geom.coords[0][0], qs_start.geom.coords[0][1],
-                                                          qs_start.floor_num)
 
-                qs_end = Poi.objects.get(pk=end_poi)
-                end_node_id = find_closest_network_node(qs_end.geom.coords[0][0], qs_end.geom.coords[0][1], qs_end.floor_num)
+        if start_poi == end_poi:
+            return Response({"error": "start id is same as end id no route to self"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-                geojs_fc = run_route(start_node_id, end_node_id, route_type=r_type)
+        try:
+            qs_start = Poi.objects.get(pk=start_poi)
 
-                if "error" in geojs_fc:
-                    return Response(geojs_fc, status=status.HTTP_404_NOT_FOUND)
+            start_node_id = find_closest_network_node(qs_start.geom.coords[0][0], qs_start.geom.coords[0][1],
+                                                      qs_start.floor_num)
+
+            qs_end = Poi.objects.get(pk=end_poi)
+            end_node_id = find_closest_network_node(qs_end.geom.coords[0][0], qs_end.geom.coords[0][1], qs_end.floor_num)
+
+            geojs_fc = run_route(start_node_id, end_node_id, route_type=r_type)
+
+            if "error" in geojs_fc:
+                return Response(geojs_fc, status=status.HTTP_404_NOT_FOUND)
+            else:
+                serializer_s = PoiSerializer(qs_start)
+                serializer_e = PoiSerializer(qs_end)
+
+                geojs_fc['route_info']['start_name'] = qs_start.name
+                geojs_fc['route_info']['end_name'] = qs_end.name
+
+                geojs_fc['route_info']['start'] = serializer_s.data
+                geojs_fc['route_info']['end'] = serializer_e.data
+                geojs_fc['route_info']['mid_name'] = ""
+
+                start_coords = {'coordinates': [[qs_start.geom.coords[0][0], qs_start.geom.coords[0][1]]],
+                                'type': 'MultiPoint'}
+
+                start_name = qs_start.name
+                end_name = qs_end.name
+                poi_floor = qs_end.floor_num
+                poi_geom = {'coordinates': [qs_end.geom.coords[0]], 'type': 'MultiPoint'}
+
+                rev_val = "false"
+
+                if rev_val == "false":
+                    marks = create_route_markers(start_coords, poi_geom, qs_start.floor_num, poi_floor, start_name,
+                                                 end_name)
                 else:
-                    serializer_s = PoiSerializer(qs_start)
-                    serializer_e = PoiSerializer(qs_end)
+                    marks = create_route_markers(poi_geom, start_coords, poi_floor, qs_start.floor_num, end_name,
+                                                 start_name)
 
-                    geojs_fc['route_info']['start_name'] = qs_start.name
-                    geojs_fc['route_info']['end_name'] = qs_end.name
+                geojs_fc['route_info']['route_markers'] = marks
 
-                    geojs_fc['route_info']['start'] = serializer_s.data
-                    geojs_fc['route_info']['end'] = serializer_e.data
-                    geojs_fc['route_info']['mid_name'] = ""
+                return Response(geojs_fc, status=status.HTTP_200_OK)
+        except:
+            return Response({"error": "query route poi-id to poi-id failed"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-                    start_coords = {'coordinates': [[qs_start.geom.coords[0][0], qs_start.geom.coords[0][1]]],
-                                    'type': 'MultiPoint'}
-
-                    start_name = qs_start.name
-                    end_name = qs_end.name
-                    poi_floor = qs_end.floor_num
-                    poi_geom = {'coordinates': [qs_end.geom.coords[0]], 'type': 'MultiPoint'}
-
-                    rev_val = "false"
-
-                    if rev_val == "false":
-                        marks = create_route_markers(start_coords, poi_geom, qs_start.floor_num, poi_floor, start_name,
-                                                     end_name)
-                    else:
-                        marks = create_route_markers(poi_geom, start_coords, poi_floor, qs_start.floor_num, end_name,
-                                                     start_name)
-
-                    geojs_fc['route_info']['route_markers'] = marks
-
-                    return Response(geojs_fc, status=status.HTTP_200_OK)
-        else:
-            return Response({"error":"poi does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def find_closest_poi(coordinates, floor, poi_cat_id, lang_code):
@@ -1063,7 +1072,7 @@ def split_route(route_segments, start_node_id, end_node_id, coord_data):
         return None
 
 
-def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_data=None):
+def run_route(start_node_id, end_node_id, route_type='0', mid_node_id=None, coord_data=None):
     """
 
     :param start_node_id:
@@ -1094,10 +1103,11 @@ def run_route(start_node_id, end_node_id, route_type, mid_node_id=None, coord_da
 
     # default type is "0"
     barrierfree_q = "WHERE 1=1"
-    if route_type.split("=")[1] == '1':
+
+    if route_type.endswith('1'):
         # exclude all networklines of type stairs
-        # 1 = stairs floor change, 11 = stairs no floor change
-        barrierfree_q = "WHERE network_type not in (1,11)" 
+        barrierfree_q = "WHERE network_type not in (1,11)" # 1 = stairs floor change, 11 = stairs no floor change
+
 
     route_query = "SELECT id, source, target, cost, reverse_cost, floor_name FROM geodata.networklines_3857"
 

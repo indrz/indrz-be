@@ -15,7 +15,7 @@ help: ## This help.
 build: build-indrz build-geoserver ## Build all Docker images
 
 build-indrz: ## Build Indrz BE Image
-	docker-compose build --build-arg ENV_TYPE=$(ENV_TYPE) indrz_api
+	docker build -t indrz_api:latest -f devops/docker/local/indrz_api/Dockerfile ./indrz
 
 build-geoserver: ## Build Geoserver Image
 	docker-compose build geoserver
@@ -39,9 +39,12 @@ migrate:
 	docker exec -t indrz_api python3 manage.py migrate
 
 load_demo_data:
-	docker exec -t indrz_api python3 manage.py loaddata fixture_buildings_organization.json
-	docker exec -t indrz_api python3 manage.py loaddata fixture_buildings_campus.json
-	docker exec -t indrz_api python3 manage.py loaddata fixture_buildings_building.json
+	docker exec -t indrz_api python3 manage.py loaddata organization.json
+	docker exec -t indrz_api python3 manage.py loaddata campus.json
+	docker exec -t indrz_api python3 manage.py loaddata buildings.json
+	docker exec -t indrz_api python3 manage.py loaddata buildings_floors.json
+	docker exec -t indrz_api python3 manage.py loaddata buildings_spaces.json
+	docker exec -t indrz_api python3 manage.py loaddata buildings_wings.json
 
 pull: ## Pull source code from Git
 	git pull

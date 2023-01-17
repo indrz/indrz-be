@@ -1,1 +1,0 @@
-[ {"model": "buildings.campus", "pk": 1, "fields": {"campus_name": "xmen", "description": null, "fk_organization": 1, "geom": null}}]
