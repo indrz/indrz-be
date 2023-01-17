@@ -1,7 +1,6 @@
 import os
 from distutils.util import strtobool
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
@@ -56,7 +55,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'taggit',
     'mptt',
-    'rosetta',
     'corsheaders',
     'drf_yasg',
 
@@ -186,16 +184,11 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 UPLOAD_POI_DIR = MEDIA_ROOT + '/poi_icons/'
-
-ROSETTA_MESSAGES_PER_PAGE = 20
 YANDEX_TRANSLATE_KEY = "trnsl.1.1.20160713T103415Z.0a117baa17b2233a.fb58b4876ab2920ea22ae0a0b55507319bb4a0db"
-ROSETTA_ENABLE_TRANSLATION_SUGGESTIONS = True
-ROSETTA_WSGI_AUTO_RELOAD = False
-ROSETTA_UWSGI_AUTO_RELOAD = False
-
-# ROSETTA_STORAGE_CLASS = 'rosetta.storage.SessionRosettaStorage'
 
 
 INDRZ_API_TOKEN = os.getenv('INDRZ_API_TOKEN')
