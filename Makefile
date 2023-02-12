@@ -14,8 +14,11 @@ help: ## This help.
 
 build: build-indrz build-geoserver ## Build all Docker images
 
-build-indrz: ## Build Indrz BE Image
-	docker build -t indrz_api:latest -f devops/docker/local/indrz_api/Dockerfile ./indrz
+build-indrz-api-prod: ## Build Indrz BE Image
+	docker build -t indrz_api_prod:latest -f devops/docker/production/indrz_api/Dockerfile ./indrz
+
+build-indrz-api-dev: ## Build Indrz BE Image
+	docker build -t indrz_api_dev:latest -f devops/docker/local/indrz_api/Dockerfile ./indrz
 
 build-geoserver: ## Build Geoserver Image
 	docker-compose build geoserver
@@ -33,13 +36,15 @@ setup_indrz_db:
 migrate:
 	docker exec -t indrz_api python3 manage.py migrate
 
-load_demo_data:
-	docker exec -t indrz_api python3 manage.py loaddata organization.json
-	docker exec -t indrz_api python3 manage.py loaddata campus.json
-	docker exec -t indrz_api python3 manage.py loaddata buildings.json
-	docker exec -t indrz_api python3 manage.py loaddata buildings_floors.json
-	docker exec -t indrz_api python3 manage.py loaddata buildings_spaces.json
-	docker exec -t indrz_api python3 manage.py loaddata buildings_wings.json
+load_demo_data_dev:
+#	docker exec -t indrz_api python3 manage.py loaddata --app buildings organization.json
+#	docker exec -t indrz_api python3 manage.py loaddata --app buildings campus.json
+#	docker exec -t indrz_api python3 manage.py loaddata --app buildings buildings.json
+#	docker exec -t indrz_api python3 manage.py loaddata --app buildings buildings_floors.json
+#	docker exec -t indrz_api python3 manage.py loaddata --app buildings buildings_spaces.json
+#	docker exec -t indrz_api python3 manage.py loaddata --app buildings buildings_wings.json
+	docker exec -t indrz_api python3 manage.py loaddata --app buildings initial_ltspacetype_data.json
+
 
 pull: ## Pull source code from Git
 	git pull
