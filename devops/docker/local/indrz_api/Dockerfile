@@ -15,7 +15,7 @@ RUN apt-get update -qq && apt-get install -y -qq \
     # std libs
     git less nano curl \
     ca-certificates \
-    wget make bzip2 g++ build-essential \
+    wget make bzip2 g++ build-essential pkg-config \
     # security  \
     xmlsec1 libxml2-dev libxmlsec1-dev libxmlsec1-openssl \
     # python basic libs
@@ -29,18 +29,16 @@ RUN apt-get update -qq && apt-get install -y -qq \
 
 RUN mkdir -p /app
 
-COPY indrz/requirements/requirements.txt /app/requirements/requirements.txt
+COPY devops/docker/local/indrz_api/entrypoint.sh /entrypoint.sh
+# COPY indrz/ /usr/src/app/
+COPY indrz/ /app/
 
 WORKDIR /app
-
 
 # Instal Python module requirements
 RUN pip install -r requirements/requirements.txt
 
-# COPY indrz/ /usr/src/app/
-COPY indrz/ /app/
 
-COPY devops/docker/local/indrz_api/entrypoint.sh /entrypoint.sh
 RUN chmod a+x /entrypoint.sh
 ENTRYPOINT ["bash", "/entrypoint.sh"]
 
