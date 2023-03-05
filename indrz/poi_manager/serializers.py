@@ -4,6 +4,7 @@ from .models import Poi, PoiCategory, PoiIcon, PoiImages
 
 class PoiSerializer(GeoFeatureModelSerializer):
     icon = serializers.SerializerMethodField()
+    images = serializers.SerializerMethodField()
 
     class Meta:
         model = Poi
@@ -27,6 +28,17 @@ class PoiSerializer(GeoFeatureModelSerializer):
                     return None
             else:
                 return None
+        else:
+            return None
+
+    def get_images(self, Poi):
+        """
+        :param Poi: poi obeject
+        :return: a field ie property called icon for model Poi
+        """
+        if PoiImages.objects.filter(poi_id=Poi.id):
+            serializer = PoiImageSerializer(PoiImages.objects.filter(poi_id=Poi.id), many=True)
+            return serializer.data
         else:
             return None
 
