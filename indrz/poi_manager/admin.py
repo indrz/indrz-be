@@ -41,12 +41,12 @@ class PoiIconAdmin(admin.ModelAdmin):
 
 class PoiImageAdmin(admin.ModelAdmin):
     search_fields = ('poi.name', )
-    list_display = ('poi', 'thumbnails', 'images', 'image_preview')
+    list_display = ('id', 'poi', 'poi_id', 'thumbnail', 'sort_order', 'alt_text', 'is_default', 'image', 'image_preview')
     readonly_fields = ('image_preview',)
 
     def image_preview(self, obj):
-        if obj.thumbnails:
-            return mark_safe('<img src="{0}" width="250" height="250" style="object-fit:contain" />'.format(obj.thumbnails.url))
+        if obj.thumbnail:
+            return mark_safe('<img src="{0}" width="250" height="250" style="object-fit:contain" />'.format(obj.thumbnail.url))
         else:
             return '(No image)'
 
