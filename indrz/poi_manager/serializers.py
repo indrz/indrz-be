@@ -57,7 +57,28 @@ class PoiIconSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'icon')
 
 class PoiImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    thumbnail = serializers.SerializerMethodField()
+
+    def get_image(self, PoiImages):
+
+        request = self.context.get('request')
+        if PoiImages.image and hasattr(PoiImages.image, "url"):
+            image_url = PoiImages.image.url
+            if request:
+                return PoiImages.image.url
+            return image_url
+
+    def get_thumbnail(self, PoiImages):
+
+        request = self.context.get('request')
+        if PoiImages.thumbnail and hasattr(PoiImages.thumbnail, "url"):
+            thumbnail_url = PoiImages.thumbnail.url
+            if request:
+                return PoiImages.thumbnail.url
+            return thumbnail_url
+
 
     class Meta:
         model = PoiImages
-        fields = ( 'poi', 'images')
+        fields = ( 'id', 'poi', 'image', 'thumbnail', 'alt_text', 'sort_order', 'is_default')
