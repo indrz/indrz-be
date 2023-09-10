@@ -37,7 +37,7 @@ class PoiSerializer(GeoFeatureModelSerializer):
         :return: a field ie property called icon for model Poi
         """
         if PoiImages.objects.filter(poi_id=Poi.id):
-            serializer = PoiImageSerializer(PoiImages.objects.filter(poi_id=Poi.id), many=True)
+            serializer = PoiImageSerializer(PoiImages.objects.filter(poi_id=Poi.id).order_by('sort_order'), many=True)
             return serializer.data
         else:
             return None
@@ -46,7 +46,8 @@ class PoiCategorySerializer(serializers.ModelSerializer):
     icon = serializers.SerializerMethodField()
     class Meta:
         model = PoiCategory
-        fields = ('id', 'cat_name', 'cat_name_en', 'cat_name_de', 'icon', 'fk_poi_icon', 'enabled', 'parent')
+        fields = ('id', 'cat_name', 'cat_name_en', 'cat_name_de', 'icon', 'fk_poi_icon', 'enabled', 'parent',
+                  'html_content', 'tree_order', 'description')
 
     def get_icon(self, PoiCategory):
         request = self.context.get('request')
@@ -69,28 +70,7 @@ class PoiIconSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'icon')
 
 class PoiImageSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
-    thumbnail = serializers.SerializerMethodField()
-
-    def get_image(self, PoiImages):
-
-        request = self.context.get('request')
-        if PoiImages.image and hasattr(PoiImages.image, "url"):
-            image_url = PoiImages.image.url
-            if request:
-                return PoiImages.image.url
-            return image_url
-
-    def get_thumbnail(self, PoiImages):
-
-        request = self.context.get('request')
-        if PoiImages.thumbnail and hasattr(PoiImages.thumbnail, "url"):
-            thumbnail_url = PoiImages.thumbnail.url
-            if request:
-                return PoiImages.thumbnail.url
-            return thumbnail_url
-
-
     class Meta:
         model = PoiImages
         fields = ( 'id', 'poi', 'image', 'thumbnail', 'alt_text', 'sort_order', 'is_default')
+        # read_only_fields = ('thumb', 'thumbnail')
