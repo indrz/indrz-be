@@ -71,8 +71,11 @@ services:
     depends_on:
       - indrz_db
     volumes:
-      - indrz-media:/opt/data/media
-      - indrz-static:/opt/data/static
+      - /srv/data/media:/opt/data/media
+      - /srv/data/static:/opt/data/static
+      - /srv/data/logs:/opt/data/logs
+      - /srv/data/temp_dwg:/opt/data/temp_dwg
+      - /source/path/dwg:/opt/data/src_dwg
     restart: always
     env_file:
       - devops/docker/.env
