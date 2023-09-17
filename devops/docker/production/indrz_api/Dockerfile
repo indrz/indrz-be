@@ -13,7 +13,7 @@ ENV LC_CTYPE="C.UTF-8"
 
 RUN apt-get update -qq && apt-get install -y -qq \
     # std libs
-    git less nano curl \
+    git less nano curl rsync \
     ca-certificates \
     wget make bzip2 g++ build-essential \
     # security  \
