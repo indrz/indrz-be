@@ -3,71 +3,36 @@ version: '3'
 networks:
   indrz-net:
 
-volumes:
-  indrz-db:
-  indrz-geoserver:
-  indrz-static:
-  indrz-media:
-  indrz-www:
-
 services:
   # POSTGRES DB
   indrz_db:
     hostname: indrz_db
     container_name: indrz_db
-    image: kartoza/postgis:13.0
+    image: kartoza/postgis:15-3.3
     volumes:
-      - indrz-db:/var/lib/postgresql
+      - /srv/data/indrz-db:/var/lib/postgresql
     ports:
-      - ${POSTGRES_EXT_PORT}:5432
+      - 5434:5432
     networks:
       - indrz-net
     env_file:
-      - devops/docker/.env
-    restart: always
+      - .env
+    restart: on-failure
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
-  # GEOSERVER
-  geoserver:
-    hostname: geoserver
-    container_name: geoserver
-    image: indrz/geoserver:2.18.0
-    user: "1000"
-    build:
-      context: .
-      dockerfile: devops/docker/local/geoserver/Dockerfile
-    volumes:
-      - indrz-geoserver:/opt/geoserver/data_dir
-    ports:
-      - ${GEOSERVER_EXT_PORT}:8080
-    restart: on-failure
-    env_file:
-      - devops/docker/.env
-    depends_on:
-      - indrz_db
-    networks:
-      - indrz-net
-    healthcheck:
-      test: curl --fail -s http://localhost:8600/ || exit 1
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-  # INDRZ BACK-END
+  # backend Django API
   indrz_api:
     container_name: indrz_api
     hostname: indrz_api
-    image: indrz/indrz-api:latest
+    image: indrz/indrz_api:3.1
     build:
-      context: .
-      dockerfile: devops/docker/local/indrz/Dockerfile
-    command: gunicorn indrz.wsgi:application --bind 0.0.0.0:8000
-    expose:
-      - 8000
-    networks:
-      - indrz-net
+      context: ./indrz
+      dockerfile: devops/docker/production/indrz_api/Dockerfile
+    ports:
+      - 8000:8000
     depends_on:
       - indrz_db
     volumes:
@@ -75,22 +40,42 @@ services:
       - /srv/data/static:/opt/data/static
       - /srv/data/logs:/opt/data/logs
       - /srv/data/temp_dwg:/opt/data/temp_dwg
-      - /source/path/dwg:/opt/data/src_dwg
+      - /true/source/path/dwg:/opt/data/src_dwg
     restart: always
+    networks:
+      - indrz-net
     env_file:
-      - devops/docker/.env
+      - .env
+  # GEOSERVER
+  geoserver:
+    container_name: geoserver
+    image: indrz-tu/geoserver:2.23.0
+    volumes:
+      - /srv/data/geoserver-data:/opt/geoserver/data_dir
+    restart: on-failure
+    networks:
+      - indrz-net
+    env_file:
+      - .env
+    healthcheck:
+      test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null -u ${GEOSERVER_ADMIN_USER}:'${GEOSERVER_ADMIN_PASSWORD}' http://localhost:8080/geoserver/rest/about/version.xml"
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - indrz_db
+
   # NGINX
   nginx:
     container_name: nginx
     hostname: nginx
-    image: indrz/nginx:latest
+    image: indrz/indrz_nginx:latest
     build:
       context: .
       dockerfile: devops/docker/production/nginx/Dockerfile
     volumes:
-      - indrz-static:/opt/data/static
-      - indrz-media:/opt/data/media
-      - indrz-www:/var/www/indrz
+      - /srv/data/static:/opt/data/static
+      - /srv/data/media:/opt/data/media
       - ${SSL_CERTIFICATES_PATH}:/etc/ssl
     ports:
       - 80:80
@@ -99,6 +84,6 @@ services:
       - indrz-net
     restart: always
     env_file:
-      - devops/docker/.env
+      - .env
     depends_on:
       - indrz_api
