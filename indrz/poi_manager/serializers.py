@@ -42,6 +42,12 @@ class PoiSerializer(GeoFeatureModelSerializer):
         else:
             return None
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['properties']['id'] = representation['id']
+        return representation
+
+
 class PoiCategorySerializer(serializers.ModelSerializer):
     icon = serializers.SerializerMethodField()
     class Meta:
