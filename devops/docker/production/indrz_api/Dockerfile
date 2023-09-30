@@ -13,9 +13,9 @@ ENV LC_CTYPE="C.UTF-8"
 
 RUN apt-get update -qq && apt-get install -y -qq \
     # std libs
-    git less nano curl \
+    git less nano curl rsync \
     ca-certificates \
-    wget make bzip2 g++ build-essential \
+    wget make bzip2 g++ build-essential pkg-config \
     # security  \
     xmlsec1 libxml2-dev libxmlsec1-dev libxmlsec1-openssl \
     # python basic libs
@@ -29,13 +29,14 @@ RUN apt-get update -qq && apt-get install -y -qq \
 
 RUN mkdir -p /app
 
-COPY indrz/requirements/requirements.txt /app/requirements/requirements.txt
+COPY indrz/requirements/base.txt /app/requirements/base.txt
+COPY indrz/requirements/production.txt /app/requirements/production.txt
 
 WORKDIR /app
 
 
 # Instal Python module requirements
-RUN pip install -r requirements/requirements.txt
+RUN pip install -r requirements/production.txt
 
 # COPY indrz/ /usr/src/app/
 COPY indrz/ /app/

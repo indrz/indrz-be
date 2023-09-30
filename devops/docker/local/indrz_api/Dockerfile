@@ -13,7 +13,7 @@ ENV LC_CTYPE="C.UTF-8"
 
 RUN apt-get update -qq && apt-get install -y -qq \
     # std libs
-    git less nano curl \
+    git less nano curl rsync \
     ca-certificates \
     wget make bzip2 g++ build-essential pkg-config \
     # security  \
@@ -36,7 +36,7 @@ COPY indrz/ /app/
 WORKDIR /app
 
 # Instal Python module requirements
-RUN pip install -r requirements/requirements.txt
+RUN pip install --no-cache-dir -r requirements/requirements.txt
 
 
 RUN chmod a+x /entrypoint.sh
@@ -44,7 +44,4 @@ ENTRYPOINT ["bash", "/entrypoint.sh"]
 
 EXPOSE 8000
 
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
-
-# if production run gunicorn
-#CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
+#CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
