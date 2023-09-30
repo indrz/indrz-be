@@ -305,3 +305,20 @@ def get_external_id(request, building_id, external_room_id, format=None):
                                                              fk_building_id=building_id)
         serializer = SpaceSerializer(floor_space_info, many=True)
         return Response(serializer.data)
+
+@api_view(['GET'])
+def get_space_by_roomcode(request, roomcode):
+    """
+    Get information about a single space providing, building_id, floor_id, space_id
+    """
+    if request.method == 'GET':
+
+        space_clean = roomcode.replace(" ", "")  # enable HS 04 H34 to return HS04H34
+
+        space = BuildingFloorSpace.objects.filter(room_code=space_clean).first()
+
+        if space:
+            serializer = BuildingFloorSpaceSerializer(space)
+            return Response(serializer.data)
+        else:
+            return Response({"error": "Space not found"}, status=404)

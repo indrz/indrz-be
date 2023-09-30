@@ -76,10 +76,15 @@ class BuildingFloorSpaceSerializer(GeoFeatureModelSerializer):
     name = serializers.SerializerMethodField()
     category_en = serializers.SerializerMethodField()
     category_de = serializers.SerializerMethodField()
-    src_icon = serializers.SerializerMethodField()
+    wing = serializers.SerializerMethodField()
 
+
+    def get_building_name(self, BuildingFloorSpace):
+        return BuildingFloorSpace.fk_building.building_name
     def get_floor_name(self, BuildingFloorSpace):
-        return BuildingFloorSpace.fk_building_floor.floor_name
+        return BuildingFloorSpace.floor_name
+        # TODO fix data so we can use fk_building_floor
+        # return BuildingFloorSpace.fk_building_floor.floor_name
 
     def get_name(self, BuildingFloorSpace):
         name = ""
@@ -98,16 +103,28 @@ class BuildingFloorSpaceSerializer(GeoFeatureModelSerializer):
     def get_category_de(self, BuildingFloorSpace):
         return BuildingFloorSpace.long_name
 
-    def get_src_icon(self, BuildingFloorSpace):
-        return "space"
-
+    def get_wing(self, BuildingFloorSpace):
+        wing = ""
+        if BuildingFloorSpace.room_code:
+            wing = BuildingFloorSpace.room_code[:2]
+        return wing
 
     class Meta:
         model = BuildingFloorSpace
         geo_field = "geom"
-        fields = ('id', 'short_name', 'long_name', 'name', 'floor_num', 'room_code', 'geom', 'fk_building', 'fk_building_floor',
-                  'room_external_id', 'room_description', 'space_type', 'building_name', 'floor_name', 'type_name', 'src_icon',
-                  'category_en', 'category_de', 'capacity')
+        fields = ('id', 'short_name', 'long_name', 'name', 'floor_num', 'room_code', 'geom',
+                  'fk_building', 'building_name', 'fk_building_floor',
+                  'room_external_id', 'room_description', 'space_type',  'floor_name', 'type_name',
+                  'category_en', 'category_de', 'capacity', 'wing')
+
+        read_only_fields = ('centerGeometry',)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['properties']['id'] = representation['id']
+        representation['properties']['space_type_id'] = representation['properties']['space_type']
+        representation['properties']['src_icon'] = "space"
+        return representation
 
 class BuildingFloorGeomSerializer(GeoFeatureModelSerializer):
 
@@ -162,6 +179,29 @@ class BuildingSerializer(GeoFeatureModelSerializer):
         fields = ('id', 'building_name', 'name', 'abbreviation', 'floor_num', 'fk_campus', 'wings', 'floor_list',
                   'street', 'postal_code', 'municipality', 'city')
 
+
+class CampusSearchSerializer(GeoFeatureModelSerializer):
+    name = serializers.SerializerMethodField()
+    floor_num = serializers.SerializerMethodField()
+    centroid = serializers.SerializerMethodField()
+
+    def get_name(self, Campus):
+        return "Campus " + Campus.campus_name
+
+    def get_floor_num(self, Campus):
+        floor = 0
+        return floor
+
+    def get_centroid(self, Campus):
+        center_coord_geom  = json.loads(Campus.geom.centroid.geojson)
+        return center_coord_geom
+
+    class Meta:
+        model = Campus
+        geo_field = 'centroid'
+        fields = ('id', 'name', 'floor_num', 'campus_name', 'description', 'fk_organization', 'centroid')
+        depth = 1  # include organization information
+        
 
 class FloorSerializerDetails(serializers.ModelSerializer):
 
