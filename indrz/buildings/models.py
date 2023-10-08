@@ -253,7 +253,7 @@ class BuildingFloor(gis_models.Model):
         ordering = ['floor_num']
 
     def __str__(self):
-        return self.short_name + " (" + self.fk_building.name + " )" or ''
+        return f"{self.fk_building.building_name} {self.short_name}" or ""
 
 
 class FloorSpaceBase(gis_models.Model):
@@ -297,7 +297,7 @@ class BuildingFloorPlanLine(gis_models.Model):
     floor_name = gis_models.CharField(verbose_name=_("floor name"), max_length=200,null=True, blank=True)
 
     fk_line_type = gis_models.ForeignKey(LtPlanLineType, on_delete=gis_models.CASCADE, null=True, blank=True)
-    fk_building = gis_models.ForeignKey(BuildingFloor, on_delete=gis_models.CASCADE, null=True, blank=True)
+    fk_building_floor = gis_models.ForeignKey(BuildingFloor, on_delete=gis_models.CASCADE, null=True, blank=True)
 
     geom = gis_models.MultiLineStringField(srid=3857, spatial_index=True, null=True, blank=True)
 
