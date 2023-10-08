@@ -117,8 +117,8 @@ class Poi(models.Model):
 
 class PoiImages(models.Model):
     poi = models.ForeignKey(Poi, on_delete=models.CASCADE)
-    image = models.ImageField(verbose_name=_('POI images'), upload_to='poi_images', max_length=512)
-    thumbnail = models.ImageField(verbose_name=_('POI Image Thumbnail'), upload_to='poi_images',
+    images = models.ImageField(verbose_name=_('POI images'), upload_to='poi_images', max_length=512)
+    thumbnails = models.ImageField(verbose_name=_('POI Image Thumbnail'), upload_to='poi_images',
                                   null=True, blank=True, max_length=512, editable=False)
     sort_order = models.PositiveSmallIntegerField(verbose_name=_("Order of images"), null=True, blank=True)
     alt_text = models.CharField(verbose_name=_("Html image alt text"), max_length=255, default="Image of ...")

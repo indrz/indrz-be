@@ -1,11 +1,10 @@
 import collections
 
+from django.utils.translation import get_language_from_request
 from mptt.templatetags.mptt_tags import cache_tree_children
-from rest_framework.parsers import MultiPartParser, FormParser
-
-from poi_manager.models import PoiCategory, Poi, PoiImages
-from poi_manager.serializers import PoiSerializer, PoiCategorySerializer, PoiImageSerializer
-from rest_framework import viewsets, status, permissions
+from poi_manager.models import PoiCategory, Poi
+from poi_manager.serializers import PoiSerializer, PoiCategorySerializer
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 
 
@@ -16,9 +15,6 @@ class PoiViewSet(viewsets.ModelViewSet):
     """
     queryset = Poi.objects.all()
     serializer_class = PoiSerializer
-    parser_classes = (MultiPartParser, FormParser)
-    permission_classes = [
-        permissions.IsAuthenticatedOrReadOnly]
     # search_fields = ('name',)  #  or  'category__cat_name'
 
     # def get_queryset(self):
@@ -55,7 +51,7 @@ class PoiCategoryViewSet(viewsets.ModelViewSet):
 
 def poi_json_tree(request, campus_id, format=None):
 
-    lang_code = request.LANGUAGE_CODE
+    lang_code = get_language_from_request(request)
 
     def recursive_node_to_dict(node):
         result = collections.OrderedDict()
