@@ -1,12 +1,32 @@
 import os
 from distutils.util import strtobool
+from logging.handlers import RotatingFileHandler
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = strtobool(os.getenv('DEBUG'))
+
+if not DEBUG:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=os.getenv('SENTRY_URL'),
+        integrations=[DjangoIntegration()],
+
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=0.5,
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )
 
 if os.name == 'nt':
     import platform
@@ -18,23 +38,6 @@ if os.name == 'nt':
     os.environ['GDAL_DATA'] = OSGEO4W + r"\share\epsg_csv"
     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
 
-if DEBUG == False:
-    import sentry_sdk
-    from sentry_sdk.integrations.django import DjangoIntegration
-
-    sentry_sdk.init(
-        dsn=os.getenv('SENTRY_URL'),
-        integrations=[DjangoIntegration()],
-
-        # Set traces_sample_rate to 1.0 to capture 100%
-        # of transactions for performance monitoring.
-        # We recommend adjusting this value in production.
-        traces_sample_rate=1.0,
-
-        # If you wish to associate users to errors (assuming you are using
-        # django.contrib.auth) you may enable sending PII data.
-        send_default_pii=True
-    )
 
 AUTH_USER_MODEL = 'users.User'  # my app is called users  hence users.User I could make app called core.Users
 
@@ -123,11 +126,11 @@ DATABASES = {
                 'options': '-c search_path=django,public'
             },
         # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('PG_DB'),  # DB name
-        'USER': os.getenv('PG_USER'),  # DB user name
-        'PASSWORD': os.getenv('PG_PASS'),  # DB user password
-        'HOST': os.getenv('PG_HOST'),
-        'PORT': os.getenv('PG_PORT'),
+        'NAME': os.getenv('POSTGRES_DB'),  # DB name
+        'USER': os.getenv('POSTGRES_USER'),  # DB user name
+        'PASSWORD': os.getenv('POSTGRES_PASS'),  # DB user password
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT'),
     }
 }
 
@@ -223,6 +226,8 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 LOGFILE_DIR = os.getenv('LOGFILE_DIR')
+# Set the maximum log file size (50 MB in bytes)
+LOG_MAX_SIZE = 50 * 1024 * 1024  # 50 MB
 
 if os.path.isdir(LOGFILE_DIR):
     LOGGING_CONFIG = None
@@ -242,9 +247,11 @@ if os.path.isdir(LOGFILE_DIR):
         'handlers': {
             'file_verbose': {
                 'level': 'DEBUG',
-                'class': 'logging.FileHandler',
                 'filename': os.path.join(LOGFILE_DIR, 'verbose.log'),
-                'formatter': 'verbose'
+                'formatter': 'verbose',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'maxBytes': LOG_MAX_SIZE,
+                'backupCount': 5  # Number of backup log files to keep
             },
             'file_debug': {
                 'level': 'DEBUG',
