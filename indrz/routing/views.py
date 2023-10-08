@@ -6,19 +6,16 @@ import logging
 import traceback
 from collections import OrderedDict
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import connection
 from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from django.utils.translation import get_language_from_request
-from django.contrib.gis.geos import GEOSGeometry
-
 from geojson import loads, Feature, FeatureCollection, Point, MultiPoint
 from rest_framework import status
 from rest_framework.decorators import api_view
-from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 
 from buildings.models import BuildingFloorSpace
 from poi_manager.models import Poi
@@ -78,7 +75,13 @@ def find_closest_network_node(x_coord, y_coord, floor):
         ORDER BY ST_3DDistance(verts.the_geom, pt.geom)
         LIMIT 1;""".format(x_coord, y_coord, floor)
 
-    cur.execute(query)
+    try:
+        cur.execute(query)
+    except Exception as e:
+        # Handle the error
+        logger.error("routing query failed here is the query \n " + query + " error " + str(e))
+        return {"error": "no node", "reason": "no node near coordinate in netowrk"}
+
 
     # get the result
     query_result = cur.fetchone()
@@ -410,7 +413,7 @@ def create_route_from_coords(request, start_coord, start_floor, end_coord, end_f
         else:
             geojs_fc = run_route(start_node_id, end_node_id, route_type_val, None, coord_data)
 
-        if "error" in geojs_fc:
+        if "error" in geojs_fc.keys():
             return Response({"error": geojs_fc}, status=status.HTTP_404_NOT_FOUND)
         else:
             start_coords = {'coordinates': [[x_start_coord, y_start_coord]], 'type': 'MultiPoint'}
@@ -577,9 +580,9 @@ class RoutePoiToPoi(APIView):
         if isinstance(route_type, int):
             r_type = route_type
 
-        try:
-            if start_poi is not None and end_poi is not None:
 
+        if start_poi is not None:
+            if end_poi is not None:
                 qs_start = Poi.objects.get(pk=start_poi)
 
                 start_node_id = find_closest_network_node(qs_start.geom.coords[0][0], qs_start.geom.coords[0][1],
@@ -623,10 +626,8 @@ class RoutePoiToPoi(APIView):
                     geojs_fc['route_info']['route_markers'] = marks
 
                     return Response(geojs_fc, status=status.HTTP_200_OK)
-        except:
-            return Response({"error": "query route poi-id to poi-id failed"},
-                            status=status.HTTP_400_BAD_REQUEST)
-
+        else:
+            return Response({"error":"poi does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def find_closest_poi(coordinates, floor, poi_cat_id, lang_code):
@@ -739,7 +740,8 @@ class NearestPoi(APIView):
             return Response({"error": f"{poi_data['error']}"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class RoutePoiToXyz(APIView):
+#TODO remove this old legacy api
+class RoutePoiToXyzV0(APIView):
     """
 
     :param reversed_dir: boolean to set the direction of route query to allow routing
@@ -790,7 +792,10 @@ class RoutePoiToXyz(APIView):
 
         if start_poi is not None:
 
-            qs_start = Poi.objects.get(pk=start_poi)
+            try:
+                qs_start = Poi.objects.get(pk=start_poi)
+            except ObjectDoesNotExist:
+                return Response({"error": "no poi found with given id"}, status=status.HTTP_404_NOT_FOUND)
 
             start_node_id = find_closest_network_node(qs_start.geom.coords[0][0], qs_start.geom.coords[0][1],
                                                       qs_start.floor_num)
@@ -824,6 +829,235 @@ class RoutePoiToXyz(APIView):
         else:
             return Response({"error": "no poi its None"}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class RoutePoiToXyz(APIView):
+    """
+
+    :param reversed_dir: boolean to set the direction of route query to allow routing
+    from xyz to a poi
+    :param request:
+    :param start_poi_id: unique single poi id value, integer
+    :param end_xyz: end coordinate pair  x,y  ex) 1826685.08369146,6142499.125477515
+    :param z_floor: integer value used to create the z value of xyz coordinate
+    :return: GeoJson route from poi id to xyz coordinate
+
+    Usage:
+    http://localhost:8000/en/indrz/api/v1/directions/poi-id=27&xyz=1826685.08369146,6142499.125477515&floor=3
+    http://localhost:8000/en/indrz/api/v1/directions/poi-id=27&xyz=1826685.08369146,6142499.125477515&floor=3&reversed=true
+
+    """
+
+    def get(self, request, start_poi_id, end_xyz, reversed_dir=False, route_type=0):
+        """
+
+        :param reversed_dir: boolean to set the direction of route query to allow routing
+        from xyz to a poi
+        :param request:
+        :param start_poi_id: unique single poi id value, integer
+        :param end_xyz: end coordinate pair  x,y  ex) 1826685.08369146,6142499.125477515
+        :param z_floor: integer value used to create the z value of xyz coordinate
+        :param route_type: 0 for shortest route, 1 for barrierfree route ie no stairs
+        :return: GeoJson route from poi id to xyz coordinate
+
+        Usage:   http://localhost:8000/api/v1/directions/poi-id=12764&xyz=1822036.251214,6140092.37464&floor=5&reversed=false&type=0
+        """
+
+        start_poi = int(start_poi_id.split("=")[1])
+        xyz_str = end_xyz.split('=')[1]
+        x_end_coord = float(xyz_str.split(",")[0])
+        y_end_coord = float(xyz_str.split(",")[1])
+        z_end_floor = float(xyz_str.split(",")[2])
+        # z_end_floor = z_floor.split("=")[1]
+
+        r_type = 0
+        if isinstance(route_type, str):
+            if route_type.endswith('1'):
+                r_type = 1
+            if route_type.endswith('0'):
+                r_type = 0
+        if isinstance(route_type, int):
+            r_type = route_type
+
+
+
+        if start_poi is not None:
+
+            try:
+                qs_start = Poi.objects.get(pk=start_poi)
+            except ObjectDoesNotExist:
+                return Response({"error": "no poi found with given id"}, status=status.HTTP_404_NOT_FOUND)
+
+            start_node_id = find_closest_network_node(qs_start.geom.coords[0][0], qs_start.geom.coords[0][1],
+                                                      qs_start.floor_num)
+
+            end_node_id = find_closest_network_node(x_end_coord, y_end_coord, z_end_floor)
+
+            if reversed_dir:
+                geojs_fc = run_route(end_node_id, start_node_id, r_type)
+            else:
+                geojs_fc = run_route(start_node_id, end_node_id, r_type)
+
+            if "error" in geojs_fc.keys():
+                return Response(geojs_fc, status=status.HTTP_404_NOT_FOUND)
+            else:
+                serializer_s = PoiSerializer(qs_start)
+
+                pt = Point((x_end_coord, y_end_coord))
+
+                end_geojs_feat = Feature(geometry=pt,
+                                     properties={'floor': z_end_floor, 'coordinates': xyz_str}
+                                     )
+
+                geojs_fc['route_info']['start_name'] = qs_start.name
+                geojs_fc['route_info']['end_name'] = xyz_str
+
+                geojs_fc['route_info']['start'] = serializer_s.data
+                geojs_fc['route_info']['end'] = end_geojs_feat
+                geojs_fc['route_info']['mid_name'] = ""
+
+                return Response(geojs_fc, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "no poi its None"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class RouteSpaceToXyz(APIView):
+    """
+
+    :param reversed_dir: boolean to set the direction of route query to allow routing
+    from xyz to a poi
+    :param request:
+    :param start_poi_id: unique single poi id value, integer
+    :param end_xyz: end coordinate pair  x,y  ex) 1826685.08369146,6142499.125477515
+    :param z_floor: integer value used to create the z value of xyz coordinate
+    :return: GeoJson route from poi id to xyz coordinate
+
+    Usage:
+    http://localhost:8000/en/indrz/api/v1/directions/poi-id=27&xyz=1826685.08369146,6142499.125477515&floor=3
+    http://localhost:8000/en/indrz/api/v1/directions/poi-id=27&xyz=1826685.08369146,6142499.125477515&floor=3&reversed=true
+
+    """
+
+    def get(self, request, space_id, xyz, reversed=False, route_type=0):
+        """
+
+        :param reversed_dir: boolean to set the direction of route query to allow routing
+        from xyz to a space-id
+        :param request:
+        :param start_poi_id: unique single poi id value, integer
+        :param end_xyz: end coordinate pair  x,y  ex) 1826685.08369146,6142499.125477515
+        :param z_floor: integer value used to create the z value of xyz coordinate
+        :param route_type: 0 for shortest route, 1 for barrierfree route ie no stairs
+        :return: GeoJson route from poi id to xyz coordinate
+
+        Usage:   /api/v1/directions/space-id=12764&xyz=1822036.251214,6140092.37464,5&reversed=false&type=0
+        """
+
+        start_space_id = int(space_id.split("=")[1])
+        xyz_str = xyz.split('=')[1]
+        x_end_coord = float(xyz_str.split(",")[0])
+        y_end_coord = float(xyz_str.split(",")[1])
+        z_end_floor = float(xyz_str.split(",")[2])
+
+        r_type = 0
+        if isinstance(route_type, str):
+            if route_type.endswith('1'):
+                r_type = 1
+            if route_type.endswith('0'):
+                r_type = 0
+        if isinstance(route_type, int):
+            r_type = route_type
+
+        start_node_id = get_room_centroid_node(start_space_id)
+
+        try:
+            space = BuildingFloorSpace.objects.get(pk=start_space_id)
+        except ObjectDoesNotExist:
+            return Response({"error": "no space found with given id"}, status=status.HTTP_404_NOT_FOUND)
+
+        if start_space_id is not None:
+
+            end_node_id = find_closest_network_node(x_end_coord, y_end_coord, z_end_floor)
+
+            if reversed:
+                geojs_fc = run_route(end_node_id, start_node_id, r_type)
+            else:
+                geojs_fc = run_route(start_node_id, end_node_id, r_type)
+
+            if "error" in geojs_fc:
+                Response(geojs_fc, status=status.HTTP_404_NOT_FOUND)
+            else:
+                geojs_fc['route_info']['start_name'] = space.room_code
+                geojs_fc['route_info']['end_name'] = xyz_str
+
+                if reversed:
+                    geojs_fc['route_info']['start_name'] = xyz_str
+                    geojs_fc['route_info']['end_name'] = space.room_code
+
+                return Response(geojs_fc, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "no space-id found"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RouteXyzToXyz(APIView):
+    """
+
+        :param request:
+        :param start_xyz: unique coordinate pair x,y,z  all as floats
+        :param end_xyz: end coordinate pair  x,y,z all as floats
+        :param route_type: 0 for shortest route, 1 for barrierfree route ie no stairs
+        :return: GeoJson route from xyz id to xyz coordinate
+
+        Usage:   /api/v1/directions/start_xyz=1234.34,2345.45,3.0&end_xyz=456.34,6789.45,2.0&type=0
+
+    """
+
+    def get(self, request, start_xyz, end_xyz, route_type=0):
+        """
+        :param request:
+        :param start_xyz: unique coordinate pair x,y,z  all as floats
+        :param end_xyz: end coordinate pair  x,y,z all as floats
+        :param route_type: 0 for shortest route, 1 for barrierfree route ie no stairs
+        :return: GeoJson route from xyz id to xyz coordinate
+
+        Usage:   /api/v1/directions/start_xyz=1234.34,2345.45,3.0&end_xyz=456.34,6789.45,2.0&type=0
+        """
+
+        start_xyz_coords = start_xyz.split("=")[1]
+        x_start_coord = float(start_xyz_coords.split(",")[0])
+        y_start_coord = float(start_xyz_coords.split(",")[1])
+        z_start_floor = float(start_xyz_coords.split(",")[2])
+
+        end_xyz_coords = end_xyz.split('=')[1]
+        x_end_coord = float(end_xyz_coords.split(",")[0])
+        y_end_coord = float(end_xyz_coords.split(",")[1])
+        z_end_floor = float(end_xyz_coords.split(",")[2])
+
+        r_type = 0
+        if isinstance(route_type, str):
+            if route_type.endswith('1'):
+                r_type = 1
+            if route_type.endswith('0'):
+                r_type = 0
+        if isinstance(route_type, int):
+            r_type = route_type
+
+        start_node_id = find_closest_network_node(x_start_coord, y_start_coord, z_start_floor)
+        end_node_id = find_closest_network_node(x_end_coord, y_end_coord, z_end_floor)
+
+        if start_xyz_coords is not None and end_node_id is not None:
+
+            geojs_fc = run_route(start_node_id, end_node_id, r_type)
+
+            if "error" in geojs_fc.keys():
+                return Response(geojs_fc, status=status.HTTP_404_NOT_FOUND)
+            else:
+                geojs_fc['route_info']['start_name'] = start_xyz_coords
+                geojs_fc['route_info']['end_name'] = end_xyz_coords
+
+                return Response(geojs_fc, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "no routing node found on network"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', ])
 def route_to_nearest_poi(request, start_xy, floor, poi_cat_id, reversed, route_type):
@@ -1188,16 +1422,22 @@ def run_route(start_node_id, end_node_id, route_type=0, mid_node_id=None, coord_
     if start_node_id or end_node_id:
         if start_node_id != end_node_id:
             # cur.execute(routing_query, (start_node_id, end_node_id))
-            cur.execute(routing_query)
+            # cur.execute(routing_query)
+            try:
+                cur.execute(routing_query)
+                route_simple = cur.fetchall()
+            except Exception as e:
+                # Handle the error
+                logger.error("routing query failed here is the query \n " + routing_query + " error " + str(e))
+                return {"error": "no route", "reason": "no matching start end nodes found"}
         else:
+            logger.error("same ids start end node \n " + str(start_node_id) + " " + str(end_node_id))
             return {"error": "same ids", "reason": "start node is equal to end node"}
     else:
-        logger.error("start or end node is None or is the same node " + str(start_node_id))
-        return HttpResponseNotFound('<h1>Sorry NO start or end node'
-                                    ' found within 200m</h1>')
+        logger.error("start or end node is None" + str(start_node_id))
+        return {"error": "start or end node is none", "reason": f"START node is {str(start_node_id)} END node is {str(end_node_id)}"}
 
-    # get entire query results to work with
-    route_simple = cur.fetchall()
+
     route_info = calc_distance_walktime(route_simple)
     route_result = []
 
