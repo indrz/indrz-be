@@ -27,7 +27,7 @@ services:
       - .env
   indrz_geoserver:
     container_name: indrz_geoserver
-    image: kartoza/geoserver:2.22.0
+    image: kartoza/geoserver:2.23.0
     volumes:
      - indrz-local-geoserver:/opt/geoserver/data_dir
     ports:
