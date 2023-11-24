@@ -72,20 +72,38 @@ services:
       interval: 1m30s
       timeout: 10s
       retries: 3
-   #NGINX
+
+  # FRONTEND APP (Nuxt)
+  nuxt-dev:
+    build:
+      context: ../indrz-frontend
+      dockerfile: ../indrz-frontend/devops/docker/local/client_app/Dockerfile
+    container_name: nuxt-dev
+    image: indrz-frontend-client/indrz-client:latest
+    networks:
+      - indrz-net-dev
+    volumes:
+      - ../indrz-frontend:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - indrz_api
+
+  # NGINX GATEWAY (proxy to all services)
   nginx:
-     container_name: nginx
-     hostname: nginx
-     image: indrz/indrz_nginx_dev:latest
-     volumes:
-       - ./data/static:/opt/data/static
-       - ./data/media:/opt/data/media
-     ports:
-       - "80:80"
-     networks:
-       - indrz-net-dev
-     restart: always
-     env_file:
-       - .env
-     depends_on:
-       - indrz_api
+    build:
+      context: .
+      dockerfile: ./devops/docker/local/nginx/Dockerfile
+    container_name: nginx
+    image: indrz-nginx-gateway/nginx:1.22.1
+    networks:
+      - indrz-net
+    volumes:
+      - ./data/static:/opt/data/static
+      - ./data/media:/opt/data/media
+    ports:
+      - "80:80"
+    depends_on:
+      - indrz_api
+      - nuxt-dev
+      - geoserver
