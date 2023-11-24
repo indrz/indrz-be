@@ -37,6 +37,58 @@ deployment.
 1. Visit http://localhost:8000/api/v1/admin to login using Django admin
 1. Visit http://localhost:8000/api/v1/docs to see Swagger docs (not you must be logged into Django Admin)
 
+
+## LOCAL environment for a new developer:
+
+Sure, here are the instructions in Markdown format:
+
+# Local Environment Setup for New Developers
+
+Follow these steps to set up your local environment:
+
+## 1. Install Docker
+
+First, you need to have Docker installed on your machine. You can download Docker from the [official Docker website](https://www.docker.com/products/docker-desktop) and follow the installation instructions for your specific operating system.
+
+## 2. Clone the Project Repository
+
+Next, clone the project repository to your local machine using the `git clone` command:
+
+```bash
+git clone https://gitlab.com/indrz/indrz-backend.git
+```
+
+## 3. Navigate to the Project Directory
+
+After cloning the repository, navigate to the project directory using the `cd` command:
+
+```bash
+cd indrz-backend
+```
+
+## 4. Build the Docker Images
+
+Now, build the Docker images for the project using the `docker-compose build` command:
+
+```bash
+docker-compose -f docker-compose-local.yml build
+```
+
+## 5. Start the Docker Containers
+
+After building the Docker images, you can start the Docker containers using the `docker-compose up` command:
+
+```bash
+docker-compose -f docker-compose-local.yml up
+```
+
+## 6. Verify the Setup
+
+Finally, verify that the setup is correct by navigating to `localhost` in your web browser. You should see the application running.
+
+Please note that you might need to install additional software or perform additional configuration steps depending on the specific requirements of the project. These steps should be documented in the project's README file or other documentation.
+
+
 ## Tech Stack
 
 * [Python](https://python.org) (3.x)
