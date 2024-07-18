@@ -1,9 +1,20 @@
-# This file is a template, and might need editing before it works on your project.
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 include:
-  template: Jobs/Code-Quality.gitlab-ci.yml
+- template: Jobs/Code-Quality.gitlab-ci.yml
+- template: Security/SAST.gitlab-ci.yml
 code_quality:
   variables:
     REPORT_FORMAT: html
   artifacts:
-    paths: [gl-code-quality-report.hmtl]
-
+    paths:
+    - gl-code-quality-report.hmtl
+stages:
+- test
+sast:
+  stage: test
