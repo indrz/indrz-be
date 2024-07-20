@@ -51,6 +51,5 @@ upgrade_geoserver:
       done
     - echo "GeoServer container failed to start within 30 seconds"
     - exit 1
-  only:
-    - manual
+  when: manual
 
