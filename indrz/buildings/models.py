@@ -253,7 +253,7 @@ class BuildingFloor(gis_models.Model):
         ordering = ['floor_num']
 
     def __str__(self):
-        return self.short_name + " (" + self.fk_building.name + " )" or ''
+        return f"{self.fk_building.building_name} {self.short_name}" or ""
 
 
 class FloorSpaceBase(gis_models.Model):

@@ -1,8 +1,9 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from buildings.models import BuildingFloor, Campus, Building
-from buildings.serializers import FloorSerializer, CampusSerializer, BuildingSerializer
+from buildings.models import BuildingFloor, Campus, Building, BuildingFloorSpace, Wing
+from buildings.serializers import (FloorSerializer, CampusSerializer, BuildingSerializer,
+                                   BuildingFloorSpaceSerializer, WingSerializer)
 from rest_framework import viewsets
 
 
@@ -35,3 +36,19 @@ class BuildingsViewSet(viewsets.ReadOnlyModelViewSet):
         floor = BuildingFloor.objects.filter(fk_building_id=instance)
         serializer = FloorSerializer(floor, many=True)
         return Response(serializer.data)
+
+
+class SpaceViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Return a list of floors
+    """
+    queryset = BuildingFloorSpace.objects.distinct('room_code')
+    serializer_class = BuildingFloorSpaceSerializer
+
+
+class WingViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Return a list of floors
+    """
+    queryset = Wing.objects.all()
+    serializer_class = WingSerializer

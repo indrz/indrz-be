@@ -19,7 +19,7 @@ RUN apt-get update -qq && apt-get install -y -qq \
     # security  \
     xmlsec1 libxml2-dev libxmlsec1-dev libxmlsec1-openssl \
     # python basic libs
-    python3.10 python3.10-dev python3.10-venv libpq-dev gettext python3-pip \
+    python3 python3-dev python3-venv libpq-dev gettext python3-pip \
     # geodjango
     gdal-bin binutils libproj-dev libgdal-dev \
     # postgresql
@@ -29,6 +29,9 @@ RUN apt-get update -qq && apt-get install -y -qq \
 
 RUN mkdir -p /app
 
+COPY indrz/requirements/base.txt /app/requirements/base.txt
+COPY indrz/requirements/local.txt /app/requirements/local.txt
+
 COPY devops/docker/local/indrz_api/entrypoint.sh /entrypoint.sh
 # COPY indrz/ /usr/src/app/
 COPY indrz/ /app/
@@ -36,7 +39,7 @@ COPY indrz/ /app/
 WORKDIR /app
 
 # Instal Python module requirements
-RUN pip install -r requirements/requirements.txt
+RUN pip install --no-cache-dir -r requirements/local.txt
 
 
 RUN chmod a+x /entrypoint.sh
@@ -45,6 +48,3 @@ ENTRYPOINT ["bash", "/entrypoint.sh"]
 EXPOSE 8000
 
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
-
-# if production run gunicorn
-#CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]

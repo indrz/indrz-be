@@ -1,5 +1,6 @@
 import collections
 
+from django.utils.translation import get_language_from_request
 from mptt.templatetags.mptt_tags import cache_tree_children
 from poi_manager.models import PoiCategory, Poi
 from poi_manager.serializers import PoiSerializer, PoiCategorySerializer
@@ -50,7 +51,7 @@ class PoiCategoryViewSet(viewsets.ModelViewSet):
 
 def poi_json_tree(request, campus_id, format=None):
 
-    lang_code = request.LANGUAGE_CODE
+    lang_code = get_language_from_request(request)
 
     def recursive_node_to_dict(node):
         result = collections.OrderedDict()
