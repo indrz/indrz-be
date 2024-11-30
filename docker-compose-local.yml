@@ -1,11 +1,8 @@
-version: '3.8'
-
 networks:
-  indrz-net-dev:
+  indrz-net-os:
 
 volumes:
-  indrz-db-data:
-  geoserver-dev:
+  os-db-data:
   indrz-static:
   indrz-media:
 
@@ -15,7 +12,7 @@ services:
     container_name: indrz_db
     image: kartoza/postgis:15-3.3
     volumes:
-      - indrz-db-data:/var/lib/postgresql
+      - os-db-data:/var/lib/postgresql
     ports:
       - 5432:5432
     env_file:
@@ -24,7 +21,7 @@ services:
       - ALLOW_IP_RANGE=0.0.0.0/0
     restart: on-failure
     networks:
-      - indrz-net-dev
+      - indrz-net-os
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -32,7 +29,7 @@ services:
       retries: 5
   indrz_api:
     container_name: indrz_api
-    image: indrz/indrz_api_dev:latest
+    image: indrz-os/api_dev:latest
     build:
       context: ./indrz
       dockerfile: ./devops/docker/local/indrz_api/Dockerfile
@@ -40,28 +37,34 @@ services:
     ports:
       - 8000:8000
     depends_on:
-      - indrz_db
+      indrz_db:
+        condition: service_healthy
     volumes:
       - ./indrz:/app
       - ./data/media:/opt/data/media
       - ./data/static:/opt/data/static
       - ./data/logs:/opt/data/logs
+      - ./data/temp_dwg:/opt/data/temp_dwg
+      - ./data/src_dwg:/opt/data/src_dwg 
     restart: always
     networks:
-      - indrz-net-dev
+      - indrz-net-os
     env_file:
       - .env
   # GEOSERVER
   geoserver:
+    build:
+      context: .
+      dockerfile: ./devops/docker/local/geoserver/Dockerfile
     container_name: geoserver
-    image: indrz/geoserver:2.23.0
+    image: indrz-os/geoserver:2.25.2
     volumes:
       - ./data/geoserver/data_dir:/opt/geoserver/data_dir
     ports:
       - 8080:8080
     restart: on-failure
     networks:
-      - indrz-net-dev
+      - indrz-net-os
     env_file:
      - .env
     depends_on:
@@ -72,38 +75,39 @@ services:
       interval: 1m30s
       timeout: 10s
       retries: 3
-
-  # FRONTEND APP (Nuxt)
-  nuxt-dev:
+   #nuxt frontend
+  frontend:
     build:
       context: ../indrz-frontend
-      dockerfile: ../indrz-frontend/devops/docker/local/client_app/Dockerfile
-    container_name: nuxt-dev
-    image: indrz-frontend-client/indrz-client:latest
-    networks:
-      - indrz-net-dev
-    volumes:
-      - ../indrz-frontend:/app
+      dockerfile: ../indrz-frontend/devops/docker/local/frontend/Dockerfile
+    container_name: frontend
+    image: indrz-os/fe_dev:latest
+    restart: always
     ports:
       - "3000:3000"
-    depends_on:
-      - indrz_api
-
-  # NGINX GATEWAY (proxy to all services)
+    volumes:
+      - ../indrz-frontend:/app
+      - /app/node_modules
+    command:
+      "npm run dev"
+    networks:
+      - indrz-net-os
   nginx:
     build:
       context: .
       dockerfile: ./devops/docker/local/nginx/Dockerfile
     container_name: nginx
-    image: indrz-nginx-gateway/nginx:1.22.1
-    networks:
-      - indrz-net
+    hostname: nginx
+    image: indrz-os/nginx_dev:latest
     volumes:
       - ./data/static:/opt/data/static
       - ./data/media:/opt/data/media
     ports:
       - "80:80"
+    networks:
+      - indrz-net-os
+    restart: always
+    env_file:
+      - .env
     depends_on:
       - indrz_api
-      - nuxt-dev
-      - geoserver
