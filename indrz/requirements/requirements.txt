@@ -10,5 +10,5 @@ pandas==1.5.2
 geojson==2.5.0
 psycopg2-binary==2.9.5
 requests==2.32.2
-pillow==9.4.0
+pillow==10.3.0
 gunicorn==20.1.0
