@@ -4,10 +4,7 @@
 dist/
 indrz.egg-info/
 *.iml
-indrz/settings/.env
-indrz/.env
-indrz/.env
-.env.*
+.env
 .venv/*
 .venv
 
