@@ -1,4 +1,4 @@
-FROM kartoza/geoserver:2.21.1
+FROM kartoza/geoserver:2.22.2
 
 COPY devops/docker/geoserver/fonts/ /usr/share/fonts/truetype/
 COPY devops/docker/geoserver/icons/ /opt/geoserver/data_dir/workspaces/indrz/styles/

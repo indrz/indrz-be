@@ -23,7 +23,7 @@ def get_poi_by_id(request, poi_id, format=None):
         return Response(serializer.data)
 
     except Exception as e:
-        raise APIException(detail=e)
+        return Response(f"no data found error {e}", status=404)
 
 
 @api_view(['GET', ])
@@ -180,6 +180,13 @@ def get_poi_by_cat_name(request, category_name, format=None):
 @api_view(['GET', ])
 def get_poicat_by_id(request, cat_id, format=None):
     cats = PoiCategory.objects.filter(enabled=True).get(pk=cat_id)
+
+    # todo
+    poi_ids = [int(x) for x in request.GET.get('poi-cat-id', '').split(',')]
+    if len(poi_ids) > 1:
+        cats = PoiCategory.objects.filter(enabled=True).filter(pk__in=poi_ids)
+
+
     serializer = PoiCategorySerializer(cats)
     return Response(serializer.data)
 

@@ -18,7 +18,7 @@ urlpatterns = [
                url(r'^tree/$', poi_json_tree, name='js-tree'),
                url(r'^roots/$', poi_root_nodes, name='tree-roots'),
                url(r'^cat/(?P<cat_id>\d{1,6})/$', get_poi_by_cat_id, name='get_poi_by_catid'),
-               url(r'^search/(?P<poi_name>.+)', search_poi_by_name, name='poi by name'),
+               url(r'^search/(?P<poi_name>.+)/$', search_poi_by_name, name='poi by name'),
                path('', include(router.urls)),
 
 ]

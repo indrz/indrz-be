@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status, permissions
+from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 
@@ -62,23 +63,26 @@ class PoiImageViewSet(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly]
-    # search_fields = ('name',)  #  or  'category__cat_name'
-
-    # def get_queryset(self):
-    #     return Poi.objects.filter(enabled=True)
-
 
     def create(self, request, *args, **kwargs):
         """
         #checks if post request data is an array initializes serializer with many=True
         else executes default CreateModelMixin.create function
         """
-        is_many = isinstance(request.data, list)
-        if not is_many:
-            return super(PoiImageViewSet, self).create(request, *args, **kwargs)
+
+        data = request.data
+
+        # check if multiple data is received
+        if isinstance(data, list):
+            # iterate over an array of objects
+            for item in data:
+                serializer = self.get_serializer(data=item)
+                serializer.is_valid(raise_exception=True)
+                self.perform_create(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         else:
-            serializer = self.get_serializer(data=request.data, many=True)
+            serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
-            headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)

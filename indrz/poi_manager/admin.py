@@ -6,12 +6,13 @@ from poi_manager.models import PoiCategory, Poi, PoiIcon, PoiImages
 
 class PoiAdmin(OSMGeoAdmin):
     list_display = ('id', 'name', 'name_de', 'name_en', 'category', 'image_preview', 'enabled')
+    list_editable = ['name', 'name_de', 'name_en', 'category', 'enabled']
     search_fields = ('name', 'category')
     list_filter = ('category', )
     readonly_fields = ('image_preview',)
-    default_lat = 6139956.30
-    default_lon = 1822274.03
-    default_zoom = 16
+    default_lat = 5879501
+    default_lon = 1588092.5
+    default_zoom = 15
 
     def image_preview(self, obj):
         if obj.category.fk_poi_icon.icon.url:
@@ -41,12 +42,12 @@ class PoiIconAdmin(admin.ModelAdmin):
 
 class PoiImageAdmin(admin.ModelAdmin):
     search_fields = ('poi.name', )
-    list_display = ('id', 'poi', 'poi_id', 'thumbnail', 'sort_order', 'alt_text', 'is_default', 'image', 'image_preview')
+    list_display = ('poi', 'thumbnails', 'images', 'image_preview')
     readonly_fields = ('image_preview',)
 
     def image_preview(self, obj):
-        if obj.thumbnail:
-            return mark_safe('<img src="{0}" width="250" height="250" style="object-fit:contain" />'.format(obj.thumbnail.url))
+        if obj.thumbnails:
+            return mark_safe('<img src="{0}" width="250" height="250" style="object-fit:contain" />'.format(obj.thumbnails.url))
         else:
             return '(No image)'
 

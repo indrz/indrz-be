@@ -1,72 +1,18 @@
-version: '3'
-volumes:
-  indrz-local-db:
-  indrz-local-geoserver:
-  indrz-local-pgadmin:
 networks:
-  indrz-net:
+  indrz-net-os:
+
+volumes:
+  os-db-data:
+  indrz-static:
+  indrz-media:
 
 services:
-  indrz_api:
-    container_name: indrz_api
-    image: indrz_api:latest
-    build:
-      context: ./indrz
-      dockerfile: ./devops/docker/local/indrz_api
-    ports:
-      - 8000:8000
-    depends_on:
-      - indrz_db
-    volumes:
-      - ./indrz:/app
-      - ./data/dwg:/app/scripts/geodata/dwg
-    restart: always
-    networks:
-      - indrz-net
-    env_file:
-      - .env
-  indrz_geoserver:
-    container_name: indrz_geoserver
-    image: kartoza/geoserver:2.22.0
-    volumes:
-     - indrz-local-geoserver:/opt/geoserver/data_dir
-    ports:
-     - 8080:8080
-    restart: on-failure
-    networks:
-      - indrz-net
-    env_file:
-     - .env
-    healthcheck:
-     test: curl --fail -s http://localhost:8080/ || exit 1
-     interval: 1m30s
-     timeout: 10s
-     retries: 3
-    depends_on:
-      - indrz_db
-  indrz_pgadmin:
-    container_name: indrz_pgadmin
-    image: dpage/pgadmin4:latest
-    volumes:
-      - indrz-local-pgadmin:/var/lib/pgadmin
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@gomogi.com
-      PGADMIN_DEFAULT_PASSWORD: secret
-      PGADMIN_LISTEN_PORT: 80
-    ports:
-      - "8081:80"
-    networks:
-      - indrz-net
-    links:
-      - "indrz_db:pgsql-server"
-    depends_on:
-      - indrz_db
   indrz_db:
+    hostname: indrz_db
     container_name: indrz_db
     image: kartoza/postgis:15-3.3
     volumes:
-      - indrz-local-db:/var/lib/postgresql
+      - os-db-data:/var/lib/postgresql
     ports:
       - 5432:5432
     env_file:
@@ -75,6 +21,93 @@ services:
       - ALLOW_IP_RANGE=0.0.0.0/0
     restart: on-failure
     networks:
-      - indrz-net
+      - indrz-net-os
     healthcheck:
-      test: "exit 0"
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  indrz_api:
+    container_name: indrz_api
+    image: indrz-os/api_dev:latest
+    build:
+      context: ./indrz
+      dockerfile: ./devops/docker/local/indrz_api/Dockerfile
+    # command: bash -c "python manage.py migrate && python manage.py collectstatic --no-input --clear && python manage.py runserver  0.0.0.0:8000"
+    ports:
+      - 8000:8000
+    depends_on:
+      indrz_db:
+        condition: service_healthy
+    volumes:
+      - ./indrz:/app
+      - ./data/media:/opt/data/media
+      - ./data/static:/opt/data/static
+      - ./data/logs:/opt/data/logs
+      - ./data/temp_dwg:/opt/data/temp_dwg
+      - ./data/src_dwg:/opt/data/src_dwg 
+    restart: always
+    networks:
+      - indrz-net-os
+    env_file:
+      - .env
+  # GEOSERVER
+  geoserver:
+    build:
+      context: .
+      dockerfile: ./devops/docker/local/geoserver/Dockerfile
+    container_name: geoserver
+    image: indrz-os/geoserver:2.25.2
+    volumes:
+      - ./data/geoserver/data_dir:/opt/geoserver/data_dir
+    ports:
+      - 8080:8080
+    restart: on-failure
+    networks:
+      - indrz-net-os
+    env_file:
+     - .env
+    depends_on:
+      indrz_db:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null -u ${GEOSERVER_ADMIN_USER}:'${GEOSERVER_ADMIN_PASSWORD}' http://localhost:8080/geoserver/rest/about/version.xml"
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+   #nuxt frontend
+  frontend:
+    build:
+      context: ../indrz-frontend
+      dockerfile: ../indrz-frontend/devops/docker/local/frontend/Dockerfile
+    container_name: frontend
+    image: indrz-os/fe_dev:latest
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../indrz-frontend:/app
+      - /app/node_modules
+    command:
+      "npm run dev"
+    networks:
+      - indrz-net-os
+  nginx:
+    build:
+      context: .
+      dockerfile: ./devops/docker/local/nginx/Dockerfile
+    container_name: nginx
+    hostname: nginx
+    image: indrz-os/nginx_dev:latest
+    volumes:
+      - ./data/static:/opt/data/static
+      - ./data/media:/opt/data/media
+    ports:
+      - "80:80"
+    networks:
+      - indrz-net-os
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - indrz_api

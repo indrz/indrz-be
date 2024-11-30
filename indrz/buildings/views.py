@@ -6,20 +6,24 @@ import logging
 import geojson
 from django.contrib.gis.db.models.functions import AsGeoJSON, Centroid
 from django.contrib.gis.geos import GEOSGeometry
+from django.db.models import Q
 from django.http import HttpResponse
 from geojson import Feature, FeatureCollection
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from buildings.models import Campus, Building, BuildingFloorSpace, BuildingFloor
+from buildings.models import Campus, Building, BuildingFloorSpace, BuildingFloor, Wing
 from buildings.serializers import (BuildingSerializer,
                                    BuildingFloorSpaceSerializer,
                                    BuildingFloorGeomSerializer,
                                    SpaceSerializer,
-                                   FloorSerializer
+                                   FloorSerializer, CampusSerializer, WingSerializer
 
                                    )
 from buildings.serializers import FloorListSerializer
+from poi_manager.models import Poi, PoiCategory
+from poi_manager.serializers import PoiSerializer, PoiCategorySerializer
 
 logger = logging.getLogger(__name__)
 
@@ -305,3 +309,52 @@ def get_external_id(request, building_id, external_room_id, format=None):
                                                              fk_building_id=building_id)
         serializer = SpaceSerializer(floor_space_info, many=True)
         return Response(serializer.data)
+
+
+def get_model(model_name: str, object_id: int):
+    model_mappings = [
+        {"name": "campus", "model": Campus, "serializer": CampusSerializer},
+        {"name": "building", "model": Building, "serializer": BuildingSerializer},
+        {"name": "poi", "model": Poi, "serializer": PoiSerializer},
+        {"name": "poi-category", "model": PoiCategory, "serializer": PoiCategorySerializer},
+        {"name": "space", "model": BuildingFloorSpace, "serializer": BuildingFloorSpaceSerializer},
+        {"name": "wing", "model": Wing, "serializer": WingSerializer},
+    ]
+
+    matched_model = next((item for item in model_mappings if item["name"] == model_name), None)
+
+    if matched_model is not None:
+        model_cls = matched_model['model']
+        serializer_cls = matched_model['serializer']
+
+        try:
+            model_instance = model_cls.objects.get(id=object_id)
+        except model_cls.DoesNotExist:
+            return None
+
+        serializer = serializer_cls(model_instance)
+
+        return serializer.data
+
+    else:
+        return None
+
+
+@api_view(['GET'])
+def get_unique_share_data(request, model, object_id):
+    """
+    Get information about a single space providing, building_id, floor_id, space_id
+    """
+    if request.method == 'GET':
+
+        try:
+            object_id = int(object_id)
+        except ValueError:
+            return Response({"error": "Invalid object ID"}, status=status.HTTP_400_BAD_REQUEST)
+
+        model_data = get_model(model, object_id)
+
+        if model_data:
+            return Response(model_data, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Model name not in Model list or object not found"}, status=status.HTTP_404_NOT_FOUND)
