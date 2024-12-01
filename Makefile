@@ -37,6 +37,8 @@ migrate: ## Migrate
 	docker exec -t indrz_api python3 manage.py migrate
 
 load-data-dev: ## load data
+#   docker exec -it indrz_api python3 manage.py collectstatic
+#   docker exec -it indrz_api python3 manage.py migrate
 #	docker exec -t indrz_api python3 manage.py loaddata --app buildings organization.json
 #	docker exec -t indrz_api python3 manage.py loaddata --app buildings campus.json
 #	docker exec -t indrz_api python3 manage.py loaddata --app buildings buildings.json
