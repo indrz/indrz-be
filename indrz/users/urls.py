@@ -1,4 +1,4 @@
-from django.urls import url, include, path
+from django.urls import re_path, include, path
 from rest_framework import routers
 from users import views
 
@@ -18,22 +18,22 @@ from __future__ import absolute_import, unicode_literals
 
 
 urlpatterns = [
-    url(
+    re_path(
         regex=r'^$',
         view=views.UserListView.as_view(),
         name='list'
     ),
-    url(
+    re_path(
         regex=r'^~redirect/$',
         view=views.UserRedirectView.as_view(),
         name='redirect'
     ),
-    url(
+    re_path(
         regex=r'^(?P<username>[\w.@+-]+)/$',
         view=views.UserDetailView.as_view(),
         name='detail'
     ),
-    url(
+    re_path(
         regex=r'^~update/$',
         view=views.UserUpdateView.as_view(),
         name='update'

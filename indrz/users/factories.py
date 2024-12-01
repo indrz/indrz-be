@@ -3,9 +3,12 @@ import threading
 import factory
 
 from django.conf import settings
+from factory.django import DjangoModelFactory
+
+settings.configure()
 
 
-class Factory(factory.DjangoModelFactory):
+class Factory(DjangoModelFactory):
     class Meta:
         strategy = factory.CREATE_STRATEGY
         model = None
