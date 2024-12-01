@@ -2,8 +2,8 @@
 
 # Testing Django
 # ------------------------------------------------------------------------------
-pytest==6.2.5  # https://github.com/pytest-dev/pytest
-pytest-cov==2.10.1
+pytest==7.4.0  # https://github.com/pytest-dev/pytest
+pytest-cov==4.1.0
 pytest-sugar==0.9.4  # https://github.com/Frozenball/pytest-sugar
 factory-boy==3.2.1  # https://github.com/FactoryBoy/factory_boy
 django-coverage-plugin==2.0.1  # https://github.com/nedbat/django_coverage_plugin

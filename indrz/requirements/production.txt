@@ -1,4 +1,4 @@
 -r base.txt
-gunicorn==20.1.0  # https://github.com/benoitc/gunicorn
+gunicorn==22.0.0  # https://github.com/benoitc/gunicorn
 Collectfast==2.2.0  # https://github.com/antonagestam/collectfast
-sentry-sdk==1.20.0
+sentry-sdk
