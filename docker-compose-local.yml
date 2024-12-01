@@ -57,7 +57,7 @@ services:
       context: .
       dockerfile: ./devops/docker/local/geoserver/Dockerfile
     container_name: geoserver
-    image: indrz-os/geoserver:2.25.2
+    image: indrz-os/geoserver_dev:2.25.2
     volumes:
       - ./data/geoserver/data_dir:/opt/geoserver/data_dir
     ports:
@@ -81,7 +81,7 @@ services:
       context: ../indrz-frontend
       dockerfile: ../indrz-frontend/devops/docker/local/frontend/Dockerfile
     container_name: frontend
-    image: indrz-os/fe_dev:latest
+    image: indrz-os/frontend_dev:latest
     restart: always
     ports:
       - "3000:3000"

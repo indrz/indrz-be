@@ -1,8 +1,6 @@
 SHELL=/bin/bash
 PWD ?= pwd_unknown
 
-cnf ?= .env
-include $(cnf)
 export $(shell sed 's/=.*//' $(cnf))
 
 .PHONY: help
@@ -24,10 +22,10 @@ build-fe-dev: ## Build Indrz BE Image
 	docker build -t indrz-os/fe_dev:latest -f ../indrz-frontend/devops/docker/local/frontend/Dockerfile .
 
 build-geoserver: ## Build Geoserver Image
-	docker build -t indrz-os/geoserver_dev:latest -f devops/docker/local/geoserver/Dockerfile .
+	docker build -t indrz-os/geoserver_dev:2.25.2 -f devops/docker/local/geoserver/Dockerfile .
 
 run: ## Run Indrz Docker project in development mode
-	docker-compose -p indrz -f docker-compose-local.yml up -d
+	docker compose -p indrz -f docker-compose-local.yml up -d
 
 setup_indrz_db:
 	docker cp devops/docker/indrz/db_init.sql indrz_db:/scripts/db_init.sql
