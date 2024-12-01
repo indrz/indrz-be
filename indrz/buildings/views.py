@@ -4,64 +4,23 @@ import json
 import logging
 
 import geojson
-from django.contrib.gis.db.models.functions import AsGeoJSON, Centroid
 from django.contrib.gis.geos import GEOSGeometry
-from django.db.models import Q
 from django.http import HttpResponse
-from geojson import Feature, FeatureCollection
-from rest_framework import status
+from geojson import Feature, FeatureCollection, Point
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from buildings.models import Campus, Building, BuildingFloorSpace, BuildingFloor, Wing
+from buildings.models import Campus, Building, BuildingFloorSpace, BuildingFloor
 from buildings.serializers import (BuildingSerializer,
                                    BuildingFloorSpaceSerializer,
                                    BuildingFloorGeomSerializer,
                                    SpaceSerializer,
-                                   FloorSerializer, CampusSerializer, WingSerializer
+                                   FloorSerializer
 
                                    )
-from buildings.serializers import FloorListSerializer
-from poi_manager.models import Poi, PoiCategory
-from poi_manager.serializers import PoiSerializer, PoiCategorySerializer
 
 logger = logging.getLogger(__name__)
-
-
-@api_view(['GET'])
-def get_campus_floors(request, campus_id, format=None):
-    """
-    Get a list of floors on campus
-    """
-    if request.method == 'GET':
-        # floor_list = BuildingFloor.objects.order_by('floor_num').distinct('floor_num')
-        floor_list = BuildingFloor.objects.order_by('floor_num').distinct('floor_num')
-        data = FloorListSerializer(floor_list, many=True)
-
-        return Response(data.data)
-
-
-@api_view(['GET'])
-def get_room_center(request, external_room_id, format=None):
-
-    space_qs = BuildingFloorSpace.objects.filter(room_external_id=external_room_id)
-
-    if space_qs:
-        att = space_qs.values()[0]
-
-        if att['multi_poly']:
-            att['multi_poly'] = None
-
-        centroid_res = BuildingFloorSpace.objects.annotate(json=AsGeoJSON(Centroid('multi_poly'))).get(
-            room_external_id=external_room_id).json
-
-        res = Feature(geometry=json.loads(centroid_res), properties=att)
-
-        return Response(res)
-    else:
-        return Response(
-            {'error': 'Sorry we did not find any record in our database matching your id = ' + str(external_room_id)})
-
 
 @api_view(['GET', ])
 def campus_locations(request, format=None):
@@ -311,50 +270,16 @@ def get_external_id(request, building_id, external_room_id, format=None):
         return Response(serializer.data)
 
 
-def get_model(model_name: str, object_id: int):
-    model_mappings = [
-        {"name": "campus", "model": Campus, "serializer": CampusSerializer},
-        {"name": "building", "model": Building, "serializer": BuildingSerializer},
-        {"name": "poi", "model": Poi, "serializer": PoiSerializer},
-        {"name": "poi-category", "model": PoiCategory, "serializer": PoiCategorySerializer},
-        {"name": "space", "model": BuildingFloorSpace, "serializer": BuildingFloorSpaceSerializer},
-        {"name": "wing", "model": Wing, "serializer": WingSerializer},
-    ]
-
-    matched_model = next((item for item in model_mappings if item["name"] == model_name), None)
-
-    if matched_model is not None:
-        model_cls = matched_model['model']
-        serializer_cls = matched_model['serializer']
-
-        try:
-            model_instance = model_cls.objects.get(id=object_id)
-        except model_cls.DoesNotExist:
-            return None
-
-        serializer = serializer_cls(model_instance)
-
-        return serializer.data
-
-    else:
-        return None
-
-
 @api_view(['GET'])
-def get_unique_share_data(request, model, object_id):
+def get_space_by_roomcode(request, roomcode):
     """
     Get information about a single space providing, building_id, floor_id, space_id
     """
     if request.method == 'GET':
-
         try:
-            object_id = int(object_id)
-        except ValueError:
-            return Response({"error": "Invalid object ID"}, status=status.HTTP_400_BAD_REQUEST)
-
-        model_data = get_model(model, object_id)
-
-        if model_data:
-            return Response(model_data, status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "Model name not in Model list or object not found"}, status=status.HTTP_404_NOT_FOUND)
+            space = BuildingFloorSpace.objects.get(room_code=roomcode)
+            if space:
+                serializer = BuildingFloorSpaceSerializer(space)
+                return Response(serializer.data)
+        except:
+            return Response("no data found", status=404)

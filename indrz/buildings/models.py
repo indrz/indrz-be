@@ -1,11 +1,15 @@
 from __future__ import unicode_literals
 
 import json
+import re
 
 from django.contrib.gis.db import models as gis_models
 from django.contrib.gis.gdal import OGRGeometry
 from django.contrib.postgres.fields import ArrayField
-from django.utils.translation import ugettext_lazy as _
+from django.core.validators import RegexValidator
+from django.utils.translation import gettext_lazy as _
+
+from buildings.validators import color_hex_validator
 
 
 class BaseLookupDomain(gis_models.Model):
@@ -222,13 +226,19 @@ class Building(OrganizationInfoBase):
     wings = gis_models.CharField(verbose_name=_('Wing'), max_length=800, null=True, blank=True)
 
     fk_organization = gis_models.ForeignKey(Organization, on_delete=gis_models.CASCADE)
-    fk_campus = gis_models.ForeignKey(Campus, null=True, blank=True, related_name='buildings', on_delete=gis_models.CASCADE)
+    fk_campus = gis_models.ForeignKey(Campus, null=True, blank=True, related_name='buildings',
+                                      on_delete=gis_models.CASCADE)
+
+    def __str__(self):
+        return self.building_name or ""
 
 
 class BuildingFloor(gis_models.Model):
     """
     A floor representing a single building floor
     """
+    name_en = gis_models.CharField(verbose_name=_("name such as EG"), max_length=150, null=True, blank=True)
+    name_de = gis_models.CharField(verbose_name=_("name such as EG"), max_length=150, null=True, blank=True)
     short_name = gis_models.CharField(verbose_name=_("short name eg first floor"), max_length=150, null=True, blank=True)
     long_name = gis_models.CharField(verbose_name=_("long name"), max_length=150, null=True, blank=True)
     special_name = gis_models.CharField(verbose_name=_("special name"), max_length=150, null=True, blank=True)
@@ -269,7 +279,10 @@ class FloorSpaceBase(gis_models.Model):
     floor_name = gis_models.CharField(verbose_name=_("floor name"), max_length=200,null=True, blank=True)
     geom = gis_models.MultiPolygonField(srid=3857, spatial_index=True, null=True, blank=True)
 
-    fk_access_type = gis_models.ForeignKey(LtAccessType, null=True, blank=True, on_delete=gis_models.CASCADE)
+    # hex color field like #c23329
+    color = gis_models.CharField(verbose_name=_("Hex Color"), max_length=7, null=True, blank=True, validators=[color_hex_validator])
+
+    fk_access_type = gis_models.ForeignKey(LtAccessType, null=True, blank=True, on_delete=gis_models.SET_NULL)
     fk_building_floor = gis_models.ForeignKey(BuildingFloor, on_delete=gis_models.CASCADE)
     fk_building = gis_models.ForeignKey(Building, on_delete=gis_models.CASCADE, null=True, blank=True)
 
@@ -296,8 +309,9 @@ class BuildingFloorPlanLine(gis_models.Model):
     floor_num = gis_models.FloatField(verbose_name=_("floor number"),null=True, blank=True)
     floor_name = gis_models.CharField(verbose_name=_("floor name"), max_length=200,null=True, blank=True)
 
-    fk_line_type = gis_models.ForeignKey(LtPlanLineType, on_delete=gis_models.CASCADE, null=True, blank=True)
+    fk_line_type = gis_models.ForeignKey(LtPlanLineType, on_delete=gis_models.SET_NULL, null=True, blank=True)
     fk_building_floor = gis_models.ForeignKey(BuildingFloor, on_delete=gis_models.CASCADE, null=True, blank=True)
+    fk_building = gis_models.ForeignKey(Building, on_delete=gis_models.CASCADE, null=True, blank=True)
 
     geom = gis_models.MultiLineStringField(srid=3857, spatial_index=True, null=True, blank=True)
 
@@ -334,7 +348,8 @@ class BuildingFloorSpace(FloorSpaceBase):
     room_code = gis_models.CharField(verbose_name=_("Room code"), max_length=150, null=True, blank=True)
     capacity = gis_models.IntegerField(verbose_name=_("Total number of occupants allowed in this space"), null=True, blank=True)
 
-    space_type = gis_models.ForeignKey(LtSpaceType, on_delete=gis_models.CASCADE, null=True, blank=True)
+    space_type = gis_models.ForeignKey(LtSpaceType, on_delete=gis_models.SET_NULL, null=True, blank=True)
+    nearest_entrance = gis_models.ForeignKey('poi_manager.Poi', on_delete=gis_models.SET_NULL, null=True, blank=True)
 
     tag = gis_models.TextField(verbose_name=_("Tag values csv"), null=True, blank=True)
     tags = ArrayField(ArrayField(gis_models.CharField(max_length=150), blank=True, null=True), null=True, blank=True)

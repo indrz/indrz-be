@@ -17,17 +17,10 @@ class CampusSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Campus
-        fields = ('id', 'campus_name', 'description', 'fk_organization', 'centroid', 'geom')
+        geo_field = 'geom'
+        fields = ('id', 'campus_name', 'description', 'fk_organization', 'centroid')
         # depth = 1  # include organization information
 
-
-class CampusLocationsSerializer(GeoFeatureModelSerializer):
-    buildings = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = Campus
-        geo_field = 'geom'
-        fields = ('id', 'campus_name', 'description', 'fk_organization', 'buildings' )
 
 class BuildingFloorSpaceSerializer(GeoFeatureModelSerializer):
     building_name = serializers.StringRelatedField(source='fk_building', read_only=True)
@@ -58,10 +51,12 @@ class BuildingFloorSpaceSerializer(GeoFeatureModelSerializer):
         return name
 
     def get_category_en(self, BuildingFloorSpace):
-        return BuildingFloorSpace.long_name
+        # return BuildingFloorSpace.
+        return ""
 
     def get_category_de(self, BuildingFloorSpace):
-        return BuildingFloorSpace.long_name
+        return ""
+        # return BuildingFloorSpace.long_name
 
     def get_wing(self, BuildingFloorSpace):
         wing = ""
@@ -136,6 +131,12 @@ class BuildingSerializer(GeoFeatureModelSerializer):
         fields = ('id', 'building_name', 'name', 'abbreviation', 'floor_num', 'fk_campus', 'wings', 'floor_list',
                   'street', 'postal_code', 'municipality', 'city')
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['properties']['id'] = representation['id']
+        representation['properties']['src_icon'] = "building"
+        return representation
+
 class CampusSearchSerializer(GeoFeatureModelSerializer):
     name = serializers.SerializerMethodField()
     floor_num = serializers.SerializerMethodField()
@@ -177,6 +178,12 @@ class SpaceSerializer(GeoFeatureModelSerializer):
         geo_field = "multi_poly"
         fields = ('id', 'short_name', 'floor_num', 'multi_poly', 'fk_building', 'fk_building_floor',
                   'room_external_id', 'space_type')
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['properties']['id'] = representation['id']
+        representation['properties']['src_icon'] = "space"
+        return representation
 
 
 class FloorListSerializer(serializers.ModelSerializer):
