@@ -12,18 +12,15 @@ class PoiSerializer(GeoFeatureModelSerializer):
         fields = '__all__'
 
     def get_icon(self, Poi):
-        """
+        """u
         :param Poi: poi obeject
         :return: a field ie property called icon for model Poi
         """
-        if Poi.category:
-            if Poi.category.fk_poi_icon:
-                if Poi.category.fk_poi_icon.icon.url:
-                    icon_url = Poi.category.fk_poi_icon.icon.url
-                    if icon_url:
-                        return icon_url
-                    else:
-                        return None
+        if Poi.category and Poi.category.fk_poi_icon is not None:
+            if Poi.category.fk_poi_icon.icon.url:
+                icon_url = Poi.category.fk_poi_icon.icon.url
+                if icon_url:
+                    return icon_url
                 else:
                     return None
             else:
@@ -45,6 +42,7 @@ class PoiSerializer(GeoFeatureModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['properties']['id'] = representation['id']
+        representation['properties']['src_icon'] = "poi"
         return representation
 
 
@@ -53,17 +51,12 @@ class PoiCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = PoiCategory
         fields = ('id', 'cat_name', 'cat_name_en', 'cat_name_de', 'icon', 'fk_poi_icon', 'enabled', 'parent',
-                  'html_content', 'tree_order', 'description')
+                  'html_content', 'html_content_de', 'tree_order', 'description')
 
     def get_icon(self, PoiCategory):
-        request = self.context.get('request')
-        if PoiCategory.fk_poi_icon:
-            if PoiCategory.fk_poi_icon.icon and hasattr(PoiCategory.fk_poi_icon.icon, "url"):
-                icon_url = PoiCategory.fk_poi_icon.icon.url
-                if request:
-                    return icon_url
-                else:
-                    return icon_url
+        if PoiCategory.fk_poi_icon and PoiCategory.fk_poi_icon.icon is not None:
+            if hasattr(PoiCategory.fk_poi_icon.icon, "url"):
+                return PoiCategory.fk_poi_icon.icon.url
             else:
                 return None
         else:
