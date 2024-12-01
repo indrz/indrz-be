@@ -13,6 +13,11 @@ from api.search import search_any
 from users.views import CustomAuthToken
 from .routers import router
 
+##############################################
+# Default
+##############################################
+
+
 admin.site.site_header = 'INDRZ Manager'
 
 
@@ -40,8 +45,8 @@ urlpatterns = [
     re_path(r'^api/v1/admin/', admin.site.urls),
     re_path(r'^api/v1/poi/', include(('poi_manager.urls', 'poi'), namespace='poi')),
     re_path(r'^api/v1/', include(router.urls))
+    # path('', include(('homepage.urls', 'homepage'), namespace='homepage'))
 ]
-
 
 urlpatterns += [
     re_path(r'^api/v1/api-token-auth/', CustomAuthToken.as_view())
