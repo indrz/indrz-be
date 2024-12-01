@@ -13,12 +13,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import url
+from django.urls import re_path
 from buildings.views import get_space_by_roomcode
 from poi_manager.views import get_poi_by_id, get_poi_by_cat_id
 
 urlpatterns = [
-    url(r'poi/(?P<poi_id>[0-9]+)/$', get_poi_by_id, name='poi_share'),
-    url(r'poi-category/(?P<cat_id>[0-9]+)/$', get_poi_by_cat_id, name='poi_share'),
-    url(r'space/(?P<roomcode>.{5,12})/$', get_space_by_roomcode, name='space_share'),
+    re_path(r'poi/(?P<poi_id>[0-9]+)/$', get_poi_by_id, name='poi_share'),
+    re_path(r'poi-category/(?P<cat_id>[0-9]+)/$', get_poi_by_cat_id, name='poi_share'),
+    re_path(r'space/(?P<roomcode>.{5,12})/$', get_space_by_roomcode, name='space_share'),
 ]
