@@ -1,6 +1,6 @@
 from buildings.models import BuildingFloor, Building
 from django.contrib.gis.db import models as gis_models
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 
 
 class NetworklinesBase(gis_models.Model):
@@ -63,11 +63,10 @@ class NetworklinesBase(gis_models.Model):
     cost = gis_models.DecimalField(verbose_name=_("cost to travel network"), max_digits=10, decimal_places=2, null=True, blank=True)
     length = gis_models.DecimalField(verbose_name=_("gis length of linestring"), max_digits=10, decimal_places=2, null=True, blank=True)
     floor_num = gis_models.IntegerField(verbose_name=_("floor number"), null=True, blank=True)
-    floor_name = gis_models.CharField(verbose_name=_('Floor name'), max_length=255, null=True, blank=True)
+
     network_type = gis_models.IntegerField(verbose_name=_("Type of network path type"), choices=ROUTE_TYPE, null=True, blank=True)
     access_type = gis_models.CharField(verbose_name=_("Routing access type"),  max_length=150, choices=ACCESS_TYPE, null=True, blank=True)
 
-    fk_building = gis_models.ForeignKey(Building, on_delete=gis_models.CASCADE, null=True, blank=True)
 
     geom = gis_models.MultiLineStringField(srid=3857, dim=3, spatial_index=True, null=True, blank=True)
 
@@ -79,30 +78,3 @@ class NetworklinesBase(gis_models.Model):
     def __str__(self):
         return str(self.name) or ''
 
-
-class NetworklinesE00(NetworklinesBase):
-    """
-    Routing network lines used in routing services
-    """
-    pass
-
-
-class NetworklinesE01(NetworklinesBase):
-    """
-    Routing network lines used in routing services
-    """
-    pass
-
-
-class NetworklinesE02(NetworklinesBase):
-    """
-    Routing network lines used in routing services
-    """
-    pass
-
-
-class NetworklinesE03(NetworklinesBase):
-    """
-    Routing network lines used in routing services
-    """
-    pass
