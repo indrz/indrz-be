@@ -17,6 +17,7 @@ indrz/logs
 
 *.pyc
 
+/data
 
 
 /indrz/logs/
