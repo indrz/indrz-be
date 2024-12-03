@@ -2,7 +2,7 @@ import collections
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 from mptt.exceptions import InvalidMove
 from mptt.forms import MoveNodeForm
 from mptt.templatetags.mptt_tags import cache_tree_children

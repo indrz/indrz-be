@@ -9,7 +9,7 @@ from django.core.files.base import ContentFile
 from django.db import models
 from django.db.models.signals import pre_delete, post_delete, pre_save, post_save
 from django.dispatch import receiver
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 from taggit.managers import TaggableManager
 
@@ -61,6 +61,7 @@ class PoiCategory(MPTTModel):
     cat_name_de = models.CharField(max_length=255, null=True, blank=True)
 
     html_content = models.TextField(_("HTML content"), null=True, blank=True)
+    html_content_de = models.TextField(_("DE HTML content"), null=True, blank=True)
 
     def __str__(self):
         return str(self.cat_name) or ''
@@ -97,6 +98,7 @@ class Poi(models.Model):
     poi_tags = ArrayField(models.CharField(max_length=50, blank=True), blank=True, null=True)
 
     html_content = models.TextField(_("HTML content"), null=True, blank=True)
+    html_content_de = models.TextField(_("DE HTML content"), null=True, blank=True)
 
     @property
     def icon(self):
@@ -117,8 +119,8 @@ class Poi(models.Model):
 
 class PoiImages(models.Model):
     poi = models.ForeignKey(Poi, on_delete=models.CASCADE)
-    images = models.ImageField(verbose_name=_('POI images'), upload_to='poi_images', max_length=512)
-    thumbnails = models.ImageField(verbose_name=_('POI Image Thumbnail'), upload_to='poi_images',
+    image = models.ImageField(verbose_name=_('POI images'), upload_to='poi_images', max_length=512)
+    thumbnail = models.ImageField(verbose_name=_('POI Image Thumbnail'), upload_to='poi_images',
                                   null=True, blank=True, max_length=512, editable=False)
     sort_order = models.PositiveSmallIntegerField(verbose_name=_("Order of images"), null=True, blank=True)
     alt_text = models.CharField(verbose_name=_("Html image alt text"), max_length=255, default="Image of ...")

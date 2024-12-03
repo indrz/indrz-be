@@ -12,18 +12,18 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import url
+from django.urls import re_path
 from buildings.views import building_list, building_detail, \
     get_external_id, building_floors_list, get_floor_info, get_building_floor_spaces, \
     get_space_by_id, get_space_by_name
 
 urlpatterns = [
-    url(r'^$', building_list, name='list_buildings'),
-    url(r'^(?P<pk>[0-9]+)/$', building_detail, name='building_details'),
-    url(r'^(?P<building_id>\d{1,5})/externid/(?P<external_room_id>.+)/$', get_external_id, name='get_external_ids'),
-    url(r'^(?P<building_id>\d{1,5})/floors/$', building_floors_list, name='get_floor_ids'),
-    url(r'^(?P<building_id>\d{1,5})/floors/(?P<floor_id>\d{1,5})/$', get_floor_info, name='show_floor_info'),
-    url(r'^(?P<building_id>\d{1,5})/floors/(?P<floor_id>\d{1,5})/spaces/$', get_building_floor_spaces, name='get_building_floor_spaces'),
-    url(r'^(?P<building_id>\d{1,5})/floors/(?P<floor_id>\d{1,5})/spaces/(?P<space_id>\d{1,5})/$', get_space_by_id, name='show_space_by_id'),
-    url(r'^(?P<building_id>\d{1,5})/floors/(?P<floor_id>\d{1,5})/spaces/(?P<space_name>.+)/$', get_space_by_name, name='show_space_by_name')
+    re_path(r'^$', building_list, name='list_buildings'),
+    re_path(r'^(?P<pk>[0-9]+)/$', building_detail, name='building_details'),
+    re_path(r'^(?P<building_id>\d{1,5})/externid/(?P<external_room_id>.+)/$', get_external_id, name='get_external_ids'),
+    re_path(r'^(?P<building_id>\d{1,5})/floors/$', building_floors_list, name='get_floor_ids'),
+    re_path(r'^(?P<building_id>\d{1,5})/floors/(?P<floor_id>\d{1,5})/$', get_floor_info, name='show_floor_info'),
+    re_path(r'^(?P<building_id>\d{1,5})/floors/(?P<floor_id>\d{1,5})/spaces/$', get_building_floor_spaces, name='get_building_floor_spaces'),
+    re_path(r'^(?P<building_id>\d{1,5})/floors/(?P<floor_id>\d{1,5})/spaces/(?P<space_id>\d{1,5})/$', get_space_by_id, name='show_space_by_id'),
+    re_path(r'^(?P<building_id>\d{1,5})/floors/(?P<floor_id>\d{1,5})/spaces/(?P<space_name>.+)/$', get_space_by_name, name='show_space_by_name'),
 ]

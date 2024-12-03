@@ -1,12 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+
+from django.conf import settings
+from .utils import generate_random_token
+from django.contrib.auth import logout
+import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from django.views.generic import DetailView, ListView, RedirectView, UpdateView
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import DetailView, ListView, RedirectView, UpdateView, View
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import redirect
 
 from .models import User
 
@@ -50,8 +60,8 @@ class UserListView(LoginRequiredMixin, ListView):
     slug_url_kwarg = 'username'
 
 
-
 class CustomAuthToken(ObtainAuthToken):
+    permission_classes = [AllowAny,]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,

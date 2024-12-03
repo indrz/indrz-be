@@ -78,7 +78,7 @@ services:
    #nuxt frontend
   frontend:
     build:
-      context: ../indrz-frontend
+      context: ../indrz-frontend/src
       dockerfile: ../indrz-frontend/devops/docker/local/frontend/Dockerfile
     container_name: frontend
     image: indrz-os/frontend_dev:latest
@@ -86,7 +86,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ../indrz-frontend:/app
+      - ../indrz-frontend/src:/app
       - /app/node_modules
     command:
       "npm run dev"

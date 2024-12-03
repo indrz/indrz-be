@@ -14,6 +14,12 @@ if not DEBUG:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
 
+    CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(' ')
+    CSRF_ALLOWED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(' ')
+    # # Ensure CSRF_COOKIE settings are correctly set
+    CSRF_COOKIE_SECURE = strtobool(os.getenv('CSRF_COOKIE_SECURE'))  # Set to True in production
+    SESSION_COOKIE_SECURE = strtobool(os.getenv('SESSION_COOKIE_SECURE'))  # Set to True in production with HTTPS
+
     sentry_sdk.init(
         dsn=os.getenv('SENTRY_URL'),
         integrations=[DjangoIntegration()],
@@ -38,6 +44,11 @@ if os.name == 'nt':
     os.environ['GDAL_DATA'] = OSGEO4W + r"\share\epsg_csv"
     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
 
+
+# Admin user settings
+DJANGO_ADMIN_USERNAME = os.environ.get('DJANGO_ADMIN_USERNAME', 'admin')
+DJANGO_ADMIN_EMAIL = os.environ.get('DJANGO_ADMIN_EMAIL', 'admin@example.com')
+DJANGO_ADMIN_PASSWORD = os.environ.get('DJANGO_ADMIN_PASSWORD', 'admin')  # Change this in production!
 
 AUTH_USER_MODEL = 'users.User'  # my app is called users  hence users.User I could make app called core.Users
 
@@ -67,12 +78,12 @@ INSTALLED_APPS = [
     'routing',
     'poi_manager',
     'landscape',
-    'users'
+    'users',
+    'health',
 
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -80,7 +91,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+
+
+
+
+# CORS_ORIGIN_WHITELIST = os.getenv('CORS_ORIGIN_WHITELIST').split(' ')
+# CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(' ')
+
 
 
 ROOT_URLCONF = 'indrz.urls'
@@ -187,11 +207,18 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+# STATICFILES_DIRS = [
+#    os.path.join(BASE_DIR, STATIC_FOLDER),
+#     os.path.join(BASE_DIR, 'static'),
+#     os.path.join(BASE_DIR, 'static/admin'),
+#     os.path.join(BASE_DIR, 'static/legacy'),
+#
+# ]
 
 
 UPLOAD_POI_DIR = MEDIA_ROOT + '/poi_icons/'
-YANDEX_TRANSLATE_KEY = "trnsl.1.1.20160713T103415Z.0a117baa17b2233a.fb58b4876ab2920ea22ae0a0b55507319bb4a0db"
 
 
 INDRZ_API_TOKEN = os.getenv('INDRZ_API_TOKEN')
@@ -218,12 +245,7 @@ SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': True,
 }
 
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:8000"
-]
+
 
 LOGFILE_DIR = os.getenv('LOGFILE_DIR')
 # Set the maximum log file size (50 MB in bytes)
@@ -251,13 +273,15 @@ if os.path.isdir(LOGFILE_DIR):
                 'formatter': 'verbose',
                 'class': 'logging.handlers.RotatingFileHandler',
                 'maxBytes': LOG_MAX_SIZE,
-                'backupCount': 5  # Number of backup log files to keep
+                'backupCount': 10  # Number of backup log files to keep
             },
             'file_debug': {
                 'level': 'DEBUG',
-                'class': 'logging.FileHandler',
                 'filename': os.path.join(LOGFILE_DIR, 'debug.log'),
-                'formatter': 'verbose'
+                'formatter': 'verbose',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'maxBytes': LOG_MAX_SIZE,
+                'backupCount': 10  # Number of backup log files to keep
             },
         },
         'loggers': {

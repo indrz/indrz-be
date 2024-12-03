@@ -1,1 +1,37 @@
 .git
+# Created by .ignore support plugin (hsz.mobi)
+### JetBrains template
+
+*.iml
+indrz/settings/.env
+indrz/.env
+.env
+/devops/docker-env/db.env
+/devops/docker-env/geoserver.env
+/devops/docker-env/indrz.env
+## Directory-based project format:
+.idea/
+# if you remove the above rule, at least ignore the following:
+
+indrz/logs
+
+*.pyc
+
+/data
+
+
+/indrz/logs/
+
+
+/indrz/homepage/scripts/roomlog.log
+/indrz/htmlcov/
+
+/.cache/
+
+*.cache
+*.coverage
+/scripts/geoserver/roomlog.log
+/devops/docker-env/
+
+/indrz/media/
+/indrz/static/
