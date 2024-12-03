@@ -45,6 +45,11 @@ if os.name == 'nt':
     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
 
 
+# Admin user settings
+DJANGO_ADMIN_USERNAME = os.environ.get('DJANGO_ADMIN_USERNAME', 'admin')
+DJANGO_ADMIN_EMAIL = os.environ.get('DJANGO_ADMIN_EMAIL', 'admin@example.com')
+DJANGO_ADMIN_PASSWORD = os.environ.get('DJANGO_ADMIN_PASSWORD', 'admin')  # Change this in production!
+
 AUTH_USER_MODEL = 'users.User'  # my app is called users  hence users.User I could make app called core.Users
 
 # Application definition
@@ -73,7 +78,8 @@ INSTALLED_APPS = [
     'routing',
     'poi_manager',
     'landscape',
-    'users'
+    'users',
+    'health',
 
 ]
 

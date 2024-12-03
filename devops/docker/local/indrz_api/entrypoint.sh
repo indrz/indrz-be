@@ -49,7 +49,7 @@ END
 run_management_command() {
     local command="$1"
     echo "Running management command: $command"
-    python3 manage.py "$command" --noinset || {
+    python3 manage.py "$command" --noinput || {
         echo "Failed to run $command"
         exit 1
     }

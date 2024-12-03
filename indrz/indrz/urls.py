@@ -44,8 +44,8 @@ urlpatterns = [
     re_path(r'^api/v1/directions/', include(('routing.urls', 'directions'), namespace='directions')),
     re_path(r'^api/v1/admin/', admin.site.urls),
     re_path(r'^api/v1/poi/', include(('poi_manager.urls', 'poi'), namespace='poi')),
+    re_path(r'^api/v1/health', include('health.urls')),
     re_path(r'^api/v1/', include(router.urls))
-    # path('', include(('homepage.urls', 'homepage'), namespace='homepage'))
 ]
 
 urlpatterns += [
