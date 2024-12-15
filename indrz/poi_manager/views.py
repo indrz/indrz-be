@@ -124,22 +124,27 @@ def get_poi_by_cat_id(request, cat_id, format=None):
     """
     if request.method == 'GET':
 
+        floor = request.GET.get('floor')
+        if floor is not None:
+            try:
+                floor = float(floor)
+            except ValueError:
+                return Response({'error': 'Invalid floor value'}, status=400)
+
         poicat_qs = PoiCategory.objects.filter(enabled=True).get(pk=cat_id).get_descendants()
-        # cat_children = PoiCategory.objects.add_related_count(poicat_qs,Poi,'category', 'cat_name')
-        # poicat_qs = Poi.objects.filter(category__in=PoiCategory.objects.get(pk=cat_id) \
-        #                        .get_descendants(include_self=True))
+        poi_ids = [x.id for x in poicat_qs]
 
-        poi_ids = []
-        for x in poicat_qs:
-            poi_ids.append(x.id)
-
-        qs_objs = Poi.objects.filter(category_id__in=poi_ids).filter(enabled=True)
+        qs_objs = Poi.objects.filter(category_id__in=poi_ids, enabled=True)
 
         if qs_objs:
             serializer = PoiSerializer(qs_objs, many=True)
             return Response(serializer.data)
         elif len(poi_ids) == 0:
-            qs = Poi.objects.filter(category_id=cat_id).filter(enabled=True)
+            filter_params = {'category_id': cat_id, 'enabled': True}
+            if floor is not None:
+                filter_params['floor_num'] = floor
+
+            qs = Poi.objects.filter(**filter_params)
             serializer = PoiSerializer(qs, many=True)
             return Response(serializer.data)
         else:

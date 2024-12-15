@@ -55,34 +55,22 @@ class PoiIconViewSet(viewsets.ModelViewSet):
 
 class PoiImageViewSet(viewsets.ModelViewSet):
     """
-    A simple ViewSet for viewing and editing the accounts
-    associated with the user.
+    A ViewSet for viewing and editing POI Images.
     """
     queryset = PoiImages.objects.all()
     serializer_class = PoiImageSerializer
     parser_classes = (MultiPartParser, FormParser)
-    permission_classes = [
-        permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def create(self, request, *args, **kwargs):
-        """
-        #checks if post request data is an array initializes serializer with many=True
-        else executes default CreateModelMixin.create function
-        """
-
         data = request.data
 
-        # check if multiple data is received
         if isinstance(data, list):
-            # iterate over an array of objects
-            for item in data:
-                serializer = self.get_serializer(data=item)
-                serializer.is_valid(raise_exception=True)
-                self.perform_create(serializer)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+            serializer = self.get_serializer(data=data, many=True)
         else:
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            self.perform_create(serializer)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            serializer = self.get_serializer(data=data)
+
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
