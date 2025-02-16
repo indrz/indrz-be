@@ -32,3 +32,7 @@ RUN rm jai_core-*jar jai_imageio-*.jar jai_codec-*.jar
 RUN apt purge -y zip wget curl && \
     apt autoremove --purge -y && \
     rm -rf /tmp/*
+
+
+RUN chmod a+x /entrypoint.sh
+ENTRYPOINT ["bash", "/entrypoint.sh"]

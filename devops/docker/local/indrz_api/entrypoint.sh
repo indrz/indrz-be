@@ -74,6 +74,8 @@ if [ ! -f "$LOCKFILE" ]; then
     # Then collect static files
     run_management_command "collectstatic"
 
+    run_management_command "createsuperuser --noinput"
+
     # Create lock file with timestamp
     date > "$LOCKFILE"
     echo "Initialization complete"
