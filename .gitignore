@@ -8,18 +8,16 @@ indrz.egg-info/
 .venv/*
 .venv
 
-
-
 ## Directory-based project format:
 .idea/
 # if you remove the above rule, at least ignore the following:
-
-indrz/logs
 
 *.pyc
 .pytest_cache
 /indrz/logs/
 /indrz/htmlcov/
+indrz/media
+indrz/static
 
 /.cache/
 
@@ -28,5 +26,4 @@ indrz/logs
 /scripts/geoserver/roomlog.log
 
 docs/node_modules
-
 node_modules
