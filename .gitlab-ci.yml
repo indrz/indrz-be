@@ -13,6 +13,8 @@ variables:
   DOCKER_IMAGE: geoserver
   CURRENT_VERSION: 2.25.0
   NEW_VERSION: 2.25.2
+  VERSION_FILE: "version.txt"
+  CHANGELOG_FILE: "CHANGELOG.md"
 
 code_quality_html:
   extends: code_quality
@@ -22,14 +24,133 @@ code_quality_html:
     paths: [gl-code-quality-report.html]
 
 stages:
+- version
+- tag
+- release
+- changelog
 - test
-- upgrade
+- geoserver
 
 sast:
   stage: test
 
+increment-version:
+  stage: version
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "merge_request"
+  script:
+    # Read current version
+    - VERSION=$(cat $VERSION_FILE)
+    # Split version into parts
+    - IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+    # Increment patch version
+    - PATCH=$((PATCH + 1))
+    # Create new version string
+    - NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+    # Update version file
+    - echo $NEW_VERSION > $VERSION_FILE
+    # Configure git
+    - git config --global user.email "ci@example.com"
+    - git config --global user.name "GitLab CI"
+    # Commit and push new version
+    - git add $VERSION_FILE
+    - git commit -m "Bump version to $NEW_VERSION [skip ci]"
+    - git push https://oauth2:${CI_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git HEAD:master
+
+create-tag:
+  stage: tag
+  needs: 
+    - increment-version
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "merge_request"
+  script:
+    # Read the new version
+    - VERSION=$(cat $VERSION_FILE)
+    # Create and push tag
+    - git tag -a "v$VERSION" -m "Version $VERSION"
+    - git push https://oauth2:${CI_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git "v$VERSION"
+
+create-release:
+  stage: release
+  needs:
+    - create-tag
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "merge_request"
+  script:
+    # Read the version
+    - VERSION=$(cat $VERSION_FILE)
+    # Create release using GitLab API
+    - |
+      curl --request POST --header "PRIVATE-TOKEN: ${CI_TOKEN}" \
+      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/releases" \
+      --form "name=Release ${VERSION}" \
+      --form "tag_name=v${VERSION}" \
+      --form "description=Release version ${VERSION}" \
+      --form "ref=master"
+
+update-changelog:
+  stage: changelog
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "merge_request"
+  script:
+    # Read current version and new version
+    - VERSION=$(cat $VERSION_FILE)
+    - IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+    - PATCH=$((PATCH + 1))
+    - NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+    
+    # Get the last tag
+    - LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+    
+    # Create temporary changelog content
+    - |
+      echo "## [${NEW_VERSION}] - $(date +%Y-%m-%d)
+
+      ### Added
+      $(git log ${LAST_TAG}..HEAD --pretty=format:'%s' | grep -i '^add[ed]*:\|^feat[ure]*:' | sed 's/^[^:]*: */- /' || echo "No additions")
+
+      ### Changed
+      $(git log ${LAST_TAG}..HEAD --pretty=format:'%s' | grep -i '^chang[ed]*:' | sed 's/^[^:]*: */- /' || echo "No changes")
+
+      ### Deprecated
+      $(git log ${LAST_TAG}..HEAD --pretty=format:'%s' | grep -i '^deprecat[ed]*:' | sed 's/^[^:]*: */- /' || echo "No deprecations")
+
+      ### Removed
+      $(git log ${LAST_TAG}..HEAD --pretty=format:'%s' | grep -i '^remov[ed]*:' | sed 's/^[^:]*: */- /' || echo "No removals")
+
+      ### Fixed
+      $(git log ${LAST_TAG}..HEAD --pretty=format:'%s' | grep -i '^fix[ed]*:' | sed 's/^[^:]*: */- /' || echo "No fixes")
+
+      ### Security
+      $(git log ${LAST_TAG}..HEAD --pretty=format:'%s' | grep -i '^secur[ity]*:' | sed 's/^[^:]*: */- /' || echo "No security updates")
+      " > temp_changes.md
+    
+    # If CHANGELOG.md doesn't exist, create it with initial content
+    - |
+      if [ ! -f $CHANGELOG_FILE ]; then
+        echo "# Changelog
+      All notable changes to this project will be documented in this file.
+
+      The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+      and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+      " > $CHANGELOG_FILE
+      fi
+    
+    # Insert new changes after the header
+    - |
+      sed -i '5r temp_changes.md' $CHANGELOG_FILE
+    - rm temp_changes.md
+    
+    # Configure git
+    - git config --global user.email "ci@example.com"
+    - git config --global user.name "GitLab CI"
+    # Commit changelog updates
+    - git add $CHANGELOG_FILE
+    - git commit -m "Update CHANGELOG.md for version $NEW_VERSION [skip ci]"
+    - git push https://oauth2:${CI_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git HEAD:master
+
 upgrade_geoserver:
-  stage: upgrade
+  stage: geoserver
   script:
     - echo "Pulling new Docker image"
     - docker pull $DOCKER_IMAGE:$NEW_VERSION
