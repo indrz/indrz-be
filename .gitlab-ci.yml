@@ -40,7 +40,7 @@ validate-commit-message:
     - if: $CI_PIPELINE_SOURCE == "merge_request"
   script: |
     # Get all commits in the merge request
-    COMMITS=$(git log --pretty=format:%s origin/master..HEAD)
+    COMMITS=$(git log --pretty=format:%s origin/main..HEAD)
     
     # Define the pattern
     PATTERN="^(added|changed|deprecated|removed|fixed|security):\s.+"
@@ -75,7 +75,7 @@ increment-version:
     # Commit and push new version
     - git add $VERSION_FILE
     - git commit -m "Bump version to $NEW_VERSION [skip ci]"
-    - git push https://oauth2:${CI_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git HEAD:master
+    - git push https://oauth2:${CI_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git HEAD:main
 
 create-tag:
   stage: tag
@@ -106,7 +106,7 @@ create-release:
       --form "name=Release ${VERSION}" \
       --form "tag_name=v${VERSION}" \
       --form "description=Release version ${VERSION}" \
-      --form "ref=master"
+      --form "ref=main"
 
 update-changelog:
   stage: changelog
@@ -167,7 +167,7 @@ update-changelog:
     # Commit changelog updates
     - git add $CHANGELOG_FILE
     - git commit -m "Update CHANGELOG.md for version $NEW_VERSION [skip ci]"
-    - git push https://oauth2:${CI_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git HEAD:master
+    - git push https://oauth2:${CI_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git HEAD:main
 
 upgrade_geoserver:
   stage: geoserver
