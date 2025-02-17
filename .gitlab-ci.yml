@@ -34,6 +34,26 @@ stages:
 sast:
   stage: test
 
+validate-commit-message:
+  stage: .pre
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request"
+  script: |
+    # Get all commits in the merge request
+    COMMITS=$(git log --pretty=format:%s origin/master..HEAD)
+    
+    # Define the pattern
+    PATTERN="^(added|changed|deprecated|removed|fixed|security):\s.+"
+    
+    # Check each commit
+    echo "$COMMITS" | while read -r commit; do
+      if ! echo "$commit" | grep -qE "$PATTERN"; then
+        echo "Error: Commit message '$commit' does not match required pattern"
+        echo "Commit messages must start with one of: added:, changed:, deprecated:, removed:, fixed:, security:"
+        exit 1
+      fi
+    done
+
 increment-version:
   stage: version
   rules:
