@@ -1,0 +1,3 @@
+-r requirements.txt
+gunicorn==22.0.0
+sentry-sdk
