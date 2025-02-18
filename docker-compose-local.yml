@@ -23,13 +23,13 @@ services:
     networks:
       - indrz-net-os
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: "PGPASSWORD=${POSTGRES_PASS} pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
       interval: 10s
       timeout: 5s
       retries: 5
   indrz_api:
     container_name: indrz_api
-    image: indrz-os/api_dev:latest
+    image: indrz-os/api:latest
     build:
       context: ./indrz
       dockerfile: ./devops/docker/local/indrz_api/Dockerfile
@@ -45,7 +45,7 @@ services:
       - ./data/static:/opt/data/static
       - ./data/logs:/opt/data/logs
       - ./data/temp_dwg:/opt/data/temp_dwg
-      - ./data/src_dwg:/opt/data/src_dwg 
+      - ./data/src_dwg:/opt/data/src_dwg
     restart: always
     networks:
       - indrz-net-os
@@ -57,7 +57,7 @@ services:
       context: .
       dockerfile: ./devops/docker/local/geoserver/Dockerfile
     container_name: geoserver
-    image: indrz-os/geoserver_dev:2.25.2
+    image: indrz-os/geoserver:2.25.2
     volumes:
       - ./data/geoserver/data_dir:/opt/geoserver/data_dir
     ports:
@@ -79,9 +79,9 @@ services:
   frontend:
     build:
       context: ../indrz-frontend/src
-      dockerfile: ../indrz-frontend/devops/docker/local/frontend/Dockerfile
+      dockerfile: ../indrz-frontend/devops/docker/local/client_app/Dockerfile
     container_name: frontend
-    image: indrz-os/frontend_dev:latest
+    image: indrz-os/frontend:latest
     restart: always
     ports:
       - "3000:3000"
@@ -94,11 +94,11 @@ services:
       - indrz-net-os
   nginx:
     build:
-      context: .
-      dockerfile: ./devops/docker/local/nginx/Dockerfile
+      context: ../indrz-frontend/src
+      dockerfile: ../indrz-frontend/devops/docker/local/nginx/Dockerfile
     container_name: nginx
     hostname: nginx
-    image: indrz-os/nginx_dev:latest
+    image: indrz-os/nginx:latest
     volumes:
       - ./data/static:/opt/data/static
       - ./data/media:/opt/data/media
