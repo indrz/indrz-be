@@ -58,7 +58,7 @@ services:
       context: .
       dockerfile: ./devops/docker/local/geoserver/Dockerfile
     container_name: geoserver
-    image: indrz-os/geoserver:2.25.6
+    image: indrz-os/geoserver:2.25.2
     volumes:
       - geoserver-data:/opt/geoserver/data_dir
     ports:
