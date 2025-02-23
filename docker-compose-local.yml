@@ -5,6 +5,7 @@ volumes:
   os-db-data:
   indrz-static:
   indrz-media:
+  geoserver-data:
 
 services:
   indrz_db:
@@ -31,7 +32,7 @@ services:
     container_name: indrz_api
     image: indrz-os/api:latest
     build:
-      context: ./indrz
+      context: .
       dockerfile: ./devops/docker/local/indrz_api/Dockerfile
     # command: bash -c "python manage.py migrate && python manage.py collectstatic --no-input --clear && python manage.py runserver  0.0.0.0:8000"
     ports:
@@ -59,7 +60,7 @@ services:
     container_name: geoserver
     image: indrz-os/geoserver:2.25.2
     volumes:
-      - ./data/geoserver/data_dir:/opt/geoserver/data_dir
+      - geoserver-data:/opt/geoserver/data_dir
     ports:
       - 8080:8080
     restart: on-failure
@@ -78,8 +79,8 @@ services:
    #nuxt frontend
   frontend:
     build:
-      context: ../indrz-frontend/src
-      dockerfile: ../indrz-frontend/devops/docker/local/client_app/Dockerfile
+      context: ../indrz-frontend
+      dockerfile: ./devops/docker/local/frontend/Dockerfile
     container_name: frontend
     image: indrz-os/frontend:latest
     restart: always
@@ -94,8 +95,8 @@ services:
       - indrz-net-os
   nginx:
     build:
-      context: ../indrz-frontend/src
-      dockerfile: ../indrz-frontend/devops/docker/local/nginx/Dockerfile
+      context: .
+      dockerfile: ./devops/docker/local/nginx/Dockerfile
     container_name: nginx
     hostname: nginx
     image: indrz-os/nginx:latest
