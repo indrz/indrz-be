@@ -10,16 +10,16 @@ help: ## This help.
 build: build-indrz build-geoserver ## Build all Docker images
 
 build-api-dev: ## Build Indrz BE Image
-	docker build -t indrz-os/api_dev:latest -f devops/docker/local/indrz_api/Dockerfile .
+	docker build -t indrz-os/api:latest -f devops/docker/local/indrz_api/Dockerfile .
 
 build-nginx-dev: ## Build Indrz BE Image
-	docker build -t indrz-os/nginx_dev:latest -f devops/docker/local/nginx/Dockerfile .
+	docker build -t indrz-os/nginx:latest -f devops/docker/local/nginx/Dockerfile .
 
 build-fe-dev: ## Build Indrz BE Image
-	docker build -t indrz-os/fe_dev:latest -f ../indrz-frontend/devops/docker/local/frontend/Dockerfile .
+	docker build -t indrz-os/frontend:latest -f ../indrz-frontend/devops/docker/local/frontend/Dockerfile .
 
 build-geoserver: ## Build Geoserver Image
-	docker build -t indrz-os/geoserver_dev:latest -f devops/docker/local/geoserver/Dockerfile .
+	docker build -t indrz-os/geoserver:latest -f devops/docker/local/geoserver/Dockerfile .
 
 run-dev: ## Run Indrz Docker project in development mode
 	docker compose -f docker-compose-local.yml up -d
