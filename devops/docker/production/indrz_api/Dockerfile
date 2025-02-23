@@ -47,6 +47,5 @@ ENTRYPOINT ["bash", "/entrypoint.sh"]
 
 EXPOSE 8000
 
-# only for development
 # CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
 CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
