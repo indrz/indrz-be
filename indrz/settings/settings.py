@@ -1,5 +1,5 @@
+from logging import config
 import os
-from distutils.util import strtobool
 from logging.handlers import RotatingFileHandler
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -8,7 +8,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = strtobool(os.getenv('DEBUG'))
+DEBUG = bool(os.getenv('DEBUG'))
 
 if not DEBUG:
     import sentry_sdk
@@ -17,8 +17,8 @@ if not DEBUG:
     CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(' ')
     CSRF_ALLOWED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(' ')
     # # Ensure CSRF_COOKIE settings are correctly set
-    CSRF_COOKIE_SECURE = strtobool(os.getenv('CSRF_COOKIE_SECURE'))  # Set to True in production
-    SESSION_COOKIE_SECURE = strtobool(os.getenv('SESSION_COOKIE_SECURE'))  # Set to True in production with HTTPS
+    CSRF_COOKIE_SECURE = bool(os.getenv('CSRF_COOKIE_SECURE'))  # Set to True in production
+    SESSION_COOKIE_SECURE = bool(os.getenv('SESSION_COOKIE_SECURE'))  # Set to True in production with HTTPS
 
     sentry_sdk.init(
         dsn=os.getenv('SENTRY_URL'),
@@ -45,11 +45,6 @@ if os.name == 'nt':
     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
 
 
-# Admin user settings
-DJANGO_ADMIN_USERNAME = os.environ.get('DJANGO_ADMIN_USERNAME', 'admin')
-DJANGO_ADMIN_EMAIL = os.environ.get('DJANGO_ADMIN_EMAIL', 'admin@example.com')
-DJANGO_ADMIN_PASSWORD = os.environ.get('DJANGO_ADMIN_PASSWORD', 'admin')  # Change this in production!
-
 AUTH_USER_MODEL = 'users.User'  # my app is called users  hence users.User I could make app called core.Users
 
 # Application definition
@@ -73,13 +68,13 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     ##### our local indrz apps
+    'organizations.apps.OrganizationsConfig',
     'api',
     'buildings',
     'routing',
     'poi_manager',
     'landscape',
-    'users',
-    'health',
+    'users'
 
 ]
 
@@ -93,9 +88,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
-
-
-
 
 
 # CORS_ORIGIN_WHITELIST = os.getenv('CORS_ORIGIN_WHITELIST').split(' ')
@@ -143,7 +135,7 @@ DATABASES = {
         # Postgresql with PostGIS
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'OPTIONS': {
-                'options': '-c search_path=django,public'
+                'options': '-c search_path=django,geodata,public'
             },
         # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.getenv('POSTGRES_DB'),  # DB name
@@ -250,75 +242,4 @@ SWAGGER_SETTINGS = {
 LOGFILE_DIR = os.getenv('LOGFILE_DIR')
 # Set the maximum log file size (50 MB in bytes)
 LOG_MAX_SIZE = 50 * 1024 * 1024  # 50 MB
-
-if os.path.isdir(LOGFILE_DIR):
-    LOGGING_CONFIG = None
-
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-            'verbose': {
-                'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-                'datefmt' : "%d/%b/%Y %H:%M:%S"
-            },
-            'simple': {
-                'format': '%(levelname)s %(message)s'
-            },
-        },
-        'handlers': {
-            'file_verbose': {
-                'level': 'DEBUG',
-                'filename': os.path.join(LOGFILE_DIR, 'verbose.log'),
-                'formatter': 'verbose',
-                'class': 'logging.handlers.RotatingFileHandler',
-                'maxBytes': LOG_MAX_SIZE,
-                'backupCount': 10  # Number of backup log files to keep
-            },
-            'file_debug': {
-                'level': 'DEBUG',
-                'filename': os.path.join(LOGFILE_DIR, 'debug.log'),
-                'formatter': 'verbose',
-                'class': 'logging.handlers.RotatingFileHandler',
-                'maxBytes': LOG_MAX_SIZE,
-                'backupCount': 10  # Number of backup log files to keep
-            },
-        },
-        'loggers': {
-            'django': {
-                'handlers':['file_verbose'],
-                'propagate': True,
-                'level':'DEBUG',
-            },
-            'api': {
-                'handlers': ['file_debug'],
-                'propagate': True,
-                'level': 'DEBUG',
-            },
-            'admin': {
-                'handlers': ['file_debug'],
-                'propagate': True,
-                'level': 'DEBUG',
-            },
-            'buildings': {
-                'handlers': ['file_debug'],
-                'propagate': True,
-                'level': 'DEBUG',
-            },
-            'routing': {
-                'handlers': ['file_debug'],
-                'propagate': True,
-                'level': 'DEBUG',
-            },
-            'maps': {
-                'handlers': ['file_debug'],
-                'propagate': True,
-                'level': 'DEBUG',
-            }
-
-        }
-    }
-
-    import logging.config
-    logging.config.dictConfig(LOGGING)
 
