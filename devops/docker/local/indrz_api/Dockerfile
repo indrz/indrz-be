@@ -75,10 +75,7 @@ RUN apt-get update -qq && apt-get install -y -qq \
     xmlsec1 \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
-# Create non-root user and set permissions
-RUN useradd -m -s /bin/bash django
 WORKDIR /app
-RUN chown django:django /app
 
 # Copy virtual environment from builder
 COPY --from=builder /opt/venv /opt/venv
@@ -88,10 +85,8 @@ COPY --chown=django:django indrz/ /app/
 COPY --chown=django:django devops/docker/local/indrz_api/entrypoint.sh /entrypoint.sh
 
 # Set entrypoint permissions
-RUN chmod +x /entrypoint.sh && chown django:django /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Switch to non-root user
-USER django
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
