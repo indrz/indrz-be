@@ -1,4 +1,4 @@
-FROM docker.io/kartoza/geoserver:2.25.2
+FROM docker.io/kartoza/geoserver:2.25.6
 ENV GEOSERVER_LIB_DIR=$CATALINA_HOME/webapps/geoserver/WEB-INF/lib/
 
 
@@ -32,7 +32,3 @@ RUN rm jai_core-*jar jai_imageio-*.jar jai_codec-*.jar
 RUN apt purge -y zip wget curl && \
     apt autoremove --purge -y && \
     rm -rf /tmp/*
-
-
-RUN chmod a+x /entrypoint.sh
-ENTRYPOINT ["bash", "/entrypoint.sh"]
