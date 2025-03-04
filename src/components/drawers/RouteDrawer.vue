@@ -23,18 +23,18 @@
     @transitionend="onTransitionEnd"
     stateless
   >
+    <v-app-bar
+      color="deep-purple accent-4"
+      dark
+    >
+      <v-toolbar-title>{{ locale.routeLabel }}</v-toolbar-title>
+      <v-btn icon @click="clearDirections">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-app-bar>
     <div v-if="isMobile" class="draggable-handle" @mousedown="startDrag" @touchstart="startDrag" />
     <div class="ma-2">
       <v-container justify="center" class="pa-0" style="margin-top: 20px; max-width: 410px">
-        <v-row class="ma-0 relative route-navigation-functions" justify="center">
-          <v-chip>{{ locale.routeLabel }}</v-chip>
-          <v-btn icon @click="clearDirections">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-row>
-        <v-alert type="info" color="grey lighten-2" class="mt-3" style="color: #898989;">
-        {{ $t('label_directions_only_routes_on_campus_supported') }}
-        </v-alert>
         <div class="row justify-left ml-5">
           <div class="panel-section-items">
             <v-list class="list-label-value" style="height: 120px;">
@@ -68,7 +68,9 @@
                 <v-checkbox v-model="barrierFree" :label="locale.barrierFreeLabel" data-test="barrierFreeCheckbox" @change="onBarrierFreeChange" />
               </v-list-item>
               <v-list-item>
-                <div class="mt-3">{{ $t('label_directions_routing_barrierfree_limitations') }}</div>
+                <div class="mt-3 routing-info-text">
+                  {{ $t('label_directions_only_routes_on_campus_supported') }}
+                {{  $t('label_directions_routing_barrierfree_limitations') }}</div>
               </v-list-item>
             </v-list>
 
@@ -409,17 +411,8 @@ export default {
 </script>
 
 <style scoped>
-.left-bar-logo {
-  width: auto;
-  height: 40px;
-  left: 10px;
-  display: block;
-  margin: 5px auto;
-}
-@media(max-width:767.98px) {
-  .route-navigation-functions {
-    position:relative;
-    bottom: -10px;
-  }
+.routing-info-text {
+  font-size: 12px;
+  color: #898989;
 }
 </style>
