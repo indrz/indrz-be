@@ -11,12 +11,15 @@
         flat
         height="24"
       >
+      <v-title class="headline pa-5">
+        POI EDIT FORM
+      </v-title>
         <v-spacer />
         <v-btn icon @click="onCloseClick">
           <v-icon>mdi-window-close</v-icon>
         </v-btn>
       </v-toolbar>
-      <v-card-text class="pa-0">
+      <v-card-text class="pa-5">
         <v-form
           ref="form"
           v-model="valid"
@@ -198,6 +201,13 @@ export default {
       };
     }
   },
+  watch: {
+    imageFile (newVal) {
+      if (newVal) {
+        this.onImageUpload();
+      }
+    }
+  },
   methods: {
     show () {
       this.isVisible = true;
@@ -224,25 +234,15 @@ export default {
       });
       this.imageFiles = [];
     },
+    // In AttributesOverlay.vue, add this method back but modify it to only collect files
     onImageUpload () {
-      // Only allow upload if not in creation mode and not loading
-      if (!this.imageFile || this.isLoading || this.isNewlyCreated) {
+      // Only collect files, don't trigger uploads
+      if (!this.imageFile) {
         return;
       }
-      if (this.feature) {
-        // For existing POIs, only upload if explicitly requested
-        if (this.pendingUpload) {
-          this.isLoading = true;
-          this.$emit('uploadImage', {
-            poiId: this.feature.getId(),
-            imageFile: this.imageFile
-          });
-          this.pendingUpload = false;
-        } else {
-          // Store for batch upload on save
-          this.imageFiles.push(this.imageFile);
-        }
-      } else if (Array.isArray(this.imageFile)) {
+
+      // Store files for batch upload on save
+      if (Array.isArray(this.imageFile)) {
         this.imageFiles.push(...this.imageFile);
       } else {
         this.imageFiles.push(this.imageFile);

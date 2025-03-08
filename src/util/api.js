@@ -1,5 +1,6 @@
 import axios from 'axios';
 import config from './indrzConfig';
+import LocalStorageService from '@/service/localStorage';
 
 const { env } = config;
 
@@ -7,7 +8,11 @@ const getAuthorizationHeader = () => {
   const header = {
     'Content-Type': 'application/json'
   };
-  if (env.TOKEN) {
+
+  const userToken = LocalStorageService.getActiveToken();
+  if (userToken) {
+    header.Authorization = `Token ${userToken}`;
+  } else if (env.TOKEN) {
     header.Authorization = env.TOKEN;
   }
   return header;
@@ -17,26 +22,42 @@ const request = function (requestObj) {
   return axios({
     url: `${requestObj.url || env.BASE_API_URL}${requestObj.endPoint || ''}`,
     method: requestObj.method || 'GET',
-    headers: {
-      Authorization: env.TOKEN,
-      'Content-Type': 'application/json'
-    }
+    headers: getAuthorizationHeader()
   });
 };
 
-const postRequest = async function (requestObj) {
+const postRequest = async function (requestObj, options = {}) {
   try {
-    const formData = new FormData();
+    let data;
+    const headers = { ...getAuthorizationHeader(), ...(requestObj.headers || {}) };
 
-    for (const [key, value] of Object.entries(requestObj.data)) {
-      formData.append(key, value === null ? '' : value);
+    // If data is already FormData, use it directly
+    if (requestObj.data instanceof FormData) {
+      data = requestObj.data;
+      // Don't set content-type for FormData; axios will add the boundary
+      delete headers['Content-Type'];
+    } else {
+      // Otherwise create FormData from object
+      const formData = new FormData();
+      for (const [key, value] of Object.entries(requestObj.data || {})) {
+        formData.append(key, value === null ? '' : value);
+      }
+      data = formData;
     }
-    return await axios({
-      url: `${requestObj.url || env.BASE_API_URL}${requestObj.endPoint || ''}`,
+
+    const axiosConfig = {
+      url: `${options?.baseApiUrl || requestObj.url || env.BASE_API_URL}${requestObj.endPoint || ''}`,
       method: requestObj.method || 'POST',
-      headers: getAuthorizationHeader(),
-      data: formData
-    })
+      headers,
+      data
+    };
+
+    // If transformRequest is provided, use it
+    if (requestObj.transformRequest) {
+      axiosConfig.transformRequest = requestObj.transformRequest;
+    }
+
+    return await axios(axiosConfig);
   } catch (err) {
     return err;
   }

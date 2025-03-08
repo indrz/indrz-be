@@ -534,34 +534,57 @@ export default {
     closeAttributePopup () {
       this.$refs.attributesOverlay.onCloseClick();
     },
+    // In PoiMap.vue, modify the saveAttributes method:
     saveAttributes (attributes) {
       const { feature, data, imageFiles } = attributes;
-      if (attributes.feature) {
+      if (feature) {
         // Editing existing POI
-        this.$emit('saveEditPoi', feature, data)
+        this.$emit('saveEditPoi', feature, data);
+
+        // If there are images to upload, upload them after saving
+        if (imageFiles && imageFiles.length > 0) {
+          this.uploadMultiplePoiImages({
+            poiId: feature.getId(),
+            imageFiles: imageFiles
+          });
+        }
       } else {
         // New POI - handle both single and multiple images the same way
         const files = Array.isArray(imageFiles) ? imageFiles : (imageFiles ? [imageFiles] : []);
         this.$emit('saveAddPoi', data, files, (poiId, files) => {
           if (files && files.length > 0) {
-            this.uploadMultiplePoiImages({ poiId, imageFiles: files })
+            this.uploadMultiplePoiImages({ poiId, imageFiles: files });
           }
-        })
+        });
       }
     },
     async uploadMultiplePoiImages ({ poiId, imageFiles }) {
       try {
+        if (!Array.isArray(imageFiles)) {
+          // Convert to array if it's not already
+          imageFiles = [imageFiles].filter(Boolean);
+        }
+
         const uploadPromises = imageFiles.map((file, index) => {
+          // Create a fresh FormData for each file
+          const formData = new FormData();
+
+          // Make sure we're appending the actual File object
+          formData.append('poi', poiId);
+          formData.append('image', file); // Ensure this is a proper File object
+          formData.append('sort_order', (index + 1).toString());
+          formData.append('is_default', index === 0 ? 'true' : 'false');
+          formData.append('alt_text', `Image ${index + 1}`);
+
+          // Ensure we're using the correct content type and don't process the data further
           return api.postRequest({
             endPoint: 'poi/images/',
             method: 'POST',
-            data: {
-              poi: poiId,
-              image: file,
-              sort_order: (index + 1).toString(),
-              is_default: index === 0 ? 'true' : 'false',
-              alt_text: `Image ${index + 1}`
-            }
+            data: formData,
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            transformRequest: [data => data] // Prevent any transformation of the FormData
           }, {
             baseApiUrl: process.env.BASE_API_URL,
             token: process.env.TOKEN
@@ -576,20 +599,29 @@ export default {
     },
     async uploadPoiImage ({ poiId, imageFile }) {
       try {
+        // Create a fresh FormData
+        const formData = new FormData();
+
+        // Make sure we're appending the actual File object
+        formData.append('poi', poiId);
+        formData.append('image', imageFile);
+        formData.append('sort_order', '1');
+        formData.append('is_default', 'true');
+        formData.append('alt_text', 'super image');
+        // Ensure we're using the correct content type and don't process the data further
         await api.postRequest({
           endPoint: 'poi/images/',
           method: 'POST',
-          data: {
-            poi: poiId,
-            image: imageFile,
-            sort_order: '1',
-            is_default: 'true',
-            alt_text: 'super image'
-          }
+          data: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          transformRequest: [data => data] // Prevent any transformation of the FormData
         }, {
           baseApiUrl: process.env.BASE_API_URL,
           token: process.env.TOKEN
         });
+
         await this.refreshImageList(poiId);
       } catch (e) {
         this.$store.commit('SET_SNACKBAR', e?.message || 'Image upload failed');
