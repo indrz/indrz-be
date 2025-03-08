@@ -8,6 +8,8 @@ from django.contrib.gis.gdal import OGRGeometry
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
+from organizations.models import Organization as O
+from campus.models import Campus as C
 
 from buildings.validators import color_hex_validator
 
@@ -225,8 +227,13 @@ class Building(OrganizationInfoBase):
     detail_description = gis_models.CharField(verbose_name=_("Building description"), max_length=256, null=True, blank=True)
     wings = gis_models.CharField(verbose_name=_('Wing'), max_length=800, null=True, blank=True)
 
-    fk_organization = gis_models.ForeignKey(Organization, on_delete=gis_models.CASCADE)
-    fk_campus = gis_models.ForeignKey(Campus, null=True, blank=True, related_name='buildings',
+    # fk_organization = gis_models.ForeignKey(Organization, on_delete=gis_models.CASCADE)
+    #
+    # fk_campus = gis_models.ForeignKey(Campus, null=True, blank=True, related_name='buildings',
+    #                                   on_delete=gis_models.CASCADE)
+
+    organization = gis_models.ForeignKey(O, on_delete=gis_models.CASCADE)
+    campus = gis_models.ForeignKey(C, null=True, blank=True, related_name='buildings',
                                       on_delete=gis_models.CASCADE)
 
     def __str__(self):
@@ -329,8 +336,8 @@ class InteriorFloorSection(FloorSpaceBase):
     Represents a logical or physical division of a single floor.
     One or more floor sections define a wing, zone, etc.
     """
-    organization = gis_models.CharField(verbose_name=_("Organization name e.g Engineering"), max_length=256, null=True, blank=True)
-    department = gis_models.CharField(verbose_name=_("Department name e.g Engineering"), max_length=256, null=True, blank=True)
+    # organization = gis_models.CharField(verbose_name=_("Organization name e.g Engineering"), max_length=256, null=True, blank=True)
+    # department = gis_models.CharField(verbose_name=_("Department name e.g Engineering"), max_length=256, null=True, blank=True)
     division = gis_models.CharField(verbose_name=_("Division"), max_length=256, null=True, blank=True)
     tags = ArrayField(ArrayField(gis_models.CharField(max_length=255), blank=True, null=True), null=True, blank=True)
     rule_nearest_entrance = gis_models.ManyToManyField('poi_manager.Poi',
@@ -361,6 +368,14 @@ class BuildingFloorSpace(FloorSpaceBase):
 
     class Meta:
         ordering = ['room_code']
+
+    def __str__(self):
+        if self.short_name:
+            return self.short_name
+        elif self.room_code:
+            return self.room_code
+        else:
+            return ''
 
 
 class Wing(FloorSpaceBase):
