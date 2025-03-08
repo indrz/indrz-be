@@ -2,6 +2,10 @@
 ### JetBrains template
 data/
 dist/
+indrz/data/
+indrz/scripts/
+indrz/settings/.env
+
 indrz.egg-info/
 *.iml
 .env
