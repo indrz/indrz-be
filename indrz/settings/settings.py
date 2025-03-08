@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     ##### our local indrz apps
     'organizations.apps.OrganizationsConfig',
     'api',
+    'campus.apps.CampusConfig',
     'buildings',
     'routing',
     'poi_manager',
