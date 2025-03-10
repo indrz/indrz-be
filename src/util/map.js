@@ -50,7 +50,7 @@ const initializeMap = ({
     interactions: defaultInteraction().extend([
       new DragRotateAndZoom(),
       new PinchZoom({
-        constrainResolution: true
+        constrainResolution: false
       })
     ]),
     target: mapId,
@@ -192,7 +192,6 @@ const createWmtsLayer = function (layerSrcName, type, isVisible, sourceName) {
   const wmtsLayer = new TileLayer({
     name: layerSrcName,
     source: WmtsTileSource,
-    minResolution: 0.298582141738,
     visible: isVisible,
     type: 'background'
   });
