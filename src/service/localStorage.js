@@ -1,23 +1,26 @@
-const tokenName = 'indrz-frontend';
+const USER_TOKEN_KEY = 'indrz-user-token';
 
-const setToken = (token) => {
-  sessionStorage.setItem(tokenName, JSON.stringify(token));
+const setToken = (userData) => {
+  sessionStorage.setItem(USER_TOKEN_KEY, JSON.stringify(userData));
 };
 
 const getTokenData = () => {
-  const tokenData = sessionStorage.getItem(tokenName);
-  if (tokenData) {
-    return JSON.parse(tokenData);
-  }
-  return null;
+  const tokenData = sessionStorage.getItem(USER_TOKEN_KEY);
+  return tokenData ? JSON.parse(tokenData) : null;
+};
+
+const getActiveToken = () => {
+  const userData = getTokenData();
+  return userData?.token || null;
 };
 
 const removeToken = () => {
-  sessionStorage.clear();
+  sessionStorage.removeItem(USER_TOKEN_KEY);
 };
 
 export default {
   setToken,
   getTokenData,
+  getActiveToken,
   removeToken
 };
