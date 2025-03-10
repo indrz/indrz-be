@@ -3,7 +3,7 @@ import json
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
-from .models import Campus, Building, BuildingFloorSpace, BuildingFloor, Organization, Wing
+from .models import Building, BuildingFloorSpace, BuildingFloor, Organization, Wing
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -12,14 +12,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
         model = Organization
         fields = ('id', 'name', 'description')
 
-
-class CampusSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Campus
-        geo_field = 'geom'
-        fields = ('id', 'campus_name', 'description', 'fk_organization', 'centroid')
-        # depth = 1  # include organization information
 
 
 class BuildingFloorSpaceSerializer(GeoFeatureModelSerializer):
@@ -137,27 +129,7 @@ class BuildingSerializer(GeoFeatureModelSerializer):
         representation['properties']['src_icon'] = "building"
         return representation
 
-class CampusSearchSerializer(GeoFeatureModelSerializer):
-    name = serializers.SerializerMethodField()
-    floor_num = serializers.SerializerMethodField()
-    centroid = serializers.SerializerMethodField()
 
-    def get_name(self, Campus):
-        return "Campus " + Campus.campus_name
-
-    def get_floor_num(self, Campus):
-        floor = 0
-        return floor
-
-    def get_centroid(self, Campus):
-        center_coord_geom  = json.loads(Campus.geom.centroid.geojson)
-        return center_coord_geom
-
-    class Meta:
-        model = Campus
-        geo_field = 'centroid'
-        fields = ('id', 'name', 'floor_num', 'campus_name', 'description', 'fk_organization', 'centroid')
-        depth = 1  # include organization information
 
 
 class FloorSerializerDetails(serializers.ModelSerializer):

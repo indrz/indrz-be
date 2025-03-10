@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-
 import geojson
 from django.contrib.gis.geos import GEOSGeometry
 from django.http import HttpResponse
@@ -17,39 +16,9 @@ from buildings.serializers import (BuildingSerializer,
                                    BuildingFloorGeomSerializer,
                                    SpaceSerializer,
                                    FloorSerializer
-
                                    )
 
 logger = logging.getLogger(__name__)
-
-@api_view(['GET', ])
-def campus_locations(request, format=None):
-    """
-    List locations of all campuses as points
-
-    """
-
-    if request.method == 'GET':
-
-        campuses = Campus.objects.values()
-        features = []
-
-        if campuses:
-
-            for campus in campuses:
-                atts = {'id': campus['id'], 'campus_name': campus['campus_name']}
-
-                geo = GEOSGeometry(campus['geom']).centroid
-
-                f = Feature(geometry=geojson.loads(geo.geojson), properties=atts)
-                features.append(f)
-
-            fc = FeatureCollection(features)
-
-            return Response(fc)
-        else:
-            return Response({"error": "no campus data found"})
-
 
 @api_view(['GET'])
 def get_campus_info(request, campus_id, format=None):
