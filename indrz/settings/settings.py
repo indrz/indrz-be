@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     ##### our local indrz apps
+    'health',
     'organizations.apps.OrganizationsConfig',
     'api',
     'campus.apps.CampusConfig',
