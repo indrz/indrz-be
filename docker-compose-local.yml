@@ -18,8 +18,6 @@ services:
       - 5432:5432
     env_file:
       .env
-    environment:
-      - ALLOW_IP_RANGE=0.0.0.0/0
     restart: on-failure
     networks:
       - indrz-net-os
