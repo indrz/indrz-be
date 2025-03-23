@@ -27,16 +27,15 @@ RUN apt-get update -qq && apt-get install -y -qq \
     libxml2-dev \
     libxmlsec1-dev \
     libxmlsec1-openssl \
-    python3 \
-    python3-dev \
-    python3-venv \
     libpq-dev \
     python3-pip \
     gdal-bin \
     binutils \
     libproj-dev \
     libgdal-dev \
-    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
 
 # Create virtual environment
 RUN python3 -m venv $VIRTUAL_ENV
@@ -52,10 +51,14 @@ COPY indrz/requirements/base.txt /app/requirements/
 COPY indrz/requirements/local.txt /app/requirements/
 
 # Install Python dependencies
+# required for libxmlsec1 to work with new security updates
+RUN python3 -m pip install --upgrade pip setuptools
+
+# Install Python module requirements
 RUN pip install --no-cache-dir -r requirements/local.txt
 
 # Final stage
-FROM ubuntu:22.04
+FROM python:3.13.2-slim-bookworm AS final
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -73,6 +76,7 @@ RUN apt-get update -qq && apt-get install -y -qq \
     libpq5 \
     postgresql-client \
     xmlsec1 \
+    curl \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 WORKDIR /app
@@ -81,8 +85,8 @@ WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 
 # Copy application code
-COPY --chown=django:django indrz/ /app/
-COPY --chown=django:django devops/docker/local/indrz_api/entrypoint.sh /entrypoint.sh
+COPY indrz/ /app/
+COPY devops/docker/local/indrz_api/entrypoint.sh /entrypoint.sh
 
 # Set entrypoint permissions
 RUN chmod +x /entrypoint.sh

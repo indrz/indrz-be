@@ -32,12 +32,8 @@ def search_any(request, q, format=None):
 
     searchString = q
 
-    # TODO uncomment to enable search people via TU api
     poi_data = search_poi(lang_code, searchString)
     spaces_data = search_spaces(lang_code, searchString)
-
-    # TODO remove custom db search was used for quick project start
-    # spaces_custom_data = custom_db_query_tu(lang_code, searchString)
     campus_data = search_campus(searchString)
     building_data = search_buildings(searchString)
 
@@ -108,7 +104,8 @@ def search_spaces(lang_code, search_text):
     space_in = search_text.replace(" ", "")  # enable HS 04 H34   to return HS04H34
 
     spaces_data = BuildingFloorSpace.objects.filter(Q(short_name__icontains=search_text) |
-                            Q(room_code__icontains=space_in) | Q(room_description__icontains=search_text)
+                                                    Q(room_code__icontains=space_in) |
+                                                    Q(room_description__icontains=search_text)
                                                     )
 
     if spaces_data:
