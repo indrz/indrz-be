@@ -34,6 +34,9 @@ COPY indrz/requirements/production.txt /app/requirements/production.txt
 
 WORKDIR /app
 
+# Install Python dependencies
+# required for libxmlsec1 to work with new security updates
+RUN python3 -m pip install --upgrade pip setuptools
 
 # Instal Python module requirements
 RUN pip install -r requirements/production.txt
