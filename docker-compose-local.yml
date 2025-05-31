@@ -28,7 +28,7 @@ services:
       retries: 5
   indrz_api:
     container_name: indrz_api
-    image: indrz-os/api:latest
+    image: indrz-os/api:3.1.2
     build:
       context: .
       dockerfile: ./devops/docker/local/indrz_api/Dockerfile
@@ -56,7 +56,7 @@ services:
       context: .
       dockerfile: ./devops/docker/local/geoserver/Dockerfile
     container_name: geoserver
-    image: indrz-os/geoserver:2.25.2
+    image: indrz-os/geoserver:2.27.0
     volumes:
       - geoserver-data:/opt/geoserver/data_dir
     ports:

@@ -7,6 +7,7 @@ ENV GDAL_SKIP=DODS
 
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
+ENV VIRTUAL_ENV=/opt/venv
 
 ENV LC_ALL="C.UTF-8"
 ENV LC_CTYPE="C.UTF-8"
@@ -19,7 +20,7 @@ RUN apt-get update -qq && apt-get install -y -qq \
     # security  \
     xmlsec1 libxml2-dev libxmlsec1-dev libxmlsec1-openssl \
     # python basic libs
-    python3.10 python3.10-dev python3.10-venv libpq-dev gettext python3-pip \
+    python3 python3-dev python3.10-venv libpq-dev gettext python3-venv python3-pip \
     # geodjango
     gdal-bin binutils libproj-dev libgdal-dev \
     # postgresql
@@ -31,6 +32,12 @@ RUN mkdir -p /app
 
 COPY indrz/requirements/base.txt /app/requirements/base.txt
 COPY indrz/requirements/production.txt /app/requirements/production.txt
+
+# Create virtual environment
+RUN python3 -m venv $VIRTUAL_ENV
+
+# Upgrade pip
+RUN $VIRTUAL_ENV/bin/pip install --no-cache-dir --upgrade pip
 
 WORKDIR /app
 
@@ -44,7 +51,7 @@ RUN pip install -r requirements/production.txt
 # COPY indrz/ /usr/src/app/
 COPY indrz/ /app/
 
-COPY devops/docker/local/indrz_api/entrypoint.sh /entrypoint.sh
+COPY devops/docker/production/indrz_api/entrypoint.sh /entrypoint.sh
 RUN chmod a+x /entrypoint.sh
 ENTRYPOINT ["bash", "/entrypoint.sh"]
 
@@ -52,3 +59,4 @@ EXPOSE 8000
 
 # CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
 CMD ["gunicorn", "--workers", "3", "--timeout", "3000", "--bind", "0.0.0.0:8000", "indrz.wsgi:application"]
+
