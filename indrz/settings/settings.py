@@ -1,5 +1,6 @@
 from logging import config
 import os
+from distutils.util import strtobool
 from logging.handlers import RotatingFileHandler
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -8,7 +9,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.getenv('DEBUG'))
+DEBUG = strtobool(os.getenv('DEBUG'))
 
 if not DEBUG:
     import sentry_sdk
