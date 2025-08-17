@@ -396,14 +396,14 @@ export default {
           break;
       }
     },
-    onLocationClick (centroid) {
+    onLocationClick (centroid, zoom = 18) {
       if (!centroid) {
         return;
       }
       this.view.animate({
         center: centroid.coordinates,
         duration: 2000,
-        zoom: 18
+        zoom: zoom
       });
     },
     onFloorClick (floorNum) {

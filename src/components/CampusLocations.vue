@@ -13,7 +13,7 @@
         <v-list-item
           v-for="(campus, i) in campusLocations"
           :key="i"
-          @click.stop="onLocationClick(campus)"
+          @click.stop="onLocationClick(campus, 16)"
         >
           <v-list-item-content>
             <v-list-item-title v-text="campus.name" />
@@ -44,8 +44,8 @@ export default {
   },
 
   methods: {
-    onLocationClick (location) {
-      this.$emit('locationClick', location.centroid);
+    onLocationClick (location, zoom) {
+      this.$emit('locationClick', location.centroid, zoom);
     },
     fetchLocations () {
       return api.request({

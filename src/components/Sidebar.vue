@@ -207,8 +207,8 @@ export default {
     onMenuBUttonClick (item) {
       this.$emit('menuButtonClick', item.type);
     },
-    onLocationClick (value) {
-      this.$emit('locationClick', value);
+    onLocationClick (centroid, zoom = 18) {
+      this.$emit('locationClick', centroid, zoom);
     },
     onSetGlobalRoute (value) {
       this.$emit('setGlobalRoute', value);

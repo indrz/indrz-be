@@ -226,8 +226,8 @@ export default {
     onMenuButtonClick (type) {
       this.map.onMenuButtonClick(type);
     },
-    onLocationClick (value) {
-      this.map.onLocationClick(value);
+    onLocationClick (centroid, zoom = 18) {
+      this.map.onLocationClick(centroid, zoom);
     },
     onFloorClick (floor) {
       this.map.onFloorClick(floor);
