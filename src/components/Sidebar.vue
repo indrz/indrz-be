@@ -44,6 +44,7 @@
           v-for="(item, i) in menuButtons"
           :key="i"
           :data-test="item.type+'Btn'"
+          :aria-label="item.text"
           @click.stop="onMenuBUttonClick(item)"
         >
           <v-list-item-icon :data-test="item.type+'Item'">

@@ -73,7 +73,7 @@
                 size="125"
                 tile
               >
-                <v-img :src="item.src" />
+                <v-img :src="item.src" alt="iamge item source" />
               </v-avatar>
             </div>
           </v-card>

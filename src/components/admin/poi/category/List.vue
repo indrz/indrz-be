@@ -5,24 +5,25 @@
         <v-card>
           <v-toolbar flat dens>
             <v-spacer />
-            <v-btn @click="addCategory" icon small color="indigo">
+            <v-btn aria-label="Add Category" icon small color="indigo" @click="addCategory">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
             <v-btn
-              @click="editCategory"
               :disabled="!hasActiveCategory"
               icon
               small
               color="green"
+              @click="editCategory"
             >
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
             <v-btn
               :disabled="!hasActiveCategory"
-              @click="showConfirmDelete = true"
+              aria-label="Delete Category"
               icon
               small
               color="red"
+              @click="showConfirmDelete = true"
             >
               <v-icon>mdi-delete</v-icon>
             </v-btn>
@@ -36,8 +37,8 @@
               />
             </div>
             <v-treeview
-              ref="poi"
               v-if="!loading"
+              ref="poi"
               :active.sync="currentCategory"
               :multiple-active="false"
               :items="poiData"

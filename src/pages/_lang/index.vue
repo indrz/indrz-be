@@ -72,7 +72,13 @@
       floating
       class="ma-2"
     >
-      <v-app-bar-nav-icon v-if="!isSmallScreen || !showSearch" data-test="leftPaneToggleBtn" @click.stop="drawer = !drawer;" />
+      <v-app-bar-nav-icon
+        v-if="!isSmallScreen || !showSearch"
+        data-test="leftPaneToggleBtn"
+        aria-label="Toggle navigation drawer"
+        role="button"
+        @click.stop="drawer = !drawer;"
+      />
       <v-expand-transition>
         <campus-search
           id="searchComp"

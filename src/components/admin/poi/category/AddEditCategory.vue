@@ -6,7 +6,7 @@
           {{ title }}
         </div>
         <v-spacer />
-        <v-btn @click="close" icon>
+        <v-btn icon @click="close">
           <v-icon>mdi-window-close</v-icon>
         </v-btn>
       </v-toolbar>
@@ -41,6 +41,7 @@
                         contain
                         max-height="24"
                         max-width="24"
+                        alt="avatar left icon"
                       />
                     </v-avatar>
                     {{ item.name }}
@@ -52,6 +53,7 @@
                         contain
                         max-height="24"
                         max-width="24"
+                        alt="item icon"
                       />
                     </v-list-item-icon>
                     <v-list-item-content>
@@ -79,6 +81,7 @@
                         contain
                         max-height="24"
                         max-width="24"
+                        alt="avatar icon"
                       />
                     </v-avatar>
                     {{ item.text }}
@@ -90,6 +93,7 @@
                         contain
                         max-height="24"
                         max-width="24"
+                        alt="avatar icon"
                       />
                     </v-list-item-icon>
                     <v-list-item-content>
@@ -137,15 +141,15 @@
       <v-divider />
       <v-card-actions>
         <v-spacer />
-        <v-btn :disabled="loading" @click="close" color="blue darken-1" text>
+        <v-btn :disabled="loading" color="blue darken-1" text @click="close">
           Cancel
         </v-btn>
         <v-btn
           :disabled="loading || !valid"
           :loading="loading"
-          @click="save"
           color="blue darken-1"
           text
+          @click="save"
         >
           <v-icon left>
             mdi-content-save

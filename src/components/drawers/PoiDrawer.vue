@@ -45,6 +45,7 @@
               :aspect-ratio="3"
               :src="data.images ? `${baseUrl}${data.images[0].image}` : `${defaultPoiImage}`"
               lazy-src="`${defaultPoiImage}`"
+              alt="image of poi"
             >
               <template v-slot:placeholder>
                 <v-row
@@ -117,6 +118,7 @@
                             v-if="data.icon"
                             :max-width="20"
                             :src="data.icon"
+                            alt="icon image"
                           />
                           <v-img
                             v-else
@@ -124,6 +126,7 @@
                             contain
                             max-height="24"
                             max-width="24"
+                            alt="icon image"
                           />
                         </v-list-item-icon>
                         <v-list-item-content>
@@ -238,6 +241,7 @@
                           text
                           color="wu"
                           class="pl-0"
+                          :aria-label="button.label"
                           @click.stop="button.handler"
                         >
                           <v-icon left>
@@ -273,6 +277,7 @@
               <v-img
                 :max-width="20"
                 :src="data.icon"
+                alt="icon image for title"
               />
             </v-col>
             <v-col cols="9" class="title-items">
@@ -286,8 +291,9 @@
               :src="`${baseUrl}${image.image}`"
               lazy-src="`${defaultPoiImage}`"
               class="gallery-thumb"
-              @click="onGalleryImageClick(index)"
               style="margin: 5px;"
+              alt="image for poi"
+              @click="onGalleryImageClick(index)"
             />
           </v-row>
         </v-container>

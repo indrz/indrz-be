@@ -327,6 +327,7 @@
         <v-btn
           color="blue darken-1"
           text
+          aria-label="Close help modul on screen"
           @click="dialog = false"
         >
           Close

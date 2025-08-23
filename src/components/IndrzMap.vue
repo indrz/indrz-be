@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div :id="mapId" class="width='100%' style='border-radius: 0" />
+    <a class="skiplink" href="#map">Go to map</a>
+    <div :id="mapId" />
     <div id="zoom-control" class="indrz-zoom-control" />
     <div id="id-map-switcher-widget">
       <v-btn
@@ -8,6 +9,7 @@
         min-width="95px"
         class="pa-2 map-switcher"
         small
+        aria-label="Switch background map between satellite and map"
         @click="onMapSwitchClick"
       >
         {{ isSatelliteMap ? "Satellite" : "Map" }}
@@ -20,7 +22,7 @@
     </div>
     <div class="logo-on-map">
       <a :href="homePageUrl" target="_blank">
-        <img id="logo-on-map" :src="logo.file" alt="logo" style="width:auto; height:40px; ">
+        <img id="logo-on-map" :src="logo.file" alt="logo" style="width:auto; height:40px;">
       </a>
     </div>
     <info-overlay
@@ -486,5 +488,28 @@ export default {
     position: absolute;
     right: 45px !important;
     bottom: 37px !important;
+  }
+  .mapId {
+    width: 100%;
+    border-radius: 0;
+  }
+  #map:focus {
+    outline: #4A74A8 solid 0.15em;
+  }
+  a.skiplink {
+    position: absolute;
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0;
+    border: 0;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+  }
+  a.skiplink:focus {
+    clip: auto;
+    height: auto;
+    width: auto;
+    background-color: #fff;
+    padding: 0.3em;
   }
 </style>

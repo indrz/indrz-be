@@ -26,22 +26,23 @@
           @blur="focused = false"
         >
           <template v-slot:append>
-            <v-icon class="search-btn">
+            <v-icon class="search-btn" aria-label="Search Button">
               mdi-magnify
             </v-icon>
           </template>
           <template v-slot:append-outer>
-            <v-icon :color="activeClearColor" @click.stop="onClearClick">
+            <v-icon :color="activeClearColor" aria-label="Close search button" @click.stop="onClearClick">
               mdi-close
             </v-icon>
           </template>
           <template v-slot:item="{ item }">
-            <v-list-item-icon data-test="searchResult" style="margin-right: 16px">
+            <v-list-item-icon data-test="searchResult" style="margin-right: 16px" aria-label="Show icon">
               <v-img
                 :src="getIconUrl(item.src_icon)"
                 contain
                 max-height="24"
                 max-width="24"
+                alt="icon"
               />
             </v-list-item-icon>
             <v-list-item-content>
@@ -54,12 +55,12 @@
       <div v-if="focused">
         <div :style="{'text-align': (isLoading) ? 'center' : 'left'}" class="v-label no-data-text theme--light">
           <template v-if="!search || search.length < 3">
-            <v-icon small>
+            <v-icon small aria-label="information">
               mdi-information-outline
             </v-icon> {{ minSearchCharacterLengthMessage }}
           </template>
           <template v-else-if="search && search.length && !isLoading && !searchResult.length">
-            <v-icon small>
+            <v-icon small aria-label="information">
               mdi-information-outline
             </v-icon> {{ noResultText }}
           </template>
@@ -88,15 +89,24 @@
         @change="onSearchSelection"
       >
         <template v-slot:append>
-          <v-icon class="search-btn">
+          <v-icon
+            class="search-btn"
+            aria-label="Search button search on campus"
+          >
             mdi-magnify
           </v-icon>
         </template>
         <template v-slot:append-outer>
-          <v-icon v-if="showRoute && !search?.length" data-test="directionsShortcutBtn" color="blue darken-2" @click.stop="onRouteButtonClick">
+          <v-icon
+            v-if="showRoute && !search?.length"
+            data-test="directionsShortcutBtn"
+            color="blue darken-2"
+            aria-label="Get directions button"
+            @click.stop="onRouteButtonClick"
+          >
             mdi-directions
           </v-icon>
-          <v-icon v-else :color="activeClearColor" @click.stop="onClearClick">
+          <v-icon v-else :color="activeClearColor" aria-label="Get directions" @click.stop="onClearClick">
             mdi-close
           </v-icon>
         </template>
@@ -120,13 +130,14 @@
           </div>
         </template>
         <template v-slot:item="{ item }">
-          <v-list-item-icon style="margin-right: 16px">
+          <v-list-item-icon style="margin-right: 16px" aria-label="image icon">
             <v-img
               v-if="item.icon"
               :src="item.icon"
               contain
               max-height="24"
               max-width="24"
+              alt="icon"
             />
             <v-img
               v-else
@@ -134,6 +145,7 @@
               contain
               max-height="24"
               max-width="24"
+              alt="icon"
             />
           </v-list-item-icon>
           <v-list-item-content>
