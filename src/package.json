@@ -1,6 +1,6 @@
 {
   "name": "indrz",
-  "version": "3.2.1",
+  "version": "3.4.0",
   "description": "Indrz is a web application for indoor wayfinding, mapping and routing. The platform is for example used by a University that wants to provide its guests, staff and students a web map platform to allow them to find anything on campus.",
   "author": "GOMOGI Michael Diener",
   "private": true,
