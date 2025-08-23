@@ -16,6 +16,10 @@ in-progress
 
 ## [3.4.0] - Unreleased
 
+### Added
+
+* Added CHANGELOG.md to track version changes
+
 ### Changed
 
 * WCAG compliance adjustments to buttons and lists
