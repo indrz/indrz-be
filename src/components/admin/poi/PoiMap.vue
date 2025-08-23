@@ -461,7 +461,6 @@ export default {
       const mapLayers = this.map.getLayers().getArray().slice();
 
       const data = {
-        floor: 1,
         name: this.selectedPoiCategory.name,
         description: '',
         enabled: true,

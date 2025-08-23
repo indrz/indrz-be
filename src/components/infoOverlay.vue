@@ -1,6 +1,6 @@
 <template>
   <div id="indrz-popup" :style="{'min-width': popupSize.width}" scrollable title="indrz info" class="ol-popup indrz-popup">
-    <img  src="/images/selected-large.png" />
+    <img  src="/images/selected-large.png" alt="Selected POI" />
   </div>
 
 </template>
