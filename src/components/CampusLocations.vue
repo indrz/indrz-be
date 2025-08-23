@@ -44,7 +44,7 @@ export default {
   },
 
   methods: {
-    onLocationClick (location, zoom) {
+    onLocationClick (location, zoom = 18) {
       this.$emit('locationClick', location.centroid, zoom);
     },
     fetchLocations () {
