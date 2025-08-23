@@ -10,6 +10,10 @@
 * `Fixed` for any bug fixes.
 * `Security` in case of vulnerabilities.
 
+## [3.4.1] - Unreleased
+
+in-progress
+
 ## [3.4.0] - Unreleased
 
 ### Changed
