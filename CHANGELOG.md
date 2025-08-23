@@ -19,6 +19,7 @@ in-progress
 ### Added
 
 * Added CHANGELOG.md to track version changes
+* Added zoom argument to click on zoom to campus function
 
 ### Changed
 
