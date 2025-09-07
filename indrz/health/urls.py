@@ -1,12 +1,9 @@
-# health/urls.py
-from django.urls import re_path
-from . import views
-
-app_name = 'health'
+# myproject/urls.py
+from django.urls import path, re_path
+from health.views import VersionAPIView, health_check
 
 urlpatterns = [
-    re_path('/', views.health_check, name='health_check'),
+    # JSON API response
+    re_path(r'^$', health_check, name='health_check'),
+    path('version/', VersionAPIView.as_view(), name='api-version'),
 ]
-
-# Add to your main urls.py:
-# path('', include('health.urls')),

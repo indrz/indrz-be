@@ -11,8 +11,8 @@ include:
 
 variables:
   DOCKER_IMAGE: geoserver
-  CURRENT_VERSION: 2.25.0
-  NEW_VERSION: 2.25.2
+  CURRENT_VERSION: 2.27.0
+  NEW_VERSION: 2.27.1
   VERSION_FILE: "version.txt"
   CHANGELOG_FILE: "CHANGELOG.md"
 

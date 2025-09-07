@@ -37,10 +37,11 @@ migrate: ## Migrate
 	docker exec -t indrz_api python3 manage.py migrate
 
 load-data-dev: ## load data
+#   docker exec -it indrz_api sh -c "DJANGO_SUPERUSER_PASSWORD=air python3 manage.py createsuperuser --email=admin@example.com --noinput"
 #   docker exec -it indrz_api python3 manage.py collectstatic
 #   docker exec -it indrz_api python3 manage.py migrate
-#	docker exec -t indrz_api python3 manage.py loaddata --app buildings organization.json
-#	docker exec -t indrz_api python3 manage.py loaddata --app buildings campus.json
+#	docker exec -t indrz_api python3 manage.py loaddata --app organizations organization.json
+#	docker exec -t indrz_api python3 manage.py loaddata --app campus campus.json
 #	docker exec -t indrz_api python3 manage.py loaddata --app buildings buildings.json
 #	docker exec -t indrz_api python3 manage.py loaddata --app buildings buildings_floors.json
 #	docker exec -t indrz_api python3 manage.py loaddata --app buildings buildings_spaces.json

@@ -1,5 +1,5 @@
 # Use the official Nginx image as the base image
-FROM nginx:1.22.1
+FROM nginx:1.28.0
 
 # WORKDIR /var/www/indrz
 WORKDIR /usr/share/nginx/html

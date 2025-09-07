@@ -32,21 +32,10 @@ def search_any(request, q, format=None):
 
     searchString = q
 
-    # TODO uncomment to enable search people via TU api
-    res_tu_api_response = tu_data(q, lang_code)
     poi_data = search_poi(lang_code, searchString)
     spaces_data = search_spaces(lang_code, searchString)
-
-    # TODO remove custom db search was used for quick project start
-    # spaces_custom_data = custom_db_query_tu(lang_code, searchString)
     campus_data = search_campus(searchString)
     building_data = search_buildings(searchString)
-    bookway_data = search_for_shelf(searchString)
-    gender_neutral_data = tu_gender_neutral_search(searchString)
-
-
-    if bookway_data:
-        bookway_data = bookway_data['features']
 
     if spaces_data:
         spaces_data = spaces_data['features']
@@ -60,14 +49,7 @@ def search_any(request, q, format=None):
     if building_data:
         building_data = building_data['features']
 
-    if res_tu_api_response:
-        res_tu_api_response = res_tu_api_response['features']
-
-    if gender_neutral_data:
-        gender_neutral_data = gender_neutral_data['features']
-
-    all_results = chain(spaces_data, campus_data, poi_data, building_data, bookway_data,
-                        res_tu_api_response, gender_neutral_data)
+    all_results = chain(spaces_data, campus_data, poi_data, building_data)
 
     return Response(FeatureCollection(all_results), status=status.HTTP_200_OK)
 
@@ -105,6 +87,32 @@ def get_query(query_string, search_fields):
         else:
             query = query & or_query
     return query
+
+
+def search_spaces(lang_code, search_text):
+    """
+    :param lang_code: such as "en" or "de"
+    :param search_text: string value used to search agains
+    :param mode: "autocomplete" or "search"
+    :return:
+    """
+
+
+    if len(search_text) < 4:
+        return None
+
+    space_in = search_text.replace(" ", "")  # enable HS 04 H34   to return HS04H34
+
+    spaces_data = BuildingFloorSpace.objects.filter(Q(short_name__icontains=search_text) |
+                                                    Q(room_code__icontains=space_in) |
+                                                    Q(room_description__icontains=search_text)
+                                                    )
+
+    if spaces_data:
+        serializer = BuildingFloorSpaceSerializer(spaces_data, many=True)
+        return serializer.data
+    else:
+        return OrderedDict()
 
 def search_poi(lang_code, search_text):
     if lang_code == "de":
@@ -163,7 +171,7 @@ def search_indrz(request, campus_id, search_string, format=None):
     entry_query = get_query(search_string, ['short_name', 'long_name', 'room_code', 'room_description'])
 
     # return only first 20 results
-    found_entries = BuildingFloorSpace.objects.filter(fk_building__fk_campus=campus_id).filter(entry_query)[:20]
+    found_entries = BuildingFloorSpace.objects.filter(fk_building__campus=campus_id).filter(entry_query)[:20]
 
     # buildings_on_campus = BuildingFloorSpace.objects.filter(Q(short_name__icontains=search_string) | Q(room_code__icontains=search_string))
     serializer = BuildingFloorSpaceSerializer(found_entries, many=True)

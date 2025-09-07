@@ -27,7 +27,7 @@ services:
   indrz_api:
     container_name: indrz_api
     hostname: indrz_api
-    image: indrz/indrz_api:3.1
+    image: indrz/indrz_api:3.1.2
     build:
       context: ./indrz
       dockerfile: devops/docker/production/indrz_api/Dockerfile
@@ -48,8 +48,11 @@ services:
       - .env
   # GEOSERVER
   geoserver:
+    build:
+      context: .
+      dockerfile: ./devops/docker/production/geoserver/Dockerfile
     container_name: geoserver
-    image: indrz-tu/geoserver:2.23.0
+    image: indrz-tu/geoserver:2.27.1
     volumes:
       - /srv/data/geoserver-data:/opt/geoserver/data_dir
     restart: on-failure

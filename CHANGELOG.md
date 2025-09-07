@@ -1,27 +1,35 @@
-# Changelog
+# CHANGELOG.md
 
-All notable changes to this project will be documented in this file.
+## Types of changes 
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+[reference keepachangelog](https://keepachangelog.com/en/1.1.0/)
+* `Added` for new features.
+* `Changed` for changes in existing functionality.
+* `Deprecated` for soon-to-be removed features.
+* `Removed` for now removed features.
+* `Fixed` for any bug fixes.
+* `Security` in case of vulnerabilities.
 
-## [Unreleased]
 
-### Added
-
-- work
+## [3.1.3] - Unreleased
 
 ### Changed
+  - Upgrade to Geoserver 2.27.0 latest production stable 
+  - updated users model
+  - updated all model migrations to latest version
+  - updated poi views with newest api models
+  - upgrade to Django 4.2.20
+  - update dns
+  - update environment variables
 
-- pipelines
-
-### Removed
-
-- stuff
-
-## [2.1.3] - 2025-02-16
+## [3.1.2] - 2025-05-01
 
 ### Added
+  - sentry-url to settings.py as environment variable
+  - zoneplan users
+  - fixed database health check status message
 
-- new Changelog
-- new Version
+### Fixed
+
+  - fixed bug in libxml2 for python 3.10
+  - fixed nightly import

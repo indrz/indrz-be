@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-
 import geojson
 from django.contrib.gis.geos import GEOSGeometry
 from django.http import HttpResponse
@@ -17,39 +16,9 @@ from buildings.serializers import (BuildingSerializer,
                                    BuildingFloorGeomSerializer,
                                    SpaceSerializer,
                                    FloorSerializer
-
                                    )
 
 logger = logging.getLogger(__name__)
-
-@api_view(['GET', ])
-def campus_locations(request, format=None):
-    """
-    List locations of all campuses as points
-
-    """
-
-    if request.method == 'GET':
-
-        campuses = Campus.objects.values()
-        features = []
-
-        if campuses:
-
-            for campus in campuses:
-                atts = {'id': campus['id'], 'campus_name': campus['campus_name']}
-
-                geo = GEOSGeometry(campus['geom']).centroid
-
-                f = Feature(geometry=geojson.loads(geo.geojson), properties=atts)
-                features.append(f)
-
-            fc = FeatureCollection(features)
-
-            return Response(fc)
-        else:
-            return Response({"error": "no campus data found"})
-
 
 @api_view(['GET'])
 def get_campus_info(request, campus_id, format=None):
@@ -57,7 +26,7 @@ def get_campus_info(request, campus_id, format=None):
     Get a list of buildings on a singlge campus
     """
     if request.method == 'GET':
-        buildings_on_campus = Building.objects.filter(fk_campus=campus_id).order_by('id')
+        buildings_on_campus = Building.objects.filter(campus=campus_id).order_by('id')
         serializer = BuildingSerializer(buildings_on_campus, many=True)
         return Response(serializer.data)
 
@@ -73,7 +42,7 @@ def campus_buildings_list(request, campus_id, format=None, **kwargs):
     :return:
     """
     if request.method == 'GET':
-        buildings = Building.objects.filter(fk_campus=campus_id).order_by('id')
+        buildings = Building.objects.filter(campus=campus_id).order_by('id')
         serializer = BuildingSerializer(buildings, many=True)
 
         map_name = kwargs.pop('map_name', None)
@@ -93,7 +62,7 @@ def campus_buildings_short_list(request, campus_id, format=None):
     List all buildings without details
     """
     if request.method == 'GET':
-        buildings = Building.objects.filter(fk_campus=campus_id)
+        buildings = Building.objects.filter(campus=campus_id)
         serializer = BuildingSerializer(buildings, many=True)
         return Response(serializer.data)
 
@@ -108,7 +77,7 @@ def campus_floor_spaces(request, campus_id, floor_num, format=None):
     :return: all spaces in all buildings for a specified floor number
     """
     if request.method == 'GET':
-        spaces_ids = BuildingFloorSpace.objects.filter(fk_building__fk_campus=campus_id).filter(
+        spaces_ids = BuildingFloorSpace.objects.filter(fk_building__campus=campus_id).filter(
             fk_building_floor__floor_num=floor_num)
 
         serializer = BuildingFloorSpaceSerializer(spaces_ids, many=True)

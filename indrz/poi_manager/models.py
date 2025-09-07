@@ -138,44 +138,47 @@ class PoiImages(models.Model):
             super().save(*args, **kwargs)
             return
 
-        # Call super save to store changes
+        # For new objects, save first to get the ID and file paths
+        is_new = not self.pk
         super().save(*args, **kwargs)
 
-        # First handle image resizing
-        img = Pilimage.open(self.image)
+        # Then process the image if it exists
+        if self.image:
+            # Resize large images
+            img = Pilimage.open(self.image)
 
-        # Check if the image needs to be resized
-        if img.width > 1980 or img.height > 1980:
-            # Calculate aspect ratio
-            aspect_ratio = float(img.height) / float(img.width)
+            # Check if the image needs to be resized
+            if img.width > 1980 or img.height > 1980:
+                # Calculate aspect ratio
+                aspect_ratio = float(img.height) / float(img.width)
 
-            # Resize while maintaining aspect ratio
-            if img.height > img.width:
-                new_height = 1980
-                new_width = int(new_height / aspect_ratio)
-            else:
-                new_width = 1980
-                new_height = int(new_width * aspect_ratio)
+                # Resize while maintaining aspect ratio
+                if img.height > img.width:
+                    new_height = 1980
+                    new_width = int(new_height / aspect_ratio)
+                else:
+                    new_width = 1980
+                    new_height = int(new_width * aspect_ratio)
 
-            img = img.resize((new_width, new_height), Pilimage.ANTIALIAS)
-            img.save(self.image.path)
+                img = img.resize((new_width, new_height), Pilimage.ANTIALIAS)
+                img.save(self.image.path)
 
-        # Create thumbnail
-        img.thumbnail((400, 250), Pilimage.ANTIALIAS)
+            # Create thumbnail
+            img.thumbnail((400, 250), Pilimage.ANTIALIAS)
 
-        temp_thumb = BytesIO()
-        img.save(temp_thumb, format='JPEG')
-        temp_thumb.seek(0)
+            temp_thumb = BytesIO()
+            img.save(temp_thumb, format='JPEG')
+            temp_thumb.seek(0)
 
-        file_name = Path(self.image.name).stem  # Name without extension
-        file_suffix = Path(self.image.name).suffix
-        thumb_filename = f"{file_name}_thumbnail{file_suffix}"
+            file_name = Path(self.image.name).stem  # Name without extension
+            file_suffix = Path(self.image.name).suffix
+            thumb_filename = f"{file_name}_thumbnail{file_suffix}"
 
-        # This saves the thumbnail
-        self.thumbnail.save(thumb_filename, ContentFile(temp_thumb.read()), save=False)
+            # This saves the thumbnail
+            self.thumbnail.save(thumb_filename, ContentFile(temp_thumb.read()), save=False)
 
-        # Call super save to store changes
-        super().save(*args, **kwargs)
+            # Final save to update the thumbnail field
+            super().save(update_fields=['thumbnail'])
 
     class Meta:
         ordering = ['sort_order']

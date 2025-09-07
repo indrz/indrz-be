@@ -1,7 +1,7 @@
 import json
 
 from django.contrib.gis.gdal.geometries import OGRGeometry
-from django.db import models
+from django.contrib.gis.db import models
 from django.utils.translation import gettext_lazy as _
 
 from organizations.models import Organization

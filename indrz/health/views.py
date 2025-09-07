@@ -1,9 +1,21 @@
-# health/views.py
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.views import View
+from indrz import __version__
 from django.db import connections
 from django.db.utils import OperationalError
 import datetime
-import os
+
+def version_view(request):
+    """Return the project version as plain text."""
+    return HttpResponse(__version__)
+
+class VersionAPIView(View):
+    """Return the project version as JSON."""
+    def get(self, request):
+        return JsonResponse({
+            "project": "indrz",
+            "version": __version__
+        })
 
 def health_check(request):
     # Check database connection
@@ -14,7 +26,7 @@ def health_check(request):
         db_healthy = False
 
     # Get version from environment variable or settings
-    version = os.getenv('APP_VERSION', '1.0.0')  # You can set this in your Dockerfile or settings
+    version = __version__
 
     health_status = {
         'status': 'healthy' if db_healthy else 'unhealthy',
@@ -27,6 +39,3 @@ def health_check(request):
 
     status_code = 200 if db_healthy else 503
     return JsonResponse(health_status, status=status_code)
-
-
-
