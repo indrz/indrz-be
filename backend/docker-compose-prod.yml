@@ -1,0 +1,92 @@
+version: '3'
+
+networks:
+  indrz-net:
+
+services:
+  # POSTGRES DB
+  indrz_db:
+    hostname: indrz_db
+    container_name: indrz_db
+    image: kartoza/postgis:15-3.3
+    volumes:
+      - /srv/data/indrz-db:/var/lib/postgresql
+    ports:
+      - 5434:5432
+    networks:
+      - indrz-net
+    env_file:
+      - .env
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # backend Django API
+  indrz_api:
+    container_name: indrz_api
+    hostname: indrz_api
+    image: indrz/indrz_api:3.1.2
+    build:
+      context: ./indrz
+      dockerfile: devops/docker/production/indrz_api/Dockerfile
+    ports:
+      - 8000:8000
+    depends_on:
+      - indrz_db
+    volumes:
+      - /srv/data/media:/opt/data/media
+      - /srv/data/static:/opt/data/static
+      - /srv/data/logs:/opt/data/logs
+      - /srv/data/temp_dwg:/opt/data/temp_dwg
+      - /true/source/path/dwg:/opt/data/src_dwg
+    restart: always
+    networks:
+      - indrz-net
+    env_file:
+      - .env
+  # GEOSERVER
+  geoserver:
+    build:
+      context: .
+      dockerfile: ./devops/docker/production/geoserver/Dockerfile
+    container_name: geoserver
+    image: indrz-tu/geoserver:2.27.1
+    volumes:
+      - /srv/data/geoserver-data:/opt/geoserver/data_dir
+    restart: on-failure
+    networks:
+      - indrz-net
+    env_file:
+      - .env
+    healthcheck:
+      test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null -u ${GEOSERVER_ADMIN_USER}:'${GEOSERVER_ADMIN_PASSWORD}' http://localhost:8080/geoserver/rest/about/version.xml"
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - indrz_db
+
+  # NGINX
+  nginx:
+    container_name: nginx
+    hostname: nginx
+    image: indrz/indrz_nginx:latest
+    build:
+      context: .
+      dockerfile: devops/docker/production/nginx/Dockerfile
+    volumes:
+      - /srv/data/static:/opt/data/static
+      - /srv/data/media:/opt/data/media
+      - ${SSL_CERTIFICATES_PATH}:/etc/ssl
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - indrz-net
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - indrz_api

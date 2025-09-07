@@ -1,0 +1,1 @@
+[{"model": "poi_manager.poiicon", "pk": 1, "fields": {"name": "other", "icon": "poi_icons/other_pin.png"}}, {"model": "poi_manager.poiicon", "pk": 2, "fields": {"name": "other-grey", "icon": "poi_icons/other_pin_grey.png"}}, {"model": "poi_manager.poiicon", "pk": 3, "fields": {"name": "bus", "icon": "poi_icons/bus_pin.png"}}]
