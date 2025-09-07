@@ -2,7 +2,8 @@ from django.urls import re_path, path, include
 from rest_framework import routers
 
 from users.api import UserViewSet, GroupViewSet
-from buildings.api import BuildingsViewSet, CampusViewSet, FloorViewSet, SpaceViewSet, WingViewSet
+from buildings.api import BuildingsViewSet, FloorViewSet, SpaceViewSet, WingViewSet
+from campus.api import CampusViewSet
 
 router = routers.DefaultRouter()
 

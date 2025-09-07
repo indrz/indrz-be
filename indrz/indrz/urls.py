@@ -45,7 +45,8 @@ urlpatterns = [
     re_path(r'^api/v1/admin/', admin.site.urls),
     re_path(r'^api/v1/poi/', include(('poi_manager.urls', 'poi'), namespace='poi')),
     re_path(r'^api/v1/health', include('health.urls')),
-    re_path(r'^api/v1/', include(router.urls))
+    re_path(r'^api/v1/', include(router.urls)),
+    re_path(r'^api/health/', include(('health.urls', 'health'), namespace='health')),
 ]
 
 urlpatterns += [

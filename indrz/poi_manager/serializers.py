@@ -72,4 +72,4 @@ class PoiImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PoiImages
         fields = ( 'id', 'poi', 'image', 'thumbnail', 'alt_text', 'sort_order', 'is_default')
-        # read_only_fields = ('thumb', 'thumbnail')
+        read_only_fields = ('id', 'thumbnail')

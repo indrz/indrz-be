@@ -2,17 +2,9 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from buildings.models import BuildingFloor, Campus, Building, BuildingFloorSpace, Wing
-from buildings.serializers import (FloorSerializer, CampusSerializer, BuildingSerializer,
+from buildings.models import BuildingFloor, Building, BuildingFloorSpace, Wing
+from buildings.serializers import (FloorSerializer, BuildingSerializer,
                                    BuildingFloorSpaceSerializer, WingSerializer)
-
-
-class CampusViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    Return a list of campuse
-    """
-    queryset = Campus.objects.all()
-    serializer_class = CampusSerializer
 
 
 class FloorViewSet(viewsets.ReadOnlyModelViewSet):
