@@ -1,0 +1,4 @@
+include LICENSE
+include README.md
+recursive-include indrz/static *
+recursive-include indrz/templates *

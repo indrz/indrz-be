@@ -1,0 +1,37 @@
+stages:
+  - trigger_downstream_merge_requests
+
+variables:
+  SOURCE_BRANCH: "main"  # Branch in the source repository
+  TARGET_BRANCH: "main"  # Branch in the downstream repository
+  DOWNSTREAM_PROJECT_IDS: "43484495,23077745,23077517"  # aau, tu, wu project ids
+  SOURCE_PROJECT_ID: 14108617  # ID of indrz/indrz-frontend repo the source repository
+
+trigger_downstream_merge_requests:
+  stage: trigger_downstream_merge_requests
+  rules:
+    - when: manual
+  script:
+    - apt-get update -qy
+    - apt-get install -y curl
+    - datetime=$(date '+%Y-%m-%d %H:%M:%S')
+    - >
+      for project_id in $(echo $DOWNSTREAM_PROJECT_IDS | tr "," "\n"); do
+        echo "Attempting to create merge request in downstream repository with project ID: $project_id";
+
+        # Create new merge request with datetime in title
+        title="Automated Merge Request - $datetime"
+        response=$(curl --write-out "%{http_code}" -s --request POST "https://gitlab.com/api/v4/projects/$SOURCE_PROJECT_ID/merge_requests" \
+          --header "PRIVATE-TOKEN: $PRIVATE_ACCESS_TOKEN" \
+          --form "source_branch=$SOURCE_BRANCH" \
+          --form "target_branch=$TARGET_BRANCH" \
+          --form "target_project_id=$project_id" \
+          --form "title=$title" \
+          --form "description=This is an automated merge request triggered by an update to the main repository.")
+
+        if [[ "$response" -eq 201 ]] ; then
+          echo "Merge request created successfully in project ID: $project_id. Response: $response"
+        else
+          echo "Failed to create merge request in project ID: $project_id. Response: $response"
+        fi
+      done

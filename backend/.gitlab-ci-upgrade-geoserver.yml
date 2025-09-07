@@ -1,0 +1,33 @@
+stages:
+  - upgrade
+
+variables:
+  DOCKER_IMAGE: kartoza/geoserver
+  CURRENT_VERSION: 2.25.0
+  NEW_VERSION: 2.25.2
+
+upgrade_geoserver:
+  stage: upgrade
+  script:
+    - echo "Pulling new Docker image"
+    - docker pull $DOCKER_IMAGE:$NEW_VERSION
+    - echo "Stopping current GeoServer container"
+    - docker stop geoserver_container || true
+    - echo "Removing current GeoServer container"
+    - docker rm geoserver_container || true
+    - echo "Starting new GeoServer container"
+    - docker run -d --name geoserver_container -p 8080:8080 $DOCKER_IMAGE:$NEW_VERSION
+    - echo "Waiting for the new container to start"
+    - >
+      for i in {1..30}; do
+        if docker ps | grep -q geoserver_container; then
+          echo "GeoServer container is running"
+          exit 0
+        fi
+        echo "Waiting for GeoServer container to start ($i/30)"
+        sleep 1
+      done
+    - echo "GeoServer container failed to start within 30 seconds"
+    - exit 1
+  only:
+    - manual

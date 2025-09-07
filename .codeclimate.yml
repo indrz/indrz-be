@@ -1,3 +1,0 @@
-  plugins:
-    sonar-python:
-      enabled: true
