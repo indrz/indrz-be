@@ -1,0 +1,134 @@
+[
+  {
+    "name": "Access",
+    "children": [
+      {
+        "name": "Parking",
+        "icon": "parking",
+        "children": [
+          {
+            "name": "Bike",
+            "icon": "bike"
+          },
+          {
+            "name": "Bike Covered",
+            "icon": "motorbike"
+          },
+          {
+            "name": "Delivery",
+            "icon": "cart"
+          }
+        ]
+      },
+      {
+        "name": "Public Transport",
+        "icon": "bus",
+        "children": [
+          {
+            "name": "Bus",
+            "icon": "bus"
+          }
+        ]
+      },
+      {
+        "name": "Entrance",
+        "icon": "login"
+      },
+      {
+        "name": "Info Point",
+        "icon": "information"
+      }
+    ]
+  },
+  {
+    "name": "Education",
+    "children": [
+      {
+        "name": "Library",
+        "icon": "library-books",
+        "children": [
+          {
+            "name": "Information",
+            "icon": "information"
+          }
+        ]
+      },
+      {
+        "name": "Front Office",
+        "icon": "account"
+      },
+      {
+        "name": "Computer Room",
+        "icon": "laptop-windows"
+      }
+    ]
+  },
+  {
+    "name": "Facilities",
+    "children": [
+      {
+        "name": "Food",
+        "icon": "food",
+        "children": [{
+          "name": "Restaurant",
+          "icon": "silverware-variant"
+        },
+          {
+            "name": "Vending Machine",
+            "icon": "tablet-ipad"
+          },
+          {
+            "name": "Cafe",
+            "icon": "coffee"
+          }
+        ]
+      },
+      {
+        "name": "Toilet",
+        "icon": "human-male-female",
+        "children": [{
+          "name": "Mens WC",
+          "icon": "gender-male"
+        }, {
+          "name": "Womens WC",
+          "icon": "gender-female"
+        }, {
+          "name": "Barrierfree WC",
+          "icon": "wheelchair-accessibility"
+        }, {
+          "name": "Baby Change Room",
+          "icon": "baby"
+        }, {
+          "name": "Sport",
+          "icon": "football"
+        }]
+      }
+    ]
+  },
+  {
+    "name": "Public Infrastructure",
+    "children": [
+      {
+        "name": "Copy Machines",
+        "icon": "printer"
+      },
+      {
+        "name": "Locker",
+        "icon": "lock"
+      },
+      {
+        "name": "Bank Machines",
+        "icon": "currency-usd"
+      }
+    ]
+  },
+  {
+    "name": "Safety & Security",
+    "children": [
+      {
+        "name": "Meeting Point",
+        "icon": "square-inc"
+      }
+    ]
+  }
+]

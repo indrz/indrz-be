@@ -1,0 +1,13 @@
+{
+    "api": "${INDRZ_URL}/api/v1/",
+    "debug": false,
+    "debugInfo": false,
+    "defaultLanguage": "en",
+    "defaultLoginEnabled": true,
+    "privacyPolicyUrl": null,
+    "termsOfServiceUrl": null,
+    "maxUploadFileSize": null,
+    "gitHubClientId": "${GITHUB_CLIENT_ID}",
+    "gitLabClientId": "${GITLAB_CLIENT_ID}",
+    "gitLabUrl": "${GITLAB_URL}"
+}

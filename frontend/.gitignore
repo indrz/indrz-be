@@ -1,0 +1,23 @@
+dist/
+indrz.egg-info/
+*.iml
+.env
+.venv/*
+.venv
+.vscode/
+
+
+
+
+## Directory-based project format:
+.idea/
+# if you remove the above rule, at least ignore the following:
+
+/.cache/
+
+*.cache
+*.coverage
+
+docs/node_modules
+src/node_modules
+node_modules

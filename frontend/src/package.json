@@ -1,0 +1,53 @@
+{
+  "name": "indrz",
+  "version": "3.4.0",
+  "description": "Indrz is a web application for indoor wayfinding, mapping and routing. The platform is for example used by a University that wants to provide its guests, staff and students a web map platform to allow them to find anything on campus.",
+  "author": "GOMOGI Michael Diener",
+  "private": true,
+  "scripts": {
+    "dev": "export NODE_OPTIONS=--openssl-legacy-provider && nuxt --open",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && npm version patch --git-tag-version false && nuxt build",
+    "build.major": "export NODE_OPTIONS=--openssl-legacy-provider && npm version major --git-tag-version false && nuxt build",
+    "build.minor": "export NODE_OPTIONS=--openssl-legacy-provider && npm version minor --git-tag-version false && nuxt build",
+    "build.patch": "export NODE_OPTIONS=--openssl-legacy-provider && npm version patch --git-tag-version false && nuxt build",
+    "start": "export NODE_OPTIONS=--openssl-legacy-provider && nuxt start",
+    "generate": "export NODE_OPTIONS=--openssl-legacy-provider && npm version patch --git-tag-version false && nuxt generate",
+    "generate.major": "export NODE_OPTIONS=--openssl-legacy-provider && npm version major --git-tag-version false && nuxt generate",
+    "generate.minor": "export NODE_OPTIONS=--openssl-legacy-provider && npm version minor --git-tag-version false && nuxt generate",
+    "generate.patch": "export NODE_OPTIONS=--openssl-legacy-provider && npm version patch --git-tag-version false && nuxt generate",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore . --fix",
+    "docker-build": "docker build -f devops/docker/node/Dockerfile -t indrz-frontend .",
+    "docker-run": "docker run -it -p 3000:3000 indrz-frontend",
+    "pw:test": "playwright test"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "5.13.6",
+    "@nuxtjs/pwa": "3.3.5",
+    "file-saver": "2.0.5",
+    "html-to-image": "^1.11.11",
+    "jspdf": "2.5.1",
+    "lodash": "4.17.21",
+    "nuxt": "2.15.8",
+    "ol": "7.1.0",
+    "qrcode": "^1.5.3",
+    "query-string": "^7.1.1",
+    "rxjs": "7.8.0",
+    "rxjs-compat": "6.6.7",
+    "vue-i18n": "8.28.2",
+    "vue-qrcode-reader": "3.1.0"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.19.1",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@nuxtjs/eslint-config": "^12.0.0",
+    "@nuxtjs/eslint-module": "^3.1.0",
+    "@nuxtjs/vuetify": "^1.12.3",
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.10.0",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.30.0",
+    "eslint-plugin-nuxt": "^4.0.0",
+    "eslint-plugin-vue": "^9.8.0",
+    "vue-eslint-parser": "^9.1.0"
+  }
+}
