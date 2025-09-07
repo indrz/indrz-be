@@ -120,7 +120,7 @@ class BuildingSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Building
         geo_field = "geom"
-        fields = ('id', 'building_name', 'name', 'abbreviation', 'floor_num', 'fk_campus', 'wings', 'floor_list',
+        fields = ('id', 'building_name', 'name', 'abbreviation', 'floor_num', 'campus', 'wings', 'floor_list',
                   'street', 'postal_code', 'municipality', 'city')
 
     def to_representation(self, instance):

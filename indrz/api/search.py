@@ -171,7 +171,7 @@ def search_indrz(request, campus_id, search_string, format=None):
     entry_query = get_query(search_string, ['short_name', 'long_name', 'room_code', 'room_description'])
 
     # return only first 20 results
-    found_entries = BuildingFloorSpace.objects.filter(fk_building__fk_campus=campus_id).filter(entry_query)[:20]
+    found_entries = BuildingFloorSpace.objects.filter(fk_building__campus=campus_id).filter(entry_query)[:20]
 
     # buildings_on_campus = BuildingFloorSpace.objects.filter(Q(short_name__icontains=search_string) | Q(room_code__icontains=search_string))
     serializer = BuildingFloorSpaceSerializer(found_entries, many=True)

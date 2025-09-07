@@ -19,7 +19,7 @@ class LtSpaceTypeAdmin(admin.ModelAdmin):
 class BuildingFloorSpaceAdmin(gis_admin.OSMGeoAdmin):
     # list_display = ('short_name', 'room_external_id', 'room_code', 'room_description', 'tag', 'fk_building_floor', 'floor_num', 'space_type', 'id')
     # search_fields = ('short_name', 'room_external_id', 'room_code', 'room_description', 'tag')
-    # list_filter = ('fk_building_floor__fk_building__fk_campus__campus_name', 'floor_num', 'fk_building_floor__short_name')
+    # list_filter = ('fk_building_floor__fk_building__campus__campus_name', 'floor_num', 'fk_building_floor__short_name')
     default_lon = 1587954  # Default longitude in map units
     default_lat = 5879516  # Default latitude in map units
     default_zoom = 15  # Default zoom level
@@ -34,9 +34,9 @@ class BuildingFloorAdmin(gis_admin.OSMGeoAdmin):
 
 
 class BuildingAdmin(gis_admin.OSMGeoAdmin):
-    # list_display = ('name', 'building_name', 'wings','street', 'description', 'fk_campus', 'fk_organization', 'id')
+    # list_display = ('name', 'building_name', 'wings','street', 'description', 'campus', 'fk_organization', 'id')
     # search_fields = ('building_name', 'street', 'description', 'wings')
-    # list_filter = ('fk_campus__campus_name',)
+    # list_filter = ('campus__campus_name',)
     default_lon = 1587954  # Default longitude in map units
     default_lat = 5879516  # Default latitude in map units
     default_zoom = 15  # Default zoom level
