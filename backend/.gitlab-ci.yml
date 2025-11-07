@@ -70,8 +70,8 @@ increment-version:
     # Update version file
     - echo $NEW_VERSION > $VERSION_FILE
     # Configure git
-    - git config --global user.email "ci@example.com"
-    - git config --global user.name "GitLab CI"
+    - git config --global user.email "${GITLAB_USER_EMAIL}"
+    - git config --global user.name "${GITLAB_USER_NAME}"
     # Commit and push new version
     - git add $VERSION_FILE
     - git commit -m "Bump version to $NEW_VERSION [skip ci]"
@@ -162,8 +162,8 @@ update-changelog:
     - rm temp_changes.md
 
     # Configure git
-    - git config --global user.email "ci@example.com"
-    - git config --global user.name "GitLab CI"
+    - git config --global user.email "${GITLAB_USER_EMAIL}"
+    - git config --global user.name "${GITLAB_USER_NAME}"
     # Commit changelog updates
     - git add $CHANGELOG_FILE
     - git commit -m "Update CHANGELOG.md for version $NEW_VERSION [skip ci]"
