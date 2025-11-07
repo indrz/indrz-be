@@ -11,7 +11,7 @@
 * `Security` in case of vulnerabilities.
 
 
-## [3.1.3] - Unreleased
+## 3.1.3 (unreleased)
 
 ### Changed
   - Upgrade to Geoserver 2.27.0 latest production stable 
@@ -22,7 +22,7 @@
   - update dns
   - update environment variables
 
-## [3.1.2] - 2025-05-01
+## 3.1.2 (2025-05-01)
 
 ### Added
   - sentry-url to settings.py as environment variable
