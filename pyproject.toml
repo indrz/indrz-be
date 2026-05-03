@@ -1,0 +1,25 @@
+[project]
+name = "indrz-core-py"
+version = "3.4.0"
+description = "An indoor routing mapping system"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "Django>=4.2", 
+  "pydantic>=2",
+  "psycopg[c,pool]==3.2.9",
+  # Direct dependency for proper resolution of the pre-built wheels
+  "psycopg-c==3.2.9",
+  "psycopg-pool==3.2.6",
+  ]
+
+[tool.setuptools.package-data]
+"indrz_core_py.migrations" = ["*.py"]
+
+
+[tool.uv.sources]
+# Markers are chosen to select these almost exclusively when building the Docker image
+psycopg-c = [
+  { url = "https://github.com/paperless-ngx/builder/releases/download/psycopg-3.2.9/psycopg_c-3.2.9-cp312-cp312-linux_x86_64.whl", marker = "sys_platform == 'linux' and platform_machine == 'x86_64' and python_version == '3.12'" },
+  { url = "https://github.com/paperless-ngx/builder/releases/download/psycopg-3.2.9/psycopg_c-3.2.9-cp312-cp312-linux_aarch64.whl", marker = "sys_platform == 'linux' and platform_machine == 'aarch64' and python_version == '3.12'" },
+]

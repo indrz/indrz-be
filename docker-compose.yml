@@ -1,0 +1,112 @@
+networks:
+  indrz-net-ee:
+
+volumes:
+  indrz-ee-db:
+  indrz-ee-geoserver:
+
+services:
+  indrz_db:
+    container_name: indrz_db
+    image: kartoza/postgis:15-3.3
+    hostname: indrz_db
+    volumes:
+      - indrz-ee-db:/var/lib/postgresql
+      - ./backend/indrz/scripts/init-db:/docker-entrypoint-initdb.d:ro
+    ports:
+      - 5432:5432
+    env_file:
+      .env
+    restart: on-failure
+    networks:
+      - indrz-net-ee
+    healthcheck:
+      test: "PGPASSWORD=${POSTGRES_PASS} pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h ${POSTGRES_HOST} -p ${POSTGRES_PORT}"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+  indrz_api:
+    container_name: indrz_api
+    image: indrz-ee/api:3.1.4
+    build:
+      context: .
+      dockerfile: devops/docker/local/indrz_api/Dockerfile
+      # command: bash -c "python manage.py migrate && python manage.py collectstatic --no-input --clear && python manage.py runserver  0.0.0.0:8000"
+    ports:
+      - 8000:8000
+    depends_on:
+      indrz_db:
+        condition: service_healthy
+    volumes:
+      - ./backend/indrz:/app
+      - ./backend/data/media:/opt/data/media
+      - ./backend/data/static:/opt/data/static
+      - ./backend/data/logs:/opt/data/logs
+      - ./backend/data/temp_dwg:/opt/data/temp_dwg
+      - ./backend/data/src_dwg:/opt/data/src_dwg
+    restart: always
+    networks:
+      - indrz-net-ee
+    env_file:
+      - .env
+  geoserver:
+    container_name: geoserver
+    image: indrz-ee/geoserver:2.28.3
+    build:
+      context: .
+      dockerfile: devops/docker/local/geoserver/Dockerfile
+    volumes:
+      - indrz-ee-geoserver:/opt/geoserver/data_dir
+    ports:
+      - 8080:8080
+    restart: on-failure
+    networks:
+      - indrz-net-ee
+    env_file:
+     - .env
+    depends_on:
+      indrz_db:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null -u ${GEOSERVER_ADMIN_USER}:'${GEOSERVER_ADMIN_PASSWORD}' http://localhost:8080/geoserver/rest/about/version.xml"
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+   #nuxt frontend
+  frontend:
+    container_name: frontend
+    image: indrz-ee/frontend_dev:4.0.1
+    build:
+      context: .
+      dockerfile: devops/docker/local/frontend/Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/app
+      - /app/node_modules
+    command:
+      "npm run dev"
+    networks:
+      - indrz-net-ee
+  nginx:
+    container_name: nginx
+    image: indrz-ee/nginx:1.29.7
+    build:
+      context: .
+      dockerfile: devops/docker/local/nginx/Dockerfile
+    hostname: nginx
+    volumes:
+      - ./backend/data/static:/opt/data/static
+      - ./backend/data/media:/opt/data/media
+    ports:
+      - "80:80"
+    networks:
+      - indrz-net-ee
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - indrz_api
+      - frontend
