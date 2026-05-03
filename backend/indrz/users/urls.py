@@ -13,10 +13,6 @@ from users import views
 #     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 # ]
 
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
-
-
 urlpatterns = [
     re_path(
         regex=r'^$',

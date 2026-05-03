@@ -1,14 +1,15 @@
 <template>
   <div>
-    <a class="skiplink" href="#map">Go to map</a>
-    <div :id="mapId" />
+    <a class="skiplink" :href="'#' + mapId">Go to map</a>
+    <!-- ensure the map div participates in layout immediately -->
+    <div :id="mapId"></div>
     <div id="zoom-control" class="indrz-zoom-control" />
     <div id="id-map-switcher-widget">
       <v-btn
         id="id-map-switcher"
         min-width="95px"
         class="pa-2 map-switcher"
-        small
+        size="small"
         aria-label="Switch background map between satellite and map"
         @click="onMapSwitchClick"
       >
@@ -26,6 +27,7 @@
       </a>
     </div>
     <info-overlay
+      :model="popupModel"
       @closeClick="closeIndrzPopup(true)"
       @shareClick="onShareButtonClick"
       @popupRouteClick="onPopupRouteClick"
@@ -56,6 +58,13 @@ import Terms from './Terms';
 import Help from './Help';
 import UserGeoLocation from './UserGeoLocation';
 import QRCode from './QRCode';
+import bus from '~/util/bus';
+import { usePopupStore } from '~/stores/popup';
+
+// WMS floor overlay (MapCanvas-style)
+import TileLayer from 'ol/layer/Tile'
+import TileWMS from 'ol/source/TileWMS'
+import { createEmpty, extend as extendExtent, isEmpty as isEmptyExtent } from 'ol/extent'
 
 const { env } = config;
 
@@ -82,7 +91,8 @@ export default {
       showTerms: false,
       showHelp: false,
       showQrCode: false,
-      isSatelliteMap: true,
+      // "Satellite" should mean ortho is visible; default to map (grey) unless you want satellite by default.
+      isSatelliteMap: false,
       layers: [],
       popup: null,
       activeFloorNum: '',
@@ -97,9 +107,17 @@ export default {
       routeToValTemp: '',
       routeFromValTemp: '',
       hostUrl: window.location.href,
-      routeHandler: RouteHandler(this.$store, this.$t, this),
+      routeHandler: RouteHandler(),
       headerId: 'indrz-header-container',
-      footerId: 'indrz-footer-container'
+      footerId: 'indrz-footer-container',
+      _onResize: null,
+      _onMoveEnd: null,
+      _onSingleClick: null,
+      wmsLayer: null,
+      wmsSource: null,
+      WMS_BASE_URL: 'https://campusplan.aau.at/geoserver/wms',
+      selectedFloorLevel: 0,
+      pendingPoiCatZoomIds: null,
     };
   },
 
@@ -114,13 +132,24 @@ export default {
       return env.HOME_PAGE_URL
     },
     isMobile () {
-      return this.$vuetify.breakpoint.mobile;
+      if (typeof window === 'undefined') {
+        return false
+      }
+      return window.innerWidth <= 768
     },
     defaultCenter () {
       return this.isMobile ? env.MOBILE_START_CENTER_XY : env.DEFAULT_CENTER_XY
     },
     defaultZoom () {
       return this.isMobile ? env.MOBILE_START_ZOOM : env.DEFAULT_START_ZOOM;
+    },
+    popupModel () {
+      const popupStore = usePopupStore();
+      return popupStore.model;
+    },
+    currentLocale () {
+      const raw = this.$i18n?.locale
+      return raw && typeof raw === 'object' && 'value' in raw ? raw.value : raw
     }
   },
 
@@ -139,40 +168,169 @@ export default {
     this.layers = layers;
     this.popup = popup;
 
-    this.map.on('singleclick', this.onMapClick, this);
-    window.onresize = () => {
+    // Critical: size the container after DOM mount, then force OL to recompute size and render.
+    this.$nextTick(() => {
+      MapUtil.handleWindowResize(this.mapId);
+      this.map.updateSize();
+      this.map.renderSync();
+
+      // Apply initial base-layer visibility consistent with isSatelliteMap.
+      const { baseLayers } = this.layers;
+      baseLayers.ortho30cmBmapat.setVisible(!!this.isSatelliteMap);
+      baseLayers.greyBmapat.setVisible(!this.isSatelliteMap);
+    });
+
+    // Map event handlers (keep references for cleanup)
+    this._onSingleClick = (evt) => this.onMapClick(evt);
+    this.map.on('singleclick', this._onSingleClick);
+
+    this._onMoveEnd = (e) => {
+      bus.emit('map-moved', e.map.getView().getCenter());
+    };
+    this.map.on('moveend', this._onMoveEnd);
+
+    this._onResize = () => {
       MapUtil.handleWindowResize(this.mapId);
       this.$nextTick(() => {
         this.map.updateSize();
       });
     };
-    this.map.on('moveend', (e) => {
-      this.$root.$emit('map-moved', e.map.getView().getCenter());
-    });
+    window.addEventListener('resize', this._onResize);
 
-    this.$root.$on('popupEntranceButtonClick', this.onPopupEntranceButtonClick);
-    this.$root.$on('popupMetroButtonClick', this.onPopupMetroButtonClick);
-    this.$root.$on('popupDefiButtonClick', this.onPopupDefiButtonClick);
-    this.$root.$on('shareClick', this.onShareButtonClick);
-    this.$root.$on('popupRouteClick', this.onPopupRouteClick);
-    this.$root.$on('closeInfoPopup', this.closeIndrzPopup);
+    bus.on('popupEntranceButtonClick', this.onPopupEntranceButtonClick);
+    bus.on('popupMetroButtonClick', this.onPopupMetroButtonClick);
+    bus.on('popupDefiButtonClick', this.onPopupDefiButtonClick);
+    bus.on('shareClick', this.onShareButtonClick);
+    bus.on('popupRouteClick', this.onPopupRouteClick);
+    bus.on('closeInfoPopup', this.closeIndrzPopup);
   },
+
+  beforeUnmount () {
+    bus.off('popupEntranceButtonClick', this.onPopupEntranceButtonClick);
+    bus.off('popupMetroButtonClick', this.onPopupMetroButtonClick);
+    bus.off('popupDefiButtonClick', this.onPopupDefiButtonClick);
+    bus.off('shareClick', this.onShareButtonClick);
+    bus.off('popupRouteClick', this.onPopupRouteClick);
+    bus.off('closeInfoPopup', this.closeIndrzPopup);
+
+    if (this._onResize) {
+      window.removeEventListener('resize', this._onResize);
+      this._onResize = null;
+    }
+
+    if (this.map) {
+      if (this._onSingleClick) {
+        this.map.un('singleclick', this._onSingleClick);
+        this._onSingleClick = null;
+      }
+      if (this._onMoveEnd) {
+        this.map.un('moveend', this._onMoveEnd);
+        this._onMoveEnd = null;
+      }
+    }
+  },
+
   methods: {
+    zoomToPoiCategories (poiCatIds, zoomLevel = 19) {
+      if (!this.map || !Array.isArray(poiCatIds) || !poiCatIds.length) return;
+
+      const groupLayer = this.map
+        .getLayers()
+        .getArray()
+        .find(l => l?.getProperties && l.getProperties().id === 99999);
+
+      const layers = groupLayer?.getLayers?.().getArray?.() || [];
+      const extent = createEmpty();
+
+      for (const catId of poiCatIds) {
+        const layer = layers.find(l => l?.getProperties && l.getProperties().id === catId);
+        const layerExtent = layer?.getSource?.()?.getExtent?.();
+        if (layerExtent) {
+          extendExtent(extent, layerExtent);
+        }
+      }
+
+      if (isEmptyExtent(extent)) return;
+
+      this.map.getView().fit(extent, {
+        padding: [60, 30, 60, 30],
+        maxZoom: zoomLevel,
+        duration: 600
+      });
+    },
+    getWmsLayerName (floorLevel) {
+      const level = Number(floorLevel)
+      const safeLevel = Number.isFinite(level) ? level : 0
+      const floorStr = safeLevel.toFixed(1).replace('.', '_')
+      return `indrz:floor_${floorStr}`
+    },
+
+    ensureWmsLayer () {
+      if (!this.map) return
+
+      if (!this.wmsSource) {
+        this.wmsSource = new TileWMS({
+          url: this.WMS_BASE_URL,
+          params: {
+            LAYERS: this.getWmsLayerName(this.selectedFloorLevel),
+            TILED: true,
+            FORMAT: 'image/png',
+            TRANSPARENT: true,
+            VERSION: '1.3.0'
+          },
+          serverType: 'geoserver',
+          crossOrigin: 'anonymous'
+        })
+      }
+
+      if (!this.wmsLayer) {
+        this.wmsLayer = new TileLayer({
+          source: this.wmsSource,
+          zIndex: 3,
+          opacity: 1
+        })
+        this.map.addLayer(this.wmsLayer)
+      }
+
+      this.wmsSource.updateParams({
+        LAYERS: this.getWmsLayerName(this.selectedFloorLevel)
+      })
+    },
+
+    setSelectedFloorLevelFromActiveFloorNum () {
+      const prefix = env.LAYER_NAME_PREFIX || 'floor_'
+      const raw = typeof this.activeFloorNum === 'string'
+        ? this.activeFloorNum.replace(prefix, '')
+        : this.activeFloorNum
+
+      const parsed = Number(raw)
+      this.selectedFloorLevel = Number.isFinite(parsed) ? parsed : 0
+    },
+
     loadLayers (floors) {
       this.floors = floors;
-      if (this.floors && this.floors.length) {
-        this.intitialFloor = this.floors.filter(floor => floor.floor_num === env.DEFAULT_START_FLOOR)[0];
-        this.activeFloorNum = env.LAYER_NAME_PREFIX + this.intitialFloor.floor_num;
-        this.$emit('selectFloor', this.intitialFloor.floor_num);
+
+      if (Array.isArray(this.floors) && this.floors.length) {
+        const defaultStartFloor = Number(env.DEFAULT_START_FLOOR)
+
+        const initialFloor =
+          this.floors.find(f => Number(f.floor_num) === defaultStartFloor) ??
+          this.floors[0]
+
+        this.initialFloor = initialFloor
+
+        this.activeFloorNum = `${env.LAYER_NAME_PREFIX}${initialFloor.floor_num}`
+        this.selectedFloorLevel = Number(initialFloor.floor_num) || 0
+
+        this.$emit('selectFloor', initialFloor.floor_num)
       }
-      this.wmsLayerInfo = MapUtil.getWmsLayers(this.floors, {
-        baseWmsUrl: env.BASE_WMS_URL,
-        geoServerLayerPrefix: env.GEO_SERVER_LAYER_PREFIX,
-        layerNamePrefix: env.LAYER_NAME_PREFIX
-      });
-      this.layers.layerGroups.push(this.wmsLayerInfo.layerGroup);
-      this.layers.switchableLayers = this.wmsLayerInfo.layers;
-      this.map.addLayer(this.wmsLayerInfo.layerGroup);
+
+      // Old behavior: create per-floor WMS ImageWMS layers via MapUtil.getWmsLayers.
+      // New behavior: create ONE TileWMS layer and update its LAYERS param on floor switch.
+      this.layers.switchableLayers = []
+
+      this.ensureWmsLayer()
+
       this.loadMapWithParams();
       this.onFloorClick(this.activeFloorNum);
     },
@@ -212,7 +370,7 @@ export default {
       this.objCenterCoords = properties.centerGeometry ? properties.centerGeometry.coordinates : selectedItem.geometry.coordinates;
 
       const result = await MapUtil.searchIndrz(this.map, this.layers, this.globalPopupInfo, this.searchLayer, campusId, searchText, zoomLevel,
-        this.popUpHomePage, this.currentPOIID, this.$i18n.locale, this.objCenterCoords, this.routeToValTemp,
+        this.popUpHomePage, this.currentPOIID, this.currentLocale, this.objCenterCoords, this.routeToValTemp,
         this.routeFromValTemp, this.activeFloorNum, this.popup, selectedItem, {
           searchUrl: env.SEARCH_URL,
           layerNamePrefix: env.LAYER_NAME_PREFIX
@@ -220,59 +378,103 @@ export default {
 
       this.searchLayer = result.searchLayer;
       this.$emit('open-poi-drawer', {
-        feature: properties
+        feature: properties,
+        origin: 'user'
       })
       const featureCenter = !this.routeDrawer
         ? { data: { type: 'Feature', id: properties.id, properties: properties, geometry: { coordinates: this.objCenterCoords, type: 'MultiPolygon' } } }
         : { type: 'Feature', id: properties.id, ...{ properties, geometry: { coordinates: this.coordinates, type: 'MultiPolygon' } } }
       if (this.routeDrawer) {
-        this.$nextTick(() => { this.$bus.$emit('goTo', featureCenter) })
+        this.$nextTick(() => { bus.emit('goTo', featureCenter) })
       }
     },
     async loadMapWithParams (searchString) {
       const query = queryString.parse(searchString || location.search);
+
+      // Deep-link: precompute category IDs to zoom once POI layers are added.
+      if (query && query['poi-cat-id']) {
+        const ids = String(query['poi-cat-id'])
+          .split(',')
+          .map(v => Number.parseInt(v, 10))
+          .filter(v => Number.isFinite(v));
+        this.pendingPoiCatZoomIds = ids.length ? ids : null;
+      }
+
+      const hasPoiIdDeepLink = !!(query && (query['poi-id'] || query.poiId || query.poi_id))
+
       const selectedItem = await MapUtil.loadMapWithParams(this, query);
-      this.$emit('open-poi-drawer', {
-        feature: selectedItem && selectedItem.properties ? selectedItem.properties : selectedItem
-      })
+
+      // Only open the POI panel during initial load if the URL explicitly targets a POI.
+      if (hasPoiIdDeepLink && selectedItem) {
+        this.$emit('open-poi-drawer', {
+          feature: selectedItem && selectedItem.properties ? selectedItem.properties : selectedItem,
+          origin: 'deeplink'
+        })
+      }
     },
     openIndrzPopup (properties, coordinate, feature) {
-      this.$emit('open-poi-drawer', {
-        feature: properties
-      })
-      this.$bus.$emit('setSearch', properties)
-      this.$root.$emit('')
-      !this.isSmallScreen && MapHandler.openIndrzPopup(
-        this.globalPopupInfo, this.popUpHomePage, this.currentPOIID,
-        this.$i18n.locale, this.objCenterCoords, this.routeToValTemp,
-        this.routeFromValTemp, this.activeFloorNum, this.popup,
-        properties, coordinate, feature, null, env.LAYER_NAME_PREFIX
+      this.$emit('open-poi-drawer', { feature: properties, origin: 'user' })
+      bus.emit('setSearch', properties)
+
+      const popupModel = MapHandler.openIndrzPopup(
+        this.globalPopupInfo,
+        this.popUpHomePage,
+        this.currentLocale,
+        this.objCenterCoords,
+        this.routeToValTemp,
+        this.routeFromValTemp,
+        this.activeFloorNum,
+        this.popup,
+        properties,
+        coordinate,
+        feature,
+        null
       );
+      console.log('print this', popupModel);
+
+      const popupStore = usePopupStore();
+      popupStore.SET_POPUP(popupModel, 'user');
+
       this.objCenterCoords = properties.centerGeometry ? properties.centerGeometry.coordinates : coordinate;
       const featureCenter = !this.routeDrawer
         ? { data: { type: 'Feature', id: properties.id, properties: properties, geometry: { coordinates: this.objCenterCoords, type: 'MultiPolygon' } } }
         : { type: 'Feature', id: properties.id, ...{ properties, geometry: { coordinates: this.coordinates, type: 'MultiPolygon' } } }
       if (!this.routeDrawer) {
-        const elm = document.querySelector('.v-navigation-drawer--fixed');
-        const drawerHeight = elm.offsetHeight;
-        const pixel = this.map.getPixelFromCoordinate(coordinate);
-        pixel[1] += (drawerHeight - 70) / 2
-        const mobileCoordinate = this.map.getCoordinateFromPixel(pixel);
         if (this.isMobile) {
-          this.map.getView().animate({
-            duration: 2000,
-            center: mobileCoordinate
-          });
+          const drawerEl =
+            document.querySelector('[data-test="poiLeftPane"]') ||
+            document.querySelector('.v-navigation-drawer--fixed') ||
+            document.querySelector('.v-navigation-drawer')
+
+          const drawerHeight = drawerEl ? drawerEl.offsetHeight : 0
+
+          if (drawerHeight > 0) {
+            const pixel = this.map.getPixelFromCoordinate(coordinate);
+            pixel[1] += (drawerHeight - 70) / 2
+            const mobileCoordinate = this.map.getCoordinateFromPixel(pixel);
+            this.map.getView().animate({
+              duration: 2000,
+              center: mobileCoordinate
+            });
+          } else {
+            this.map.getView().animate({
+              center: coordinate,
+              duration: 2000
+            });
+          }
         } else {
           this.map.getView().animate({
             center: coordinate,
             duration: 2000
           });
         }
-      } else { this.$nextTick(() => { this.$bus.$emit('goTo', featureCenter) }) }
+      } else { this.$nextTick(() => { bus.emit('goTo', featureCenter) }) }
     },
+
     closeIndrzPopup (fromEvent) {
       MapHandler.closeIndrzPopup(this.popup, this.globalPopupInfo);
+      const popupStore = usePopupStore();
+      popupStore.CLEAR_POPUP();
       if (this.searchLayer) {
         this.map.removeLayer(this.searchLayer);
         this.searchLayer = null;
@@ -280,12 +482,19 @@ export default {
       if (fromEvent) {
         this.$emit('clearSearch');
       }
-      this.$emit('open-poi-drawer', {})
+      // keep a single clear emit (LeftPanel now owns UI)
       this.$emit('open-poi-drawer', {})
     },
     onShareButtonClick (isRouteShare) {
       const shareOverlay = this.$refs.shareOverlay;
-      const url = MapHandler.handleShareClick(this, this.globalPopupInfo, this.globalRouteInfo, this.globalSearchInfo, this.activeFloorNum, isRouteShare);
+      const url = MapHandler.handleShareClick(
+        this,
+        this.globalPopupInfo,
+        this.globalRouteInfo,
+        this.globalSearchInfo,
+        this.activeFloorNum,
+        isRouteShare
+      );
 
       if (typeof url === 'object' && url.type === 'poi') {
         shareOverlay.setPoiShareLink(url);
@@ -294,13 +503,29 @@ export default {
       }
       shareOverlay.show();
     },
-    loadSinglePoi (poiId, zlevel) {
+    loadSinglePoi (poiId, zlevel, origin = 'user') {
       POIHandler
-        .showSinglePoi(poiId, this.globalPopupInfo, zlevel, this.map, this.popup, this.activeFloorNum, env.LAYER_NAME_PREFIX)
-        .then(({ layer, feature }) => {
+        .showSinglePoi(
+          poiId,
+          this.globalPopupInfo,
+          zlevel,
+          this.map,
+          this.popup,
+          this.activeFloorNum,
+          env.LAYER_NAME_PREFIX,
+          this.$i18n?.locale || 'en'
+        )
+        .then(({ layer, feature, popupModel }) => {
           this.searchLayer = layer;
+
+          const popupStore = usePopupStore();
+          if (popupModel) {
+            popupStore.SET_POPUP(popupModel, origin);
+          }
+
           this.$emit('open-poi-drawer', {
-            feature
+            feature,
+            origin
           })
         });
     },
@@ -321,11 +546,18 @@ export default {
           index > -1 && this.selectedPoiCatIds.splice(index, 1);
         });
       }
-      MapHandler.handlePoiLoad(this.map, this.activeFloorNum, { removedItems, newItems, oldItems }, {
+      const loadPromise = MapHandler.handlePoiLoad(this.map, this.activeFloorNum, { removedItems, newItems, oldItems }, {
         baseApiUrl: env.BASE_API_URL,
         token: env.TOKEN,
         layerNamePrefix: env.LAYER_NAME_PREFIX
       });
+
+      if (this.pendingPoiCatZoomIds && this.pendingPoiCatZoomIds.length) {
+        Promise.resolve(loadPromise).then(() => {
+          this.zoomToPoiCategories(this.pendingPoiCatZoomIds);
+          this.pendingPoiCatZoomIds = null;
+        });
+      }
     },
     onTermShowChange (value) {
       this.showTerms = value;
@@ -353,20 +585,16 @@ export default {
       });
     },
     onMapClick (evt) {
-      MapHandler.handleMapClick(this, evt, env.LAYER_NAME_PREFIX);
+      MapHandler.handleMapClick(this, evt);
     },
     onMapSwitchClick () {
       const { baseLayers } = this.layers;
 
       this.isSatelliteMap = !this.isSatelliteMap;
 
-      if (this.isSatelliteMap) {
-        baseLayers.ortho30cmBmapat.setVisible(false);
-        baseLayers.greyBmapat.setVisible(true);
-        return;
-      }
-      baseLayers.ortho30cmBmapat.setVisible(true);
-      baseLayers.greyBmapat.setVisible(false);
+      // Satellite == ortho visible
+      baseLayers.ortho30cmBmapat.setVisible(!!this.isSatelliteMap);
+      baseLayers.greyBmapat.setVisible(!this.isSatelliteMap);
     },
     onMenuButtonClick (type) {
       switch (type) {
@@ -409,8 +637,18 @@ export default {
       });
     },
     onFloorClick (floorNum) {
-      this.activeFloorNum = floorNum;
-      MapUtil.activateLayer(this.activeFloorNum, this.layers.switchableLayers, this.map);
+      if (floorNum && typeof floorNum === 'object') {
+        const numericFloor = Number(floorNum.floor_num)
+        this.activeFloorNum = `${env.LAYER_NAME_PREFIX}${numericFloor}`
+        this.selectedFloorLevel = Number.isFinite(numericFloor) ? numericFloor : 0
+      } else {
+        this.activeFloorNum = floorNum;
+        this.setSelectedFloorLevelFromActiveFloorNum()
+      }
+      this.ensureWmsLayer()
+
+      // Preserve POI visibility updates that previously happened inside MapUtil.activateLayer
+      POIHandler.setPoiFeatureVisibility(this.map, this.activeFloorNum, env.LAYER_NAME_PREFIX)
     },
     async onPopupEntranceButtonClick () {
       const nearestEntrance = await this.routeHandler.getNearestEntrance(this.globalPopupInfo);
@@ -450,17 +688,17 @@ export default {
         baseApiUrl: env.BASE_API_URL,
         layerNamePrefix: env.LAYER_NAME_PREFIX,
         token: env.TOKEN,
-        locale: this.$i18n.locale
+        locale: this.currentLocale
       });
       const { noRouteFound, error, routeUrl } = routeResult
 
       if (noRouteFound) {
-        this.$root.$emit('noRouteFound', true);
+        bus.emit('noRouteFound', true);
       } else if (error) {
-        this.$root.$emit('routeError', error)
+        bus.emit('routeError', error);
       } else {
         this.globalRouteInfo.routeUrl = routeUrl;
-        this.$root.$emit('setRouteInfo', routeResult);
+        bus.emit('setRouteInfo', routeResult);
       }
     },
     clearRouteData () {
@@ -511,5 +749,11 @@ export default {
     width: auto;
     background-color: #fff;
     padding: 0.3em;
+  }
+
+  /* Critical: ensure OpenLayers target has non-zero size on first paint */
+  #mapContainer {
+    width: 100%;
+    height: 100vh; /* baseline; JS resize will refine if header/footer are present */
   }
 </style>

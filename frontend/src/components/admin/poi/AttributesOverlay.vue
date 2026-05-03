@@ -5,15 +5,15 @@
     :style="{'min-width': popupSize.width}"
     persistent
   >
-    <v-card flat>
+    <v-card elevation="0">
       <v-toolbar
-        dense
-        flat
+        density="compact"
+        elevation="0"
         height="24"
       >
-      <v-title class="headline pa-5">
-        POI EDIT FORM
-      </v-title>
+        <v-toolbar-title class="text-h6 pa-5">
+          POI EDIT FORM
+        </v-toolbar-title>
         <v-spacer />
         <v-btn icon @click="onCloseClick">
           <v-icon>mdi-window-close</v-icon>
@@ -23,7 +23,7 @@
         <v-form
           ref="form"
           v-model="valid"
-          dense
+          density="compact"
           lazy-validation
         >
           <v-container class="pa-0">
@@ -43,7 +43,7 @@
                   v-model="data.enabled"
                   label="enabled"
                   hide-details
-                  dense
+                  density="compact"
                 />
                 <v-file-input
                   ref="uploadImage"
@@ -60,26 +60,26 @@
                   @click:append="selectFile"
                 />
                 <div v-if="!feature && imageFiles.length" class="pending-images">
-                  <v-list dense style="max-height: 120px" class="overflow-y-auto">
+                  <v-list density="compact" style="max-height: 120px" class="overflow-y-auto">
                     <div v-for="(file, index) in imageFiles" :key="index">
                       <v-list-item class="pl-0">
-                        <v-alert
-                          color="info"
-                          class="white--text text-center pa-1 ma-0"
-                          width="100%"
-                          v-text="file.name"
-                        />
-                        <v-list-item-action>
-                          <v-btn icon x-small @click="removeSelectedImage(index)">
-                            <v-icon color="error darken-1">mdi-delete</v-icon>
+                      <v-alert
+                        color="info"
+                        class="text-white text-center pa-1 ma-0"
+                        width="100%"
+                        v-text="file.name"
+                      />
+                        <template #append>
+                          <v-btn icon size="x-small" @click="removeSelectedImage(index)">
+                            <v-icon color="error-darken-1">mdi-delete</v-icon>
                           </v-btn>
-                        </v-list-item-action>
+                        </template>
                       </v-list-item>
                     </div>
                   </v-list>
                 </div>
                 <v-list
-                  dense
+                  density="compact"
                   style="max-height: 120px"
                   class="overflow-y-auto"
                 >
@@ -87,15 +87,15 @@
                     <v-list-item class="pl-0">
                       <v-alert
                         color="success"
-                        class="white--text text-center pa-1 ma-0"
+                        class="text-white text-center pa-1 ma-0"
                         width="100%"
                         v-text="imageName(image)"
                       />
-                      <v-list-item-action>
-                        <v-btn icon x-small @click="onPoiImageDeleteClick(image.id)">
-                          <v-icon color="error darken-1">mdi-delete</v-icon>
+                      <template #append>
+                        <v-btn icon size="x-small" @click="onPoiImageDeleteClick(image.id)">
+                          <v-icon color="error-darken-1">mdi-delete</v-icon>
                         </v-btn>
-                      </v-list-item-action>
+                      </template>
                     </v-list-item>
                   </div>
                 </v-list>
@@ -106,25 +106,25 @@
       </v-card-text>
       <v-divider class="mt-5" />
       <v-card-actions>
-        <v-btn color="blue darken-1" text @click="onCloseClick">
+        <v-btn color="blue-darken-1" variant="text" @click="onCloseClick">
           Cancel
         </v-btn>
         <v-btn
           :disabled="!valid"
-          color="blue darken-1"
-          text
+          color="blue-darken-1"
+          variant="text"
           @click="onSaveClick"
         >
-          <v-icon left>mdi-content-save</v-icon>
+          <v-icon start>mdi-content-save</v-icon>
           Save
         </v-btn>
         <v-spacer />
         <v-btn
-          color="error darken-1"
-          text
+          color="error-darken-1"
+          variant="text"
           @click="onDeletePoiClick"
         >
-          <v-icon left>mdi-delete</v-icon>
+          <v-icon start>mdi-delete</v-icon>
           Delete
         </v-btn>
       </v-card-actions>

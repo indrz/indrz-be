@@ -22,7 +22,7 @@ services:
     networks:
       - indrz-net-os
     healthcheck:
-      test: "PGPASSWORD=${POSTGRES_PASS} pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+      test: "PGPASSWORD=${POSTGRES_PASS} pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h ${POSTGRES_HOST} -p ${POSTGRES_PORT"
       interval: 10s
       timeout: 5s
       retries: 5
@@ -39,12 +39,12 @@ services:
       indrz_db:
         condition: service_healthy
     volumes:
-      - ./indrz:/app
-      - ./data/media:/opt/data/media
-      - ./data/static:/opt/data/static
-      - ./data/logs:/opt/data/logs
-      - ./data/temp_dwg:/opt/data/temp_dwg
-      - ./data/src_dwg:/opt/data/src_dwg
+      - ./backend/indrz:/app
+      - ./backend/data/media:/opt/data/media
+      - ./backend/data/static:/opt/data/static
+      - ./backend/data/logs:/opt/data/logs
+      - ./backend/data/temp_dwg:/opt/data/temp_dwg
+      - ./backend/data/src_dwg:/opt/data/src_dwg
     restart: always
     networks:
       - indrz-net-os
@@ -77,7 +77,7 @@ services:
    #nuxt frontend
   frontend:
     build:
-      context: ../indrz-frontend
+      context: .
       dockerfile: ./devops/docker/local/frontend/Dockerfile
     container_name: frontend
     image: indrz-os/frontend:latest
@@ -85,8 +85,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ../indrz-frontend/src:/app
-      - /app/node_modules
+      - ./frontend/src:/app
+      - /frontend/app/node_modules
     command:
       "npm run dev"
     networks:
@@ -99,8 +99,8 @@ services:
     hostname: nginx
     image: indrz-os/nginx:latest
     volumes:
-      - ./data/static:/opt/data/static
-      - ./data/media:/opt/data/media
+      - ./backend/data/static:/opt/data/static
+      - ./backend/data/media:/opt/data/media
     ports:
       - "80:80"
     networks:

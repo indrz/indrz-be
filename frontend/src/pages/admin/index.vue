@@ -12,7 +12,7 @@
         >
           <v-card
             :color="item.color"
-            dark
+            theme="dark"
           >
             <div class="d-flex flex-no-wrap justify-space-between">
               <div>
@@ -27,9 +27,9 @@
                   <v-btn
                     v-if="item.title === 'Bookway'"
                     class="ml-2 mt-3"
-                    outlined
+                    variant="outlined"
                     rounded
-                    small
+                    size="small"
                     @click="goToBookway"
                   >
                     {{ item.buttonName }}
@@ -38,9 +38,9 @@
                   <v-btn
                     v-if="item.title === 'Event Manager'"
                     class="ml-2 mt-5"
-                    outlined
+                    variant="outlined"
                     rounded
-                    small
+                    size="small"
                     @click="goToEventManager"
                   >
                     {{ item.buttonName }}
@@ -49,18 +49,38 @@
                     v-if="item.title === 'POI Manager'"
                     rounded
                     class="ml-2 mt-5"
-                    outlined
-                    small
+                    variant="outlined"
+                    size="small"
                     @click="goToPoiEditor"
+                  >
+                    {{ item.buttonName }}
+                  </v-btn>
+                  <v-btn
+                    v-if="item.title === 'Route Editor'"
+                    class="ml-2 mt-5"
+                    variant="outlined"
+                    rounded
+                    size="small"
+                    @click="goToRouteEditor"
+                  >
+                    {{ item.buttonName }}
+                  </v-btn>
+                  <v-btn
+                    v-if="item.title === 'NEW Route Editor'"
+                    class="ml-2 mt-5"
+                    variant="outlined"
+                    rounded
+                    size="small"
+                    @click="goToRouteEditorNew"
                   >
                     {{ item.buttonName }}
                   </v-btn>
                   <v-btn
                     v-if="item.title === 'Zoneplan'"
                     class="ml-2 mt-5"
-                    outlined
+                    variant="outlined"
                     rounded
-                    small
+                    size="small"
                     @click="goToZoneplanManager"
                   >
                     {{ item.buttonName }}
@@ -71,7 +91,7 @@
               <v-avatar
                 class="ma-3"
                 size="125"
-                tile
+                rounded="0"
               >
                 <v-img :src="item.src" alt="iamge item source" />
               </v-avatar>
@@ -83,56 +103,74 @@
   </v-card>
 </template>
 
-<script>
+<script setup>
+definePageMeta({
+  layout: 'admin'
+})
 
-export default {
-  layout: 'admin',
-  data: () => ({
-    items: [
-      {
-        color: '#3d78ff',
-        title: 'POI Manager',
-        artist: 'Manage POI Locations',
-        buttonName: 'START POI MANAGER'
-      },
-      {
-        color: '#1F7087',
-        src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Books_HD_%288314929977%29.jpg/320px-Books_HD_%288314929977%29.jpg',
-        title: 'Bookway',
-        artist: 'Library Location Information System',
-        buttonName: 'START BOOKWAY MANAGER'
-      },
-      {
-        color: '#34b0d5',
-        src: 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg',
-        title: 'Zoneplan',
-        artist: 'Organization Zoneplans',
-        buttonName: 'OPEN Zoneplans'
-      },
-      {
-        color: '#952175',
-        src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
-        title: 'Event Manager',
-        artist: 'Locations for Events',
-        buttonName: 'START EVENT MANAGER'
-      }
+const router = useRouter()
 
-    ]
-  }),
-  methods: {
-    goToPoiEditor () {
-      this.$router.push('/admin/poi');
-    },
-    goToEventManager () {
-      this.$router.push('/admin/events');
-    },
-    goToBookway () {
-      this.$router.push('/admin/shelves');
-    },
-    goToZoneplanManager () {
-      this.$router.push('/admin/zoneplans');
-    }
+const items = [
+  {
+    color: '#3d78ff',
+    src: 'https://cdn.vuetifyjs.com/docs/images/cards/purple-flowers.jpg',
+    title: 'POI Manager',
+    artist: 'Manage POI Locations',
+    buttonName: 'START POI MANAGER'
+  },
+  {
+    color: '#1F7087',
+    src: 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg',
+    title: 'Bookway',
+    artist: 'Library Location Information System',
+    buttonName: 'START BOOKWAY MANAGER'
+  },
+  {
+    color: '#34b0d5',
+    src: ' ',
+    title: 'Zoneplan',
+    artist: 'Organization Zoneplans',
+    buttonName: 'OPEN Zoneplans'
+  },
+  {
+    color: '#952175',
+    src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
+    title: 'Event Manager',
+    artist: 'Locations for Events',
+    buttonName: 'START EVENT MANAGER'
+  },
+  {
+    color: '#3c87dd',
+    src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
+    title: 'Route Editor',
+    artist: 'Edit Routes',
+    buttonName: 'START ROUTE EDITOR'
+  },
+  {
+    color: '#3c87dd',
+    src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
+    title: 'NEW Route Editor',
+    artist: 'Edit Routes',
+    buttonName: 'LAUNCH NEW ROUTE EDITOR'
   }
+]
 
+function goToPoiEditor () {
+  router.push('/admin/poi')
+}
+function goToEventManager () {
+  router.push('/admin/events')
+}
+function goToBookway () {
+  router.push('/admin/shelves')
+}
+function goToZoneplanManager () {
+  router.push('/admin/zoneplans')
+}
+function goToRouteEditor () {
+  router.push('/admin/map')
+}
+function goToRouteEditorNew () {
+  router.push('/admin/route-editor')
 }
 </script>

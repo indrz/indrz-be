@@ -5,18 +5,17 @@
   >
     <v-card>
       <v-toolbar
-        flat
+        elevation="0"
       >
         <v-spacer />
         <v-btn
-          icon
+          icon="mdi-close"
+          variant="text"
           @click="dialog = false"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
+        />
       </v-toolbar>
-      <v-card-text class="pa-0" style="">
-        <v-carousel :value="selctedIndex" class="" height="80vh">
+      <v-card-text class="pa-0">
+        <v-carousel v-model="carouselModel" height="80vh">
           <v-carousel-item v-for="(image, i) in images" :key="i">
             <div class="image-wrapper">
               <img :src="`${baseUrl}${image.image}`" :alt="image.alt_text" class="image">
@@ -39,38 +38,44 @@ export default {
   props: {
     show: {
       type: Boolean,
-      default: function () {
-        return false;
-      }
+      default: false
     },
     images: {
       type: Array,
-      default: function () {
-        return [];
-      }
+      default: () => []
     },
     selctedIndex: {
       type: Number,
-      default: function () {
-        return 0;
-      }
+      default: 0
     }
   },
+  emits: ['gallery:show'],
   data () {
     return {
       items: [
-        { src: 'https://via.placeholder.com/1920x1080' },
+        { src: 'https://placehold.co/600x400'},
         { src: 'https://via.placeholder.com/1920x1080' },
         { src: 'https://via.placeholder.com/1920x1080' }
-      ]
+      ],
+      carouselModel: this.selctedIndex
+    }
+  },
+  watch: {
+    selctedIndex (newIndex) {
+      this.carouselModel = newIndex
+    },
+    show (isOpen) {
+      if (isOpen) {
+        this.carouselModel = this.selctedIndex
+      }
     }
   },
   computed: {
     dialog: {
-      get: function () {
+      get () {
         return this.show;
       },
-      set: function (newValue) {
+      set (newValue) {
         this.$emit('gallery:show', newValue);
       }
     },

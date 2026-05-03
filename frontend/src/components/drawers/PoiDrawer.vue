@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="drawerEl">
     <!--    <drawer-search
       v-if="isMobile"
       :map="baseMap"
@@ -25,26 +25,28 @@
       ref="drawer"
       v-model="shouldShowDrawer"
       class="resizable"
+      location="bottom"
       :style="{ width: isMobile ? '100%' : '410px', height: drawerHeight + 'px', top: 'auto', bottom: 0, position:'fixed' }"
-      hide-overlay
+      :scrim="false"
       app
       fixed
       :permanent="shouldShowDrawer"
-      stateless
       data-test="poiLeftPane"
     >
       <div v-if="isMobile" class="draggable-handle" @mousedown="startDrag" @touchstart="startDrag" />
       <div v-if="!poiImages">
         <v-card
-          flat
           style="margin-top: 10px"
+          elevation="0"
         >
           <v-row justify="center">
             <v-img
-              :max-width="410"
-              :aspect-ratio="3"
-              :src="data.images ? `${baseUrl}${data.images[0].image}` : `${defaultPoiImage}`"
-              lazy-src="`${defaultPoiImage}`"
+              class="poi-hero-image"
+              width="100%"
+              :height="isMobile ? 240 : 220"
+              cover
+              :src="heroImageSrc"
+              :lazy-src="defaultPoiImage"
               alt="image of poi"
             >
               <template v-slot:placeholder>
@@ -55,35 +57,27 @@
                 >
                   <v-progress-circular
                     indeterminate
-                    color="primary lighten-1"
+                    color="primary-lighten-1"
                   />
                 </v-row>
               </template>
-              <drawer-search
-                v-if="!isMobile"
-                :key="`drawer-search-${updateKey}`"
-                :map="baseMap"
-                :drawer="mainDrawer"
-                :selected="data"
-                class="mt-4"
-                @update:drawer="mainDrawer = $event"
-                @hide-poi-drawer="onHidePoiDrawer()"
-              />
+
+              <!-- Search is handled by the main navigation/left panel; avoid duplicating it inside the POI drawer. -->
+
               <div
-                v-if="data?.images?.length"
+                v-if="poiImageList.length"
                 class="image-button"
               >
                 <v-btn
-                  class="ma-2"
+                  class="ma-2 text-white"
                   color="rgba(0,0,0,0.4)"
-                  dark
-                  tonal
-                  @click="poiImages = !poiImages"
+                  variant="tonal"
+                  @click="poiImages = true"
                 >
-                  <v-icon dark left>
+                  <v-icon start>
                     mdi-folder-multiple-image
                   </v-icon>
-                  {{ data.images.length }} - {{ locale.labelPoiPictures }}
+                  {{ poiImageList.length }} - {{ locale.labelPoiPictures }}
                 </v-btn>
               </div>
             </v-img>
@@ -97,23 +91,23 @@
               icons-and-text
               hide-slider
             >
-              <v-tab v-for="(tabInfo, index) in tabs" :key="index" @click="onTabClick(index)">
+              <v-tab v-for="(tabInfo, index) in tabs" :key="index" :value="index" @click="onTabClick(index)">
                 {{ tabInfo.text }}
                 <v-icon>{{ tabInfo.icon }}</v-icon>
               </v-tab>
             </v-tabs>
-            <v-tabs-items v-model="activeTabIndex">
-              <v-tab-item>
+            <v-window v-model="activeTabIndex">
+              <v-window-item :value="0">
                 <div />
-              </v-tab-item>
+              </v-window-item>
 
-              <v-tab-item>
+              <v-window-item :value="1">
                 <v-divider class="my-3 my-lg-3" />
                 <div class="row justify-center">
                   <div class="panel-section-items">
                     <v-list>
                       <v-list-item>
-                        <v-list-item-icon v-if="data.icon || data.src_icon">
+                        <template #prepend>
                           <v-img
                             v-if="data.icon"
                             :max-width="20"
@@ -121,17 +115,15 @@
                             alt="icon image"
                           />
                           <v-img
-                            v-else
+                            v-else-if="data.src_icon"
                             :src="getIconUrl(data.src_icon)"
                             contain
                             max-height="24"
                             max-width="24"
                             alt="icon image"
                           />
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                          <v-list-item-title data-test="searchTitle" class="text-h6 primary--text" v-text="searchTitle" />
-                        </v-list-item-content>
+                        </template>
+                        <v-list-item-title data-test="searchTitle" class="text-h6 text-primary" v-text="searchTitle" />
                       </v-list-item>
                     </v-list>
                   </div>
@@ -236,15 +228,15 @@
                   <div class="panel-section-items">
                     <v-list class="list-buttons">
                       <v-list-item v-for="(button, index) in listButtons" :key="index">
-                        <v-btn
-                          small
-                          text
-                          color="wu"
-                          class="pl-0"
-                          :aria-label="button.label"
-                          @click.stop="button.handler"
-                        >
-                          <v-icon left>
+                          <v-btn
+                            size="small"
+                            variant="text"
+                            color="wu"
+                            class="pl-0"
+                            :aria-label="button.label"
+                            @click.stop="button.handler"
+                          >
+                          <v-icon start>
                             {{ button.icon }}
                           </v-icon>
                           {{ button.label }}
@@ -253,15 +245,17 @@
                     </v-list>
                   </div>
                 </div>
-              </v-tab-item>
-              <v-tab-item>
+              </v-window-item>
+              <v-window-item :value="2">
                 <div />
-              </v-tab-item>
-            </v-tabs-items>
+              </v-window-item>
+              <v-window-item :value="3">
+                <div />
+              </v-window-item>
+            </v-window>
           </v-card-text>
         </v-card>
       </div>
-
       <div v-if="poiImages">
         <v-container>
           <v-row no-gutters>
@@ -281,15 +275,15 @@
               />
             </v-col>
             <v-col cols="9" class="title-items">
-              <span class="primary--text subtitle-1">{{ data.name_en }}</span>
+              <span class="text-primary text-subtitle-1">{{ data.name_en }}</span>
             </v-col>
           </v-row>
-          <v-row v-for="(image, index) in data.images" :key="index" justify="center">
+          <v-row v-for="(image, index) in poiImageList" :key="image.id || index" justify="center">
             <v-img
               :max-width="410"
               :aspect-ratio="2"
-              :src="`${baseUrl}${image.image}`"
-              lazy-src="`${defaultPoiImage}`"
+              :src="getImageSrc(image, { preferThumbnail: true })"
+              :lazy-src="defaultPoiImage"
               class="gallery-thumb"
               style="margin: 5px;"
               alt="image for poi"
@@ -298,26 +292,24 @@
           </v-row>
         </v-container>
       </div>
-      <photo-gallery :show="showGallery" :images="data.images" :selcted-index="galleryImageIndex" @gallery:show="showGallery=$event" />
+      <photo-gallery :show="showGallery" :images="poiImageList" :selcted-index="galleryImageIndex" @gallery:show="showGallery=$event" />
     </v-navigation-drawer>
   </div>
+
 </template>
 
 <script>
 import config from '../../util/indrzConfig';
-import CampusSearch from '../CampusSearch.vue';
 import PhotoGallery from '../PhotoGallery';
-import DrawerSearch from './DrawerSearch.vue';
 import BaseDrawer from './BaseDrawer';
 import MapHandler from '@/util/mapHandler';
+import bus from '~/util/bus';
 
 const { env } = config;
 
 export default {
   name: 'PoiDrawer',
   components: {
-    CampusSearch,
-    DrawerSearch,
     PhotoGallery
   },
   mixins: [BaseDrawer],
@@ -327,7 +319,25 @@ export default {
       poiImages: false,
       showGallery: false,
       galleryImageIndex: 0,
-      locale: {
+      tabs: [
+        { icon: 'mdi-directions', text: 'Routing' },
+        { icon: 'mdi-information', text: 'Info' },
+        { icon: 'mdi-share', text: 'Share' },
+        { icon: 'mdi-close', text: 'Close' }
+      ],
+      activeTabIndex: 1,
+      iconNames: ['book', 'department', 'person', 'poi', 'space'],
+      iconPath: '/images/icons/search/'
+    };
+  },
+  computed: {
+    currentLocale () {
+      const raw = this.$i18n?.locale
+      return raw && typeof raw === 'object' && 'value' in raw ? raw.value : raw
+    },
+    locale () {
+      // Keep labels reactive when the active locale changes.
+      return {
         entranceButtonText: this.$t('entrance_button_text'),
         metroButtonText: this.$t('metro_button_text'),
         routeFromHereText: this.$t('route_from_here'),
@@ -343,6 +353,7 @@ export default {
         labelBuildingCode: this.$t('label_building_code'),
         labelBuidingPlz: this.$t('label_building_plz'),
         labelBuildingCity: this.$t('label_building_city'),
+        labelExternalId: this.$t('label_external_id'),
         labelPoiPictures: this.$t('poi_pictures'),
         share_button_tip: this.$t('share_button_tip'),
         entranceButtonTip: this.$t('entrance_button_tip'),
@@ -350,19 +361,8 @@ export default {
         defiButtonTip: this.$t('defi_button_tip'),
         shareButtonTip: this.$t('share_button_tip'),
         label_wing_name: this.$t('label_wing_name')
-      },
-      tabs: [
-        { icon: 'mdi-directions', text: 'Routing' },
-        { icon: 'mdi-information', text: 'Info' },
-        { icon: 'mdi-share', text: 'Share' },
-        { icon: 'mdi-close', text: 'Close' }
-      ],
-      activeTabIndex: 1,
-      iconNames: ['book', 'department', 'person', 'poi', 'space'],
-      iconPath: '/images/icons/search/'
-    }
-  },
-  computed: {
+      }
+    },
     logo () {
       return {
         file: env.LOGO_FILE,
@@ -375,9 +375,24 @@ export default {
     baseUrl () {
       return env.BASE_URL
     },
+    poiData () {
+      const candidate = this.data
+      if (candidate && typeof candidate === 'object' && candidate.properties && typeof candidate.properties === 'object') {
+        return candidate.properties
+      }
+      return candidate || {}
+    },
+    poiImageList () {
+      const images = this.poiData?.images
+      return Array.isArray(images) ? images : []
+    },
+    heroImageSrc () {
+      const firstImage = this.poiImageList.length ? this.poiImageList[0] : null
+      return this.getImageSrc(firstImage)
+    },
     searchTitle () {
       const { data } = this;
-      return MapHandler.getTitle(data, this.$i18n.locale)
+      return MapHandler.getTitle(data, this.currentLocale)
     },
     listButtons () {
       return [
@@ -418,7 +433,7 @@ export default {
   watch: {
     data: {
       deep: true,
-      handler (val) {
+      handler () {
         this.poiImages = false;
         this.activeTabIndex = 1;
         this.updateKey++;
@@ -426,23 +441,62 @@ export default {
     }
   },
   methods: {
+    getMediaBaseUrl () {
+      const envBase = this.baseUrl
+
+      if (typeof window === 'undefined') {
+        return envBase || ''
+      }
+
+      const origin = window.location?.origin || ''
+      const hostname = window.location?.hostname || ''
+
+      const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1'
+      if (isLocalHost) {
+        return origin
+      }
+
+      return envBase || origin
+    },
+    getImageSrc (image, { preferThumbnail = false } = {}) {
+      if (!image) return `${this.defaultPoiImage}`
+
+      const raw = preferThumbnail
+        ? (image.thumbnail || image.image || image.url || image.src)
+        : (image.image || image.url || image.src)
+
+      if (!raw) return `${this.defaultPoiImage}`
+
+      if (typeof raw === 'string' && (raw.startsWith('http://') || raw.startsWith('https://'))) {
+        return raw
+      }
+
+      const base = this.getMediaBaseUrl()
+      try {
+        return new URL(String(raw), base).toString()
+      } catch {
+        const safeBase = String(base || '').replace(/\/+$/, '')
+        const safeRaw = String(raw || '').startsWith('/') ? String(raw) : `/${raw}`
+        return `${safeBase}${safeRaw}`
+      }
+    },
     onEntranceButtonClick () {
-      this.$root.$emit('popupRouteClick', 'from');
-      this.$root.$emit('popupEntranceButtonClick');
+      bus.emit('popupRouteClick', 'from');
+      bus.emit('popupEntranceButtonClick');
     },
     onMetroButtonClick () {
-      this.$root.$emit('popupRouteClick', 'from');
-      this.$root.$emit('popupMetroButtonClick');
+      bus.emit('popupRouteClick', 'from');
+      bus.emit('popupMetroButtonClick');
     },
     onDefiButtonClick () {
-      this.$root.$emit('popupRouteClick', 'from');
-      this.$root.$emit('popupDefiButtonClick');
+      bus.emit('popupRouteClick', 'from');
+      bus.emit('popupDefiButtonClick');
     },
     onShareButtonClick () {
-      this.$root.$emit('shareClick');
+      bus.emit('shareClick');
     },
     onRouteClick (path) {
-      this.$root.$emit('popupRouteClick', path);
+      bus.emit('popupRouteClick', path);
     },
     onTabClick (index) {
       if (index === 2) {
@@ -451,13 +505,13 @@ export default {
         this.onRouteClick('from')
         // this.$emit('open-route-drawer');
       } else if (index === 3) {
-        this.$root.$emit('closeInfoPopup');
+        bus.emit('closeInfoPopup');
         this.$emit('hide-poi-drawer')
       }
     },
     onGalleryImageClick (index = 0) {
       this.galleryImageIndex = index;
-      this.showGallery = !this.showGallery;
+      this.showGallery = true;
     },
     getIconUrl (iconName) {
       if (!iconName) {
@@ -469,18 +523,16 @@ export default {
         return `${iconName}`
       }
       return `${this.iconPath}/poi.png`;
-    },
-    onHidePoiDrawer () {
-      if (!this.$vuetify.breakpoint.mobile) {
-        this.$root.$emit('closeInfoPopup');
-        this.$emit('hide-poi-drawer');
-      }
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.poi-hero-image {
+  display: block;
+}
+
 .image-button {
   position: absolute;
   bottom: 10px;
@@ -489,7 +541,6 @@ export default {
     width: auto;
     height: 40px;
     left: 10px;
-    vertical-align: middle;
     display: block;
     margin: 5px auto;
   }

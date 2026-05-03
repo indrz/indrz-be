@@ -7,29 +7,38 @@
         color="primary"
       />
     </div>
+
     <v-treeview
       v-if="!loading"
       ref="poi"
-      v-model="tree"
-      :multiple-active="multi"
+      v-model:selected="selected"
+      v-model:active="active"
       :items="poiData"
-      selected-color="indigo"
-      selectable
-      return-object
-      item-key="id"
+      item-value="id"
       class="poi no-checkbox"
-      dense
+      density="compact"
       style="overflow: auto; width: auto;"
+      select-strategy="classic"
+      selectable
     >
-      <template v-slot:label="{ item }">
-        <span style="white-space: normal" @click="onTreeClick(item)">
-          {{ item['name_' + $i18n.locale] }}
+      <template v-slot:title="{ item }">
+        <span style="white-space: normal" @click="onTreeClick(getTreeItem(item))">
+          {{ getItemLabel(item) }}
         </span>
       </template>
-      <template v-slot:prepend="{ item, active }">
-        <div @click="onTreeClick(item)">
-          <img v-if="active" :src="item.icon" style="height:25px;">
-          <img v-else :src="setInactiveName(item.icon)" style="height:25px;">
+
+      <template v-slot:prepend="{ item }">
+        <div @click="onTreeClick(getTreeItem(item))">
+          <img
+            v-if="getTreeItem(item).icon && isTreeItemActive(item)"
+            :src="getTreeItem(item).icon"
+            style="height:25px;"
+          >
+          <img
+            v-else-if="getTreeItem(item).icon"
+            :src="setInactiveName(getTreeItem(item).icon)"
+            style="height:25px;"
+          >
         </div>
       </template>
     </v-treeview>
@@ -38,7 +47,8 @@
 
 <script>
 import _ from 'lodash';
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { usePoiStore } from '~/stores/poi';
+import bus from '~/util/bus';
 
 export default {
   name: 'PointsOfInterest',
@@ -74,60 +84,65 @@ export default {
         txt: 'mdi-file-document-outline',
         xls: 'mdi-file-excel'
       },
-      tree: [],
-      openedItems: [],
-      forceReloadNode: false,
+      selected: [],
+      active: [],
       loading: true,
       currentPoi: null
     };
   },
 
   computed: {
-    ...mapState({
-      poiData: state => state.poi.poiData
-    }),
-    ...mapGetters({
-      findNode: 'poi/findNode'
-    }),
-    treeComp () {
-      return this.$refs.poi;
+    currentLocale () {
+      const raw = this.$i18n?.locale
+      return raw && typeof raw === 'object' && 'value' in raw ? raw.value : raw
+    },
+    poiData () {
+      const poiStore = usePoiStore();
+      return poiStore.poiData;
+    },
+    findNode () {
+      const poiStore = usePoiStore();
+      return poiStore.findNode;
+    },
+    activeIdSet () {
+      return new Set(
+        (Array.isArray(this.active) ? this.active : [])
+          .map(Number)
+          .filter(Number.isFinite)
+      );
     }
   },
 
   watch: {
-    tree (newSelections, oldSelections) {
-      let removedItems = [];
-      let newItems = [];
-      let oldItems = [];
+    selected: {
+      deep: true,
+      handler (newSelected, oldSelected) {
+        const next = Array.isArray(newSelected) ? newSelected.map(v => Number(v)).filter(Number.isFinite) : [];
+        const prev = Array.isArray(oldSelected) ? oldSelected.map(v => Number(v)).filter(Number.isFinite) : [];
 
-      if (this.multi === false) {
-        removedItems = oldSelections;
-        newItems = this.currentPoi;
-        newSelections = [newSelections[newSelections.length - 1]];
-      } else {
-        if (oldSelections.length > newSelections.length) {
-          removedItems = _.differenceBy(oldSelections, newSelections, 'id');
+        // Single-select mode: keep only the last selected id.
+        if (this.multi === false && next.length > 1) {
+          const last = next[next.length - 1];
+          this.selected = [last];
+          this.active = [last];
+          return;
         }
-        if (newSelections.length > oldSelections.length) {
-          newItems = _.differenceBy(newSelections, oldSelections, 'id');
-        }
-        oldItems = _.intersectionBy(newSelections, oldSelections, 'id');
-      }
 
-      if (
-        this.forceReloadNode &&
-        newSelections.length === oldSelections.length &&
-        newSelections[0].id === oldSelections[0].id) {
-        newItems = newSelections;
-        removedItems = newSelections;
-        oldItems = [];
-        this.forceReloadNode = false;
+        const removedIds = _.difference(prev, next);
+        const newIds = _.difference(next, prev);
+        const oldIds = _.intersection(next, prev);
+
+        const toNode = (id) => {
+          const found = this.findNode(id);
+          return found?.data || found || null;
+        };
+
+        bus.emit('poiLoad', {
+          newItems: newIds.map(toNode).filter(Boolean),
+          oldItems: oldIds.map(toNode).filter(Boolean),
+          removedItems: removedIds.map(toNode).filter(Boolean)
+        });
       }
-      this.$root.$emit('poiLoad', {
-        newItems,
-        oldItems,
-        removedItems
-      });
     }
   },
 
@@ -136,22 +151,53 @@ export default {
   },
 
   methods: {
-    ...mapActions({
-      loadPOI: 'poi/LOAD_POI'
-    }),
+    getTreeItem (item) {
+      return item && item.raw ? item.raw : item;
+    },
+    isTreeItemActive (item) {
+      const id = Number(this.getTreeItem(item)?.id);
+      return Number.isFinite(id) && this.activeIdSet.has(id);
+    },
+    getItemLabel (item) {
+      const data = this.getTreeItem(item)
+      const locale = this.currentLocale || 'en'
+      return (
+        data?.[`name_${locale}`] ||
+        data?.name_en ||
+        data?.name_de ||
+        data?.name ||
+        data?.title ||
+        data?.label ||
+        data?.text ||
+        ''
+      )
+    },
+    async loadPOI () {
+      const poiStore = usePoiStore();
+      await poiStore.LOAD_POI();
+    },
 
     async loadDataToPoiTree () {
-      await this.loadPOI();
-      if (this.initialPoiCatId) {
-        setTimeout(() => {
-          this.initialPoiCatId.forEach(catId => this.loadInitialPOICategory(catId));
-        }, 1000)
-      } else if (this.initialPoiId) {
-        setTimeout(() => {
-          this.$emit('loadSinglePoi', this.initialPoiId);
-        }, 500);
+      try {
+        await this.loadPOI();
+        if (Array.isArray(this.initialPoiCatId) && this.initialPoiCatId.length) {
+          // Capture the value now since the parent may reset it to null before the timeout fires
+          const catIds = [...this.initialPoiCatId];
+          setTimeout(() => {
+            catIds.forEach(catId => this.loadInitialPOICategory(catId));
+          }, 1000)
+        } else if (this.initialPoiId) {
+          // Capture the value now since the parent may reset it to null before the timeout fires
+          const poiId = this.initialPoiId;
+          setTimeout(() => {
+            this.$emit('loadSinglePoi', poiId);
+          }, 500);
+        }
+      } catch (e) {
+        console.error('Failed to load POI tree:', e);
+      } finally {
+        this.loading = false;
       }
-      this.loading = false;
     },
     setInactiveName (name) {
       const splitName = name.split('/');
@@ -167,88 +213,101 @@ export default {
         this.loading = false;
         return;
       }
-      this.tree = [foundData.data];
-      const treeComp = this.treeComp;
+      const node = foundData?.data || foundData;
+      const nodeId = Number(node?.id);
+      if (!Number.isFinite(nodeId)) return;
 
-      if (foundData && foundData.roots) {
-        foundData.roots.reverse().forEach((node) => {
-          treeComp.updateOpen(node, true);
+      // Open ancestors (best-effort): v-treeview will generally reflect active selections even if closed.
+      // We keep behavior consistent by activating/selecting the category and its children.
+      const idsToSelect = [nodeId];
+      if (Array.isArray(node?.children)) {
+        node.children.forEach((child) => {
+          const childId = Number(child?.id);
+          if (Number.isFinite(childId)) idsToSelect.push(childId);
         });
       }
 
-      treeComp.updateOpen(catId, true);
+      const merged = _.uniq([...(Array.isArray(this.selected) ? this.selected : []), ...idsToSelect]);
+      this.selected = merged;
+      this.active = _.uniq([...(Array.isArray(this.active) ? this.active : []), nodeId]);
 
-      if (foundData?.data?.children) {
-        foundData.data.children.forEach((child) => {
-          treeComp.updateActive(child.id, true);
-          treeComp.updateSelected(child.id, true);
-        });
-      }
-
-      treeComp.updateActive(catId, true);
-      treeComp.updateSelected(catId, true);
-      this.onTreeClick(foundData, true)
+      // Ensure the same side effects as a user click (e.g. emitting selectPoiCategory)
+      this.onTreeClick(foundData, true);
     },
 
     onTreeClick (node, forceSelect = false) {
-      const treeComp = this.$refs.poi;
-      const handler = node.children ? this.onTreeParentNodeClick : this.onLeafNodeClick;
-
-      handler(node, treeComp, forceSelect);
+      const rawNode = node?.data ? node.data : node;
+      const handler = rawNode?.children ? this.onTreeParentNodeClick : this.onLeafNodeClick;
+      handler(rawNode, forceSelect);
     },
 
-    onLeafNodeClick (node, treeComp, forceSelect = false) {
-      node = node?.data ? node.data : node;
-      const shouldAdd = (!forceSelect ? !treeComp.selectedCache.has(node.id) : forceSelect);
+    onLeafNodeClick (node, forceSelect = false) {
+      const nodeId = Number(node?.id);
+      if (!Number.isFinite(nodeId)) return;
+
+      const selectedNow = Array.isArray(this.selected) ? this.selected.map(Number) : [];
+      const shouldAdd = forceSelect ? true : !selectedNow.includes(nodeId);
 
       if (!this.multi) {
-        this.removeAllSelections(treeComp);
+        this.removeAllSelections();
       }
 
-      treeComp.updateSelected(node.id, shouldAdd);
-      treeComp.updateActive(node.id, shouldAdd);
+      this.selected = shouldAdd
+        ? _.uniq([...selectedNow, nodeId])
+        : selectedNow.filter(id => id !== nodeId);
+
+      const activeNow = Array.isArray(this.active) ? this.active.map(Number) : [];
+      this.active = shouldAdd
+        ? _.uniq([...activeNow, nodeId])
+        : activeNow.filter(id => id !== nodeId);
 
       this.currentPoi = shouldAdd ? (node.children || [node]) : [];
-
       this.$emit('selectPoiCategory', shouldAdd ? this.currentPoi[0] : null);
-      treeComp.emitSelected();
     },
 
-    onTreeParentNodeClick (node, treeComp) {
-      if (!treeComp.nodes[node.id].parent) {
-        this.expandCollapseNode(node.id, treeComp);
-        return;
+    onTreeParentNodeClick (node, forceSelect = false) {
+      const nodeId = Number(node?.id);
+      if (!Number.isFinite(nodeId)) return;
+
+      const children = Array.isArray(node?.children) ? node.children : [];
+      const childIds = children
+        .map((c) => Number(c?.id))
+        .filter(Number.isFinite);
+
+      if (!childIds.length) return;
+
+      const selectedNow = Array.isArray(this.selected) ? this.selected.map(Number) : [];
+      const activeNow = Array.isArray(this.active) ? this.active.map(Number) : [];
+
+      // Parent click behavior:
+      // - If any child is unselected -> select all children
+      // - If all children are selected -> deselect all children
+      const allChildrenSelected = childIds.every(id => selectedNow.includes(id));
+      const shouldAdd = forceSelect ? true : !allChildrenSelected;
+
+      // Toggle parent selection highlight too (useful since checkboxes are hidden).
+      if (shouldAdd) {
+        this.selected = _.uniq([...selectedNow, nodeId]);
+      } else {
+        this.selected = selectedNow.filter(id => id !== nodeId);
       }
 
-      if (!treeComp.nodes[node.id].isOpen) {
-        this.expandCollapseNode(node.id, treeComp);
-      }
-      const shouldAdd = !treeComp.activeCache.has(node.id);
+      // Selecting a parent selects/deselects its direct children.
+      children.forEach((childNode) => this.onLeafNodeClick(childNode, shouldAdd));
 
-      node.children.forEach(childNode => this.onLeafNodeClick(childNode, treeComp, shouldAdd));
-
-      treeComp.updateActive(node.id, (this.multi === false ? true : shouldAdd));
-
-      treeComp.emitActive();
-    },
-
-    expandCollapseNode (nodeId, treeComp) {
-      const isOpened = treeComp.nodes[nodeId].isOpen;
-      treeComp.updateOpen(nodeId, !isOpened);
-      treeComp.emitOpen();
+      // Keep parent active state in sync.
+      this.active = shouldAdd
+        ? _.uniq([...activeNow, nodeId])
+        : activeNow.filter(id => id !== nodeId);
     },
 
     onLocationClick (location) {
       this.$emit('locationClick', location.centroid);
     },
 
-    removeAllSelections (treeComp) {
-      treeComp.selectedCache.forEach((nodeId) => {
-        treeComp.updateSelected(nodeId, false);
-      });
-      treeComp.activeCache.forEach((nodeId) => {
-        treeComp.updateActive(nodeId, false);
-      });
+    removeAllSelections () {
+      this.selected = [];
+      this.active = [];
     }
   }
 };

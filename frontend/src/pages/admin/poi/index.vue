@@ -1,14 +1,13 @@
 <template>
   <div class="poi-page">
-    <v-container pa-15>
+    <v-container class="pa-15">
       <v-row
         class="fill-height"
         align="center"
         justify="center"
       >
-        <template v-for="(menuItem, i) in menuItems">
+        <template v-for="(menuItem, i) in menuItems" :key="i">
           <v-col
-            :key="i"
             cols="12"
             md="4"
           >
@@ -20,8 +19,8 @@
               >
                 <v-card-title class="justify-center">
                   <v-icon
-                    large
-                    left
+                    size="large"
+                    start
                   >
                     mdi-pencil
                   </v-icon>
@@ -38,34 +37,32 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'PoiIndex',
-  layout: 'admin',
-  data: function () {
-    return {
-      menuItems: [
-        {
-          text: 'POI Editor',
-          route: { name: 'poi-editor', path: '/admin/poi/editor' }
-        },
-        {
-          text: 'POI Categories',
-          route: { name: 'poi-categories', path: '/admin/poi/categories' }
-        },
-        {
-          text: 'POI Icons',
-          route: { name: 'poi-icons', path: '/admin/poi/icons' }
-        }
-      ]
-    }
+<script setup>
+definePageMeta({
+  layout: 'admin'
+})
+
+const router = useRouter()
+const route = useRoute()
+
+const menuItems = [
+  {
+    text: 'POI Editor',
+    route: { name: 'poi-editor', path: '/admin/poi/editor' }
   },
-  methods: {
-    onPoiMenuClick (route) {
-      if (route && route.path && route.path !== this.$route.path) {
-        this.$router.push(route.path);
-      }
-    }
+  {
+    text: 'POI Categories',
+    route: { name: 'poi-categories', path: '/admin/poi/categories' }
+  },
+  {
+    text: 'POI Icons',
+    route: { name: 'poi-icons', path: '/admin/poi/icons' }
+  }
+]
+
+function onPoiMenuClick (menuRoute) {
+  if (menuRoute && menuRoute.path && menuRoute.path !== route.path) {
+    router.push(menuRoute.path)
   }
 }
 </script>

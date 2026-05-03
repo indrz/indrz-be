@@ -1,8 +1,8 @@
 <template>
-  <v-dialog :value="dialog" persistent scrollable max-width="500px">
+  <v-dialog :model-value="dialog" persistent scrollable max-width="500px">
     <v-card>
-      <v-toolbar dense flat>
-        <div class="headline">
+      <v-toolbar density="compact" elevation="0">
+        <div class="text-h6">
           {{ title }}
         </div>
         <v-spacer />
@@ -29,36 +29,38 @@
                   v-model="selectedCategory.fk_poi_icon"
                   :items="poiIcons"
                   :rules="requiredRule"
-                  item-text="name"
+                  item-title="name"
                   item-value="id"
                   label="Icon"
                   clearable
                 >
                   <template v-slot:selection="{ item }">
-                    <v-avatar left>
+                    <v-avatar class="mr-2">
                       <v-img
-                        :src="item.icon"
+                        :src="item.raw.icon"
                         contain
                         max-height="24"
                         max-width="24"
                         alt="avatar left icon"
                       />
                     </v-avatar>
-                    {{ item.name }}
+                    {{ item.raw.name }}
                   </template>
-                  <template v-slot:item="{ item }">
-                    <v-list-item-icon style="margin-right: 16px">
-                      <v-img
-                        :src="item.icon"
-                        contain
-                        max-height="24"
-                        max-width="24"
-                        alt="item icon"
-                      />
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                      <v-list-item-title v-text="item.name" />
-                    </v-list-item-content>
+                  <template v-slot:item="{ item, props }">
+                    <v-list-item v-bind="props">
+                      <template #prepend>
+                        <v-avatar class="mr-2">
+                          <v-img
+                            :src="item.raw.icon"
+                            contain
+                            max-height="24"
+                            max-width="24"
+                            alt="item icon"
+                          />
+                        </v-avatar>
+                      </template>
+                      <v-list-item-title v-text="item.raw.name" />
+                    </v-list-item>
                   </template>
                 </v-autocomplete>
               </v-col>
@@ -69,36 +71,38 @@
                   v-model="selectedCategory.parent"
                   :items="categoryOptions"
                   :rules="requiredRule"
-                  item-text="text"
+                  item-title="text"
                   item-value="value"
                   label="Parent"
                   clearable
                 >
                   <template v-slot:selection="{ item }">
-                    <v-avatar left>
+                    <v-avatar class="mr-2">
                       <v-img
-                        :src="item.icon"
+                        :src="item.raw.icon"
                         contain
                         max-height="24"
                         max-width="24"
                         alt="avatar icon"
                       />
                     </v-avatar>
-                    {{ item.text }}
+                    {{ item.raw.text }}
                   </template>
-                  <template v-slot:item="{ item }">
-                    <v-list-item-icon style="margin-right: 16px">
-                      <v-img
-                        :src="item.icon"
-                        contain
-                        max-height="24"
-                        max-width="24"
-                        alt="avatar icon"
-                      />
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                      <v-list-item-title v-text="item.text" />
-                    </v-list-item-content>
+                  <template v-slot:item="{ item, props }">
+                    <v-list-item v-bind="props">
+                      <template #prepend>
+                        <v-avatar class="mr-2">
+                          <v-img
+                            :src="item.raw.icon"
+                            contain
+                            max-height="24"
+                            max-width="24"
+                            alt="avatar icon"
+                          />
+                        </v-avatar>
+                      </template>
+                      <v-list-item-title v-text="item.raw.text" />
+                    </v-list-item>
                   </template>
                 </v-autocomplete>
               </v-col>
@@ -123,7 +127,7 @@
               <v-col>
                 <v-row no-gutters>
                   <v-col cols="3">
-                    <label class="v-label theme--light">Activated</label>
+                    <label class="v-label">Activated</label>
                   </v-col>
                   <v-col cols="8">
                     <v-switch
@@ -141,17 +145,17 @@
       <v-divider />
       <v-card-actions>
         <v-spacer />
-        <v-btn :disabled="loading" color="blue darken-1" text @click="close">
+        <v-btn :disabled="loading" color="blue-darken-1" variant="text" @click="close">
           Cancel
         </v-btn>
         <v-btn
           :disabled="loading || !valid"
           :loading="loading"
-          color="blue darken-1"
-          text
+          color="blue-darken-1"
+          variant="text"
           @click="save"
         >
-          <v-icon left>
+          <v-icon start>
             mdi-content-save
           </v-icon>
           Save
@@ -162,7 +166,8 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { usePoiStore } from '~/stores/poi';
+import { useRootStore } from '~/stores/root';
 
 export default {
   name: 'AddEditCategory',
@@ -211,10 +216,14 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      poiData: state => state.poi.poiData,
-      poiIcons: state => state.poi.poiIcons
-    }),
+    poiData () {
+      const poiStore = usePoiStore();
+      return poiStore.poiData;
+    },
+    poiIcons () {
+      const poiStore = usePoiStore();
+      return poiStore.poiIcons;
+    },
     categoryOptions () {
       let options = [];
       this.poiData.forEach((category) => {
@@ -254,11 +263,18 @@ export default {
     this.loadPOIIcons();
   },
   methods: {
-    ...mapActions({
-      loadPOIIcons: 'poi/LOAD_POI_ICONS',
-      getCatgory: 'poi/GET_POI_CATGORY',
-      saveCategory: 'poi/SAVE_POI_CATEGORY'
-    }),
+    async loadPOIIcons () {
+      const poiStore = usePoiStore();
+      await poiStore.LOAD_POI_ICONS();
+    },
+    async getCatgory (id) {
+      const poiStore = usePoiStore();
+      return await poiStore.GET_POI_CATGORY({}, id);
+    },
+    async saveCategory (formData) {
+      const poiStore = usePoiStore();
+      return await poiStore.SAVE_POI_CATEGORY({}, formData);
+    },
     prepareCategoryOptions (category, level) {
       let categoryOptions = [
         {
@@ -283,7 +299,9 @@ export default {
       this.$emit('close');
     },
     async save () {
-      if (!this.$refs.form.validate()) {
+      const result = await this.$refs.form.validate();
+      const isValid = typeof result === 'object' ? result.valid : result;
+      if (!isValid) {
         return;
       }
       this.loading = true;
@@ -295,7 +313,8 @@ export default {
 
       const response = await this.saveCategory(formData);
       if (response.isAxiosError) {
-        this.$store.commit('SET_SNACKBAR', response.message);
+        const rootStore = useRootStore();
+        rootStore.SET_SNACKBAR(response.message);
       }
 
       this.loading = false;

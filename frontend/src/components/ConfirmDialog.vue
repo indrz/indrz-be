@@ -1,30 +1,30 @@
 <template>
   <v-dialog
-    v-model="show"
+    v-model="dialog"
+    :max-width="maxWidth"
     persistent
-    max-width="350"
   >
     <v-card>
-      <v-card-title class="break-word">
-        {{ message }}
+      <v-card-title class="text-h5">
+        {{ title }}
       </v-card-title>
+      <v-card-text>
+        {{ message }}
+      </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn
-          :disabled="busy"
-          @click="onConfirmClick"
-          color="error darken-1"
-          text
+          variant="text"
+          @click="cancel"
         >
-          {{ yesText }}
+          {{ cancelText || $t('cancel') }}
         </v-btn>
         <v-btn
-          :loading="busy"
-          @click="onCancelClick"
-          color="blue darken-1"
-          text
+          :color="confirmColor"
+          variant="elevated"
+          @click="confirm"
         >
-          {{ cancelText }}
+          {{ confirmText || $t('confirm') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -34,39 +34,46 @@
 <script>
 export default {
   name: 'ConfirmDialog',
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    },
-    message: {
-      type: String,
-      default: 'Are you sure?'
-    },
-    cancelText: {
-      type: String,
-      default: 'Cancel'
-    },
-    yesText: {
-      type: String,
-      default: 'Yes'
-    },
-    busy: {
-      type: Boolean,
-      default: false
-    }
+  data () {
+    return {
+      dialog: false,
+      title: '',
+      message: '',
+      confirmText: '',
+      cancelText: '',
+      confirmColor: 'primary',
+      maxWidth: 400,
+      resolvePromise: null,
+      rejectPromise: null
+    };
   },
   methods: {
-    onCancelClick () {
-      this.$emit('cancelClick');
+    open (title, message, options = {}) {
+      this.dialog = true;
+      this.title = title;
+      this.message = message;
+      this.confirmText = options.confirmText || '';
+      this.cancelText = options.cancelText || '';
+      this.confirmColor = options.confirmColor || 'primary';
+      this.maxWidth = options.maxWidth || 400;
+
+      return new Promise((resolve, reject) => {
+        this.resolvePromise = resolve;
+        this.rejectPromise = reject;
+      });
     },
-    onConfirmClick () {
-      this.$emit('confirmClick');
+    confirm () {
+      this.dialog = false;
+      if (this.resolvePromise) {
+        this.resolvePromise(true);
+      }
+    },
+    cancel () {
+      this.dialog = false;
+      if (this.rejectPromise) {
+        this.rejectPromise(false);
+      }
     }
   }
-}
+};
 </script>
-
-<style scoped>
-
-</style>

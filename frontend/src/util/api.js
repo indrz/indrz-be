@@ -1,79 +1,84 @@
-import axios from 'axios';
+import { $fetch } from 'ofetch'
 import config from './indrzConfig';
 import LocalStorageService from '@/service/localStorage';
 
 const { env } = config;
 
-const getAuthorizationHeader = () => {
+const getAuthorizationHeader = (tokenOverride) => {
   const header = {
     'Content-Type': 'application/json'
   };
 
   const userToken = LocalStorageService.getActiveToken();
-  if (userToken) {
-    header.Authorization = `Token ${userToken}`;
-  } else if (env.TOKEN) {
-    header.Authorization = env.TOKEN;
+  let token = tokenOverride || userToken || env.TOKEN;
+
+  // Normalize tokens so env / overrides can be either raw (`abc`) or already prefixed (`Token abc`).
+  if (typeof token === 'string') {
+    token = token.trim();
+    token = token.replace(/^token\s+/i, '');
+    token = token.replace(/^bearer\s+/i, '');
+  }
+
+  if (token) {
+    header.Authorization = `Token ${token}`;
   }
   return header;
 };
 
-const request = function (requestObj) {
-  return axios({
-    url: `${requestObj.url || env.BASE_API_URL}${requestObj.endPoint || ''}`,
+const buildUrl = (endPoint = '', baseUrl) => {
+  return `${baseUrl || env.BASE_API_URL || ''}${endPoint}`;
+};
+
+const request = async function (requestObj = {}, options = {}) {
+  const url = buildUrl(requestObj.endPoint, options.baseApiUrl || requestObj.url);
+  const headers = { ...getAuthorizationHeader(options.token), ...(requestObj.headers || {}) };
+
+  const data = await $fetch(url, {
     method: requestObj.method || 'GET',
-    headers: getAuthorizationHeader()
+    headers,
+    params: requestObj.params
   });
+
+  return { data };
 };
 
-const postRequest = async function (requestObj, options = {}) {
-  try {
-    let data;
-    const headers = { ...getAuthorizationHeader(), ...(requestObj.headers || {}) };
+const postRequest = async function (requestObj = {}, options = {}) {
+  let body = requestObj.data || {};
+  const headers = { ...getAuthorizationHeader(options.token), ...(requestObj.headers || {}) };
 
-    // If data is already FormData, use it directly
-    if (requestObj.data instanceof FormData) {
-      data = requestObj.data;
-      // Don't set content-type for FormData; axios will add the boundary
-      delete headers['Content-Type'];
-    } else {
-      // Otherwise create FormData from object
-      const formData = new FormData();
-      for (const [key, value] of Object.entries(requestObj.data || {})) {
-        formData.append(key, value === null ? '' : value);
-      }
-      data = formData;
+  if (body instanceof FormData) {
+    delete headers['Content-Type'];
+  } else if (!(body instanceof Blob)) {
+    const formData = new FormData();
+    for (const [key, value] of Object.entries(body)) {
+      formData.append(key, value === null ? '' : value);
     }
-
-    const axiosConfig = {
-      url: `${options?.baseApiUrl || requestObj.url || env.BASE_API_URL}${requestObj.endPoint || ''}`,
-      method: requestObj.method || 'POST',
-      headers,
-      data
-    };
-
-    // If transformRequest is provided, use it
-    if (requestObj.transformRequest) {
-      axiosConfig.transformRequest = requestObj.transformRequest;
-    }
-
-    return await axios(axiosConfig);
-  } catch (err) {
-    return err;
+    body = formData;
+    delete headers['Content-Type'];
   }
+
+  const url = buildUrl(requestObj.endPoint, options.baseApiUrl || requestObj.url);
+
+  const data = await $fetch(url, {
+    method: requestObj.method || 'POST',
+    headers,
+    body
+  });
+
+  return { data };
 };
 
-const putRequest = async function (requestObj) {
-  try {
-    return await axios({
-      url: `${requestObj.url || env.BASE_API_URL}${requestObj.endPoint || ''}`,
-      method: requestObj.method || 'PUT',
-      headers: getAuthorizationHeader(),
-      data: requestObj.data
-    })
-  } catch (err) {
-    return err;
-  }
+const putRequest = async function (requestObj = {}, options = {}) {
+  const url = buildUrl(requestObj.endPoint, options.baseApiUrl || requestObj.url);
+  const headers = { ...getAuthorizationHeader(options.token), ...(requestObj.headers || {}) };
+
+  const data = await $fetch(url, {
+    method: requestObj.method || 'PUT',
+    headers,
+    body: requestObj.data
+  });
+
+  return { data };
 };
 
 const getPageParams = ({ page = 1, itemsPerPage = 10 }) => {

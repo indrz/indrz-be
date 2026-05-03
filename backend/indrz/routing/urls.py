@@ -5,7 +5,21 @@ from routing.views import (force_route_mid_point, route_to_nearest_poi, RoutePoi
                            RouteXyzToXyz, RoutePoiToXyz, RouteSpaceToPoi, RouteSpaceToSpace)
 from routing.api import run_node_network
 
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+from .views import RoutingEdgeViewSet
+
+router = DefaultRouter()
+router.register(r"routing-edges", RoutingEdgeViewSet, basename="routing-edge")
+
 urlpatterns = [
+    path("", include(router.urls)),
+]
+
+
+
+urlpatterns += [
     re_path(
         r'(?P<start_xy>startxy=[-]?\d+\.?\d+,\d+\.\d+)&(?P<floor>floor=[-]?\d+)(?P<poi_cat_id>&poiCatId=\d{1,7})(?P<reversed>&reversed=(true|false))?(?P<route_type>&type=\d{1,5})?/$',
         route_to_nearest_poi, name='routing-from-poi'),

@@ -1,34 +1,24 @@
 <template>
   <v-navigation-drawer
     v-model="drawerState"
-    fixed
     app
-    clipped
+    location="left"
     data-test="sideBarAdmin"
   >
-    <v-list dense>
-      <v-list-item-group
-        v-model="selectedMenuIndex"
-        color="primary"
-      >
-        <template v-for="menuItem in menuItems">
-          <v-list-item
-            :key="menuItem.text"
-            @click="onMenuItemClick(menuItem.route)"
-          >
-            <template v-slot:default="{}">
-              <v-list-item-action>
-                <v-icon>
-                  mdi-{{ menuItem.icon }}
-                </v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title v-text="menuItem.text" />
-              </v-list-item-content>
-            </template>
-          </v-list-item>
-        </template>
-      </v-list-item-group>
+    <v-list density="compact">
+      <template v-for="(menuItem, index) in menuItems" :key="menuItem.text">
+        <v-list-item
+          @click="onMenuItemClick(menuItem.route)"
+          :class="{ 'v-list-item--active': selectedMenuIndex === index }"
+        >
+          <template #prepend>
+            <v-icon>
+              mdi-{{ menuItem.icon }}
+            </v-icon>
+          </template>
+          <v-list-item-title v-text="menuItem.text" />
+        </v-list-item>
+      </template>
     </v-list>
   </v-navigation-drawer>
 </template>

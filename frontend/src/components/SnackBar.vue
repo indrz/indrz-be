@@ -1,48 +1,45 @@
 <template>
   <v-snackbar
-    v-model="show"
+    v-model="snackbar"
     :timeout="timeout"
-    :top="true"
+    :color="color"
+    :location="location"
+    :multi-line="multiLine"
   >
     {{ text }}
-    <v-btn
-      @click="show = false"
-      color="blue"
-      text
-    >
-      Close
-    </v-btn>
+    <template #actions>
+      <v-btn
+        variant="text"
+        @click="snackbar = false"
+      >
+        {{ $t('close') }}
+      </v-btn>
+    </template>
   </v-snackbar>
 </template>
 
 <script>
-
 export default {
   name: 'SnackBar',
-  props: {
-    timeout: {
-      type: Number,
-      default: function () {
-        return 2000;
-      }
-    }
-  },
-  data: function () {
+  data () {
     return {
-      show: false,
-      text: ''
+      snackbar: false,
+      text: '',
+      timeout: 3000,
+      color: 'info',
+      location: 'top',
+      multiLine: false
     };
   },
-  created () {
-    this.$store.watch(state => state.snackBar, () => {
-      const { snackBar } = this.$store.state;
-
-      if (snackBar !== '') {
-        this.show = true;
-        this.text = snackBar;
-        this.$store.commit('SET_SNACKBAR', '');
-      }
-    });
+  methods: {
+    show (message, options = {}) {
+      this.text = message;
+      this.timeout = options.timeout || 3000;
+      this.color = options.color || 'info';
+      this.location = options.location || 'top';
+      this.multiLine = options.multiLine || false;
+      this.snackbar = true;
+    }
   }
 };
 </script>

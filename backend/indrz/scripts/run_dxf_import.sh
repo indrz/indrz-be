@@ -1,0 +1,1 @@
+docker exec -t indrz_api python3 /app/scripts/data_preparation/step2_reimport_dxf.py

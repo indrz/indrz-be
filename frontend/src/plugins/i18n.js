@@ -1,25 +1,17 @@
-import Vue from 'vue';
-import VueI18n from 'vue-i18n';
+import { defineNuxtPlugin } from '#app'
+import { useRootStore } from '~/stores/root'
 
-Vue.use(VueI18n);
+// Nuxt i18n is now provided by @nuxtjs/i18n.
+// This plugin only keeps the Pinia root store locale in sync when callers
+// explicitly use the injected `setLocale` helper.
+export default defineNuxtPlugin(() => {
+  const rootStore = useRootStore()
 
-export default ({ app, store }) => {
-  // Set i18n instance on app
-  // This way we can use it in middleware and pages asyncData/fetch
-  app.i18n = new VueI18n({
-    locale: store.state.locale,
-    fallbackLocale: 'en',
-    messages: {
-      en: require('~/assets/locale/en.json'),
-      de: require('~/assets/locale/de.json')
+  return {
+    provide: {
+      setLocale: (locale) => {
+        rootStore.SET_LANG(locale)
+      }
     }
-  });
-
-  app.i18n.path = (link) => {
-    if (app.i18n.locale === app.i18n.fallbackLocale) {
-      return `/${link}`
-    }
-
-    return `/${app.i18n.locale}/${link}`
   }
-}
+})

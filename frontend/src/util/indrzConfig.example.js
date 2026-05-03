@@ -5,10 +5,10 @@ export default {
   baseWmsUrl: 'http://localhost:8080/geoserver/wms', // web map server geoserver base url
   defaultCenterXY: [1823820.8003225543, 6138685.150457315],
   searchUrl: baseApiUrl + 'search', // search api url
-  token: 'Token 1234mumbojumbo1234', // your server generated token, keep privat
-  layerNamePrefix: 'floor_', // geoserver layer names all start with this
-  geoServerLayerPrefix: 'indrztu:', // geoserver layer workspace name
-  defaultStartFloor: 'eg', // floor name that app should load on first page load
+  apiToken: 'Token 1234mumbojumbo1234', // your server generated token, keep privat
+  geoserverFloorNamePrefix: 'floor_', // geoserver layer names all start with this
+  geoServerLayerPrefix: 'indrz:', // geoserver layer workspace name
+  defaultStartFloorNumber: 0, // floor number that app should load on first page load
   debug: true,
   defaultLanguage: 'en'
 }

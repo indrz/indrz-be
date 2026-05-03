@@ -2,7 +2,7 @@
   <v-container>
     <v-row no-gutters>
       <v-col cols="9" sm="10" md="10">
-        <v-text-field ref="linkField" :value="link" hide-details outlined />
+        <v-text-field ref="linkField" :value="link" hide-details variant="outlined" />
       </v-col>
       <v-col
         cols="3"
@@ -11,8 +11,8 @@
         align="end"
         class="pt-2"
       >
-        <v-btn @click="onCopyButtonClick('linkField')" color="blue darken-1" text class="pa-0">
-          <v-icon dark>
+        <v-btn @click="onCopyButtonClick('linkField')" color="blue-darken-1" variant="text" class="pa-0">
+          <v-icon>
             mdi-content-copy
           </v-icon>
           {{ copy }}

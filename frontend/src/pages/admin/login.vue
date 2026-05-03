@@ -1,158 +1,139 @@
 /* eslint-disable */
 
 <template>
-  <v-container xs12>
-    <v-row
-      align="center"
-      justify="center"
-    >
-      <span class="v-card__title">Welcome to the INDRZ Admin</span>
+  <v-container>
+    <v-row align="center" justify="center">
+      <v-col cols="12" class="d-flex justify-center">
+        <span class="v-card__title">Welcome to the INDRZ Admin</span>
+      </v-col>
     </v-row>
     <br>
     <span class="v-card__text">Please login</span>
 
-    <template>
-      <v-form
-        ref="loginForm"
-        v-model="valid"
-        @submit.prevent="onSignIn"
-        lazy-validation
-      >
-        <v-container>
-          <v-layout row wrap>
-            <v-flex xs12 sm6>
-              <v-text-field
-                key="login-username"
-                v-model="username"
-                :rules="[formRules.required]"
-                name="username"
-                label="User Name"
-                prepend-icon="mdi-account"
-                required
-              />
-            </v-flex>
+    <v-form
+      ref="loginForm"
+      v-model="valid"
+      @submit.prevent="onSignIn"
+      lazy-validation
+    >
+      <v-container>
+        <v-row>
+          <v-col cols="12" sm="6">
+            <v-text-field
+              key="login-username"
+              v-model="username"
+              :rules="[formRules.required]"
+              name="username"
+              label="User Name"
+              prepend-icon="mdi-account"
+              required
+            />
+          </v-col>
 
-            <v-flex xs12 sm6>
-              <v-text-field
-                key="login-password"
-                v-model="password"
-                :rules="[formRules.required]"
-                name="password"
-                label="Password"
-                prepend-icon="mdi-lock"
-                type="password"
-                required
-              />
-            </v-flex>
-          </v-layout>
-          <v-layout v-if="noUser" row wrap class="subheader-2 justify-center error--text">
+          <v-col cols="12" sm="6">
+            <v-text-field
+              key="login-password"
+              v-model="password"
+              :rules="[formRules.required]"
+              name="password"
+              label="Password"
+              prepend-icon="mdi-lock"
+              type="password"
+              required
+            />
+          </v-col>
+        </v-row>
+        <v-row v-if="noUser" class="justify-center">
+          <v-col cols="12" class="text-subtitle-2 text-error text-center">
             User name or password is not valid!
-          </v-layout>
-          <v-layout row wrap>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
             <v-btn :disabled="!valid" type="submit" block color="primary">
               Login
             </v-btn>
-          </v-layout>
-        </v-container>
-      </v-form>
-      <div class="mt-20" />
-      <v-container>
-        <v-layout row wrap>
-          <v-btn @click="onSignInWithSAML" block color="plain">
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-form>
+    <div class="mt-20" />
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <v-btn @click="onSignInWithSAML" block variant="plain" color="primary">
             SSO Login
-            <v-icon
-              right
-              dark
-            >
+            <v-icon end>
               mdi-cloud
             </v-icon>
           </v-btn>
-        </v-layout>
-      </v-container>
-    </template>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-container>
 </template>
 
-<script>
-import axios from 'axios';
-import LocalStorageService from '../../service/localStorage';
-export default {
-  name: 'Login',
-  layout: 'admin',
-  data () {
-    return {
-      username: '',
-      password: '',
-      valid: true,
-      noUser: false,
-      saml_login: false,
-      formRules: {
-        required: value => !!value || 'This is a required field.'
-      }
-    };
-  },
-  // Replace "http://127.0.0.1:8000"
-  async beforeMount () {
-    const sessionId = /SESS\w*=([^;]+)/i.test(document.cookie) ? RegExp.$1 : false;
-    if (sessionId) {
-      this.saml_login = true
-      const data = { 'token': sessionId }
-      await axios.post('/session_user/', data)
-        .then((response) => {
-          sessionStorage.setItem('indrz-frontend', JSON.stringify(response.data));
-          document.cookie.split(';').forEach(function (c) { document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/'); });
-        });
-      axios.post('/session_user_logout/', data)
-      console.log('1')
-      const tokenData = LocalStorageService.getTokenData();
-      if (tokenData && tokenData.token) {
-        this.$store.commit('user/SET_USER', tokenData);
-        this.$router.push(this.$route.query.redirect || '/admin');
-      }
-      this.saml_login = false
-    }
-  },
+<script setup>
+import { useUserStore } from '~/stores/user'
 
-  mounted () {
-    if (!this.saml_login) {
-      console.log('n')
-      const tokenData = LocalStorageService.getTokenData();
-      if (tokenData && tokenData.token) {
-        this.$store.commit('user/SET_USER', tokenData);
-        this.$router.push(this.$route.query.redirect || '/admin');
-      }
-    }
-  },
+definePageMeta({
+  layout: 'admin'
+})
 
-  methods: {
-    async onSignIn () {
-      if (!this.$refs.loginForm.validate()) {
-        return;
-      }
-      try {
-        await this
-          .$store
-          .dispatch('user/SIGN_IN', {
-            username: this.username,
-            password: this.password
-          });
-        if (this.$store.getters['user/isUserSignedIn']) {
-          this.$router.push(this.$route.query.redirect || '/admin');
-          this.noUser = false;
-          return;
-        }
-        this.noUser = true;
-      } catch (error) {
-        console.log(error.message);
-      }
-    },
-    // Replace "http://127.0.0.1:8000"
-    onSignInWithSAML () {
-      const linkLs = '/saml/login/'
-      window.location.href = linkLs
-    }
+const userStore = useUserStore()
+const router = useRouter()
+const route = useRoute()
+const loginForm = ref(null)
+
+const username = ref('')
+const password = ref('')
+const valid = ref(true)
+const noUser = ref(false)
+const samlLogin = ref(false)
+const formRules = {
+  required: value => !!value || 'This is a required field.'
+}
+
+onBeforeMount(async () => {
+  const sessionId = /SESS\w*=([^;]+)/i.test(document.cookie) ? RegExp.$1 : false
+  if (sessionId) {
+    window.location.href = '/saml/login/'
   }
-};
+})
+
+onMounted(() => {
+  // User store hydration from sessionStorage is handled by auth.global middleware.
+  // If already signed in, redirect away from login page.
+  if (!samlLogin.value && userStore.isUserSignedIn) {
+    router.push(route.query.redirect || '/admin')
+  }
+})
+
+async function onSignIn () {
+  const result = await loginForm.value.validate()
+  const isValid = typeof result === 'object' ? result.valid : result
+  if (!isValid) {
+    return
+  }
+  try {
+    await userStore.SIGN_IN({
+      username: username.value,
+      password: password.value
+    })
+    if (userStore.isUserSignedIn) {
+      router.push(route.query.redirect || '/admin')
+      noUser.value = false
+      return
+    }
+    noUser.value = true
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+function onSignInWithSAML () {
+  window.location.href = '/saml/login/'
+}
 </script>
 
 <style scoped>

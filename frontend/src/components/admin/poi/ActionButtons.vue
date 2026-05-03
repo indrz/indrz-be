@@ -12,10 +12,9 @@
     >
       <template v-slot:activator>
         <v-btn
-          v-model="fab"
-          color="blue darken-2"
-          dark
-          fab
+          color="blue-darken-2"
+          theme="dark"
+          variant="fab"
         >
           <v-icon v-if="fab">
             mdi-close
@@ -28,9 +27,9 @@
       <v-btn
         aria-label="Edit POI"
         color="green"
-        fab
-        dark
-        small
+        theme="dark"
+        variant="fab"
+        size="small"
         @click.stop.prevent="onEditPoiClick"
       >
         <v-icon>mdi-pencil</v-icon>
@@ -38,9 +37,9 @@
       <v-btn
         aria-label="Add a new POI"
         color="indigo"
-        fab
-        dark
-        small
+        theme="dark"
+        variant="fab"
+        size="small"
         @click.stop.prevent="onAddPoiClick"
       >
         <v-icon>mdi-plus</v-icon>
@@ -48,9 +47,9 @@
       <v-btn
         aria-label="Delete a POI"
         color="red"
-        fab
-        dark
-        small
+        theme="dark"
+        variant="fab"
+        size="small"
         @click.stop.prevent="onDeletePoiClick"
       >
         <v-icon>mdi-delete</v-icon>

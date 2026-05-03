@@ -8,7 +8,7 @@
         color="rgba(0,60,136,0.5)"
         min-width="95px"
         class="pa-2"
-        small
+        size="small"
         @click="onMapSwitchClick"
       >
         {{ isSatelliteMap ? "Satellite" : "Map" }}
@@ -34,15 +34,15 @@
         <v-card-actions>
           <v-spacer />
           <v-btn
-            color="error darken-1"
-            text
+            color="error-darken-1"
+            variant="text"
             @click="onDeletePoiClick"
           >
             Yes
           </v-btn>
           <v-btn
-            color="blue darken-1"
-            text
+            color="blue-darken-1"
+            variant="text"
             @click="deleteConfirm = false"
           >
             Cancel
@@ -62,7 +62,6 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
 import { Style, Icon } from 'ol/style';
@@ -76,6 +75,9 @@ import api from '@/util/api'
 import config from '~/util/indrzConfig';
 import MapUtil from '~/util/map';
 import 'ol/ol.css';
+import { useFloorStore } from '~/stores/floor';
+import { useRootStore } from '~/stores/root';
+import bus from '~/util/bus';
 
 const { env } = config;
 
@@ -123,11 +125,15 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      floors: state => state.floor.floors
-    }),
+    floors () {
+      const floorStore = useFloorStore();
+      return typeof floorStore.floors === 'function' ? floorStore.floors() : floorStore.$state.floors;
+    },
     isMobile () {
-      return this.$vuetify.breakpoint.mobile;
+      if (typeof window === 'undefined') {
+        return false
+      }
+      return window.innerWidth <= 768
     },
     defaultCenter () {
       return this.isMobile ? env.MOBILE_START_CENTER_XY : env.DEFAULT_CENTER_XY
@@ -149,13 +155,11 @@ export default {
     }
   },
   async mounted () {
-    await this.loadFloors();
+    const floorStore = useFloorStore();
+    await floorStore.LOAD_FLOORS();
     this.initializeMap();
   },
   methods: {
-    ...mapActions({
-      loadFloors: 'floor/LOAD_FLOORS'
-    }),
     initializeMap () {
       const { view, map, layers } = MapUtil.initializeMap({
         mapId: this.mapId,
@@ -311,7 +315,7 @@ export default {
       this.currentMode = this.mode.remove;
     },
     onDeletePoiClick () {
-      this.$root.$emit('deletePois');
+      bus.emit('deletePois');
       this.deleteConfirm = false;
     },
     editInteraction () {
@@ -356,7 +360,8 @@ export default {
       this.currentMode = this.mode.add;
 
       if (!this.activeFloorNum || !this.selectedPoiCategory) {
-        this.$store.commit('SET_SNACKBAR', 'Please select the POI category and Active floor to continue');
+        const rootStore = useRootStore();
+        rootStore.SET_SNACKBAR('Please select the POI category and Active floor to continue');
         return;
       }
 
@@ -593,7 +598,8 @@ export default {
         await Promise.all(uploadPromises);
         await this.refreshImageList(poiId);
       } catch (e) {
-        this.$store.commit('SET_SNACKBAR', e?.message || 'Image upload failed');
+        const rootStore = useRootStore();
+        rootStore.SET_SNACKBAR(e?.message || 'Image upload failed');
       }
     },
     async uploadPoiImage ({ poiId, imageFile }) {
@@ -623,7 +629,8 @@ export default {
 
         await this.refreshImageList(poiId);
       } catch (e) {
-        this.$store.commit('SET_SNACKBAR', e?.message || 'Image upload failed');
+        const rootStore = useRootStore();
+        rootStore.SET_SNACKBAR(e?.message || 'Image upload failed');
       }
     },
     deleteAttribute (attributes) {
@@ -654,7 +661,8 @@ export default {
 
         await this.refreshImageList(feature.getId());
       } catch (e) {
-        this.$store.commit('SET_SNACKBAR', e?.message || 'Image delete failed');
+        const rootStore = useRootStore();
+        rootStore.SET_SNACKBAR(e?.message || 'Image delete failed');
       }
     },
     openAttributesPopup (data, coordinate, feature) {
@@ -671,7 +679,8 @@ export default {
           token: process.env.TOKEN
         });
       } catch (e) {
-        this.$store.commit('SET_SNACKBAR', e?.message || 'Fetch poi failed');
+        const rootStore = useRootStore();
+        rootStore.SET_SNACKBAR(e?.message || 'Fetch poi failed');
       }
     },
     async refreshImageList (poiId) {

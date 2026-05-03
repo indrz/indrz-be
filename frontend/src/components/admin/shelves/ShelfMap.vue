@@ -1,6 +1,6 @@
 <template>
   <div class="fill-height">
-    <div :id="mapId" :ref="map" class="fill-height fluid flat width='100%' style='border-radius: 0" />
+    <div :id="mapId" ref="mapContainer" class="fill-height fluid flat width='100%' style='border-radius: 0" />
     <div id="zoom-control" class="indrz-zoom-control" />
     <div id="id-map-switcher-widget">
       <v-btn
@@ -8,7 +8,7 @@
         color="rgba(0,60,136,0.5)"
         min-width="95px"
         class="pa-2"
-        small
+        size="small"
         @click="onMapSwitchClick"
       >
         {{ isSatelliteMap ? "Satellite" : "Map" }}
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import 'ol/ol.css';
 import { Circle as CircleStyle, Fill, Stroke, Text, Style } from 'ol/style';
 import { Draw, Modify, Translate } from 'ol/interaction';
@@ -39,6 +38,8 @@ import {
 } from 'ol/events/condition';
 import config from '@/util/indrzConfig';
 import MapUtil from '@/util/map';
+import { useFloorStore } from '~/stores/floor';
+import { useShelfStore } from '~/stores/shelf';
 
 const { env } = config;
 
@@ -56,12 +57,17 @@ export default {
       isSatelliteMap: true,
       modify: null,
       shelf: null,
-      dragHandle: null
+      dragHandle: null,
+      initialFloor: null,
+      activeFloorNum: null
     };
   },
   computed: {
     isMobile () {
-      return this.$vuetify.breakpoint.mobile;
+      if (typeof window === 'undefined') {
+        return false
+      }
+      return window.innerWidth <= 768
     },
     defaultCenter () {
       return this.isMobile ? env.MOBILE_START_CENTER_XY : env.DEFAULT_CENTER_XY
@@ -81,10 +87,14 @@ export default {
         center: this.defaultCenter
       };
     },
-    ...mapState({
-      floors: state => state.floor.floors,
-      selectedShelf: state => state.shelf.selectedShelf
-    }),
+    floors () {
+      const floorStore = useFloorStore();
+      return typeof floorStore.floors === 'function' ? floorStore.floors() : floorStore.$state.floors;
+    },
+    selectedShelf () {
+      const shelfStore = useShelfStore();
+      return shelfStore.selectedShelf;
+    },
     hasShelfGeometry () {
       return this.selectedShelf && this.selectedShelf.geometry && this.selectedShelf.geometry.coordinates.length;
     }
@@ -110,11 +120,11 @@ export default {
         MapUtil.handleWindowResize(this.mapId);
       };
       if (this.floors && this.floors.length) {
-        this.intitialFloor = this.floors.filter(floor => floor.floor_num === env.DEFAULT_START_FLOOR)[0];
-        this.activeFloorNum = env.LAYER_NAME_PREFIX + this.intitialFloor.floor_num;
+        this.initialFloor = this.floors.find(floor => floor.floor_num === env.DEFAULT_START_FLOOR) || this.floors[0];
+        this.activeFloorNum = env.LAYER_NAME_PREFIX + this.initialFloor.floor_num;
 
         this.$emit('floorChange', {
-          floor: this.intitialFloor,
+          floor: this.initialFloor,
           floorNum: this.activeFloorNum
         });
 

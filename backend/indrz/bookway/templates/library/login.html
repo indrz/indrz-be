@@ -1,0 +1,129 @@
+{% extends "library/base.html" %}
+{% load i18n admin_static %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Login') }}{% endblock %}
+{% block extrahead %}
+
+    <link rel="stylesheet" type="text/css"
+          href="{% block stylesheet %}{% static "bookway/css/bookway_style.css" %}{% endblock %}"/>
+{% endblock %}
+
+
+{% block content %}
+    <div class="page-content"><!-- Your content goes here -->
+
+        <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--4-col"></div>
+            <div class="mdl-cell mdl-cell--4-col">
+
+                <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+
+                    <div class="mdl-tabs__tab-bar">
+                        <a href="#login-panel" class="mdl-tabs__tab is-active">Login</a>
+                        <a href="#register-panel" class="mdl-tabs__tab">Register</a>
+
+                    </div>
+
+
+                    <div class="mdl-tabs__panel is-active" id="login-panel">
+
+                        <div id="login" class="">
+
+                            <h3 class="teal-text">Hello again</h3>
+
+
+                            <form class="form-signin" role="form" action="{% url 'login' %}" method="post">
+                                {% csrf_token %}
+                                <h4 class="form-signin-heading text-center">{% trans "Please sign in" %}</h4>
+
+                                {% if form.errors %}
+                                    <p> {% trans "Your username and password did not match.  Please try again" %}</p>
+                                {% endif %}
+                                {{ form.non_field_errors }}
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input id="id_username" type="text" name="username" maxlength="254"
+                                           class="mdl-textfield__input" placeholder="Username" required autofocus><span
+                                        class="mdl-textfield__error">Not a valid email!</span>
+                                </div>
+
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input id="id_password" type="password" name="password" class="mdl-textfield__input"
+                                           placeholder="Password" required>
+                                </div>
+                            <br>
+                                <input type="hidden" name="next" value="/bookway/shelf"/>
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                                        type="submit">{% trans "Login" %}</button>
+                            </form>
+
+
+                            <br>
+                            <a href="">Forgotten password?</a>
+
+                        </div>
+                    </div>
+                    <div class="mdl-tabs__panel" id="register-panel">
+                        <div id="register" class="">
+                            <form class="">
+                                <div class="form-container">
+                                    <h3 class="">Here you can register</h3>
+                                    <div class="row">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input id="first_name" type="text" class="mdl-textfield__input">
+                                            <label class="mdl-textfield__label" for="first_name">First Name</label>
+                                        </div>
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input id="last_name" type="text" class="mdl-textfield__input">
+                                            <label class="mdl-textfield__label" for="last_name">Last Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input id="register-email" type="email" class="mdl-textfield__input">
+                                            <label class="mdl-textfield__label" for="register-email">Email</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input id="email-confirm" type="email" class="mdl-textfield__input">
+                                            <label class="mdl-textfield__label" for="email-confirm">Email
+                                                Confirmation</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input id="register-password" type="password" class="mdl-textfield__input">
+                                            <label class="mdl-textfield__label" for="register-password">Password</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input id="password-confirm" type="password" class="mdl-textfield__input">
+                                            <label class="mdl-textfield__label" for="password-confirm">Password
+                                                Confirmation</label>
+                                        </div>
+                                    </div>
+                                    <div class="submit-container">
+                                        <button id="register-user-submit"
+                                                class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                                                type="submit" name="action">
+                                            Submit
+                                        </button>
+
+
+                                        <br>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="mdl-cell mdl-cell--4-col"></div>
+        </div>
+
+    </div>
+
+{% endblock %}

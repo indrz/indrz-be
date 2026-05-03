@@ -6,7 +6,7 @@
           <!-- Any code below will show up on Header -->
         </div>
         <v-container class="box-row content">
-          <nuxt />
+          <NuxtPage />
         </v-container>
         <div :id="footerId" class="box-row footer">
           <!-- Any code below will show up on Footer -->
@@ -17,8 +17,6 @@
 </template>
 
 <script>
-import mapHandler from '~/util/mapHandler';
-
 export default {
   data () {
     return {
@@ -37,26 +35,7 @@ export default {
       miniVariant: false
     };
   },
-  created: function () {
-    const currentLocale = this.getLocale();
-    let defaultLocale = 'en';
-
-    if (currentLocale.includes('de')) {
-      defaultLocale = 'de';
-    }
-    this.$i18n.locale = defaultLocale;
-
-    mapHandler.setI18n(this.$i18n);
-  },
-  methods: {
-    getLocale () {
-      return (
-        navigator.language ||
-        navigator.browserLanguage ||
-        (navigator.languages || ['en'])[0]
-      );
-    }
-  }
+  // Locale detection/redirect is handled by @nuxtjs/i18n (see nuxt.config.js).
 };
 </script>
 

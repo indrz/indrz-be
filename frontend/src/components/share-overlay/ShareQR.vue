@@ -2,7 +2,7 @@
   <v-container>
     <v-row justify="center">
       <v-col cols="12" sm="12" md="12" style="max-width: 220px">
-        <v-card flat max-width="220" class="mt-5">
+        <v-card max-width="220" class="mt-5" elevation="0">
           <div class="share-qr">
             <div class="share-qr-img-container">
               <img ref="shareQrCode" src="" alt="" class="share-qr-img">
@@ -16,10 +16,10 @@
               <v-btn
                 @click="onDownloadButtonClick"
                 :loading="isDownloadingQR"
-                text
-                x-small
+                variant="text"
+                size="x-small"
               >
-                <v-icon small>
+                <v-icon size="small">
                   mdi-download
                 </v-icon>
                 Download
@@ -28,10 +28,10 @@
             <v-col cols="6" sm="6" md="6">
               <v-btn
                 @click="onTestLinkButtonClick"
-                text
-                x-small
+                variant="text"
+                size="x-small"
               >
-                <v-icon small>
+                <v-icon size="small">
                   mdi-share
                 </v-icon>
                 Test Link

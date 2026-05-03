@@ -8,19 +8,12 @@
   </div>
 </template>
 
-<script>
-import EventsList from '@/components/admin/events/EventsList';
+<script setup>
+import EventsList from '@/components/admin/events/EventsList'
 
-export default {
-  layout: 'admin',
-  components: { EventsList
-  },
-  mounted () {
-
-  },
-  methods: {
-  }
-};
+definePageMeta({
+  layout: 'admin'
+})
 </script>
 
 <style scoped>

@@ -1,0 +1,5 @@
+# m h  dom mon dow   command
+1 22 * * * /usr/local/bin/owncloudsync
+30 23 * * * cd /home && /usr/bin/python3 indrz_sync_data.py
+44 23 * * * cd /opt && docker exec -it indrz python3 /app/scripts/data_preparation/step2_reimport_dxf.py
+43 23 * * * cd /home && ./owncloudsync

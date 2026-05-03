@@ -5,7 +5,7 @@ FROM node:18.20.5-alpine AS base
 WORKDIR /app
 
 # Copy package files
-COPY src/package*.json ./
+COPY frontend/src/package*.json ./
 
 # Install dependencies
 RUN npm install

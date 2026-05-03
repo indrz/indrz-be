@@ -1,0 +1,66 @@
+{% extends "library/base.html" %}
+{% load i18n admin_static %}
+
+
+
+{% block content %}
+
+    <div class="page-content"><!-- Your content goes here -->
+
+        <h3>{% trans "Shelf Data" %}</h3>
+
+        <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+
+            <thead>
+            <tr>
+                <th>id</th>
+                <th class="mdl-data-table__cell--non-numeric">External Id</th>
+                <th>System From</th>
+                <th>System To</th>
+                <th>Shelf Side</th>
+                <th>Map</th>
+                <th>Edit</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for shelf in shelfs %}
+                <tr>
+                <td>{{ shelf.id }}</td>
+                    <td>{{ shelf.external_id }}</td>
+                    <td>{{ shelf.system_from }}</td>
+                    <td>{{ shelf.system_to }}</td>
+                    <td>{{ shelf.side }}</td>
+                    <td><a class="mdc-button" href="/bookway/shelf/{{ shelf.bookshelf_id }}/map">
+                        <i class="material-icons">
+                            map
+                        </i></a></td>
+                    <td><a class="mdc-button" href="/bookway/shelf/{{ shelf.id }}/edit">
+                        <i class="material-icons">
+                            edit
+                        </i></a></td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+
+
+        </table>
+
+        <div class="pagination">
+    <span class="step-links">
+        {% if shelfs.has_previous %}
+            <a href="?page={{ shelfs.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ shelfs.number }} of {{ shelfs.paginator.num_pages }}.
+        </span>
+
+        {% if shelfs.has_next %}
+            <a href="?page={{ shelfs.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+        </div>
+
+    </div>
+{% endblock %}

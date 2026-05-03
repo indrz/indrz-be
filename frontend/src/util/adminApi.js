@@ -1,17 +1,10 @@
-import axios from 'axios';
-const API_BASE_URL = process.env.BASE_API_URL;
-const AUTH_TOKEN = process.env.TOKEN
-
-const axiosInstance = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    Authorization: AUTH_TOKEN
-  }
-});
+import api from './api';
 
 export const fetchFloors = async () => {
   try {
-    const response = await axiosInstance.get('floor/');
+    const response = await api.request({
+      endPoint: 'floor/'
+    });
     return response.data.results;
   } catch (error) {
     console.error('Error fetching floors:', error);
@@ -21,7 +14,9 @@ export const fetchFloors = async () => {
 
 export const fetchOrgcodeData = async (orgcode, floorNum) => {
   try {
-    const response = await axiosInstance.get(`orgcode/${orgcode}/?floor_num=${floorNum}`);
+    const response = await api.request({
+      endPoint: `orgcode/${orgcode}/?floor_num=${floorNum}`
+    });
     const geofc = response.data;
     if (geofc.features !== null) { return geofc } else {
       return null;
@@ -33,7 +28,9 @@ export const fetchOrgcodeData = async (orgcode, floorNum) => {
 };
 export const fetchOrganizationCodes = async () => {
   try {
-    const response = await axiosInstance.get('/orgcode');
+    const response = await api.request({
+      endPoint: 'orgcode'
+    });
     const geofc = response.data;
     if (geofc.features !== null) { return geofc } else {
       return null;
@@ -46,7 +43,9 @@ export const fetchOrganizationCodes = async () => {
 
 export const fetchMainuseCategories = async () => {
   try {
-    const response = await axiosInstance.get('/mainuse');
+    const response = await api.request({
+      endPoint: 'mainuse'
+    });
     const geofc = response.data;
     if (geofc.features !== null) { return geofc } else {
       return null;
@@ -59,7 +58,9 @@ export const fetchMainuseCategories = async () => {
 
 export const fetchMainUseData = async (mainUse, floorNum) => {
   try {
-    const response = await axiosInstance.get(`mainuse/${mainUse}/?floor_num=${floorNum}`);
+    const response = await api.request({
+      endPoint: `mainuse/${mainUse}/?floor_num=${floorNum}`
+    });
     const geofc = response.data;
     if (geofc.features !== null) { return geofc } else {
       return null;

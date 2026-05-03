@@ -6,14 +6,13 @@
   </div>
 </template>
 
-<script>
-import PoiCategoryList from '@/components/admin/poi/category/List';
-import SnackBar from '@/components/SnackBar';
-export default {
-  name: 'PoiCategory',
-  components: { PoiCategoryList, SnackBar },
+<script setup>
+import PoiCategoryList from '@/components/admin/poi/category/List'
+import SnackBar from '@/components/SnackBar'
+
+definePageMeta({
   layout: 'admin'
-}
+})
 </script>
 
 <style scoped>

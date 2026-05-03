@@ -1,25 +1,21 @@
 <template>
   <v-card>
     <v-data-table
-      v-model="selected"
       :headers="headers"
       :items="shelvesListData"
-      :server-items-length="total"
-      :single-select="singleSelect"
-      :options.sync="pagination"
+      :items-length="total"
+      v-model:options="pagination"
       :loading="loading"
       :height="height"
-      :footer-props="{
-        'items-per-page-options': [25, 50, 100]
-      }"
+      :items-per-page-options="[25, 50, 100]"
       @click:row="onShelfClick"
-      dense
-      item-key="id"
+      density="compact"
+      item-value="id"
       class="elevation-1"
       loading-text="Loading... Please wait"
     >
       <template v-slot:top>
-        <v-toolbar flat>
+        <v-toolbar elevation="0">
           <v-toolbar-title>Book Shelves</v-toolbar-title>
           <v-spacer />
           <v-text-field
@@ -37,39 +33,36 @@
           <v-btn
             :disabled="bookShelfAddEditDialog"
             @click="addBookShelf"
-            outlined
+            variant="outlined"
           >
-            <v-icon left>
+            <v-icon start>
               mdi-plus
             </v-icon>
             Book Shelf
           </v-btn>
         </v-toolbar>
       </template>
-      <template v-slot:[`item.building`]="{item}">
+      <template v-slot:[`item.building`]="{ item }">
         {{ getBuildingName(item.building) }}
-      </template>
-      <template v-slot:[`item.building_floor`]="{item}">
-        {{ getFloorName(item.building_floor) }}
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon
-          @click="onBookShelfDrawClick(item)"
+          @click.stop="onBookShelfDrawClick(item)"
           class="mr-1"
-          small
+          size="small"
         >
           mdi-map
         </v-icon>
         <v-icon
-          @click="editBookShelf(item)"
+          @click.stop="editBookShelf(item)"
           class="mr-1"
-          small
+          size="small"
         >
           mdi-pencil
         </v-icon>
         <v-icon
-          @click="showConfirmDeleteShelf = true"
-          small
+          @click.stop="deleteShelfItem(item)"
+          size="small"
         >
           mdi-delete
         </v-icon>
@@ -98,7 +91,6 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 import AddEditShelf from '@/components/admin/shelves/AddEditShelf';
@@ -106,6 +98,9 @@ import DrawShelf from '@/components/admin/shelves/DrawShelf';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import api from '@/util/api';
 import { getGeomFromCoordinates } from '@/util/misc';
+import { useShelfStore } from '~/stores/shelf';
+import { useFloorStore } from '~/stores/floor';
+import { useBuildingStore } from '~/stores/building';
 
 export default {
   name: 'BookShelfList',
@@ -129,76 +124,77 @@ export default {
       term$: new Subject(),
       headers: [
         {
-          text: 'Id',
+          title: 'Id',
           align: 'right',
           sortable: false,
-          value: 'id'
+          key: 'id'
         },
         {
-          text: 'External Id',
+          title: 'External Id',
           align: 'left',
           sortable: false,
-          value: 'external_id',
+          key: 'external_id',
           width: 90
         },
         {
-          text: 'Building',
+          title: 'Building',
           align: 'left',
           filterable: false,
           sortable: false,
-          value: 'building',
+          key: 'building',
           width: 150
         },
         {
-          text: 'Floor',
+          title: 'Floor',
           align: 'left',
           filterable: false,
           sortable: false,
-          value: 'building_floor',
+          key: 'floor_name',
           width: 100
         },
         {
-          text: 'Length',
+          title: 'Length',
           align: 'right',
           filterable: false,
           sortable: false,
-          value: 'length'
+          key: 'length'
         },
         {
-          text: 'Width',
+          title: 'Width',
           align: 'right',
           filterable: false,
           sortable: false,
-          value: 'width'
+          key: 'width'
         },
         {
-          text: 'Left From Label',
+          title: 'Left From Label',
           align: 'left',
           sortable: true,
-          value: 'left_from_label'
+          key: 'left_from_label'
         },
         {
-          text: 'Left To Label',
+          title: 'Left To Label',
           align: 'left',
           sortable: true,
-          value: 'left_to_label'
+          key: 'left_to_label'
         },
         {
-          text: 'Right From Label',
+          title: 'Right From Label',
           align: 'left',
           sortable: true,
-          value: 'right_from_label'
+          key: 'right_from_label'
         },
         {
-          text: 'Right To Label',
+          title: 'Right To Label',
           align: 'left',
           sortable: true,
-          value: 'right_to_label'
+          key: 'right_to_label'
         },
-        { text: '', value: 'actions', width: 120, sortable: false }
+        { title: '', key: 'actions', width: 120, sortable: false }
       ],
       bookShelfEditedIndex: -1,
       bookShelfEditedItem: {},
+      shelfToDelete: null,
       defaultItem: {
         bookshelf_id: null,
         external_id: null,
@@ -217,28 +213,51 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      shelvesListData: function (state) {
-        const { data, total } = state.shelf.shelves;
-        const tableData = [];
+    shelvesListData () {
+      const shelfStore = useShelfStore();
+      const { data = [], total = 0 } = shelfStore.shelves || {};
+      const tableData = [];
 
-        this.total = total;
+      this.total = total;
 
-        data.forEach((d) => {
-          tableData.push({ ...d.properties, id: d.id, geometry: d.geometry });
-        });
-        return tableData;
-      },
-      selectedShelf: state => state.shelf.selectedShelf,
-      floors: state => state.floor.floors,
-      buildings: state => state.building.buildings
-    }),
-    ...mapGetters({
-      getBuildingName: 'building/getBuildingName',
-      firstBuilding: 'building/firstBuilding',
-      firstFloor: 'floor/firstFloor',
-      getFloorName: 'floor/getFloorName'
-    }),
+      data.forEach((d) => {
+        tableData.push({ ...d.properties, id: d.id, geometry: d.geometry });
+      });
+      return tableData;
+    },
+    total () {
+      const shelfStore = useShelfStore();
+      const { total = 0 } = shelfStore.shelves || {};
+      return total;
+    },
+    selectedShelf () {
+      const shelfStore = useShelfStore();
+      return shelfStore.selectedShelf;
+    },
+    floors () {
+      const floorStore = useFloorStore();
+      return typeof floorStore.floors === 'function' ? floorStore.floors() : floorStore.$state.floors;
+    },
+    buildings () {
+      const buildingStore = useBuildingStore();
+      return buildingStore.buildings;
+    },
+    getBuildingName () {
+      const buildingStore = useBuildingStore();
+      return buildingStore.getBuildingName;
+    },
+    firstBuilding () {
+      const buildingStore = useBuildingStore();
+      return buildingStore.firstBuilding;
+    },
+    firstFloor () {
+      const floorStore = useFloorStore();
+      return floorStore.firstFloor;
+    },
+    getFloorName () {
+      const floorStore = useFloorStore();
+      return floorStore.getFloorName;
+    },
     bookShelfFormTitle () {
       return this.bookShelfEditedIndex === -1 ? 'New Shelf' : 'Edit Shelf';
     },
@@ -272,17 +291,36 @@ export default {
         distinctUntilChanged()
       )
       .subscribe(term => this.loadData(term));
+    this.loadFloors();
     this.loadData();
   },
   methods: {
-    ...mapActions({
-      loadShelfList: 'shelf/LOAD_BOOKSHELF_LIST',
-      deleteBookShelf: 'shelf/DELETE_SHELF',
-      saveShelf: 'shelf/SAVE_SHELF',
-      setSelectedShelf: 'shelf/SET_SELECTED_SHELF'
-    }),
-    onShelfClick (shelf) {
-      this.setSelectedShelf(shelf);
+    loadShelfList (query) {
+      const shelfStore = useShelfStore();
+      return shelfStore.LOAD_BOOKSHELF_LIST(query);
+    },
+    loadFloors () {
+        const floorStore = useFloorStore();
+        return floorStore.LOAD_FLOORS();
+    },
+    deleteBookShelf (shelf) {
+      const shelfStore = useShelfStore();
+      return shelfStore.DELETE_SHELF(shelf);
+    },
+    saveShelf (payload) {
+      const shelfStore = useShelfStore();
+      return shelfStore.SAVE_SHELF(payload);
+    },
+    setSelectedShelf (shelf) {
+      const shelfStore = useShelfStore();
+      return shelfStore.SET_SELECTED_SHELF(shelf);
+    },
+    onShelfClick (event, row) {
+      this.setSelectedShelf(row?.item ?? event);
+    },
+    deleteShelfItem (shelf) {
+      this.shelfToDelete = shelf;
+      this.showConfirmDeleteShelf = true;
     },
     async loadData (term) {
       if (this.loading) {
@@ -331,8 +369,9 @@ export default {
     async confirmDeleteBookShelf () {
       this.loading = true;
 
-      await this.deleteBookShelf(this.selectedShelf);
+      await this.deleteBookShelf(this.shelfToDelete);
 
+      this.shelfToDelete = null;
       this.showConfirmDeleteShelf = false;
       this.loading = false;
     },

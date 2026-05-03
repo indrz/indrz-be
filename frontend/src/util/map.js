@@ -1,6 +1,4 @@
 // noinspection JSAnnotator
-
-import Vue from 'vue';
 import { defaults as defaultControls, Zoom, Attribution, ScaleLine } from 'ol/control.js';
 import Group from 'ol/layer/Group';
 import ImageLayer from 'ol/layer/Image';
@@ -29,10 +27,11 @@ import MapHandler from './mapHandler';
 import api from './api';
 import config from '~/util/indrzConfig'
 import POIHandler from '~/util/POIHandler';
+import bus from '~/util/bus';
+import { usePopupStore } from '~/stores/popup';
+import { useFloorStore } from '~/stores/floor';
 
 const { env } = config;
-// Declare new event $bus
-Vue.prototype.$bus = new Vue();
 const initializeMap = ({
   mapId, predefinedPopup, center, zoom
 }) => {
@@ -47,6 +46,7 @@ const initializeMap = ({
   handleWindowResize(mapId);
 
   const map = new Map({
+    projection: 'EPSG:3857',
     interactions: defaultInteraction().extend([
       new DragRotateAndZoom(),
       new PinchZoom({
@@ -74,6 +74,9 @@ const initializeMap = ({
 
   map.addOverlay(popup);
 
+  // REMOVE: best-effort refresh workaround; proper sizing triggers WMTS requests reliably.
+  // setTimeout(() => { ... }, 0);
+
   return {
     view, map, layers, popup
   };
@@ -84,9 +87,11 @@ const handleWindowResize = function (mapId) {
   const footerEl = document.getElementById('indrz-footer-container');
   const headerHeight = headerEl ? headerEl.offsetHeight : 0;
   const footerHeight = footerEl ? footerEl.offsetHeight : 0;
-  const mapContainer = document.getElementById(mapId);
 
-  mapContainer.style.height = window.innerHeight - (headerHeight + footerHeight) + 'px';
+  const mapContainer = document.getElementById(mapId);
+  if (!mapContainer) return; // avoid crashing initializeMap/mounted timing
+
+  mapContainer.style.height = (window.innerHeight - (headerHeight + footerHeight)) + 'px';
 };
 
 const createWmsLayer = function (
@@ -99,7 +104,13 @@ const createWmsLayer = function (
   return new ImageLayer({
     source: new ImageWMS({
       url: env.BASE_WMS_URL,
-      params: { LAYERS: geoserverLayer, TILED: true },
+      params: {
+        LAYERS: geoserverLayer,
+        TILED: true,
+        FORMAT: 'image/png',
+        TRANSPARENT: true,
+        VERSION: '1.3.0'
+      },
       serverType: 'geoserver',
       crossOrigin: ''
     }),
@@ -115,6 +126,7 @@ const createWmsLayer = function (
 
 const createWmtsLayer = function (layerSrcName, type, isVisible, sourceName) {
   const sm = getProjection('EPSG:3857');
+
   const templatepng =
     '{Layer}/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}' +
     type;
@@ -124,55 +136,38 @@ const createWmtsLayer = function (layerSrcName, type, isVisible, sourceName) {
     'https://mapsneu.wien.gv.at/basemap/' + templatepng,
     'https://mapsneu.wien.gv.at/basemap/' + templatepng
   ];
+
+  const resolutions = [
+    156543.03392811998,
+    78271.51696419998,
+    39135.758481959994,
+    19567.879241008,
+    9783.939620504,
+    4891.969810252,
+    2445.984905126,
+    1222.9924525644,
+    611.4962262807999,
+    305.74811314039994,
+    152.87405657047998,
+    76.43702828523999,
+    38.21851414248,
+    19.109257071295996,
+    9.554628535647998,
+    4.777314267823999,
+    2.3886571339119995,
+    1.1943285669559998,
+    0.5971642834779999,
+    0.29858214174039993,
+    0.14929107086936
+  ];
+
+  const matrixIds = resolutions.map((_, i) => String(i));
+
   const tilegrid = new TileGrid({
     origin: [-20037508.3428, 20037508.3428],
     extent: [977650, 5838030, 1913530, 6281290],
-    resolutions: [
-      156543.03392811998,
-      78271.51696419998,
-      39135.758481959994,
-      19567.879241008,
-      9783.939620504,
-      4891.969810252,
-      2445.984905126,
-      1222.9924525644,
-      611.4962262807999,
-      305.74811314039994,
-      152.87405657047998,
-      76.43702828523999,
-      38.21851414248,
-      19.109257071295996,
-      9.554628535647998,
-      4.777314267823999,
-      2.3886571339119995,
-      1.1943285669559998,
-      0.5971642834779999,
-      0.29858214174039993,
-      0.14929107086936
-    ],
-    matrixIds: [
-      '0',
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '10',
-      '11',
-      '12',
-      '13',
-      '14',
-      '15',
-      '16',
-      '17',
-      '18',
-      '19',
-      '20'
-    ]
+    resolutions,
+    matrixIds
   });
 
   const WmtsTileSource = new WMTS({
@@ -185,17 +180,17 @@ const createWmtsLayer = function (layerSrcName, type, isVisible, sourceName) {
     crossOrigin: 'anonymous',
     requestEncoding: /** @type {ol.source.WMTSRequestEncoding} */ ('REST'),
     tileGrid: tilegrid,
+    wrapX: true,
     attributions:
-      '<a href="https://www.basemap.at/' + '" style="font-size: 10pt;">© Basemap.at</a>'
+      '<a href="https://www.basemap.at/" style="font-size: 10pt;">© Basemap.at</a>'
   });
 
-  const wmtsLayer = new TileLayer({
+  return new TileLayer({
     name: layerSrcName,
     source: WmtsTileSource,
     visible: isVisible,
     type: 'background'
   });
-  return wmtsLayer;
 }
 
 const hideLayers = (layers) => {
@@ -282,7 +277,7 @@ const image = new Icon(/** @type {olx.style.IconOptions} */ ({
   anchor: [0.5, 46],
   anchorXUnits: 'fraction',
   anchorYUnits: 'pixels',
-  src: '/static/homepage/img/other.png'
+  src: '/homepage/img/other.png'
 }));
 const styles = {
   Point: [new Style({
@@ -373,8 +368,8 @@ const searchThroughAPI = async (searchText, url = env.SEARCH_URL) => {
     const response = await api.request({
       url: searchUrl
     });
-    // Pass response data to FloorChanger.vue
-    Vue.prototype.$bus.$emit('searchResponse', response.data);
+    // Pass response data to listeners (e.g. FloorChanger.vue)
+    bus.emit('searchResponse', response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -384,10 +379,25 @@ const searchThroughAPI = async (searchText, url = env.SEARCH_URL) => {
   }
 };
 
-const searchIndrz = async (map, layers, globalPopupInfo, searchLayer, campusId, searchString, zoomLevel,
-  popUpHomePage, currentPOIID,
-  currentLocale, objCenterCoords, routeToValTemp,
-  routeFromValTemp, activeFloorNum, popup, feature) => {
+const searchIndrz = async (
+  map,
+  layers,
+  globalPopupInfo,
+  searchLayer,
+  campusId,
+  searchString,
+  zoomLevel,
+  popUpHomePage,
+  currentPOIID,
+  currentLocale,
+  objCenterCoords,
+  routeToValTemp,
+  routeFromValTemp,
+  activeFloorNum,
+  popup,
+  feature,
+  popupOrigin = 'user'
+) => {
   if (searchLayer) {
     map.removeLayer(searchLayer);
     clearSearchResults(map, searchLayer);
@@ -461,12 +471,25 @@ const searchIndrz = async (map, layers, globalPopupInfo, searchLayer, campusId, 
   let floorNum = '';
 
   if (featuresSearch.length === 1) {
-    MapHandler.openIndrzPopup(
-      globalPopupInfo, popUpHomePage, currentPOIID,
-      currentLocale, objCenterCoords, routeToValTemp,
-      routeFromValTemp, activeFloorNum, popup,
-      featuresSearch[0].getProperties(), centerCoOrd, featuresSearch[0]
+    const popupStore = usePopupStore();
+
+    const popupModel = MapHandler.openIndrzPopup(
+      globalPopupInfo,
+      popUpHomePage,
+      currentLocale,
+      objCenterCoords,
+      routeToValTemp,
+      routeFromValTemp,
+      activeFloorNum,
+      popup,
+      featuresSearch[0].getProperties(),
+      centerCoOrd,
+      featuresSearch[0],
+      null
     );
+
+    popupStore.SET_POPUP(popupModel, popupOrigin);
+
     zoomer(map.getView(), centerCoOrd, zoomLevel, map);
     /*
      // the following code may need later use for space
@@ -669,15 +692,31 @@ const loadMapWithParams = async (mapInfo, query) => {
   const zoomLevel = query.zlevel || 18;
   const view = mapInfo.map.getView();
 
+  const popupStore = usePopupStore();
+
   if (query.centerx !== 0 && query.centery !== 0 && isNaN(query.centerx) === false) {
     view.animate({ zoom: zoomLevel }, { center: [query.centerx, query.centery] });
   }
-  if (query.floor) {
+  if (query.floor !== undefined && query.floor !== null) {
     const floor = mapInfo.floors.find(floor => floor.floor_num === Number(query.floor));
 
     if (floor) {
       mapInfo.activeFloorNum = env.LAYER_NAME_PREFIX + floor.floor_num;
-      activateLayer(mapInfo.activeFloorNum, mapInfo.layers.switchableLayers, mapInfo.map);
+
+      // Set the floor store FIRST so FloorChanger can sync its selection
+      const floorStore = useFloorStore();
+      floorStore.SET_ACTIVE_FLOOR({
+        floorLevel: floor.floor_num,
+        floorNum: mapInfo.activeFloorNum
+      });
+
+      // If the map component owns floor switching (TileWMS single-layer mode), prefer that.
+      if (typeof mapInfo.onFloorClick === 'function') {
+        mapInfo.onFloorClick(mapInfo.activeFloorNum)
+      } else {
+        activateLayer(mapInfo.activeFloorNum, mapInfo.layers.switchableLayers, mapInfo.map);
+      }
+
       mapInfo.$emit('selectFloor', floor.floor_num);
     }
   }
@@ -685,10 +724,22 @@ const loadMapWithParams = async (mapInfo, query) => {
     const coords = [Number(query.x), Number(query.y)];
 
     mapInfo.globalPopupInfo.coords = coords;
-    MapHandler.openIndrzPopup(
-      mapInfo.globalPopupInfo, null, null, null, coords, null,
-      null, mapInfo.activeFloorNum, mapInfo.popup, { xy: coords }, coords
+    const popupModel = MapHandler.openIndrzPopup(
+      mapInfo.globalPopupInfo,
+      null,
+      mapInfo.$i18n?.locale,
+      null,
+      null,
+      null,
+      mapInfo.activeFloorNum,
+      mapInfo.popup,
+      { xy: coords },
+      coords,
+      null,
+      null
     );
+    popupStore.SET_POPUP(popupModel, 'system');
+
     view.animate({ zoom: zoomLevel }, { center: coords });
     return;
   }
@@ -698,9 +749,27 @@ const loadMapWithParams = async (mapInfo, query) => {
       response = await searchThroughAPI(query.q, env.SHARE_SPACE_URL);
     }
 
-    const result = await searchIndrz(mapInfo.map, mapInfo.layers, mapInfo.globalPopupInfo, mapInfo.searchLayer, campusId, query.q, zoomLevel,
-      mapInfo.popUpHomePage, mapInfo.currentPOIID, mapInfo.$i18n.locale, mapInfo.objCenterCoords, mapInfo.routeToValTemp,
-      mapInfo.routeFromValTemp, mapInfo.activeFloorNum, mapInfo.popup, response);
+    const result = await searchIndrz(
+      mapInfo.map,
+      mapInfo.layers,
+      mapInfo.globalPopupInfo,
+      mapInfo.searchLayer,
+      campusId,
+      query.q,
+      zoomLevel,
+      mapInfo.popUpHomePage,
+      mapInfo.currentPOIID,
+      (mapInfo.$i18n?.locale && typeof mapInfo.$i18n.locale === 'object' && 'value' in mapInfo.$i18n.locale)
+        ? mapInfo.$i18n.locale.value
+        : mapInfo.$i18n?.locale,
+      mapInfo.objCenterCoords,
+      mapInfo.routeToValTemp,
+      mapInfo.routeFromValTemp,
+      mapInfo.activeFloorNum,
+      mapInfo.popup,
+      response,
+      'system'
+    );
 
     if (!response) {
       mapInfo.$root.$emit('load-search-query', query.q);
@@ -723,10 +792,12 @@ const loadMapWithParams = async (mapInfo, query) => {
   if (query['poi-cat-id']) {
     mapInfo.$emit('openPoiTree', query['poi-cat-id']);
   }
+
   if (query['poi-id']) {
-    mapInfo.loadSinglePoi(query['poi-id'], zoomLevel)
+    mapInfo.loadSinglePoi(query['poi-id'], zoomLevel, 'system')
     mapInfo.$emit('openPoiTree', query['poi-id'], true);
   }
+
   if (query['from-xy'] && query['to-xy']) {
     loadMapFromXyToXyRoute(query, mapInfo);
   }

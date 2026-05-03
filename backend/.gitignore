@@ -3,11 +3,12 @@
 data/
 dist/
 indrz/data/
-indrz/scripts/
 indrz/settings/.env
 
 indrz.egg-info/
 *.iml
+
+*.env
 .env
 .venv/*
 .venv
@@ -27,7 +28,8 @@ indrz/static
 
 *.cache
 *.coverage
-/scripts/geoserver/roomlog.log
+*.log
 
 docs/node_modules
+frontend/node_modules
 node_modules

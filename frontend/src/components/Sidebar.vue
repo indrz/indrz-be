@@ -12,10 +12,10 @@
     </div>
     <v-expansion-panels v-model="expanded" multiple>
       <v-expansion-panel v-for="menuItem in menuItems" :key="menuItem.title">
-        <v-expansion-panel-header class="sidebar-expansion-header" :data-test="menuItem.type+'Heading'">
+        <v-expansion-panel-title class="sidebar-expansion-header" :data-test="menuItem.type+'Heading'">
           {{ menuItem.title }}
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
           <component
             :is="menuItem.type"
             :ref="menuItem.type"
@@ -30,38 +30,35 @@
             @shareClick="onShareClick"
             @poiLoad="addPoi"
           />
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
 
     <v-list
       class="mt-5"
       nav
-      dense
+      density="compact"
     >
-      <v-list-item-group color="primary">
-        <v-list-item
-          v-for="(item, i) in menuButtons"
-          :key="i"
-          :data-test="item.type+'Btn'"
-          :aria-label="item.text"
-          @click.stop="onMenuBUttonClick(item)"
-        >
-          <v-list-item-icon :data-test="item.type+'Item'">
-            <v-icon>mdi-{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title v-text="item.text" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
+      <v-list-item
+        v-for="(item, i) in menuButtons"
+        :key="i"
+        :data-test="item.type+'Btn'"
+        :aria-label="item.text"
+        @click.stop="onMenuBUttonClick(item)"
+      >
+        <template #prepend>
+          <v-icon :data-test="item.type+'Item'">
+            mdi-{{ item.icon }}
+          </v-icon>
+        </template>
+        <v-list-item-title v-text="item.text" />
+      </v-list-item>
     </v-list>
     <div>
-      <p class="font-weight-regular caption" style="padding: 8px 16px 0px">
+      <p class="font-weight-regular text-caption" style="padding: 8px 16px 0px">
         Powered by <a href="https://indrz.com/#contact" target="_blank">indrz.com</a>
       </p>
-      <p class="font-weight-regular caption" style="padding: 0px 16px">
+      <p class="font-weight-regular text-caption" style="padding: 0px 16px">
         Version: {{ appVersion }}
       </p>
     </div>
@@ -73,6 +70,7 @@ import config from '../util/indrzConfig';
 import CampusLocations from './CampusLocations';
 import SearchResult from './SearchResult';
 import PointsOfInterest from './poi/PointsOfInterest';
+import bus from '~/util/bus';
 
 const { env } = config;
 
@@ -105,7 +103,14 @@ export default {
   },
   data () {
     return {
-      locale: {
+      searchResult: []
+    };
+  },
+
+  computed: {
+    locale () {
+      // Keep labels reactive when the active locale changes.
+      return {
         campusLocations: this.$t('campus_locations'),
         searchResult: this.$t('search_result'),
         pointsOfInterest: this.$t('points_of_interest'),
@@ -117,12 +122,8 @@ export default {
         aboutTermsConditions: this.$t('about_terms_conditions'),
         scanQRShowMyLocation: this.$t('scan_qr_show_my_location'),
         directions: this.$t('route')
-      },
-      searchResult: []
-    };
-  },
-
-  computed: {
+      };
+    },
     logo () {
       return {
         file: env.LOGO_FILE,
@@ -199,7 +200,7 @@ export default {
         return this.openedPanels;
       },
       set (value) {
-        this.$root.$emit('update-opened-panels', value)
+        bus.emit('update-opened-panels', value)
       }
     }
   },
@@ -245,7 +246,7 @@ export default {
   /*
   Style for Tree
    */
-  ::v-deep .v-treeview-node__label {
+  :deep(.v-treeview-node__label) {
     /*
     font-family: "Roboto", sans-serif;
     font-size: .8125rem !important;
@@ -254,7 +255,7 @@ export default {
   /*
   Style for Menu items
    */
-  ::v-deep .v-list-item__title {
+  :deep(.v-list-item__title) {
     /*
     font-family: "Roboto", sans-serif;
     font-size: .8125rem !important;

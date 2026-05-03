@@ -4,20 +4,20 @@
     max-width="400"
   >
     <v-card>
-      <v-card-title class="headline" />
+      <v-card-title class="text-h5" />
       <v-card-text>
         <div v-if="!error">
           <qrcode-stream :camera="camera" @decode="onDecode" @init="onInit" />
         </div>
         <div v-if="error">
-          <span class="subtitle-1">{{ locale.cameraFallbackMessage }}</span>
+          <span class="text-subtitle-1">{{ locale.cameraFallbackMessage }}</span>
         </div>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn
           @click="emitCloseEvent"
-          text
+          variant="text"
         >
           Close
         </v-btn>
@@ -37,11 +37,10 @@ export default {
   props: {
     show: {
       type: Boolean,
-      default: function () {
-        return false
-      }
+      default: false
     }
   },
+  emits: ['qrCodeScanned', 'qrCodeShow'],
   data () {
     return {
       camera: 'off',
@@ -53,16 +52,16 @@ export default {
   },
   computed: {
     dialog: {
-      get: function () {
+      get () {
         return this.show;
       },
-      set: function (newValue) {
+      set (newValue) {
         this.emitCloseEvent(newValue);
       }
     }
   },
   watch: {
-    show: function (newValue) {
+    show (newValue) {
       if (newValue && this.camera !== 'auto') {
         this.turnCameraOn();
       } else {

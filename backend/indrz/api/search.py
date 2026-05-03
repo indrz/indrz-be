@@ -12,15 +12,19 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from buildings.models import BuildingFloorSpace
-from buildings.serializers import BuildingFloorSpaceSerializer
+from poi_manager.models import Poi
+from poi_manager.serializers import PoiSerializer
+from campus.models import Campus
+from campus.serializers import CampusSearchSerializer
+from buildings.models import BuildingFloorSpace, Building
+from buildings.serializers import BuildingFloorSpaceSerializer, BuildingSerializer
 
 logr = logging.getLogger(__name__)
 
 @api_view(['GET'])
-@permission_classes((IsAuthenticated, ))
+# @permission_classes((IsAuthenticated, ))
 def search_any(request, q, format=None):
-    permission_classes = (permissions.IsAuthenticated, )
+    # permission_classes = (permissions.IsAuthenticated, )
 
     if len(q) < 4:
         return Response({"error":"search length minimum 3 characters", "reason":"Sorry please enter 3 or more characters"}, status=status.HTTP_200_OK)
@@ -149,7 +153,7 @@ def search_buildings(search_text):
 
 def search_campus(search_text):
 
-    campuses = Campus.objects.filter(Q(campus_name__icontains=search_text)  )
+    campuses = Campus.objects.filter(Q(name__icontains=search_text)  )
 
     if campuses:
         serializer = CampusSearchSerializer(campuses, many=True)

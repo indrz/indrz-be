@@ -2,11 +2,10 @@
   <span>POI - Icons</span>
 </template>
 
-<script>
-export default {
-  name: 'PoiIcons',
+<script setup>
+definePageMeta({
   layout: 'admin'
-}
+})
 </script>
 
 <style scoped>

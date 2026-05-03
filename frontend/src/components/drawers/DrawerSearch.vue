@@ -2,7 +2,7 @@
   <v-card-title>
     <v-toolbar
       :max-width="toolbarWidth"
-      dense
+      density="compact"
       rounded
       floating
     >
@@ -75,8 +75,12 @@ export default {
     }
   },
   computed: {
+    currentLocale () {
+      const raw = this.$i18n?.locale
+      return raw && typeof raw === 'object' && 'value' in raw ? raw.value : raw
+    },
     isSmallScreen () {
-      return this.$vuetify.breakpoint.smAndDown;
+      return this.$vuetify.display.smAndDown;
     },
     toolbarWidth () {
       return this.isSmallScreen ? '280px' : '320px';
@@ -108,7 +112,7 @@ export default {
           id: properties.id
         }
       };
-      this.searchField.search = MapHandler.getTitle(data, this.$i18n.locale)
+      this.searchField.search = MapHandler.getTitle(data, this.currentLocale)
       this.updateKey++;
       setTimeout(() => {
         this.shouldSearch = true;

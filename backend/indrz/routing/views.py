@@ -26,6 +26,111 @@ from .route_utils import (nearest_edge, find_closest_network_node, get_room_cent
 
 logger = logging.getLogger(__name__)
 
+from django.db import transaction
+from django.db.models import Q
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from .models import RoutingEdge
+from .serializers import RoutingEdgeSerializer, BulkRoutingEdgePayloadSerializer
+
+
+class IsRouteNetworkAdmin(IsAuthenticated):
+    """
+    Placeholder permission.
+    Replace logic with your real role/permission checks.
+    """
+
+    def has_permission(self, request, view):
+        base = super().has_permission(request, view)
+        if not base:
+            return False
+        # Example: restrict to staff or a custom permission
+        return bool(request.user and request.user.is_staff)
+
+
+class RoutingEdgeViewSet(viewsets.ModelViewSet):
+    queryset = RoutingEdge.objects.filter(is_active=True)
+    serializer_class = RoutingEdgeSerializer
+    permission_classes = (IsRouteNetworkAdmin,)
+    filterset_fields = (
+        "campus",
+        "building",
+        "floor_from",
+        "floor_to",
+        "line_type",
+        "is_private",
+    )
+
+    @action(detail=False, methods=["post"], url_path="bulk-save")
+    def bulk_save(self, request, *args, **kwargs):
+        """
+        Apply created, updated, deleted changes in one transaction.
+        """
+        payload_serializer = BulkRoutingEdgePayloadSerializer(data=request.data)
+        payload_serializer.is_valid(raise_exception=True)
+        data = payload_serializer.validated_data
+
+        campus = data["campus"]
+        building = data["building"]
+
+        created_items = data.get("created", [])
+        updated_items = data.get("updated", [])
+        deleted_items = data.get("deleted", [])
+
+        created_result = []
+        updated_ids = []
+        deleted_ids = []
+
+        with transaction.atomic():
+            # CREATED
+            for item in created_items:
+                temp_id = item.get("temp_id")
+                item["campus"] = campus.id
+                item["building"] = building.id
+
+                serializer = RoutingEdgeSerializer(data=item)
+                serializer.is_valid(raise_exception=True)
+                edge = serializer.save(created_by=request.user, updated_by=request.user)
+
+                created_result.append({"temp_id": temp_id, "id": edge.id})
+
+            # UPDATED
+            for item in updated_items:
+                edge_id = item.get("id")
+                try:
+                    edge = RoutingEdge.objects.get(id=edge_id, is_active=True)
+                except RoutingEdge.DoesNotExist:
+                    raise Exception(f"RoutingEdge {edge_id} not found or inactive")
+
+                item["campus"] = edge.campus_id
+                item["building"] = edge.building_id
+
+                serializer = RoutingEdgeSerializer(edge, data=item, partial=True)
+                serializer.is_valid(raise_exception=True)
+                serializer.save(updated_by=request.user)
+                updated_ids.append(edge_id)
+
+            # DELETED
+            delete_ids = [item.get("id") for item in deleted_items if item.get("id")]
+            if delete_ids:
+                qs = RoutingEdge.objects.filter(id__in=delete_ids, is_active=True)
+                # Hard delete:
+                deleted_ids = list(qs.values_list("id", flat=True))
+                qs.delete()
+
+        return Response(
+            {
+                "status": "ok",
+                "created": created_result,
+                "updated": updated_ids,
+                "deleted": deleted_ids,
+            },
+            status=status.HTTP_200_OK,
+        )
+
 
 
 @api_view(['GET', 'POST'])

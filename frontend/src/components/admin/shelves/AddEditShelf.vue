@@ -1,11 +1,11 @@
 <template>
-  <v-dialog :value="dialog" persistent scrollable max-width="500px">
+  <v-dialog :model-value="dialog" persistent scrollable max-width="500px">
     <v-card>
       <v-toolbar
-        dense
-        flat
+        density="compact"
+        elevation="0"
       >
-        <div class="headline">
+        <div class="text-h6">
           {{ title }}
         </div>
         <v-spacer />
@@ -17,7 +17,6 @@
         <v-form
           ref="form"
           v-model="valid"
-          lazy-validation
         >
           <v-container>
             <v-row no-gutters>
@@ -29,32 +28,32 @@
               <v-col>
                 <v-text-field
                   v-model="localShelf.geom"
-                  @click:append-outer="onGeomButtonClick"
+                  @click:append-inner="onGeomButtonClick"
                   label="Geometry"
                   clear-icon="mdi-close-circle"
-                  append-outer-icon="mdi-map"
+                  append-inner-icon="mdi-map"
                   clearable
                 />
               </v-col>
             </v-row>
             <v-row no-gutters>
               <v-col>
-                <v-text-field v-model="localShelf.left_from_label" label="Left From Label" />
+                <v-text-field v-model="localShelf.left_from_label" :rules="requiredRule" label="Left From Label" />
               </v-col>
             </v-row>
             <v-row no-gutters>
               <v-col>
-                <v-text-field v-model="localShelf.left_to_label" label="Left To Label" />
+                <v-text-field v-model="localShelf.left_to_label" :rules="requiredRule" label="Left To Label" />
               </v-col>
             </v-row>
             <v-row no-gutters>
               <v-col>
-                <v-text-field v-model="localShelf.right_from_label" label="Right From Label" />
+                <v-text-field v-model="localShelf.right_from_label" :rules="requiredRule" label="Right From Label" />
               </v-col>
             </v-row>
             <v-row no-gutters>
               <v-col>
-                <v-text-field v-model="localShelf.right_to_label" label="Right To Label" />
+                <v-text-field v-model="localShelf.right_to_label" :rules="requiredRule" label="Right To Label" />
               </v-col>
             </v-row>
             <v-row no-gutters>
@@ -62,7 +61,8 @@
                 <v-select
                   v-model="localShelf.building"
                   :items="buildings"
-                  item-text="building_name"
+                  :rules="requiredRule"
+                  item-title="properties.building_name"
                   item-value="id"
                   label="Building"
                 />
@@ -74,10 +74,20 @@
                   v-model="localShelf.building_floor"
                   :items="floors"
                   :rules="requiredRule"
-                  item-text="short_name"
+                  item-title="floor_name"
                   item-value="id"
                   label="Building Floor"
                 />
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col>
+                <v-text-field v-model="localShelf.measure_from" :rules="requiredRule" label="Measure From" />
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col>
+                <v-text-field v-model="localShelf.measure_to" :rules="requiredRule" label="Measure To" />
               </v-col>
             </v-row>
             <v-row no-gutters>
@@ -105,7 +115,7 @@
                 <v-select
                   v-model="localShelf.double_sided"
                   :items="doubleSidedItems"
-                  item-text="text"
+                  item-title="text"
                   item-value="value"
                   label="Does the shelf have two sides"
                 />
@@ -117,17 +127,17 @@
       <v-divider />
       <v-card-actions>
         <v-spacer />
-        <v-btn :disabled="loading" @click="close" color="blue darken-1" text>
+        <v-btn :disabled="loading" @click="close" color="blue-darken-1" variant="text">
           Cancel
         </v-btn>
         <v-btn
           :disabled="loading || !valid"
           :loading="loading"
           @click="save"
-          color="blue darken-1"
-          text
+          color="blue-darken-1"
+          variant="text"
         >
-          <v-icon left>
+          <v-icon start>
             mdi-content-save
           </v-icon>
           Save
@@ -144,9 +154,11 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
 import { getGeomFromCoordinates } from '@/util/misc';
 import DrawShelf from '@/components/admin/shelves/DrawShelf';
+import { useFloorStore } from '~/stores/floor';
+import { useBuildingStore } from '~/stores/building';
+import { useShelfStore } from '~/stores/shelf';
 
 export default {
   name: 'AddEditShelf',
@@ -184,27 +196,46 @@ export default {
       requiredRule: [
         v => !!v || 'This field is required.'
       ],
-      localShelf: { ...this.currentShelf }
+      localShelf: {
+        ...this.currentShelf,
+        building_floor: this.currentShelf && this.currentShelf.building_floor != null
+          ? Number(this.currentShelf.building_floor)
+          : null
+      }
     };
   },
   computed: {
-    ...mapState({
-      floors: state => state.floor.floors,
-      buildings: state => state.building.buildings
-    }),
+    floors () {
+      const floorStore = useFloorStore();
+      return typeof floorStore.floors === 'function' ? floorStore.floors() : floorStore.$state.floors;
+    },
+    buildings () {
+      const buildingStore = useBuildingStore();
+      return buildingStore.buildings;
+    },
     drawShelfTitle () {
       return 'Draw Shelf';
     }
   },
   watch: {
+    currentShelf (val) {
+      this.localShelf = {
+        ...val,
+        building_floor: val && val.building_floor != null ? Number(val.building_floor) : null
+      };
+      if (this.$refs.form) {
+        this.$refs.form.resetValidation();
+      }
+    },
     bookShelfDrawDialog (val) {
       val || this.bookShelfDrawDialogClose();
     }
   },
   methods: {
-    ...mapActions({
-      saveShelf: 'shelf/SAVE_SHELF'
-    }),
+    saveShelf (payload) {
+      const shelfStore = useShelfStore();
+      return shelfStore.SAVE_SHELF(payload);
+    },
     onGeomButtonClick () {
       this.bookShelfDrawDialog = true;
     },
@@ -223,7 +254,8 @@ export default {
       this.bookShelfDrawDialog = false;
     },
     async save () {
-      if (!this.$refs.form.validate()) {
+      const isValid = await this.$refs.form.validate();
+      if (!isValid) {
         return;
       }
       this.loading = true;

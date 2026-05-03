@@ -6,61 +6,59 @@
           ref="searchField"
           :key="`search-route-bar-${updateKey}`"
           v-model="model"
+          v-model:search="search"
           :items="searchResult"
           :loading="isLoading"
-          :search-input.sync="search"
           :prepend-icon="icon"
           :no-filter="true"
           :label="routeLabel"
           :hide-no-data="true"
-          :item-text="getSearchTitle"
+          :item-title="getSearchTitle"
           item-value="id"
-          append-icon=""
-          single-line
+          variant="underlined"
           return-object
-          flat
           hide-details
           @click:clear="onClearClick"
-          @change="onSearchSelection"
+          @update:model-value="onSearchSelection"
           @focus="focused = true"
           @blur="focused = false"
         >
-          <template v-slot:append>
+          <template v-slot:append-inner>
             <v-icon class="search-btn" aria-label="Search Button">
               mdi-magnify
             </v-icon>
           </template>
-          <template v-slot:append-outer>
+          <template v-slot:append>
             <v-icon :color="activeClearColor" aria-label="Close search button" @click.stop="onClearClick">
               mdi-close
             </v-icon>
           </template>
-          <template v-slot:item="{ item }">
-            <v-list-item-icon data-test="searchResult" style="margin-right: 16px" aria-label="Show icon">
-              <v-img
-                :src="getIconUrl(item.src_icon)"
-                contain
-                max-height="24"
-                max-width="24"
-                alt="icon"
-              />
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="getSearchTitle(item)" />
-              <v-list-item-subtitle v-text="`(${item.code ? item.code + ', ': ''}${searchResultFloorLabel} ${item.floorNum})`" />
-            </v-list-item-content>
+          <template v-slot:item="{ item, props }">
+            <v-list-item v-bind="props" data-test="searchResult">
+              <template #prepend>
+                <v-img
+                  :src="getIconUrl(item.raw.src_icon)"
+                  max-height="24"
+                  max-width="24"
+                  alt="icon"
+                  class="mr-4"
+                />
+              </template>
+              <v-list-item-title v-text="getSearchTitle(item.raw)" />
+              <v-list-item-subtitle v-text="`(${item.raw.code ? item.raw.code + ', ': ''}${searchResultFloorLabel} ${item.raw.floorNum})`" />
+            </v-list-item>
           </template>
         </v-autocomplete>
       </div>
       <div v-if="focused">
-        <div :style="{'text-align': (isLoading) ? 'center' : 'left'}" class="v-label no-data-text theme--light">
+        <div :style="{'text-align': (isLoading) ? 'center' : 'left'}" class="v-label no-data-text">
           <template v-if="!search || search.length < 3">
-            <v-icon small aria-label="information">
+            <v-icon size="small" aria-label="information">
               mdi-information-outline
             </v-icon> {{ minSearchCharacterLengthMessage }}
           </template>
           <template v-else-if="search && search.length && !isLoading && !searchResult.length">
-            <v-icon small aria-label="information">
+            <v-icon size="small" aria-label="information">
               mdi-information-outline
             </v-icon> {{ noResultText }}
           </template>
@@ -68,27 +66,25 @@
       </div>
     </template>
     <template v-else>
+      <div style="width: 350px;">
       <v-autocomplete
         ref="searchField"
         :key="`search-bar-${updateKey}`"
         v-model="model"
+        v-model:search="search"
         :items="searchResult"
         :loading="isLoading"
-        :search-input.sync="search"
         :no-filter="true"
         :label="searchLabel"
-        :item-text="getSearchTitle"
+        :item-title="getSearchTitle"
         item-value="id"
-        append-icon=""
-        single-line
+        :variant="large ? 'outlined' : 'solo'"
         return-object
-        solo
-        flat
         hide-details
         @click:clear="onClearClick"
-        @change="onSearchSelection"
+        @update:model-value="onSearchSelection"
       >
-        <template v-slot:append>
+        <template v-slot:append-inner>
           <v-icon
             class="search-btn"
             aria-label="Search button search on campus"
@@ -96,11 +92,11 @@
             mdi-magnify
           </v-icon>
         </template>
-        <template v-slot:append-outer>
+        <template v-slot:append>
           <v-icon
             v-if="showRoute && !search?.length"
             data-test="directionsShortcutBtn"
-            color="blue darken-2"
+            color="primary"
             aria-label="Get directions button"
             @click.stop="onRouteButtonClick"
           >
@@ -111,50 +107,49 @@
           </v-icon>
         </template>
         <template v-slot:no-data>
-          <div class="v-list-item">
-            <div class="v-list-item__content">
-              <div :style="{'text-align': (isLoading) ? 'center' : 'left'}" class="v-list-item__title">
-                <template v-if="!search || search.length < 3">
-                  {{ minSearchCharacterLengthMessage }}
-                </template>
-                <v-progress-circular
-                  v-else-if="search && search.length && isLoading"
-                  indeterminate
-                  color="primary"
-                />
-                <template v-else-if="search && search.length && !isLoading && !searchResult.length">
-                  {{ noResultText }}
-                </template>
-              </div>
-            </div>
+          <v-list-item>
+            <v-list-item-title :style="{'text-align': (isLoading) ? 'center' : 'left'}">
+              <template v-if="!search || search.length < 3">
+                {{ minSearchCharacterLengthMessage }}
+              </template>
+              <v-progress-circular
+                v-else-if="search && search.length && isLoading"
+                indeterminate
+                color="primary"
+              />
+              <template v-else-if="search && search.length && !isLoading && !searchResult.length">
+                {{ noResultText }}
+              </template>
+            </v-list-item-title>
+          </v-list-item>
+        </template>
+        <template v-slot:item="{ item, props }">
+          <v-list-item v-bind="props">
+            <template #prepend>
+              <v-img
+                v-if="item.raw.icon"
+                :src="item.raw.icon"
+                max-height="24"
+                max-width="24"
+                alt="icon"
+                class="mr-4"
+              />
+              <v-img
+                v-else
+                :src="getIconUrl(item.raw.src_icon)"
+                max-height="24"
+                max-width="24"
+                alt="icon"
+                class="mr-4"
+              />
+            </template>
+            <v-list-item-title v-text="getSearchTitle(item.raw)" />
+            <v-list-item-subtitle v-text="`(${item.raw.code ? item.raw.code + ', ': ''}${searchResultFloorLabel} ${item.raw.floorNum})`" />
+          </v-list-item>
+          </template>
+          </v-autocomplete>
           </div>
         </template>
-        <template v-slot:item="{ item }">
-          <v-list-item-icon style="margin-right: 16px" aria-label="image icon">
-            <v-img
-              v-if="item.icon"
-              :src="item.icon"
-              contain
-              max-height="24"
-              max-width="24"
-              alt="icon"
-            />
-            <v-img
-              v-else
-              :src="getIconUrl(item.src_icon)"
-              contain
-              max-height="24"
-              max-width="24"
-              alt="icon"
-            />
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title v-text="getSearchTitle(item)" />
-            <v-list-item-subtitle v-text="`(${item.code ? item.code + ', ': ''}${searchResultFloorLabel} ${item.floorNum})`" />
-          </v-list-item-content>
-        </template>
-      </v-autocomplete>
-    </template>
   </div>
 </template>
 
@@ -163,14 +158,13 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs/operators';
 import api from '../util/api';
 import MapHandler from '~/util/mapHandler';
+import bus from '~/util/bus';
 
 export default {
   props: {
     isRoute: {
       type: Boolean,
-      default: function () {
-        return false;
-      }
+      default: false
     },
     drawer: {
       type: Boolean,
@@ -178,41 +172,34 @@ export default {
     },
     selected: {
       type: Object,
-      default: function () {
-        return {};
-      }
+      default: () => ({})
     },
     showRoute: {
       type: Boolean,
-      default: function () {
-        return false;
-      }
+      default: false
     },
     routeLabel: {
       type: String,
-      default: function () {
-        return '';
-      }
+      default: ''
     },
     routeType: {
       type: String,
-      default: function () {
-        return 'from';
-      }
+      default: 'from'
     },
     icon: {
       type: String,
-      default: function () {
-        return '';
-      }
+      default: ''
     },
     shouldSearch: {
       type: Boolean,
-      default: function () {
-        return true;
-      }
+      default: true
+    },
+    large: {
+      type: Boolean,
+      default: false
     }
   },
+  emits: ['selectSearchResult', 'clearClicked', 'open-route-drawer', 'showSearch'],
   data () {
     return {
       updateKey: 1,
@@ -235,8 +222,12 @@ export default {
     }
   },
   computed: {
+      currentLocale () {
+        const raw = this.$i18n?.locale
+        return raw && typeof raw === 'object' && 'value' in raw ? raw.value : raw
+      },
     activeClearColor () {
-      return this.search && this.search.length ? 'blue darken-2' : 'grey';
+      return this.search && this.search.length ? 'blue-darken-2' : 'grey';
     }
   },
   watch: {
@@ -272,7 +263,7 @@ export default {
           id: properties.id
         }
       };
-      this.search = MapHandler.getTitle(data, this.$i18n.locale)
+        this.search = MapHandler.getTitle(data, this.currentLocale)
       this.searchResult = [data]
       this.model = data
     }
@@ -302,7 +293,7 @@ export default {
         })
       ).subscribe(response => this.apiSearch(response));
 
-    this.$root.$on('load-search-query', this.onLoadSearchQuery);
+    bus.on('load-search-query', this.onLoadSearchQuery);
   },
   methods: {
     apiSearch (response) {
@@ -371,7 +362,7 @@ export default {
       this.searchResult = [];
       this.apiResponse = [];
     },
-    onLoadSearchQuery (query) {
+    onLoadSearchQuery () {
       this.$emit('showSearch');
       /*      setTimeout(() => {
         const searchField = this.$refs.searchField;
@@ -394,7 +385,7 @@ export default {
     },
     getSearchTitle (data) {
       // return name_*locale if available, name otherwise
-      return data[`name_${this.$i18n.locale}`] || data.name || this.selected.name
+        return data[`name_${this.currentLocale}`] || data.name || this.selected.name
     }
   }
 };
@@ -407,9 +398,7 @@ export default {
   }
   .search-btn {
     border-right: 1px solid #d3d3d3;
-    padding-right: 5px
-  }
-  ::v-deep .v-input__slot {
-    padding-right: 0px !important;
+    padding-right: 5px;
   }
 </style>
+

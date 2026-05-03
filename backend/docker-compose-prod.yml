@@ -50,7 +50,7 @@ services:
   geoserver:
     build:
       context: .
-      dockerfile: ./devops/docker/production/geoserver/Dockerfile
+      dockerfile: ../devops/docker/production/geoserver/Dockerfile
     container_name: geoserver
     image: indrz-tu/geoserver:2.27.1
     volumes:
@@ -75,7 +75,7 @@ services:
     image: indrz/indrz_nginx:latest
     build:
       context: .
-      dockerfile: devops/docker/production/nginx/Dockerfile
+      dockerfile: ../devops/docker/production/nginx/Dockerfile
     volumes:
       - /srv/data/static:/opt/data/static
       - /srv/data/media:/opt/data/media

@@ -25,7 +25,7 @@
         :disabled="!changes"
         color="primary"
         width="70px"
-        small
+        size="small"
         @click.stop.prevent="onSaveButtonClick(true)"
       >
         Save
@@ -33,7 +33,7 @@
       <v-btn
         color="primary"
         width="70px"
-        small
+        size="small"
         @click.stop.prevent="cleanupAndRemoveInteraction(false)"
       >
         Cancel
@@ -56,15 +56,15 @@
         <v-card-actions>
           <v-spacer />
           <v-btn
-            color="error darken-1"
-            text
+            color="error-darken-1"
+            variant="text"
             @click="onSaveButtonClick(false)"
           >
             Yes
           </v-btn>
           <v-btn
-            color="blue darken-1"
-            text
+            color="blue-darken-1"
+            variant="text"
             @click="cleanUp"
           >
             No
@@ -83,6 +83,7 @@ import ActionButtons from './ActionButtons';
 import MapUtil from '~/util/map';
 import api from '~/util/api';
 import 'ol/ol.css';
+import bus from '~/util/bus';
 
 export default {
   name: 'PoiManager',
@@ -119,14 +120,19 @@ export default {
   },
 
   mounted () {
-    this.$root.$on('poiLoad', (data) => {
+    this.onBusPoiLoad = (data) => {
       this.lastLoadedData = { ...data };
       if (this.$refs.map) {
         this.$refs.map.onPoiLoad(data);
       }
-    });
-    this.$root.$on('deletePois', this.deletePois);
+    };
+    bus.on('poiLoad', this.onBusPoiLoad);
+    bus.on('deletePois', this.deletePois);
     this.mapComp = this.$refs.map;
+  },
+  beforeUnmount () {
+    bus.off('poiLoad', this.onBusPoiLoad);
+    bus.off('deletePois', this.deletePois);
   },
 
   methods: {
@@ -298,7 +304,7 @@ export default {
     },
     cleanUp (force = false, mode) {
       if (!force) {
-        this.$root.$emit('addPoiClick');
+        bus.emit('addPoiClick');
       }
       this.cleanupAndRemoveInteraction();
     },

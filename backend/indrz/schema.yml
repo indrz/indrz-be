@@ -1,0 +1,4494 @@
+openapi: 3.0.3
+info:
+  title: INDRZ API
+  version: 1.0.0
+  description: Indoor Mapping and Navigation REST API
+paths:
+  /api/v1/api-token-auth/:
+    post:
+      operationId: api_token_auth_create
+      tags:
+      - api-token-auth
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+  /api/v1/bookway/bookshelf/:
+    get:
+      operationId: bookway_bookshelf_list
+      description: |-
+        This viewset automatically provides `list`, `create`, `retrieve`,
+        `update` and `destroy` actions.
+
+        Additionally we also provide an extra `highlight` action.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - bookway
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBookshelfList'
+          description: ''
+    post:
+      operationId: bookway_bookshelf_create
+      description: |-
+        This viewset automatically provides `list`, `create`, `retrieve`,
+        `update` and `destroy` actions.
+
+        Additionally we also provide an extra `highlight` action.
+      tags:
+      - bookway
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bookshelf'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Bookshelf'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Bookshelf'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookshelf'
+          description: ''
+  /api/v1/bookway/bookshelf/{id}/:
+    get:
+      operationId: bookway_bookshelf_retrieve
+      description: |-
+        This viewset automatically provides `list`, `create`, `retrieve`,
+        `update` and `destroy` actions.
+
+        Additionally we also provide an extra `highlight` action.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this book shelf.
+        required: true
+      tags:
+      - bookway
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookshelf'
+          description: ''
+    put:
+      operationId: bookway_bookshelf_update
+      description: |-
+        This viewset automatically provides `list`, `create`, `retrieve`,
+        `update` and `destroy` actions.
+
+        Additionally we also provide an extra `highlight` action.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this book shelf.
+        required: true
+      tags:
+      - bookway
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bookshelf'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Bookshelf'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Bookshelf'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookshelf'
+          description: ''
+    patch:
+      operationId: bookway_bookshelf_partial_update
+      description: |-
+        This viewset automatically provides `list`, `create`, `retrieve`,
+        `update` and `destroy` actions.
+
+        Additionally we also provide an extra `highlight` action.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this book shelf.
+        required: true
+      tags:
+      - bookway
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBookshelf'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBookshelf'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBookshelf'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookshelf'
+          description: ''
+    delete:
+      operationId: bookway_bookshelf_destroy
+      description: |-
+        This viewset automatically provides `list`, `create`, `retrieve`,
+        `update` and `destroy` actions.
+
+        Additionally we also provide an extra `highlight` action.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this book shelf.
+        required: true
+      tags:
+      - bookway
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/bookway/bookshelf/{id}/shelfdata/:
+    get:
+      operationId: bookway_bookshelf_shelfdata_retrieve
+      description: |-
+        This viewset automatically provides `list`, `create`, `retrieve`,
+        `update` and `destroy` actions.
+
+        Additionally we also provide an extra `highlight` action.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this book shelf.
+        required: true
+      tags:
+      - bookway
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookshelf'
+          description: ''
+  /api/v1/bookway/location/{key_value}:
+    get:
+      operationId: bookway_location_retrieve
+      description: |-
+        get:
+        Return a GeoJSON representation of a shelf
+
+        :param request:
+        :param key_value:
+        :return:
+      parameters:
+      - in: path
+        name: key_value
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      tags:
+      - bookway
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/bookway/search/{key_value}:
+    get:
+      operationId: bookway_search_retrieve
+      description: |-
+        get:
+        Return a GeoJSON representation of a shelf
+
+        :param request:
+        :param key_value:
+        :return:
+      parameters:
+      - in: path
+        name: key_value
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      tags:
+      - bookway
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/bookway/shelf/{key_value}:
+    get:
+      operationId: bookway_shelf_retrieve
+      parameters:
+      - in: path
+        name: key_value
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      tags:
+      - bookway
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/bookway/shelfdata/:
+    get:
+      operationId: bookway_shelfdata_list
+      description: |-
+        This viewset automatically provides `list`, `create`, `retrieve`,
+        `update` and `destroy` actions.
+
+        Additionally we also provide an extra `highlight` action.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - bookway
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedShelfdataList'
+          description: ''
+    post:
+      operationId: bookway_shelfdata_create
+      description: |-
+        This viewset automatically provides `list`, `create`, `retrieve`,
+        `update` and `destroy` actions.
+
+        Additionally we also provide an extra `highlight` action.
+      tags:
+      - bookway
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Shelfdata'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Shelfdata'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Shelfdata'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shelfdata'
+          description: ''
+  /api/v1/bookway/shelfdata/{id}/:
+    get:
+      operationId: bookway_shelfdata_retrieve
+      description: |-
+        This viewset automatically provides `list`, `create`, `retrieve`,
+        `update` and `destroy` actions.
+
+        Additionally we also provide an extra `highlight` action.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this shelf data.
+        required: true
+      tags:
+      - bookway
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shelfdata'
+          description: ''
+    put:
+      operationId: bookway_shelfdata_update
+      description: |-
+        This viewset automatically provides `list`, `create`, `retrieve`,
+        `update` and `destroy` actions.
+
+        Additionally we also provide an extra `highlight` action.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this shelf data.
+        required: true
+      tags:
+      - bookway
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Shelfdata'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Shelfdata'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Shelfdata'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shelfdata'
+          description: ''
+    patch:
+      operationId: bookway_shelfdata_partial_update
+      description: |-
+        This viewset automatically provides `list`, `create`, `retrieve`,
+        `update` and `destroy` actions.
+
+        Additionally we also provide an extra `highlight` action.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this shelf data.
+        required: true
+      tags:
+      - bookway
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedShelfdata'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedShelfdata'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedShelfdata'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shelfdata'
+          description: ''
+    delete:
+      operationId: bookway_shelfdata_destroy
+      description: |-
+        This viewset automatically provides `list`, `create`, `retrieve`,
+        `update` and `destroy` actions.
+
+        Additionally we also provide an extra `highlight` action.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this shelf data.
+        required: true
+      tags:
+      - bookway
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/buildings/:
+    get:
+      operationId: buildings_list
+      description: Readonly return a list of buildings and floors per building
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - buildings
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBuildingList'
+          description: ''
+  /api/v1/buildings/{id}/:
+    get:
+      operationId: buildings_retrieve
+      description: Readonly return a list of buildings and floors per building
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this building.
+        required: true
+      tags:
+      - buildings
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Building'
+          description: ''
+  /api/v1/buildings/{id}/floors/:
+    get:
+      operationId: buildings_floors_retrieve
+      description: Readonly return a list of buildings and floors per building
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this building.
+        required: true
+      tags:
+      - buildings
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Building'
+          description: ''
+  /api/v1/campus/:
+    get:
+      operationId: campus_list
+      description: Return a list of campuse
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - campus
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCampusList'
+          description: ''
+  /api/v1/campus/{id}/:
+    get:
+      operationId: campus_retrieve
+      description: Return a list of campuse
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this campus.
+        required: true
+      tags:
+      - campus
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Campus'
+          description: ''
+  /api/v1/directions/{space_id}&{poi_id}{var}/:
+    get:
+      operationId: directions_&_retrieve
+      description: |-
+        Generate a GeoJSON route between a space-id and a poi-id
+        :param request: GET or POST request
+        :param space_id: an integer of internal space id
+        :param poi_id: an integer of internal poi-id
+        :param route_type: an integer room type either 0 standard or 1 barrierefree
+        :param reversed_direction: route from space-id to poi-id if true, default route from poi-id to space-id
+        :return: a GeoJSON linestring of the route
+      parameters:
+      - in: path
+        name: poi_id
+        schema:
+          type: string
+          pattern: ^poi-id=\d{1,7}$
+        required: true
+      - in: path
+        name: space_id
+        schema:
+          type: string
+          pattern: ^space-id=\d{1,7}$
+        required: true
+      - in: path
+        name: var
+        schema:
+          type: string
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: directions_&_create
+      description: |-
+        Generate a GeoJSON route between a space-id and a poi-id
+        :param request: GET or POST request
+        :param space_id: an integer of internal space id
+        :param poi_id: an integer of internal poi-id
+        :param route_type: an integer room type either 0 standard or 1 barrierefree
+        :param reversed_direction: route from space-id to poi-id if true, default route from poi-id to space-id
+        :return: a GeoJSON linestring of the route
+      parameters:
+      - in: path
+        name: poi_id
+        schema:
+          type: string
+          pattern: ^poi-id=\d{1,7}$
+        required: true
+      - in: path
+        name: space_id
+        schema:
+          type: string
+          pattern: ^space-id=\d{1,7}$
+        required: true
+      - in: path
+        name: var
+        schema:
+          type: string
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/{space_id}&{poi_id}{var}api/v1/directions/{space_id}&{poi_id}(&{reversed}){var}/:
+    get:
+      operationId: directions_&api_v1_directions_&(&)_retrieve
+      description: |-
+        :param request:
+        :param space_id: unique space id
+        :param poi_id: unique poi id
+        :param reversed: boolean to set the direction of route query to allow routing
+        :param route_type: 0 for normal route, 1 for barrierfree route ie no stairs
+
+
+        Usage:   /api/v1/directions/space=1234&poi=456&reversed=false&type=0
+      parameters:
+      - in: path
+        name: poi_id
+        schema:
+          type: string
+          pattern: ^poi=\d{1,10}$
+        required: true
+      - in: path
+        name: reversed
+        schema:
+          type: string
+          pattern: ^reversed=(true|false)$
+        required: true
+      - in: path
+        name: space_id
+        schema:
+          type: string
+          pattern: ^space=\d{1,10}$
+        required: true
+      - in: path
+        name: var
+        schema:
+          type: string
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/{space_id}&{xyz}{reversed}{route_type}/:
+    get:
+      operationId: directions_&_retrieve_2
+      description: |-
+        :param reversed_dir: boolean to set the direction of route query to allow routing
+        from xyz to a space-id
+        :param request:
+        :param start_poi_id: unique single poi id value, integer
+        :param end_xyz: end coordinate pair  x,y  ex) 1826685.08369146,6142499.125477515
+        :param z_floor: integer value used to create the z value of xyz coordinate
+        :param route_type: 0 for shortest route, 1 for barrierfree route ie no stairs
+        :return: GeoJson route from poi id to xyz coordinate
+
+        Usage:   /api/v1/directions/space-id=12764&xyz=1822036.251214,6140092.37464,5&reversed=false&type=0
+      parameters:
+      - in: path
+        name: reversed
+        schema:
+          type: string
+          pattern: ^&reversed=(true|false)$
+        required: true
+      - in: path
+        name: route_type
+        schema:
+          type: string
+          pattern: ^&type=\d{1}$
+        required: true
+      - in: path
+        name: space_id
+        schema:
+          type: string
+          pattern: ^space=\d{1,7}$
+        required: true
+      - in: path
+        name: xyz
+        schema:
+          type: string
+          pattern: ^xyz=[-]?\d+\.?\d+,[-]?\d+\.\d+,[-]?\d+\.\d{1}$
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/{start_coord},{start_floor}&{end_coord},{end_floor}&{route_type}{var}:
+    get:
+      operationId: directions_,&,&_retrieve
+      description: |-
+        Generate a GeoJSON indoor route passing in a start x,y,floor
+        followed by &  then the end x,y,floor
+        Sample request: http:/localhost:8000/api/v1/directions/1587848.414,5879564.080,2&1588005.547,5879736.039,2&0
+        :param request:
+        :param reverse_route: string  "true" or "false"
+        :param start_coord: start location x,y
+        :param start_floor: floor number  ex)  2
+        :param end_coord: end location x,y
+        :param end_floor: end floor ex)  2
+        :param route_type: type of route 1 = barrier-free ex) 1
+        :return: GeoJSON route
+      parameters:
+      - in: path
+        name: end_coord
+        schema:
+          type: string
+          pattern: ^[-]?\d+\.?\d+,\d+\.\d+$
+        required: true
+      - in: path
+        name: end_floor
+        schema:
+          type: string
+          pattern: ^[-]?\d+$
+        required: true
+      - in: path
+        name: route_type
+        schema:
+          type: string
+          pattern: ^[0-9]$
+        required: true
+      - in: path
+        name: start_coord
+        schema:
+          type: string
+          pattern: ^[-]?\d+\.?\d+,\d+\.\d+$
+        required: true
+      - in: path
+        name: start_floor
+        schema:
+          type: string
+          pattern: ^[-]?\d+$
+        required: true
+      - in: path
+        name: var
+        schema:
+          type: string
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: directions_,&,&_create
+      description: |-
+        Generate a GeoJSON indoor route passing in a start x,y,floor
+        followed by &  then the end x,y,floor
+        Sample request: http:/localhost:8000/api/v1/directions/1587848.414,5879564.080,2&1588005.547,5879736.039,2&0
+        :param request:
+        :param reverse_route: string  "true" or "false"
+        :param start_coord: start location x,y
+        :param start_floor: floor number  ex)  2
+        :param end_coord: end location x,y
+        :param end_floor: end floor ex)  2
+        :param route_type: type of route 1 = barrier-free ex) 1
+        :return: GeoJSON route
+      parameters:
+      - in: path
+        name: end_coord
+        schema:
+          type: string
+          pattern: ^[-]?\d+\.?\d+,\d+\.\d+$
+        required: true
+      - in: path
+        name: end_floor
+        schema:
+          type: string
+          pattern: ^[-]?\d+$
+        required: true
+      - in: path
+        name: route_type
+        schema:
+          type: string
+          pattern: ^[0-9]$
+        required: true
+      - in: path
+        name: start_coord
+        schema:
+          type: string
+          pattern: ^[-]?\d+\.?\d+,\d+\.\d+$
+        required: true
+      - in: path
+        name: start_floor
+        schema:
+          type: string
+          pattern: ^[-]?\d+$
+        required: true
+      - in: path
+        name: var
+        schema:
+          type: string
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/{start_poi_id}&{end_poi_id}{route_type}/:
+    get:
+      operationId: directions_&_retrieve_3
+      description: |-
+        Sample Request URL: /directions/start-poi-id=234&end-poi-id=1122&type=0?format=json
+        Optionally restricts the returned purchases to a given poi,
+        by filtering against a `name` query parameter in the URL.
+
+        :param request:
+        :param start-poi-id: integer start-poi-id
+        :param end-poi-id: integer end-poi-id
+        :param route_type: integer 0 normal route 1 barrierer free route
+        :return:
+      parameters:
+      - in: path
+        name: end_poi_id
+        schema:
+          type: string
+          pattern: ^end-poi-id=\d{1,7}$
+        required: true
+      - in: path
+        name: route_type
+        schema:
+          type: string
+          pattern: ^&type=\d{1}$
+        required: true
+      - in: path
+        name: start_poi_id
+        schema:
+          type: string
+          pattern: ^start-poi-id=\d{1,7}$
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/{start_poi_id}&{end_poi_id}{var}{route_type}/:
+    get:
+      operationId: directions_&_retrieve_4
+      description: |-
+        Sample Request URL: /directions/start-poi-id=234&end-poi-id=1122&type=0?format=json
+        Optionally restricts the returned purchases to a given poi,
+        by filtering against a `name` query parameter in the URL.
+
+        :param request:
+        :param start-poi-id: integer start-poi-id
+        :param end-poi-id: integer end-poi-id
+        :param route_type: integer 0 normal route 1 barrierer free route
+        :return:
+      parameters:
+      - in: path
+        name: end_poi_id
+        schema:
+          type: string
+          pattern: ^poi=\d{1,7}$
+        required: true
+      - in: path
+        name: route_type
+        schema:
+          type: string
+          pattern: ^&type=\d{1,5}$
+        required: true
+      - in: path
+        name: start_poi_id
+        schema:
+          type: string
+          pattern: ^poi=\d{1,7}$
+        required: true
+      - in: path
+        name: var
+        schema:
+          type: string
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/{start_poi_id}&{end_xyz}{var}api/v1/directions/{start_poi_id}&{end_xyz}(&{reversed}){var}/:
+    get:
+      operationId: directions_&api_v1_directions_&(&)_retrieve_2
+      description: |-
+        :param reversed_dir: boolean to set the direction of route query to allow routing
+        from xyz to a poi
+        :param request:
+        :param start_poi_id: unique single poi id value, integer
+        :param end_xyz: end coordinate pair  x,y  ex) 1826685.08369146,6142499.125477515
+        :param z_floor: integer value used to create the z value of xyz coordinate
+        :param route_type: 0 for shortest route, 1 for barrierfree route ie no stairs
+        :return: GeoJson route from poi id to xyz coordinate
+
+        Usage:   http://localhost:8000/api/v1/directions/poi-id=12764&xyz=1822036.251214,6140092.37464&floor=5&reversed=false&type=0
+      parameters:
+      - in: path
+        name: end_xyz
+        schema:
+          type: string
+          pattern: ^xyz=[-]?\d+\.?\d+,[-]?\d+\.\d+,[-]?\d+\.\d{1}$
+        required: true
+      - in: path
+        name: reversed
+        schema:
+          type: string
+          pattern: ^reversed=(true|false)$
+        required: true
+      - in: path
+        name: start_poi_id
+        schema:
+          type: string
+          pattern: ^poi=\d{1,10}$
+        required: true
+      - in: path
+        name: var
+        schema:
+          type: string
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/{start_poi_id}&{end_xyz}&{z_floor}&{reversed_dir}{route_type}/:
+    get:
+      operationId: directions_&&&_retrieve
+      description: |-
+        :param reversed_dir: boolean to set the direction of route query to allow routing
+        from xyz to a poi
+        :param request:
+        :param start_poi_id: unique single poi id value, integer
+        :param end_xyz: end coordinate pair  x,y  ex) 1826685.08369146,6142499.125477515
+        :param z_floor: integer value used to create the z value of xyz coordinate
+        :param route_type: 0 for shortest route, 1 for barrierfree route ie no stairs
+        :return: GeoJson route from poi id to xyz coordinate
+
+        Usage:   http://localhost:8000/api/v1/directions/poi-id=12764&xyz=1822036.251214,6140092.37464&floor=5&reversed=false&type=0
+      parameters:
+      - in: path
+        name: end_xyz
+        schema:
+          type: string
+          pattern: ^xyz=[-]?\d+\.?\d+,\d+\.\d+$
+        required: true
+      - in: path
+        name: reversed_dir
+        schema:
+          type: string
+          pattern: ^reversed=(true|false)$
+        required: true
+      - in: path
+        name: route_type
+        schema:
+          type: string
+          pattern: ^&type=\d{1,5}$
+        required: true
+      - in: path
+        name: start_poi_id
+        schema:
+          type: string
+          pattern: ^poi-id=\d{1,7}$
+        required: true
+      - in: path
+        name: z_floor
+        schema:
+          type: string
+          pattern: ^floor=[-]?\d+$
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/{start_room_id}&{end_room_id}{var}{front_office_id}/:
+    get:
+      operationId: directions_&_retrieve_5
+      description: |-
+        Generate a GeoJSON route from space id to space id
+        :param request: GET or POST request
+        :param start_room_id: an integer space id
+        :param end_room_id: an integer space id
+        :param route_type: an integer route type
+        :param front_office_id: an integer of space id for the front office
+        :return: a GeoJSON linestring of the route
+      parameters:
+      - in: path
+        name: end_room_id
+        schema:
+          type: string
+          pattern: ^endid=\d{1,7}$
+        required: true
+      - in: path
+        name: front_office_id
+        schema:
+          type: string
+          pattern: ^&foid=\d{1,7}$
+        required: true
+      - in: path
+        name: start_room_id
+        schema:
+          type: string
+          pattern: ^startid=\d{1,10}$
+        required: true
+      - in: path
+        name: var
+        schema:
+          type: string
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: directions_&_create_2
+      description: |-
+        Generate a GeoJSON route from space id to space id
+        :param request: GET or POST request
+        :param start_room_id: an integer space id
+        :param end_room_id: an integer space id
+        :param route_type: an integer route type
+        :param front_office_id: an integer of space id for the front office
+        :return: a GeoJSON linestring of the route
+      parameters:
+      - in: path
+        name: end_room_id
+        schema:
+          type: string
+          pattern: ^endid=\d{1,7}$
+        required: true
+      - in: path
+        name: front_office_id
+        schema:
+          type: string
+          pattern: ^&foid=\d{1,7}$
+        required: true
+      - in: path
+        name: start_room_id
+        schema:
+          type: string
+          pattern: ^startid=\d{1,10}$
+        required: true
+      - in: path
+        name: var
+        schema:
+          type: string
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/{start_space_id}&{end_space_id}{var}api/v1/directions/{start_space_id}&{end_space_id}(&{reversed}){var}/:
+    get:
+      operationId: directions_&api_v1_directions_&(&)_retrieve_3
+      description: |-
+        :param request:
+        :param space_id: unique space id
+        :param poi_id: unique poi id
+        :param reversed: boolean to set the direction of route query to allow routing
+        :param route_type: 0 for normal route, 1 for barrierfree route ie no stairs
+
+
+        Usage:   /api/v1/directions/space=1234&space=456&reversed=false&type=0
+      parameters:
+      - in: path
+        name: end_space_id
+        schema:
+          type: string
+          pattern: ^space=\d{1,10}$
+        required: true
+      - in: path
+        name: reversed
+        schema:
+          type: string
+          pattern: ^reversed=(true|false)$
+        required: true
+      - in: path
+        name: start_space_id
+        schema:
+          type: string
+          pattern: ^space=\d{1,10}$
+        required: true
+      - in: path
+        name: var
+        schema:
+          type: string
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/{start_term}&{end_term}&{route_type}/:
+    get:
+      operationId: directions_&&_retrieve
+      description: |-
+        Generate a GeoJSON route from room number
+        to room number
+        :param request: GET or POST request
+        :param building_id: buiilding id as integer
+        :param start_term: a text string as search term
+        :param end_term: a text string as search term
+        :param route_type: an integer room type
+        :return: a GeoJSON linestring of the route
+      parameters:
+      - in: path
+        name: end_term
+        schema:
+          type: string
+          pattern: ^endstr=.+$
+        required: true
+      - in: path
+        name: route_type
+        schema:
+          type: string
+          pattern: ^type=\d{1,7}$
+        required: true
+      - in: path
+        name: start_term
+        schema:
+          type: string
+          pattern: ^startstr=.+$
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: directions_&&_create
+      description: |-
+        Generate a GeoJSON route from room number
+        to room number
+        :param request: GET or POST request
+        :param building_id: buiilding id as integer
+        :param start_term: a text string as search term
+        :param end_term: a text string as search term
+        :param route_type: an integer room type
+        :return: a GeoJSON linestring of the route
+      parameters:
+      - in: path
+        name: end_term
+        schema:
+          type: string
+          pattern: ^endstr=.+$
+        required: true
+      - in: path
+        name: route_type
+        schema:
+          type: string
+          pattern: ^type=\d{1,7}$
+        required: true
+      - in: path
+        name: start_term
+        schema:
+          type: string
+          pattern: ^startstr=.+$
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/{start_xyz}&{end_xyz}{var}{route_type}/:
+    get:
+      operationId: directions_&_retrieve_6
+      description: |-
+        :param request:
+        :param start_xyz: unique coordinate pair x,y,z  all as floats
+        :param end_xyz: end coordinate pair  x,y,z all as floats
+        :param route_type: 0 for shortest route, 1 for barrierfree route ie no stairs
+        :return: GeoJson route from xyz id to xyz coordinate
+
+        Usage:   /api/v1/directions/start_xyz=1234.34,2345.45,3.0&end_xyz=456.34,6789.45,2.0&type=0
+      parameters:
+      - in: path
+        name: end_xyz
+        schema:
+          type: string
+          pattern: ^end_xyz=[-]?\d+\.?\d+,[-]?\d+\.\d+,[-]?\d+\.\d{1}$
+        required: true
+      - in: path
+        name: route_type
+        schema:
+          type: string
+          pattern: ^&type=\d{1,5}$
+        required: true
+      - in: path
+        name: start_xyz
+        schema:
+          type: string
+          pattern: ^start_xyz=[-]?\d+\.?\d+,[-]?\d+\.\d+,[-]?\d+\.\d{1}$
+        required: true
+      - in: path
+        name: var
+        schema:
+          type: string
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/{start_xy}&{floor}{var}(P{reversed}&reversed=(true|false)){route_type}/:
+    get:
+      operationId: directions_&(P&reversed=(true|false))_retrieve
+      parameters:
+      - in: path
+        name: floor
+        schema:
+          type: string
+          pattern: ^floor=[-]?\d+$
+        required: true
+      - in: path
+        name: reversed
+        schema:
+          type: string
+          pattern: ^&reversed=(true|false)$
+        required: true
+      - in: path
+        name: route_type
+        schema:
+          type: string
+          pattern: ^&type=\d{1,5}$
+        required: true
+      - in: path
+        name: start_xy
+        schema:
+          type: string
+          pattern: ^startxy=[-]?\d+\.?\d+,\d+\.\d+$
+        required: true
+      - in: path
+        name: var
+        schema:
+          type: string
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/force_mid/:
+    get:
+      operationId: directions_force_mid_retrieve
+      description: |-
+        Force a route over a middle point such as a front office
+        :return: a single GeoJSON featureCollection with a middle point
+        :param
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: directions_force_mid_create
+      description: |-
+        Force a route over a middle point such as a front office
+        :return: a single GeoJSON featureCollection with a middle point
+        :param
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/near/{coordinates}&{floor}{var}/:
+    get:
+      operationId: directions_near_&_retrieve
+      description: |-
+        :param request: get request
+        :param coordinates: coordinate pair x,y format  1234.56,987.54
+        :param floor: integer number between -1 and 8
+        :param poi_cat_id: integer
+        :return: JSON poi data
+        :example /api/v1/directions/near/coords=1826699.1815499999,6142531.790750001&floor=5&poiCatId=13/?format=json
+      parameters:
+      - in: path
+        name: coordinates
+        schema:
+          type: string
+          pattern: ^coords=[-]?\d+\.?\d+,\d+\.\d+$
+        required: true
+      - in: path
+        name: floor
+        schema:
+          type: string
+          pattern: ^floor=[-]?\d+$
+        required: true
+      - in: path
+        name: var
+        schema:
+          type: string
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/node-route-network/:
+    get:
+      operationId: directions_node_route_network_retrieve
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/directions/routing-edges/:
+    get:
+      operationId: directions_routing_edges_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRoutingEdgeList'
+          description: ''
+    post:
+      operationId: directions_routing_edges_create
+      tags:
+      - directions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoutingEdge'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RoutingEdge'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RoutingEdge'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingEdge'
+          description: ''
+  /api/v1/directions/routing-edges/{id}/:
+    get:
+      operationId: directions_routing_edges_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this routing edge.
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingEdge'
+          description: ''
+    put:
+      operationId: directions_routing_edges_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this routing edge.
+        required: true
+      tags:
+      - directions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoutingEdge'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RoutingEdge'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RoutingEdge'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingEdge'
+          description: ''
+    patch:
+      operationId: directions_routing_edges_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this routing edge.
+        required: true
+      tags:
+      - directions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRoutingEdge'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRoutingEdge'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRoutingEdge'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingEdge'
+          description: ''
+    delete:
+      operationId: directions_routing_edges_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this routing edge.
+        required: true
+      tags:
+      - directions
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/directions/routing-edges/bulk-save/:
+    post:
+      operationId: directions_routing_edges_bulk_save_create
+      description: Apply created, updated, deleted changes in one transaction.
+      tags:
+      - directions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoutingEdge'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RoutingEdge'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RoutingEdge'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingEdge'
+          description: ''
+  /api/v1/floor/:
+    get:
+      operationId: floor_list
+      description: Return a list of floors
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - floor
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedFloorList'
+          description: ''
+  /api/v1/floor/{id}/:
+    get:
+      operationId: floor_retrieve
+      description: Return a list of floors
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this building floor.
+        required: true
+      tags:
+      - floor
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Floor'
+          description: ''
+  /api/v1/groups/:
+    get:
+      operationId: groups_list
+      description: API endpoint that allows groups to be viewed or edited.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - groups
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGroupList'
+          description: ''
+    post:
+      operationId: groups_create
+      description: API endpoint that allows groups to be viewed or edited.
+      tags:
+      - groups
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Group'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Group'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: ''
+  /api/v1/groups/{id}/:
+    get:
+      operationId: groups_retrieve
+      description: API endpoint that allows groups to be viewed or edited.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group.
+        required: true
+      tags:
+      - groups
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: ''
+    put:
+      operationId: groups_update
+      description: API endpoint that allows groups to be viewed or edited.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group.
+        required: true
+      tags:
+      - groups
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Group'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Group'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: ''
+    patch:
+      operationId: groups_partial_update
+      description: API endpoint that allows groups to be viewed or edited.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group.
+        required: true
+      tags:
+      - groups
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGroup'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedGroup'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedGroup'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: ''
+    delete:
+      operationId: groups_destroy
+      description: API endpoint that allows groups to be viewed or edited.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group.
+        required: true
+      tags:
+      - groups
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/poi/:
+    get:
+      operationId: poi_list
+      description: A simple ViewSet for viewing and editing the POI
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPoiList'
+          description: ''
+    post:
+      operationId: poi_create
+      description: |-
+        #checks if post request data is an array initializes serializer with many=True
+        else executes default CreateModelMixin.create function
+      tags:
+      - poi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Poi'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Poi'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Poi'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Poi'
+          description: ''
+  /api/v1/poi/{id}/:
+    get:
+      operationId: poi_retrieve
+      description: A simple ViewSet for viewing and editing the POI
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi.
+        required: true
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Poi'
+          description: ''
+    put:
+      operationId: poi_update
+      description: A simple ViewSet for viewing and editing the POI
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi.
+        required: true
+      tags:
+      - poi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Poi'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Poi'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Poi'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Poi'
+          description: ''
+    patch:
+      operationId: poi_partial_update
+      description: A simple ViewSet for viewing and editing the POI
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi.
+        required: true
+      tags:
+      - poi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPoi'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPoi'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPoi'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Poi'
+          description: ''
+    delete:
+      operationId: poi_destroy
+      description: A simple ViewSet for viewing and editing the POI
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi.
+        required: true
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/poi/cat/{cat_id}/:
+    get:
+      operationId: poi_cat_retrieve
+      description: |-
+        Get all poi features for children and grandchildren of incomping parent cateogry id
+        :param request:
+        :param campus_id: id of campus as integer
+        :param cat_id:
+        :param format:
+        :return:
+      parameters:
+      - in: path
+        name: cat_id
+        schema:
+          type: string
+          pattern: ^\d{1,6}$
+        required: true
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/poi/category/:
+    get:
+      operationId: poi_category_list
+      description: A simple ViewSet for viewing and editing the POI Category
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPoiCategoryList'
+          description: ''
+    post:
+      operationId: poi_category_create
+      description: A simple ViewSet for viewing and editing the POI Category
+      tags:
+      - poi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PoiCategory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PoiCategory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PoiCategory'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiCategory'
+          description: ''
+  /api/v1/poi/category/{id}/:
+    get:
+      operationId: poi_category_retrieve
+      description: A simple ViewSet for viewing and editing the POI Category
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi category.
+        required: true
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiCategory'
+          description: ''
+    put:
+      operationId: poi_category_update
+      description: A simple ViewSet for viewing and editing the POI Category
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi category.
+        required: true
+      tags:
+      - poi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PoiCategory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PoiCategory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PoiCategory'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiCategory'
+          description: ''
+    patch:
+      operationId: poi_category_partial_update
+      description: A simple ViewSet for viewing and editing the POI Category
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi category.
+        required: true
+      tags:
+      - poi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPoiCategory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPoiCategory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPoiCategory'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiCategory'
+          description: ''
+    delete:
+      operationId: poi_category_destroy
+      description: A simple ViewSet for viewing and editing the POI Category
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi category.
+        required: true
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/poi/icon/:
+    get:
+      operationId: poi_icon_list
+      description: A simple ViewSet for viewing and editing the POI Icons
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPoiIconList'
+          description: ''
+    post:
+      operationId: poi_icon_create
+      description: A simple ViewSet for viewing and editing the POI Icons
+      tags:
+      - poi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PoiIcon'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PoiIcon'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PoiIcon'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiIcon'
+          description: ''
+  /api/v1/poi/icon/{id}/:
+    get:
+      operationId: poi_icon_retrieve
+      description: A simple ViewSet for viewing and editing the POI Icons
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi icon.
+        required: true
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiIcon'
+          description: ''
+    put:
+      operationId: poi_icon_update
+      description: A simple ViewSet for viewing and editing the POI Icons
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi icon.
+        required: true
+      tags:
+      - poi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PoiIcon'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PoiIcon'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PoiIcon'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiIcon'
+          description: ''
+    patch:
+      operationId: poi_icon_partial_update
+      description: A simple ViewSet for viewing and editing the POI Icons
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi icon.
+        required: true
+      tags:
+      - poi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPoiIcon'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPoiIcon'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPoiIcon'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiIcon'
+          description: ''
+    delete:
+      operationId: poi_icon_destroy
+      description: A simple ViewSet for viewing and editing the POI Icons
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi icon.
+        required: true
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/poi/images/:
+    get:
+      operationId: poi_images_list
+      description: A ViewSet for viewing and editing POI Images.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPoiImageList'
+          description: ''
+    post:
+      operationId: poi_images_create
+      description: A ViewSet for viewing and editing POI Images.
+      tags:
+      - poi
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PoiImage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PoiImage'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiImage'
+          description: ''
+  /api/v1/poi/images/{id}/:
+    get:
+      operationId: poi_images_retrieve
+      description: A ViewSet for viewing and editing POI Images.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi images.
+        required: true
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiImage'
+          description: ''
+    put:
+      operationId: poi_images_update
+      description: A ViewSet for viewing and editing POI Images.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi images.
+        required: true
+      tags:
+      - poi
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PoiImage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PoiImage'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiImage'
+          description: ''
+    patch:
+      operationId: poi_images_partial_update
+      description: A ViewSet for viewing and editing POI Images.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi images.
+        required: true
+      tags:
+      - poi
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPoiImage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPoiImage'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiImage'
+          description: ''
+    delete:
+      operationId: poi_images_destroy
+      description: A ViewSet for viewing and editing POI Images.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this poi images.
+        required: true
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/poi/roots/:
+    get:
+      operationId: poi_roots_retrieve
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/poi/search/{poi_name}:
+    get:
+      operationId: poi_search_retrieve
+      parameters:
+      - in: path
+        name: poi_name
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/poi/tree/:
+    get:
+      operationId: poi_tree_retrieve
+      tags:
+      - poi
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/search/{q}/:
+    get:
+      operationId: search_retrieve
+      parameters:
+      - in: path
+        name: q
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      tags:
+      - search
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/share/poi-category/{cat_id}/:
+    get:
+      operationId: share_poi_category_retrieve
+      description: |-
+        Get all poi features for children and grandchildren of incomping parent cateogry id
+        :param request:
+        :param campus_id: id of campus as integer
+        :param cat_id:
+        :param format:
+        :return:
+      parameters:
+      - in: path
+        name: cat_id
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - share
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/share/poi/{poi_id}/:
+    get:
+      operationId: share_poi_retrieve
+      parameters:
+      - in: path
+        name: poi_id
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - share
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/share/space/{roomcode}/:
+    get:
+      operationId: share_space_retrieve
+      description: Get information about a single space providing, building_id, floor_id,
+        space_id
+      parameters:
+      - in: path
+        name: roomcode
+        schema:
+          type: string
+          pattern: ^.{5,12}$
+        required: true
+      tags:
+      - share
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/space/:
+    get:
+      operationId: space_list
+      description: Return a list of floors
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - space
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBuildingFloorSpaceList'
+          description: ''
+  /api/v1/space/{id}/:
+    get:
+      operationId: space_retrieve
+      description: Return a list of floors
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this building floor space.
+        required: true
+      tags:
+      - space
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingFloorSpace'
+          description: ''
+  /api/v1/users/:
+    get:
+      operationId: users_list
+      description: API endpoint that allows users to be viewed or edited.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - users
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserList'
+          description: ''
+    post:
+      operationId: users_create
+      description: API endpoint that allows users to be viewed or edited.
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/users/{id}/:
+    get:
+      operationId: users_retrieve
+      description: API endpoint that allows users to be viewed or edited.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - users
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: users_update
+      description: API endpoint that allows users to be viewed or edited.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: users_partial_update
+      description: API endpoint that allows users to be viewed or edited.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: users_destroy
+      description: API endpoint that allows users to be viewed or edited.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - users
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/wing/:
+    get:
+      operationId: wing_list
+      description: Return a list of floors
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - wing
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWingList'
+          description: ''
+  /api/v1/wing/{id}/:
+    get:
+      operationId: wing_retrieve
+      description: Return a list of floors
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this wing.
+        required: true
+      tags:
+      - wing
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wing'
+          description: ''
+components:
+  schemas:
+    AuthToken:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        token:
+          type: string
+          readOnly: true
+      required:
+      - password
+      - token
+      - username
+    Bookshelf:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
+        id:
+          type: integer
+          readOnly: true
+        geometry:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - MultiLineString
+            coordinates:
+              type: array
+              items:
+                type: array
+                items:
+                  type: array
+                  items:
+                    type: number
+                    format: float
+                  example:
+                  - 12.9721
+                  - 77.5933
+                  minItems: 2
+                  maxItems: 3
+                example:
+                - - 22.4707
+                  - 70.0577
+                - - 12.9721
+                  - 77.5933
+                minItems: 2
+        properties:
+          type: object
+          properties:
+            external_id:
+              type: string
+              title: External Shelf ID
+              maxLength: 255
+            left_from_label:
+              type: string
+              nullable: true
+              description: Map left label range shown on the 2d map
+              maxLength: 150
+            left_to_label:
+              type: string
+              nullable: true
+              description: Map left label range shown on the 2d map
+              maxLength: 150
+            right_from_label:
+              type: string
+              nullable: true
+              description: Map right label range shown on the 2d map
+              maxLength: 150
+            right_to_label:
+              type: string
+              nullable: true
+              description: Map right label range shown on the 2d map
+              maxLength: 150
+            double_sided:
+              type: boolean
+              nullable: true
+              title: Does the shelf have two sides
+            rotation:
+              type: integer
+              maximum: 2147483647
+              minimum: -2147483648
+              nullable: true
+              title: Rotation angle of the bookshelf
+            length:
+              type: string
+              format: decimal
+              pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+              nullable: true
+              title: Length in m of bookshelf
+            width:
+              type: string
+              format: decimal
+              pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+              nullable: true
+              title: Width in m of bookshelf
+            depth:
+              type: string
+              format: decimal
+              pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+              nullable: true
+              title: Depth in m of bookshelf
+            building:
+              type: integer
+            building_floor:
+              type: integer
+            floor_num:
+              type: string
+              readOnly: true
+    BookshelfList:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureCollectionEnum'
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/Bookshelf'
+    Building:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
+        id:
+          type: integer
+          readOnly: true
+        geometry:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - Point
+            coordinates:
+              type: array
+              items:
+                type: number
+                format: float
+              example:
+              - 12.9721
+              - 77.5933
+              minItems: 2
+              maxItems: 3
+        properties:
+          type: object
+          properties:
+            building_name:
+              type: string
+              nullable: true
+              maxLength: 128
+            name:
+              type: string
+              readOnly: true
+            abbreviation:
+              type: string
+              readOnly: true
+            floor_num:
+              type: string
+              readOnly: true
+            campus:
+              type: integer
+              nullable: true
+            wings:
+              type: string
+              nullable: true
+              title: Wing
+              maxLength: 800
+            floor_list:
+              type: string
+              readOnly: true
+            street:
+              type: string
+              nullable: true
+              maxLength: 256
+            postal_code:
+              type: string
+              nullable: true
+              maxLength: 8
+            municipality:
+              type: string
+              nullable: true
+              maxLength: 256
+            city:
+              type: string
+              nullable: true
+              maxLength: 256
+    BuildingFloorSpace:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
+        id:
+          type: integer
+          readOnly: true
+        geometry:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - MultiPolygon
+            coordinates:
+              type: array
+              items:
+                type: array
+                items:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: number
+                      format: float
+                    example:
+                    - 12.9721
+                    - 77.5933
+                    minItems: 2
+                    maxItems: 3
+                  example:
+                  - - 22.4707
+                    - 70.0577
+                  - - 12.9721
+                    - 77.5933
+                  minItems: 4
+                example:
+                - - - 0.0
+                    - 0.0
+                  - - 0.0
+                    - 50.0
+                  - - 50.0
+                    - 50.0
+                  - - 50.0
+                    - 0.0
+                  - - 0.0
+                    - 0.0
+        properties:
+          type: object
+          properties:
+            short_name:
+              type: string
+              nullable: true
+              maxLength: 150
+            long_name:
+              type: string
+              nullable: true
+              maxLength: 150
+            name:
+              type: string
+              readOnly: true
+            floor_num:
+              type: number
+              format: double
+              nullable: true
+              title: Floor number
+            room_code:
+              type: string
+              nullable: true
+              maxLength: 150
+            fk_building:
+              type: integer
+              nullable: true
+            building_name:
+              type: string
+              readOnly: true
+            fk_building_floor:
+              type: integer
+            room_external_id:
+              type: string
+              nullable: true
+              title: Room id imported from external system
+              maxLength: 150
+            room_description:
+              type: string
+              nullable: true
+              maxLength: 150
+            space_type:
+              type: integer
+              nullable: true
+            floor_name:
+              type: string
+              readOnly: true
+            type_name:
+              type: string
+              readOnly: true
+            category_en:
+              type: string
+              readOnly: true
+            category_de:
+              type: string
+              readOnly: true
+            capacity:
+              type: integer
+              maximum: 2147483647
+              minimum: -2147483648
+              nullable: true
+              title: Total number of occupants allowed in this space
+            wing:
+              type: string
+              readOnly: true
+    BuildingFloorSpaceList:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureCollectionEnum'
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildingFloorSpace'
+    BuildingList:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureCollectionEnum'
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/Building'
+    Campus:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Campus name
+          maxLength: 128
+        description:
+          type: string
+          nullable: true
+          title: Building description
+          maxLength: 256
+        fk_organization:
+          type: integer
+        centroid:
+          type: string
+          readOnly: true
+        extent:
+          type: string
+          readOnly: true
+      required:
+      - centroid
+      - extent
+      - fk_organization
+      - id
+      - name
+    Floor:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        short_name:
+          type: string
+          nullable: true
+          title: Short name eg first floor
+          maxLength: 150
+        floor_num:
+          type: number
+          format: double
+          title: Floor number
+        fk_building:
+          type: integer
+      required:
+      - fk_building
+      - id
+    GisFeatureCollectionEnum:
+      type: string
+      enum:
+      - FeatureCollection
+    GisFeatureEnum:
+      type: string
+      enum:
+      - Feature
+    Group:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          readOnly: true
+      required:
+      - url
+    NullEnum:
+      enum:
+      - null
+    PaginatedBookshelfList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          $ref: '#/components/schemas/BookshelfList'
+    PaginatedBuildingFloorSpaceList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          $ref: '#/components/schemas/BuildingFloorSpaceList'
+    PaginatedBuildingList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          $ref: '#/components/schemas/BuildingList'
+    PaginatedCampusList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Campus'
+    PaginatedFloorList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Floor'
+    PaginatedGroupList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+    PaginatedPoiCategoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoiCategory'
+    PaginatedPoiIconList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoiIcon'
+    PaginatedPoiImageList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoiImage'
+    PaginatedPoiList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          $ref: '#/components/schemas/PoiList'
+    PaginatedRoutingEdgeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          $ref: '#/components/schemas/RoutingEdgeList'
+    PaginatedShelfdataList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shelfdata'
+    PaginatedUserList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    PaginatedWingList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Wing'
+    PatchedBookshelf:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
+        id:
+          type: integer
+          readOnly: true
+        geometry:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - MultiLineString
+            coordinates:
+              type: array
+              items:
+                type: array
+                items:
+                  type: array
+                  items:
+                    type: number
+                    format: float
+                  example:
+                  - 12.9721
+                  - 77.5933
+                  minItems: 2
+                  maxItems: 3
+                example:
+                - - 22.4707
+                  - 70.0577
+                - - 12.9721
+                  - 77.5933
+                minItems: 2
+        properties:
+          type: object
+          properties:
+            external_id:
+              type: string
+              title: External Shelf ID
+              maxLength: 255
+            left_from_label:
+              type: string
+              nullable: true
+              description: Map left label range shown on the 2d map
+              maxLength: 150
+            left_to_label:
+              type: string
+              nullable: true
+              description: Map left label range shown on the 2d map
+              maxLength: 150
+            right_from_label:
+              type: string
+              nullable: true
+              description: Map right label range shown on the 2d map
+              maxLength: 150
+            right_to_label:
+              type: string
+              nullable: true
+              description: Map right label range shown on the 2d map
+              maxLength: 150
+            double_sided:
+              type: boolean
+              nullable: true
+              title: Does the shelf have two sides
+            rotation:
+              type: integer
+              maximum: 2147483647
+              minimum: -2147483648
+              nullable: true
+              title: Rotation angle of the bookshelf
+            length:
+              type: string
+              format: decimal
+              pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+              nullable: true
+              title: Length in m of bookshelf
+            width:
+              type: string
+              format: decimal
+              pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+              nullable: true
+              title: Width in m of bookshelf
+            depth:
+              type: string
+              format: decimal
+              pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+              nullable: true
+              title: Depth in m of bookshelf
+            building:
+              type: integer
+            building_floor:
+              type: integer
+            floor_num:
+              type: string
+              readOnly: true
+    PatchedGroup:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          readOnly: true
+    PatchedPoi:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
+        id:
+          type: integer
+          readOnly: true
+        geometry:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - MultiPoint
+            coordinates:
+              type: array
+              items:
+                type: array
+                items:
+                  type: number
+                  format: float
+                example:
+                - 12.9721
+                - 77.5933
+                minItems: 2
+                maxItems: 3
+        properties:
+          type: object
+          properties:
+            icon:
+              type: string
+              readOnly: true
+            images:
+              type: string
+              readOnly: true
+            name:
+              type: string
+              nullable: true
+              maxLength: 255
+            name_en:
+              type: string
+              nullable: true
+              maxLength: 255
+            name_de:
+              type: string
+              nullable: true
+              maxLength: 255
+            floor_num:
+              type: number
+              format: double
+              nullable: true
+              title: Floor number
+            floor_name:
+              type: string
+              nullable: true
+              maxLength: 200
+            description:
+              type: string
+              nullable: true
+              maxLength: 255
+            enabled:
+              type: boolean
+              nullable: true
+              title: Activated and enabled
+            poi_tags:
+              type: array
+              items:
+                type: string
+                maxLength: 50
+              nullable: true
+            html_content:
+              type: string
+              nullable: true
+            html_content_de:
+              type: string
+              nullable: true
+              title: DE HTML content
+            floor:
+              type: integer
+              nullable: true
+            campus:
+              type: integer
+              nullable: true
+            category:
+              type: integer
+    PatchedPoiCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        cat_name:
+          type: string
+          nullable: true
+          title: Category name
+          maxLength: 255
+        cat_name_en:
+          type: string
+          nullable: true
+          maxLength: 255
+        cat_name_de:
+          type: string
+          nullable: true
+          maxLength: 255
+        icon:
+          type: string
+          readOnly: true
+        fk_poi_icon:
+          type: integer
+          nullable: true
+        enabled:
+          type: boolean
+          nullable: true
+          title: Activated and enabled
+        parent:
+          type: integer
+          nullable: true
+        html_content:
+          type: string
+          nullable: true
+        html_content_de:
+          type: string
+          nullable: true
+          title: DE HTML content
+        tree_order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+          title: Tree order in legend
+        description:
+          type: string
+          nullable: true
+          maxLength: 255
+    PatchedPoiIcon:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Name of map icon
+          maxLength: 255
+        icon:
+          type: string
+          format: uri
+          title: Poi icon image
+    PatchedPoiImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        poi:
+          type: integer
+        image:
+          type: string
+          format: uri
+          title: POI images
+        thumbnail:
+          type: string
+          format: uri
+          readOnly: true
+          nullable: true
+          title: POI Image Thumbnail
+        alt_text:
+          type: string
+          title: Html image alt text
+          maxLength: 255
+        sort_order:
+          type: integer
+          maximum: 32767
+          minimum: 0
+          nullable: true
+          title: Order of images
+        is_default:
+          type: boolean
+    PatchedRoutingEdge:
+      type: object
+      description: GeoJSON serializer for a single routing edge.
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
+        id:
+          type: integer
+          readOnly: true
+        geometry:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - LineString
+            coordinates:
+              type: array
+              items:
+                type: array
+                items:
+                  type: number
+                  format: float
+                example:
+                - 12.9721
+                - 77.5933
+                minItems: 2
+                maxItems: 3
+              example:
+              - - 22.4707
+                - 70.0577
+              - - 12.9721
+                - 77.5933
+              minItems: 2
+        properties:
+          type: object
+          properties:
+            campus:
+              type: integer
+            building:
+              type: integer
+            floor_from:
+              type: integer
+            floor_to:
+              type: integer
+            line_type:
+              enum:
+              - indoor
+              - outdoor
+              - elevator
+              - elevator-no-floor-change
+              - stairs
+              - stairs-no-floor-change
+              - ramps
+              type: string
+              description: |-
+                * `indoor` - Indoor
+                * `outdoor` - Outdoor
+                * `elevator` - Elevator
+                * `elevator-no-floor-change` - Elevator (no floor change)
+                * `stairs` - Stairs
+                * `stairs-no-floor-change` - Stairs (no floor change)
+                * `ramps` - Ramps
+            is_private:
+              type: boolean
+              description: If true, this edge is only usable in private routes.
+            cost:
+              type: number
+              format: double
+            reverse_cost:
+              type: number
+              format: double
+              nullable: true
+            created_at:
+              type: string
+              format: date-time
+              readOnly: true
+            updated_at:
+              type: string
+              format: date-time
+              readOnly: true
+    PatchedShelfdata:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building_floor:
+          type: integer
+          nullable: true
+        building:
+          type: integer
+          nullable: true
+        external_id:
+          type: string
+          title: External Shelf ID
+          maxLength: 150
+        section_main:
+          type: string
+          nullable: true
+          title: Main Section
+          description: Library Code for a section with multiple shelves
+          maxLength: 150
+        section_child:
+          type: string
+          nullable: true
+          title: Sub Section
+          description: Library Code for a sub- section
+          maxLength: 150
+        system_from:
+          type: string
+          title: Shelving System Start Value
+          maxLength: 150
+        system_to:
+          type: string
+          title: Shelving System End Value
+          maxLength: 150
+        side:
+          nullable: true
+          title: Left or Right side
+          oneOf:
+          - $ref: '#/components/schemas/SideEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        measure_from:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          title: Distance from measure
+        measure_to:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          title: Distance end measure
+        bookshelf:
+          type: integer
+          nullable: true
+        floor_num:
+          type: string
+          readOnly: true
+    PatchedUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          maxLength: 150
+    Poi:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
+        id:
+          type: integer
+          readOnly: true
+        geometry:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - MultiPoint
+            coordinates:
+              type: array
+              items:
+                type: array
+                items:
+                  type: number
+                  format: float
+                example:
+                - 12.9721
+                - 77.5933
+                minItems: 2
+                maxItems: 3
+        properties:
+          type: object
+          properties:
+            icon:
+              type: string
+              readOnly: true
+            images:
+              type: string
+              readOnly: true
+            name:
+              type: string
+              nullable: true
+              maxLength: 255
+            name_en:
+              type: string
+              nullable: true
+              maxLength: 255
+            name_de:
+              type: string
+              nullable: true
+              maxLength: 255
+            floor_num:
+              type: number
+              format: double
+              nullable: true
+              title: Floor number
+            floor_name:
+              type: string
+              nullable: true
+              maxLength: 200
+            description:
+              type: string
+              nullable: true
+              maxLength: 255
+            enabled:
+              type: boolean
+              nullable: true
+              title: Activated and enabled
+            poi_tags:
+              type: array
+              items:
+                type: string
+                maxLength: 50
+              nullable: true
+            html_content:
+              type: string
+              nullable: true
+            html_content_de:
+              type: string
+              nullable: true
+              title: DE HTML content
+            floor:
+              type: integer
+              nullable: true
+            campus:
+              type: integer
+              nullable: true
+            category:
+              type: integer
+    PoiCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        cat_name:
+          type: string
+          nullable: true
+          title: Category name
+          maxLength: 255
+        cat_name_en:
+          type: string
+          nullable: true
+          maxLength: 255
+        cat_name_de:
+          type: string
+          nullable: true
+          maxLength: 255
+        icon:
+          type: string
+          readOnly: true
+        fk_poi_icon:
+          type: integer
+          nullable: true
+        enabled:
+          type: boolean
+          nullable: true
+          title: Activated and enabled
+        parent:
+          type: integer
+          nullable: true
+        html_content:
+          type: string
+          nullable: true
+        html_content_de:
+          type: string
+          nullable: true
+          title: DE HTML content
+        tree_order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+          title: Tree order in legend
+        description:
+          type: string
+          nullable: true
+          maxLength: 255
+      required:
+      - icon
+      - id
+    PoiIcon:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Name of map icon
+          maxLength: 255
+        icon:
+          type: string
+          format: uri
+          title: Poi icon image
+      required:
+      - id
+      - name
+    PoiImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        poi:
+          type: integer
+        image:
+          type: string
+          format: uri
+          title: POI images
+        thumbnail:
+          type: string
+          format: uri
+          readOnly: true
+          nullable: true
+          title: POI Image Thumbnail
+        alt_text:
+          type: string
+          title: Html image alt text
+          maxLength: 255
+        sort_order:
+          type: integer
+          maximum: 32767
+          minimum: 0
+          nullable: true
+          title: Order of images
+        is_default:
+          type: boolean
+      required:
+      - id
+      - image
+      - poi
+      - thumbnail
+    PoiList:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureCollectionEnum'
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/Poi'
+    RoutingEdge:
+      type: object
+      description: GeoJSON serializer for a single routing edge.
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureEnum'
+        id:
+          type: integer
+          readOnly: true
+        geometry:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - LineString
+            coordinates:
+              type: array
+              items:
+                type: array
+                items:
+                  type: number
+                  format: float
+                example:
+                - 12.9721
+                - 77.5933
+                minItems: 2
+                maxItems: 3
+              example:
+              - - 22.4707
+                - 70.0577
+              - - 12.9721
+                - 77.5933
+              minItems: 2
+        properties:
+          type: object
+          properties:
+            campus:
+              type: integer
+            building:
+              type: integer
+            floor_from:
+              type: integer
+            floor_to:
+              type: integer
+            line_type:
+              enum:
+              - indoor
+              - outdoor
+              - elevator
+              - elevator-no-floor-change
+              - stairs
+              - stairs-no-floor-change
+              - ramps
+              type: string
+              description: |-
+                * `indoor` - Indoor
+                * `outdoor` - Outdoor
+                * `elevator` - Elevator
+                * `elevator-no-floor-change` - Elevator (no floor change)
+                * `stairs` - Stairs
+                * `stairs-no-floor-change` - Stairs (no floor change)
+                * `ramps` - Ramps
+            is_private:
+              type: boolean
+              description: If true, this edge is only usable in private routes.
+            cost:
+              type: number
+              format: double
+            reverse_cost:
+              type: number
+              format: double
+              nullable: true
+            created_at:
+              type: string
+              format: date-time
+              readOnly: true
+            updated_at:
+              type: string
+              format: date-time
+              readOnly: true
+    RoutingEdgeList:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/GisFeatureCollectionEnum'
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutingEdge'
+    Shelfdata:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        building_floor:
+          type: integer
+          nullable: true
+        building:
+          type: integer
+          nullable: true
+        external_id:
+          type: string
+          title: External Shelf ID
+          maxLength: 150
+        section_main:
+          type: string
+          nullable: true
+          title: Main Section
+          description: Library Code for a section with multiple shelves
+          maxLength: 150
+        section_child:
+          type: string
+          nullable: true
+          title: Sub Section
+          description: Library Code for a sub- section
+          maxLength: 150
+        system_from:
+          type: string
+          title: Shelving System Start Value
+          maxLength: 150
+        system_to:
+          type: string
+          title: Shelving System End Value
+          maxLength: 150
+        side:
+          nullable: true
+          title: Left or Right side
+          oneOf:
+          - $ref: '#/components/schemas/SideEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        measure_from:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          title: Distance from measure
+        measure_to:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          title: Distance end measure
+        bookshelf:
+          type: integer
+          nullable: true
+        floor_num:
+          type: string
+          readOnly: true
+      required:
+      - external_id
+      - floor_num
+      - id
+      - system_from
+      - system_to
+    SideEnum:
+      enum:
+      - L
+      - R
+      description: |-
+        * `L` - Left
+        * `R` - Right
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          maxLength: 150
+      required:
+      - id
+      - username
+    Wing:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        short_name:
+          type: string
+          nullable: true
+          maxLength: 150
+        long_name:
+          type: string
+          nullable: true
+          maxLength: 150
+        floor_num:
+          type: number
+          format: double
+          nullable: true
+          title: Floor number
+        floor_name:
+          type: string
+          nullable: true
+          maxLength: 200
+        name:
+          type: string
+          nullable: true
+          title: Wing name
+          maxLength: 256
+        abbreviation:
+          type: string
+          nullable: true
+          maxLength: 20
+        fk_building_id:
+          type: integer
+          nullable: true
+          readOnly: true
+        fk_building_floor_id:
+          type: integer
+          readOnly: true
+      required:
+      - fk_building_floor_id
+      - fk_building_id
+      - id
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

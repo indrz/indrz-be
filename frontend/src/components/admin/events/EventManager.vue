@@ -2,51 +2,47 @@
   <div>
     <v-card>
       <v-data-table
-        v-model="selected"
         :headers="headers"
         :items="shelfListData"
-        :server-items-length="total"
-        :single-select="singleSelect"
         :loading="loading"
         :height="height"
         :no-data-text="noDataText"
         @click:row="onIndrzEventsClick"
-        item-key="id"
-        dense
+        density="compact"
         class="elevation-1"
         loading-text="Loading... Please wait"
         hide-default-footer
       >
         <template v-slot:top>
-          <v-toolbar flat>
+          <v-toolbar elevation="0">
             <v-toolbar-title>Shelf Data</v-toolbar-title>
             <v-spacer />
             <v-btn
               :disabled="!selectedShelf || shelfDataAddEditDialog"
               @click="addIndrzEvents"
-              outlined
+              variant="outlined"
             >
-              <v-icon left>
+              <v-icon start>
                 mdi-plus
               </v-icon>
               Shelf Data
             </v-btn>
           </v-toolbar>
         </template>
-        <template v-slot:item.building_floor="{item}">
-          {{ getFloorName(item.building_floor) }}
+        <template v-slot:item.building_floor="{ item }">
+          {{ getFloorName(item.raw.building_floor) }}
         </template>
         <template v-slot:item.actions="{ item }">
           <v-icon
-            @click="editIndrzEvents(item)"
-            small
+            @click="editIndrzEvents(item.raw)"
+            size="small"
             class="mr-1"
           >
             mdi-pencil
           </v-icon>
           <v-icon
             @click="showConfirmDeleteIndrzEvents = true"
-            small
+            size="small"
           >
             mdi-delete
           </v-icon>
@@ -70,9 +66,11 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import AddEditIndrzEvents from '@/components/admin/events/AddEditIndrzEvents';
+import { useShelfStore } from '~/stores/shelf';
+import { useFloorStore } from '~/stores/floor';
+import { useBuildingStore } from '~/stores/building';
 
 export default {
   name: 'IndrzEventsList',
@@ -92,53 +90,53 @@ export default {
       selected: [],
       headers: [
         {
-          text: 'External Id',
+          title: 'External Id',
           align: 'left',
           sortable: false,
-          value: 'external_id',
+          key: 'external_id',
           width: 90
         },
         {
-          text: 'Floor',
+          title: 'Floor',
           align: 'right',
           filterable: false,
           sortable: false,
-          value: 'building_floor'
+          key: 'building_floor'
         },
         {
-          text: 'System From',
+          title: 'System From',
           align: 'right',
           sortable: true,
-          value: 'system_from'
+          key: 'system_from'
         },
         {
-          text: 'System To',
+          title: 'System To',
           align: 'right',
           sortable: true,
-          value: 'system_to'
+          key: 'system_to'
         },
         {
-          text: 'Shelf Side',
+          title: 'Shelf Side',
           align: 'right',
           filterable: false,
           sortable: false,
-          value: 'side'
+          key: 'side'
         },
         {
-          text: 'Measure From',
+          title: 'Measure From',
           align: 'right',
           filterable: false,
           sortable: false,
-          value: 'measure_from'
+          key: 'measure_from'
         },
         {
-          text: 'Measure To',
+          title: 'Measure To',
           align: 'right',
           filterable: false,
           sortable: false,
-          value: 'measure_to'
+          key: 'measure_to'
         },
-        { text: '', value: 'actions', sortable: false }
+        { title: '', key: 'actions', sortable: false }
       ],
       shelfDataEditedIndex: -1,
       shelfDataEditedItem: {},
@@ -160,31 +158,49 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      shelfListData: function (state) {
-        const { data, total } = state.shelf.shelfData;
+    shelfListData () {
+      const shelfStore = useShelfStore();
+      const { data = [], total = 0 } = shelfStore.shelfData || {};
 
-        this.total = total;
+      this.total = total;
 
-        return data;
-      },
-      noDataText: (state) => {
-        if (state.shelf.selectedShelf) {
-          return 'No shelf data found';
-        }
-        return 'No book shelf selected';
-      },
-      floors: state => state.floor.floors,
-      buildings: state => state.building.buildings,
-      selectedShelf: state => state.shelf.selectedShelf,
-      selectedIndrzEvents: state => state.shelf.selectedIndrzEvents
-    }),
-    ...mapGetters({
-      getFloorName: 'building/getFloorName',
-      firstBuilding: 'building/firstBuilding',
-      firstFloor: 'building/firstFloor'
-
-    }),
+      return data;
+    },
+    noDataText () {
+      const shelfStore = useShelfStore();
+      if (shelfStore.selectedShelf) {
+        return 'No shelf data found';
+      }
+      return 'No book shelf selected';
+    },
+    floors () {
+      const floorStore = useFloorStore();
+      return typeof floorStore.floors === 'function' ? floorStore.floors() : floorStore.$state.floors;
+    },
+    buildings () {
+      const buildingStore = useBuildingStore();
+      return buildingStore.buildings;
+    },
+    selectedShelf () {
+      const shelfStore = useShelfStore();
+      return shelfStore.selectedShelf;
+    },
+    selectedIndrzEvents () {
+      const shelfStore = useShelfStore();
+      return shelfStore.selectedShelfData;
+    },
+    getFloorName () {
+      const buildingStore = useBuildingStore();
+      return buildingStore.getFloorName;
+    },
+    firstBuilding () {
+      const buildingStore = useBuildingStore();
+      return buildingStore.firstBuilding;
+    },
+    firstFloor () {
+      const buildingStore = useBuildingStore();
+      return buildingStore.firstFloor;
+    },
     shelfDataFormTitle () {
       return this.shelfDataEditedIndex === -1 ? 'New Shelf Data' : 'Edit Shelf Data';
     }
@@ -195,14 +211,25 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      loadShelfList: 'shelf/LOAD_BOOKSHELF_LIST',
-      loadFloors: 'building/LOAD_FLOORS',
-      deleteIndrzEvents: 'shelf/DELETE_SHELF_DATA',
-      setSelectedIndrzEvents: 'shelf/SET_SELECTED_SHELF_DATA'
-    }),
-    onIndrzEventsClick (data) {
-      this.setSelectedIndrzEvents(data);
+    loadShelfList (query) {
+      const shelfStore = useShelfStore();
+      return shelfStore.LOAD_BOOKSHELF_LIST(query);
+    },
+    loadFloors (buildingId) {
+      const buildingStore = useBuildingStore();
+      return buildingStore.LOAD_FLOORS(buildingId);
+    },
+    deleteIndrzEvents (payload) {
+      const shelfStore = useShelfStore();
+      return shelfStore.DELETE_SHELF_DATA(payload);
+    },
+    setSelectedIndrzEvents (payload) {
+      const shelfStore = useShelfStore();
+      return shelfStore.SET_SELECTED_SHELF_DATA(payload);
+    },
+    onIndrzEventsClick (event, row) {
+      const indrzEvent = row?.item?.raw || row?.item || row?.raw || event?.item?.raw || event;
+      this.setSelectedIndrzEvents(indrzEvent);
     },
 
     async addIndrzEvents () {

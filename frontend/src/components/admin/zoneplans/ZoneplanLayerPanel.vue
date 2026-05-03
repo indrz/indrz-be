@@ -2,54 +2,45 @@
   <v-list>
     <v-toolbar
       color="purple"
-      dark
+      theme="dark"
     >
       <v-icon>mdi-layers</v-icon>
-      <v-spacer>
-        <v-toolbar-title>Map Layers</v-toolbar-title>
-      </v-spacer>
+      <v-toolbar-title>Map Layers</v-toolbar-title>
+      <v-spacer />
     </v-toolbar>
     <v-list-group no-action prepend-icon="mdi-office-building">
-      <template v-slot:activator>
-        <v-list-item-content>
+      <template #activator="{ props }">
+        <v-list-item v-bind="props">
           <v-list-item-title>Organization</v-list-item-title>
-        </v-list-item-content>
+        </v-list-item>
       </template>
 
-      <v-list-item v-for="org in organizations" :key="org.id" link dense>
-        <v-list-item-action>
-          <v-checkbox :value="org.active" @change="toggleLayer(org)" />
-        </v-list-item-action>
-        <!-- Wrap the title and subtitle in v-list-item-content -->
-        <v-list-item-content>
-          <v-list-item-title v-text="org.orgcode" />
-          <v-list-item-subtitle v-text="org.name" />
-        </v-list-item-content>
-
-        <v-list-item-icon>
+      <v-list-item v-for="org in organizations" :key="org.id" link density="compact">
+        <template #prepend>
+          <v-checkbox :model-value="org.active" @update:model-value="toggleLayer(org)" />
+        </template>
+        <v-list-item-title v-text="org.orgcode" />
+        <v-list-item-subtitle v-text="org.name" />
+        <template #append>
           <v-icon :color="org.color" v-text="org.icon" />
-        </v-list-item-icon>
+        </template>
       </v-list-item>
     </v-list-group>
     <v-list-group no-action prepend-icon="mdi-office-building">
-      <template v-slot:activator>
-        <v-list-item-content>
+      <template #activator="{ props }">
+        <v-list-item v-bind="props">
           <v-list-item-title>MainuseItems</v-list-item-title>
-        </v-list-item-content>
+        </v-list-item>
       </template>
 
-      <v-list-item v-for="mainuse in mainuseCategories" :key="mainuse.id" link dense>
-        <v-list-item-action>
-          <v-checkbox :value="mainuse.active" @change="toggleMainUseLayer(mainuse)" />
-        </v-list-item-action>
-        <!-- Wrap the title and subtitle in v-list-item-content -->
-        <v-list-item-content>
-          <v-list-item-title v-text="mainuse.name" />
-        </v-list-item-content>
-
-        <v-list-item-icon>
+      <v-list-item v-for="mainuse in mainuseCategories" :key="mainuse.id" link density="compact">
+        <template #prepend>
+          <v-checkbox :model-value="mainuse.active" @update:model-value="toggleMainUseLayer(mainuse)" />
+        </template>
+        <v-list-item-title v-text="mainuse.name" />
+        <template #append>
           <v-icon :color="mainuse.color" v-text="mainuse.icon" />
-        </v-list-item-icon>
+        </template>
       </v-list-item>
     </v-list-group>
   </v-list>

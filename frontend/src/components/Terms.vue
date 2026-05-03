@@ -117,7 +117,7 @@
             <b>Sie suchen Suche</b>
           </p>
           <p>
-            <img src="../static/images/help/search.jpg" align="bottom">
+            <img src="/images/help/search.jpg" align="bottom">
           </p>
           <p>
             Um die Suchfunktion
@@ -134,7 +134,7 @@
             <b>Routing/Wegbeschreibung</b>
           </p>
           <p>
-            <img src="../static/images/help/routing.jpg" align="bottom">
+            <img src="/images/help/routing.jpg" align="bottom">
           </p>
           <p>
             &Uuml;ber die
@@ -166,7 +166,7 @@
             <b>POIs</b>
           </p>
           <p>
-            <img src="../static/images/help/poi.jpg" align="bottom">
+            <img src="/images/help/poi.jpg" align="bottom">
           </p>
           <p>
             POIs&ldquo; -
@@ -222,7 +222,7 @@
             <b>Werkzeugleiste</b>
           </p>
           <p>
-            <img src="../static/images/help/share.jpg" alt="" align="bottom">
+            <img src="/images/help/share.jpg" alt="" align="bottom">
           </p>
           <p>
             Die Werkzeugleiste,
@@ -251,7 +251,7 @@
             Stockwerk liegenden R&auml;ume anzuzeigen.
           </p>
           <p>
-            <img src="../static/images/help/floor-changer.jpg" align="bottom">
+            <img src="/images/help/floor-changer.jpg" align="bottom">
           </p>
           <p>
             Durch Klick auf das
@@ -271,7 +271,7 @@
             <b>ZOOM </b>
           </p>
           <p>
-            <img src="../static/images/help/zoom.jpg" align="bottom">
+            <img src="/images/help/zoom.jpg" align="bottom">
           </p>
           <p>
             Zus&auml;tzlich
@@ -321,8 +321,8 @@
       <v-card-actions>
         <v-spacer />
         <v-btn
-          color="blue darken-1"
-          text
+          color="blue-darken-1"
+          variant="text"
           @click="dialog = false"
         >
           Close

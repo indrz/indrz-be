@@ -1,10 +1,9 @@
 <template>
-  <v-menu offset-y>
-    <template v-slot:activator="{ on }">
+  <v-menu location="bottom">
+    <template v-slot:activator="{ props }">
       <v-btn
-        v-on="on"
-        text
-        dark
+        v-bind="props"
+        variant="text"
       >
         {{ userEmail }}
       </v-btn>
@@ -13,9 +12,9 @@
       <v-list-item
         @click="signOut"
       >
-        <v-list-item-action>
+        <template #prepend>
           <v-icon>mdi-logout</v-icon>
-        </v-list-item-action>
+        </template>
         <v-list-item-title>Logout</v-list-item-title>
       </v-list-item>
     </v-list>
@@ -23,18 +22,20 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { useUserStore } from '~/stores/user';
 
 export default {
   name: 'UserMenu',
   computed: {
-    ...mapGetters({
-      userEmail: 'user/userEmail'
-    })
+    userEmail () {
+      const userStore = useUserStore();
+      return userStore.userEmail;
+    }
   },
   methods: {
     signOut () {
-      this.$store.dispatch('user/SIGN_OUT');
+      const userStore = useUserStore();
+      userStore.SIGN_OUT();
     }
   }
 };

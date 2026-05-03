@@ -17,7 +17,7 @@
   "download": "Karte als Bild Herunterladen",
   "pdf": "Karte als PDF Herunterladen",
   "search_result": "Suchergebnis",
-  "contact_us": "Bitte senden Sie eine E-Mail an office@gomogi.com, um das Team über Probleme zu informieren.",
+  "contact_us": "Bitte senden Sie eine E-Mail an support at gomogi.com, um das Team über Probleme zu informieren.",
   "contact": "Kontakt",
   "terms_and_conditions": "Allgemeine Geschäftsbedingungen",
   "about": "Über uns/AGBs",
@@ -59,5 +59,9 @@
   "poi_pictures": "Bilder",
   "label_external_id": "ID",
   "label_directions_only_routes_on_campus_supported": "Es werden nur Routen innerhalb/zwischen Gebäuden auf dem Campus unterstützt.",
-  "label_directions_routing_barrierfree_limitations": "Barrierefreiheit ist nur in den Innenbereichen gewährleistet."
+  "label_directions_routing_barrierfree_limitations": "Barrierefreiheit ist nur in den Innenbereichen gewährleistet.",
+  "$vuetify": {
+    "open": "Öffnen",
+    "close": "Schließen"
+  }
 }

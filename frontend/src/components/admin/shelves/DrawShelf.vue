@@ -1,44 +1,30 @@
 <template>
-  <v-dialog :value="show" fullscreen transition="dialog-bottom-transition">
+  <v-dialog :model-value="show" fullscreen transition="dialog-bottom-transition">
     <v-card v-if="show" class="ma-2">
-      <!--<v-toolbar
-        dense
-        flat
-      >
-        <div class="headline">
-          {{ title }}
-        </div>
-        <v-spacer />
-        <v-btn @click="close" icon>
-          <v-icon>mdi-window-close</v-icon>
-        </v-btn>
-      </v-toolbar>-->
       <v-card-text class="pa-0">
-        <template>
-          <shelf-map ref="shelfMap" @floorChange="onFloorChange" />
-          <floor-changer
-            ref="floorChanger"
-            @floorClick="onFloorClick"
-          />
-        </template>
+        <shelf-map ref="shelfMap" @floorChange="onFloorChange" />
+        <floor-changer
+          ref="floorChanger"
+          @floorClick="onFloorClick"
+        />
       </v-card-text>
       <v-divider />
       <v-card-actions>
-        <div class="headline">
+        <div class="text-h6">
           {{ title }}
         </div>
         <v-spacer />
-        <v-btn :disabled="loading" @click="close" color="blue darken-1" text>
+        <v-btn :disabled="loading" @click="close" color="blue-darken-1" variant="text">
           Cancel
         </v-btn>
         <v-btn
           :disabled="loading"
           :loading="loading"
           @click="save"
-          color="blue darken-1"
-          text
+          color="blue-darken-1"
+          variant="text"
         >
-          <v-icon left>
+          <v-icon start>
             mdi-content-save
           </v-icon>
           Save
@@ -49,11 +35,12 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
 import FloorChanger from '@/components/FloorChanger';
 import ShelfMap from '@/components/admin/shelves/ShelfMap';
 import MapUtil from '@/util/map';
 import config from '@/util/indrzConfig';
+import { useFloorStore } from '~/stores/floor';
+import { useShelfStore } from '~/stores/shelf';
 const { env } = config;
 
 export default {
@@ -86,10 +73,14 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      floors: state => state.floor.floors,
-      selectedShelf: state => state.shelf.selectedShelf
-    })
+    floors () {
+      const floorStore = useFloorStore();
+      return typeof floorStore.floors === 'function' ? floorStore.floors() : floorStore.$state.floors;
+    },
+    selectedShelf () {
+      const shelfStore = useShelfStore();
+      return shelfStore.selectedShelf;
+    }
   },
   watch: {
     show (value) {
@@ -104,11 +95,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      saveShelf: 'shelf/SAVE_SHELF'
-    }),
+    saveShelf (payload) {
+      const shelfStore = useShelfStore();
+      return shelfStore.SAVE_SHELF(payload);
+    },
     onFloorChange ({ floor }) {
-      this.$refs.floorChanger.onFloorClick(floor, false);
+      if (floor) {
+        this.$refs.floorChanger.onFloorClick(floor, false);
+      }
     },
     onFloorClick (floorNum) {
       this.activeFloorNum = floorNum;

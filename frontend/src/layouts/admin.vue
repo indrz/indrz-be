@@ -8,11 +8,10 @@
     />
     <v-app-bar
       v-if="isUserSignedIn"
-      clipped-left
       app
       color="indigo"
-      dark
-      dense
+      density="compact"
+      prominent
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>INDRZ MANAGER</v-toolbar-title>
@@ -21,82 +20,65 @@
     </v-app-bar>
     <v-main>
       <v-container :class="isPoiManager ? 'admin-map-container' : 'pages'">
-        <nuxt />
+        <NuxtPage />
       </v-container>
     </v-main>
   </v-app>
 </template>
 
-<script>
-import { mapGetters } from 'vuex';
-import SideBar from '../components/admin/SideBar';
-import UserMenu from '../components/admin/UserMenu';
+<script setup>
+import SideBar from '../components/admin/SideBar'
+import UserMenu from '../components/admin/UserMenu'
+import { useUserStore } from '~/stores/user'
 
-export default {
-  components: {
-    SideBar,
-    UserMenu
+const router = useRouter()
+const route = useRoute()
+const userStore = useUserStore()
+
+const drawer = ref(null)
+const menuItems = [
+  {
+    text: 'Dashboard',
+    icon: 'home',
+    route: { name: '', path: '/admin/' }
   },
-  data: () => ({
-    drawer: null,
-    menuItems: [
-      {
-        text: 'Dashboard',
-        icon: 'home',
-        route: { name: '', path: '/admin/' }
-      },
-      {
-        text: 'Bookway Editor',
-        icon: 'book-open-blank-variant',
-        route: { name: 'shelves', path: '/admin/shelves' }
-      },
-      {
-        text: 'POI Manager',
-        icon: 'map-marker',
-        route: { name: 'poi', path: '/admin/poi' }
-      },
-      {
-        text: 'Zoneplan',
-        icon: 'floor-plan',
-        route: { name: 'zoneplans', path: '/admin/zoneplans' }
-      },
-      {
-        text: 'BETA, Event Manager',
-        icon: 'party-popper',
-        route: { name: 'events', path: '/admin/events' }
-      }
-    ]
-  }),
-
-  computed: {
-    ...mapGetters({
-      isUserSignedIn: 'user/isUserSignedIn'
-    }),
-    isPoiManager () {
-      return [
-        'admin-poi',
-        'admin-poi-editor'
-      ].includes(this.$route.name);
-    }
+  {
+    text: 'Bookway Editor',
+    icon: 'book-open-blank-variant',
+    route: { name: 'shelves', path: '/admin/shelves' }
   },
-
-  watch: {
-    isUserSignedIn: {
-      immediate: true,
-      handler (value) {
-        if (!value) {
-          this.$router.push(this.$route.query.redirect || '/admin/login');
-        }
-      }
-    }
+  {
+    text: 'POI Manager',
+    icon: 'map-marker',
+    route: { name: 'poi', path: '/admin/poi' }
   },
-
-  methods: {
-    onDrawerClick (drawer) {
-      this.drawer = drawer;
-    }
+  {
+    text: 'Zoneplan',
+    icon: 'floor-plan',
+    route: { name: 'zoneplans', path: '/admin/zoneplans' }
+  },
+  {
+    text: 'BETA, Event Manager',
+    icon: 'party-popper',
+    route: { name: 'events', path: '/admin/events' }
   }
-};
+]
+
+const isUserSignedIn = computed(() => userStore.isUserSignedIn)
+
+const isPoiManager = computed(() => {
+  return ['admin-poi', 'admin-poi-editor'].includes(route.name)
+})
+
+watch(isUserSignedIn, (value) => {
+  if (!value) {
+    router.push(route.query.redirect || '/admin/login')
+  }
+})
+
+function onDrawerClick (drawerValue) {
+  drawer.value = drawerValue
+}
 </script>
 <style scoped>
   .admin-map-container {

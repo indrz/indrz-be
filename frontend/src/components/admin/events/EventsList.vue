@@ -6,9 +6,9 @@
       :items="indrzEvents"
       class="elevation-1"
     >
-      <template v-slot: item.enabled="{ item }">
-        <v-simple-checkbox
-          v-model="item.enabled"
+      <template v-slot:[`item.enabled`]="{ item }">
+        <v-checkbox-btn
+          v-model="item.raw.enabled"
           disabled
         />
       </template>
@@ -58,12 +58,12 @@ export default {
 
       ],
       headers: [
-        { text: 'Name', value: 'name' },
-        { text: 'Start Date', value: 'startDate' },
-        { text: 'End Date', value: 'endDate' },
-        { text: 'Room Code(s)', value: 'roomCode' },
-        { text: 'Map', value: 'otherAreas' },
-        { text: 'Enabled', value: 'enabled' }
+        { title: 'Name', key: 'name' },
+        { title: 'Start Date', key: 'startDate' },
+        { title: 'End Date', key: 'endDate' },
+        { title: 'Room Code(s)', key: 'roomCode' },
+        { title: 'Map', key: 'otherAreas' },
+        { title: 'Enabled', key: 'enabled' }
       ]
     }
   }

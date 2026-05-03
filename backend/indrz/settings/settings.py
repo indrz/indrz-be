@@ -1,12 +1,25 @@
 from logging import config
 import os
-from distutils.util import strtobool
 from logging.handlers import RotatingFileHandler
+
+
+def strtobool(value):
+    value = str(value).strip().lower()
+    if value in {'y', 'yes', 't', 'true', 'on', '1'}:
+        return 1
+    if value in {'n', 'no', 'f', 'false', 'off', '0'}:
+        return 0
+    raise ValueError(f'invalid truth value: {value!r}')
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
+
+DJANGO_SUPERUSER_USERNAME = os.getenv('DJANGO_SUPERUSER_USERNAME')
+DJANGO_SUPERUSER_PASSWORD = os.getenv('DJANGO_SUPERUSER_PASSWORD')
+DJANGO_SUPERUSER_EMAIL = os.getenv('DJANGO_SUPERUSER_EMAIL')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = strtobool(os.getenv('DEBUG'))
@@ -66,18 +79,20 @@ INSTALLED_APPS = [
     'taggit',
     'mptt',
     'corsheaders',
-    'drf_yasg',
-
+    'drf_spectacular',
     ##### our local indrz apps
     'health',
-    'organizations.apps.OrganizationsConfig',
     'api',
     'campus.apps.CampusConfig',
     'buildings',
-    'routing',
+    'bookway',
     'poi_manager',
     'landscape',
-    'users'
+    'users',
+    "zoneplan.apps.ZoneplanConfig",
+    "organizations.apps.OrganizationsConfig",
+    "dxf_loader.apps.DxfLoaderConfig",
+    "routing.apps.RoutingConfig"
 
 ]
 
@@ -232,8 +247,32 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication'
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated', )
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'INDRZ API',
+    'DESCRIPTION': 'Indoor Mapping and Navigation REST API',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+    # complete public schema or a subset based on the requesting user
+    'SERVE_PUBLIC': False,
+    # include schema endpoint into schema
+    'SERVE_INCLUDE_SCHEMA': True,
+    # list of authentication/permission classes for spectacular's views.
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.IsAuthenticated'],
+    # None will default to DRF's AUTHENTICATION_CLASSES
+    'SERVE_AUTHENTICATION': None,
+    # Dictionary of general configuration to pass to the SwaggerUI({ ... })
+    # https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
+    # The settings are serialized with json.dumps(). If you need customized JS, use a
+    # string instead. The string must then contain valid JS and is passed unchanged.
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+    },
 }
 
 SWAGGER_SETTINGS = {

@@ -10,6 +10,14 @@
 * `Fixed` for any bug fixes.
 * `Security` in case of vulnerabilities.
 
+## [4.0.1] - 2025-12-06
+
+### Changed
+
+* Migrated frontend to Vue 3, Nuxt 4, Vuetify 3 and Vite.
+* Replaced Vuex with Pinia and removed remaining Vue 2 compatibility helpers.
+* Centralised HTTP calls on the ofetch-based `api` helper and removed remaining axios references.
+
 ## [3.4.1] - Unreleased
 
 in-progress

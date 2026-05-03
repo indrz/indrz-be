@@ -10,22 +10,22 @@
     data-test="directionsPane"
     @transitionend="onTransitionEnd"
   >-->
+  <div ref="drawerEl">
   <v-navigation-drawer
     ref="drawer"
     v-model="shouldShowDrawer"
     class="resizable"
-    bottom
+    location="bottom"
     :style="{ width: isMobile ? '100%' : '410px', height: drawerHeight + 'px', top: 'auto', bottom: 0, position:'fixed' }"
     app
     fixed
     :permanent="shouldShowDrawer"
     data-test="directionsPane"
     @transitionend="onTransitionEnd"
-    stateless
   >
     <v-app-bar
-      color="deep-purple accent-4"
-      dark
+      color="deep-purple-accent-4"
+      theme="dark"
     >
       <v-toolbar-title>{{ locale.routeLabel }}</v-toolbar-title>
       <v-btn icon @click="clearDirections">
@@ -34,7 +34,7 @@
     </v-app-bar>
     <div v-if="isMobile" class="draggable-handle" @mousedown="startDrag" @touchstart="startDrag" />
     <div class="ma-2">
-      <v-container justify="center" class="pa-0" style="margin-top: 20px; max-width: 410px">
+      <v-container class="pa-0 d-flex justify-center" style="margin-top: 20px; max-width: 410px">
         <div class="row justify-left ml-5">
           <div class="panel-section-items">
             <v-list class="list-label-value" style="height: 120px;">
@@ -65,7 +65,7 @@
             </v-list>
             <v-list class="list-label-value">
               <v-list-item>
-                <v-checkbox v-model="barrierFree" :label="locale.barrierFreeLabel" data-test="barrierFreeCheckbox" @change="onBarrierFreeChange" />
+                <v-checkbox v-model="barrierFree" :label="locale.barrierFreeLabel" data-test="barrierFreeCheckbox" @update:model-value="onBarrierFreeChange" />
               </v-list-item>
               <v-list-item>
                 <div class="mt-3 routing-info-text">
@@ -81,7 +81,7 @@
           <div class="panel-section-items">
             <v-list class="list-label-value">
               <v-list-item v-if="routeInfo?.walk_time">
-                <span class="primary--text text-h5 font-weight-bold text-center">{{
+                <span class="text-primary text-h5 font-weight-bold text-center">{{
                   routeInfo.walk_time
                 }} ({{ routeInfo.route_length }} m)</span>
               </v-list-item>
@@ -130,44 +130,44 @@
                 <v-btn
                   :disabled="!isRouteAvailable"
                   color="blue-grey"
-                  class="white--text"
-                  small
+                  class="text-white"
+                  size="small"
                   data-test="goButton"
                   @click="onGoButtonClick"
                 >
-                  <v-icon left dark>
+                  <v-icon start class="text-white">
                     mdi-run
                   </v-icon>
                   <span>{{ locale.goLabel }}!</span>
                 </v-btn>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
+                <v-tooltip location="top">
+                  <template v-slot:activator="{ props }">
                     <v-btn
                       :disabled="!isRouteAvailable"
                       color="blue-grey"
-                      class="white--text ml-1"
-                      small
+                      class="text-white ml-1"
+                      size="small"
                       @click="onShareRoute"
-                      v-on="on"
+                      v-bind="props"
                     >
-                      <v-icon dark>
+                      <v-icon class="text-white">
                         mdi-share
                       </v-icon>
                     </v-btn>
                   </template>
                   <span>{{ locale.shareRoute }}</span>
                 </v-tooltip>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
+                <v-tooltip location="top">
+                  <template v-slot:activator="{ props }">
                     <v-btn
                       :disabled="!isRouteAvailable"
                       color="blue-grey"
-                      class="white--text ml-1"
-                      small
+                      class="text-white ml-1"
+                      size="small"
                       @click="onClearRoute"
-                      v-on="on"
+                      v-bind="props"
                     >
-                      <v-icon dark>
+                      <v-icon class="text-white">
                         mdi-close
                       </v-icon>
                     </v-btn>
@@ -181,12 +181,14 @@
       </v-container>
     </div>
   </v-navigation-drawer>
+  </div>
 </template>
 
 <script>
 import config from '../../util/indrzConfig';
 import CampusSearch from '../CampusSearch.vue';
 import BaseDrawer from './BaseDrawer';
+import bus from '~/util/bus';
 
 const { env } = config;
 
@@ -239,19 +241,30 @@ export default {
   },
 
   mounted () {
-    this.$root.$on('setRoute', this.setRoute);
-    this.$root.$on('setRouteInfo', this.setRouteInfo);
-    this.$root.$on('noRouteFound', this.setNoRouteFound);
-    this.$root.$on('routeError', this.setRouteError);
-    this.$root.$on('updateRouteFields', this.setSearchFieldRouteText)
+    bus.on('setRoute', this.setRoute);
+    bus.on('setRouteInfo', this.setRouteInfo);
+    bus.on('noRouteFound', this.setNoRouteFound);
+    bus.on('routeError', this.setRouteError);
+    bus.on('updateRouteFields', this.setSearchFieldRouteText);
+  },
+  beforeUnmount () {
+    bus.off('setRoute', this.setRoute);
+    bus.off('setRouteInfo', this.setRouteInfo);
+    bus.off('noRouteFound', this.setNoRouteFound);
+    bus.off('routeError', this.setRouteError);
+    bus.off('updateRouteFields', this.setSearchFieldRouteText);
   },
 
   methods: {
+    currentLocale () {
+      const raw = this.$i18n?.locale
+      return raw && typeof raw === 'object' && 'value' in raw ? raw.value : raw
+    },
     clearDirections () {
-      this.$root.$emit('clearSearch')
-      this.$root.$emit('closeInfoPopup')
+      bus.emit('clearSearch')
+      bus.emit('closeInfoPopup')
       this.$emit('hide-poi-drawer')
-      this.$root.$emit('clearRoute')
+      bus.emit('clearRoute')
       this.$emit('on-close')
     },
     onSearchSelect (selectedItem) {
@@ -281,12 +294,12 @@ export default {
       this.$emit('routeGo', this.barrierFree ? 1 : 0);
     },
     onShareRoute () {
-      this.$root.$emit('shareClick', true);
+      bus.emit('shareClick', true);
     },
     onClearSearchField (routeType) {
       this[routeType + 'Route'] = null;
       this.setRouteError(null);
-      this.$root.$emit('clearRoute')
+      bus.emit('clearRoute')
     },
     onClearRoute () {
       this.$refs.fromRoute.clearSearch();
@@ -294,7 +307,7 @@ export default {
       this.toRoute = null;
       if (this.$refs.toRoute) { this.$refs.toRoute.clearSearch(''); }
       this.setRouteError(null);
-      this.$root.$emit('clearRoute')
+      bus.emit('clearRoute')
     },
     clearMessages () {
       this.routeInfo = null;
@@ -389,10 +402,10 @@ export default {
       const names = {}
 
       if (fromData) {
-        names.start_name = fromData[`name_${this.$i18n.locale}`] || fromData.name
+        names.start_name = fromData[`name_${this.currentLocale()}`] || fromData.name
       }
       if (toData) {
-        names.end_name = toData[`name_${this.$i18n.locale}`] || toData.name
+        names.end_name = toData[`name_${this.currentLocale()}`] || toData.name
       }
 
       return names;

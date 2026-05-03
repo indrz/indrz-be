@@ -6,7 +6,7 @@
 
     <v-data-table
       v-if="featureProperties.length > 0"
-      dense
+      density="compact"
       hide-default-footer
       :headers="tableHeaders"
       :items="featureProperties"

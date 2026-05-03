@@ -164,21 +164,35 @@ const addPoisToMap = async (poiIds, map, activeFloorNum, layerName = '') => {
   };
 };
 
-const showSinglePoi = async (poiId, globalPopupInfo, zlevel, map, popup, activeFloorNum, layerNamePrefix) => {
+const showSinglePoi = async (poiId, globalPopupInfo, zlevel, map, popup, activeFloorNum, layerNamePrefix, locale = 'en') => {
   const offSetPos = [0, 0];
   const { poiLayer, properties, centerCoord } = await addPoisToMap(poiId, map, activeFloorNum);
 
   globalPopupInfo.poiId = poiId;
   globalPopupInfo.poiCatId = properties.category;
   globalPopupInfo.poiCatShareUrl = '?poi-cat-id=' + properties.category;
-  MapHandler.openIndrzPopup(globalPopupInfo, null, poiId, 'en', null,
-    null, null, activeFloorNum, popup, properties, centerCoord,
-    null, offSetPos, layerNamePrefix);
+
+  const popupModel = MapHandler.openIndrzPopup(
+    globalPopupInfo,
+    null,
+    locale,
+    null,
+    null,
+    null,
+    activeFloorNum,
+    popup,
+    properties,
+    centerCoord,
+    null,
+    offSetPos
+  );
+
   MapUtil.zoomer(map.getView(), centerCoord, zlevel);
 
   return {
     layer: poiLayer,
-    feature: properties
+    feature: properties,
+    popupModel
   };
 };
 

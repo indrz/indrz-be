@@ -1,0 +1,59 @@
+{% extends "library/base.html" %}
+{% load i18n admin_static %}
+
+
+{% block content %}
+
+    <div class="page-content"><!-- Your content goes here -->
+
+        <h2>Foo</h2>
+
+        <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+
+            <thead>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">External Id</th>
+                <th>ID</th>
+                <th>Floor</th>
+                <th>Section</th>
+                                <th>System From</th>
+                                <th>System To</th>
+                                <th>Side</th>
+                                <th>Measure From</th>
+                                <th>Measure To</th>
+                <th>Map</th>
+                 <th>Edit</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td>{{ shelf.external_id }}</td>
+                    <td>{{ shelf.id }}</td>
+                    <td>{{ shelf.floor }}</td>
+                    <td>{{ shelf.section }}</td>
+                                        <td>{{ shelf.system_from }}</td>
+                                        <td>{{ shelf.system_to }}</td>
+                                        <td>{{ shelf.side }}</td>
+                                                           <td>{{ shelf.measure_from }}</td>
+                                        <td>{{ shelf.measure_to }}</td>
+                    <td><a class="btn btn-danger" href="#">
+                        <i class="material-icons">
+                            map
+                        </i></a></td>
+                                        <td><a class="btn " href="/bookway/shelf/{{ shelf.id }}/edit">
+                        <i class="material-icons">
+                            edit
+                        </i></a></td>
+                </tr>
+
+
+            </tbody>
+
+
+        </table>
+</div>
+
+    </div>
+{% endblock %}

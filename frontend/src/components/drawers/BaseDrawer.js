@@ -53,7 +53,11 @@ export default {
       }
     },
     isMobile () {
-      return this.$vuetify.breakpoint.mobile;
+      if (typeof window === 'undefined') {
+        return false
+      }
+      // Keep in sync with CSS media queries using 767.98px as mobile breakpoint
+      return window.innerWidth <= 768
     }
   },
 
@@ -71,8 +75,13 @@ export default {
       const height = this.$parent.$el.clientHeight;
       this.drawerHeight = this.isMobile ? height / 3 : height;
     },
+    // onTransitionEnd () {
+    //   this.$refs.drawer.$el.style.transition = ''
+    // },
     onTransitionEnd () {
-      this.$refs.drawer.$el.style.transition = ''
+      const el = this.$refs.drawerEl
+      if (!el) return
+      el.style.transition = ''
     },
     startDrag (event) {
       event.preventDefault();

@@ -1,0 +1,19 @@
+{% extends "library/base.html" %}
+{% load i18n admin_static %}
+
+{% block content %}
+
+    <div class="page-content"><!-- Your content goes here -->
+
+  <form action="" method="POST">
+    {% csrf_token %}
+    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+    {{ form.as_table }}
+    </table>
+    <input type="submit" value="Submit">
+  </form>
+<a href="/bookway/shelf">go back</a>
+
+    </div>
+
+{% endblock %}

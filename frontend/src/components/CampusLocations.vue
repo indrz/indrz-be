@@ -8,18 +8,14 @@
       />
     </div>
 
-    <v-list v-if="!loading" dense nav>
-      <v-list-item-group color="primary">
-        <v-list-item
-          v-for="(campus, i) in campusLocations"
-          :key="i"
-          @click.stop="onLocationClick(campus, 16)"
-        >
-          <v-list-item-content>
-            <v-list-item-title v-text="campus.name" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
+    <v-list v-if="!loading" density="compact" nav>
+      <v-list-item
+        v-for="(campus, i) in campusLocations"
+        :key="i"
+        @click.stop="onLocationClick(campus, 16)"
+      >
+        <v-list-item-title v-text="campus.name" />
+      </v-list-item>
     </v-list>
   </div>
 </template>

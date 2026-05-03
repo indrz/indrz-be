@@ -1,14 +1,12 @@
 <template>
-  <v-list id="floor-list" dense class="floor-changer-list">
+  <v-list id="floor-list" density="compact" class="floor-changer-list">
     <v-list-item
       v-for="floor in floors"
       :key="floor.id"
       :class="{ 'floor-item-selected': floor.floor_num === currentFloorNum }"
       @click="selectFloor(floor.floor_num)"
     >
-      <v-list-item-content>
-        <v-list-item-title>{{ floor.short_name }}</v-list-item-title>
-      </v-list-item-content>
+      <v-list-item-title>{{ floor.short_name }}</v-list-item-title>
     </v-list-item>
   </v-list>
 </template>

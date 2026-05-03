@@ -3,15 +3,15 @@
     <v-row>
       <v-col>
         <v-card>
-          <v-toolbar flat dens>
+          <v-toolbar elevation="0" density="compact">
             <v-spacer />
-            <v-btn aria-label="Add Category" icon small color="indigo" @click="addCategory">
+            <v-btn aria-label="Add Category" icon size="small" color="indigo" @click="addCategory">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
             <v-btn
               :disabled="!hasActiveCategory"
               icon
-              small
+              size="small"
               color="green"
               @click="editCategory"
             >
@@ -21,7 +21,7 @@
               :disabled="!hasActiveCategory"
               aria-label="Delete Category"
               icon
-              small
+              size="small"
               color="red"
               @click="showConfirmDelete = true"
             >
@@ -39,29 +39,26 @@
             <v-treeview
               v-if="!loading"
               ref="poi"
-              :active.sync="currentCategory"
-              :multiple-active="false"
+              v-model:active="currentCategory"
               :items="poiData"
-              transition
               activatable
               hoverable
-              return-object
-              item-key="id"
+              item-value="id"
               class="poi no-checkbox"
-              dense
+              density="compact"
               style="overflow: auto; width: auto;"
             >
-              <template slot="label" slot-scope="{ item }">
+              <template #title="{ item }">
                 <span style="white-space: normal">
-                  {{ item["name_" + $i18n.locale] }}
+                  {{ getItemLabel(item) }}
                 </span>
               </template>
               <template v-slot:prepend="{ item }">
                 <div>
-                  <img v-if="item.icon" :src="item.icon" style="height:25px;">
+                  <img v-if="getTreeItem(item).icon" :src="getTreeItem(item).icon" style="height:25px;">
                   <img
                     v-else
-                    src="/media/poi_icons/other_pin_grey.png"
+                    src="/images/other_pin_grey.png"
                     style="height:25px;"
                   >
                 </div>
@@ -87,10 +84,10 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
 import AddEditCategory from './AddEditCategory';
 import PointsOfInterest from '@/components/poi/PointsOfInterest';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { usePoiStore } from '~/stores/poi';
 
 export default {
   name: 'PoiCategoryList',
@@ -113,12 +110,18 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      poiData: state => state.poi.poiData
-    }),
-    ...mapGetters({
-      findNode: 'poi/findNode'
-    }),
+    currentLocale () {
+      const raw = this.$i18n?.locale
+      return raw && typeof raw === 'object' && 'value' in raw ? raw.value : raw
+    },
+    poiData () {
+      const poiStore = usePoiStore();
+      return poiStore.poiData;
+    },
+    findNode () {
+      const poiStore = usePoiStore();
+      return poiStore.findNode;
+    },
     treeComp () {
       return this.$refs.poi;
     },
@@ -138,10 +141,22 @@ export default {
   },
 
   methods: {
-    ...mapActions({
-      loadPOI: 'poi/LOAD_POI',
-      deleteCatgory: 'poi/DELETE_POI_CATGORY'
-    }),
+    getTreeItem (item) {
+      return item && item.raw ? item.raw : item;
+    },
+    getItemLabel (item) {
+      const data = this.getTreeItem(item)
+      const locale = this.currentLocale || 'en'
+      return data?.[`name_${locale}`] || data?.name_en || data?.name_de || data?.name || ''
+    },
+    async loadPOI () {
+      const poiStore = usePoiStore();
+      await poiStore.LOAD_POI();
+    },
+    async deleteCatgory (id) {
+      const poiStore = usePoiStore();
+      await poiStore.DELETE_POI_CATGORY({}, id);
+    },
     async loadDataToPoiTree () {
       await this.loadPOI();
       this.loading = false;

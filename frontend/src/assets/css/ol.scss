@@ -18,10 +18,17 @@
   font-size: 20px;
 }
 
-.ol-selectable, .ol-layers, .ol-layers *, .ol-popup{
+/* Keep map layers non-interactive, but allow popup UI interaction */
+.ol-selectable, .ol-layers, .ol-layers *{
   pointer-events:none !important;
   cursor:none !important;
 }
+
+.ol-popup{
+  pointer-events:auto !important;
+  cursor:auto !important;
+}
+
 .ol-selectable{
     -webkit-touch-callout: none !important;
     -webkit-user-select: none !important;

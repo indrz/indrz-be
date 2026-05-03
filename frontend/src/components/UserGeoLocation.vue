@@ -20,6 +20,7 @@ import Style from 'ol/style/Style';
 import CircleStyle from 'ol/style/Circle';
 import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
+import bus from '~/util/bus';
 
 export default {
   name: 'UserGeoLocation',
@@ -67,13 +68,17 @@ export default {
     }
   },
   mounted () {
-    this.$root.$on('map-moved', (coOrdinate) => {
+    this.mapMovedHandler = (coOrdinate) => {
       if (this.userCenter.length &&
         (coOrdinate[0] !== this.userCenter[0] || coOrdinate[1] !== this.userCenter[1])
       ) {
         this.handleRecenterButtonVisibility();
       }
-    })
+    };
+    bus.on('map-moved', this.mapMovedHandler);
+  },
+  beforeUnmount () {
+    this.mapMovedHandler && bus.off('map-moved', this.mapMovedHandler);
   },
   methods: {
     addControl () {
@@ -182,7 +187,7 @@ export default {
     right: 10px !important;
     bottom: 95px !important;
     button {
-      background-image: url('~@/static/images/icons/mylocation-sprite-1x.png');
+      background-image: url('/images/icons/mylocation-sprite-1x.png');
       background-repeat: no-repeat;
       background-color: rgba(255,255,255,0.5);
     }
@@ -198,7 +203,7 @@ export default {
     right: 50px !important;
     bottom: 86px !important;
     button {
-      background-image: url('~@/static/images/icons/re-center.png');
+      background-image: url('/images/icons/re-center.png');
       background-repeat: no-repeat;
       background-size: 84px 33px;
       background-color: rgba(255,255,255,0.5);

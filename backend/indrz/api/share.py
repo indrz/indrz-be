@@ -3,8 +3,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 
-from buildings.models import BuildingFloorSpace, Building, Campus
-from buildings.serializers import BuildingFloorSpaceSerializer, BuildingSerializer, CampusSerializer
+from buildings.models import BuildingFloorSpace, Building
+from campus.models import Campus
+from campus.serializers import CampusSerializer
+from buildings.serializers import BuildingFloorSpaceSerializer, BuildingSerializer
 from poi_manager.models import Poi
 from poi_manager.serializers import PoiSerializer
 

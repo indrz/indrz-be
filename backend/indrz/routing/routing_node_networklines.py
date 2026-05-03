@@ -8,6 +8,12 @@ from contextlib import contextmanager
 
 LOG_DIR = os.getenv('LOGFILE_DIR')
 logfile_routing = os.path.join(LOG_DIR, "log_generate_route_network_dxf.log")
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+if not os.path.exists(logfile_routing):
+    with open(logfile_routing, 'w'):
+        pass
+
 logging.basicConfig(filename=logfile_routing, level=logging.INFO, format='%(asctime)s %(message)s')
 
 
